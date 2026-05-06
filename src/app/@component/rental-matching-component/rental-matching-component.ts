@@ -6,4 +6,7 @@ import { Component } from '@angular/core';
   templateUrl: './rental-matching-component.html',
   styleUrl: './rental-matching-component.scss',
 })
-export class RentalMatchingComponent {}
+export class RentalMatchingComponent {
+  city: string = '';
+  rentalItemCount: number = 0;
+}

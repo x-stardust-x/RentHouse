@@ -1,4 +1,80 @@
 <p>rental-matching-component works!</p>
 
-<h1>探索共享資源</h1>
-<p>在 {{ city }} 發現 {{ rentalItemCount }} 個優質共居與技能共享空間</p>
+
+
+
+<main style="display: flex; gap: 2em;">
+
+  <div class="rental-item-filter">
+
+    <h2>篩選條件</h2>
+
+    <div class="categories">
+      <h3>類別</h3>
+      <input type="checkbox" name="rooms-rental" id="rooms-rental">
+      <label for="rooms-rental">房間出租</label>
+      <input type="checkbox" name="tools-skills" id="tools-skills">
+      <label for="tools-skills">工具 / 技能</label>
+    </div>
+
+    <div class="location">
+      <h3>地點</h3>
+      <select name="city" id="city">
+        <option value="">選擇城市</option>
+        <option value="taipei">台北市</option>
+        <option value="new-taipei">新北市</option>
+        <option value="taichung">台中市</option>
+        <option value="kaohsiung">高雄市</option>
+      </select>
+    </div>
+
+    <div class="price-range">
+      <h3>價格範圍</h3>
+      <p>$0</p>
+      <input type="range" name="price-range" id="price-range" min="0" max="50000" step="1000">
+      <p>$50,000+</p>
+    </div>
+
+    <div class="life-style">
+      <h3>生活風格</h3>
+      <input type="checkbox" name="smoking" id="smoking">
+      <label for="smoking">禁菸</label>
+      <input type="checkbox" name="quiet" id="quiet">
+      <label for="quiet">安靜</label>
+      <input type="checkbox" name="pets" id="pets">
+      <label for="pets">可養寵物</label>
+    </div>
+
+  </div>
+
+  <div>
+
+    <h1>探索共享資源</h1>
+    <p>在 {{ city }} 發現 {{ rentalItemCount }} 個優質共居與技能共享空間</p>
+
+    <div class="rental-item-card">
+      <img
+        src="images/AB6AXuA0geD_MHuiqq5fjlg7gy11Ts91ssr2m_4M9wi0Dl963NAt_Y-H1APLZ3VPjjxvHJVZzMpN3nn7PjOy8JngcN4dIuLQ20IR9pPyof2uw0RBMQsYWML9s-dVIh5w4byFniZiwn5d6kTqb1CyhdJM8jbbCtKQuPaoURxT7Gc1AilZ9DSiYi9IBzp4e_RNvSN21Xnskgf48BqQUCbU28y.jpg"
+        alt="共享資源圖片" class="img-fluid mb-4">
+      <h2>大安區溫馨共居套房</h2>
+      <p>$15,000<span> / 月</span></p>
+      <div class="habit-tags-group">
+        <p class="habit-tag">禁菸</p>
+        <p class="habit-tag">安靜</p>
+      </div>
+      <p>位於大安區的溫馨共居套房，提供舒適的住宿環境，適合尋求安靜生活的租客。套房內設有基本家具，並且禁止吸菸，確保室內空氣清新。周邊交通便利，生活機能完善，是您理想的居住選擇。</p>
+      <a href="#" class="btn btn-primary">查看詳情</a>
+    </div>
+  </div>
+
+  <!-- @for (item of items(); track item.id) {
+<div class="rental-item-card">
+  <img [src]="item.imageUrl" alt="{{ item.title }}" class="rental-item-image">
+  <h2>{{ item.title }}</h2>
+  <p>{{ item.price }}<span> / 月</span></p>
+  <div class="habit-tags
+} @empty {
+  <p>目前沒有可用的共居或技能共享空間，請稍後再試。</p>
+} -->
+
+</main>

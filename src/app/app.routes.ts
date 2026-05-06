@@ -34,6 +34,10 @@ export const routes: Routes = [
     canActivate : [loginGuard]
   },
   {
+    path:'rental-matching-component',
+    loadComponent :() => import('./@component/rental-matching-component/rental-matching-component').then(c => c.RentalMatchingComponent),
+  },
+  {
     path:'**',
     // loadComponent :() => import('./@component/login-component/login-component').then(c => c.LoginComponent),
     redirectTo: 'home'

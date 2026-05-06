@@ -1,0 +1,77 @@
+<a href="../">login</a>
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="col-12 col-md-6">
+
+    <h2 class="text-center mb-4">註冊帳號</h2>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+      <!-- 帳號 -->
+      <div class="mb-3">
+        <label class="form-label w-100">帳號
+          <input class="form-control" formControlName="username">
+        </label>
+      </div>
+
+      <!-- 密碼 -->
+      <div class="mb-3">
+        <label class="form-label w-100">密碼
+          <input type="password" class="form-control" formControlName="password">
+        </label>
+      </div>
+
+      <!-- 身分 -->
+      <div class="mb-3">
+        <label class="form-label w-100">身分</label>
+        <select class="form-select" formControlName="identity">
+          @for (item of identityOptions; track $index) {
+            <option [value]="item.value">
+              {{ item.label }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <hr>
+
+      <h5>個人資料</h5>
+
+      <!-- 暱稱 -->
+      <div class="mb-3">
+        <label class="form-label w-100">暱稱
+          <input class="form-control" formControlName="nickname">
+        </label>
+      </div>
+
+      <!-- Email -->
+      <div class="mb-3">
+        <label class="form-label w-100">信箱
+          <input class="form-control" formControlName="email">
+        </label>
+      </div>
+
+      <!-- 地址 -->
+      <div class="mb-3">
+        <label class="form-label w-100">地址
+          <input class="form-control" formControlName="address">
+        </label>
+      </div>
+
+      <!-- buttons -->
+      <div class="d-flex justify-content-between">
+        <button type="button" class="btn btn-secondary" (click)="clear()">清除</button>
+        <button type="submit" class="btn btn-primary" [disabled]="!registerForm.valid">
+          註冊
+        </button>
+      </div>
+      @if(message() == "登入成功"){
+        <div class="alert alert-success">{{message()}}</div>
+      }
+      @else if(message()){
+        <div class="alert alert-danger">{{message()}}</div>
+      }
+    </form>
+
+  </div>
+</div>

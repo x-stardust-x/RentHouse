@@ -1,0 +1,71 @@
+<a href="register" class="btn btn-info link-underline-opacity-0 link-dark">register</a>
+
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="row w-100 justify-content-center">
+
+    <div class="col-12 col-md-6">
+      <h1>歡迎回家</h1>
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda<p>
+      <div class="d-flex justify-content-start mb-3">
+        <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-outline-primary" (click)="changeMember()">會員</button>
+        <button type="button" class="btn btn-outline-primary" (click)="changeAdmin()">管理員</button>
+        </div>
+      </div>
+      @if (!is_admin) {
+      <h1 class="text-center">會員登入</h1>
+      <form [formGroup]="loginForm" (ngSubmit)="onSumbit()">
+        <div class="mb-3">
+          <label class="form-label w-100">帳號:
+            <input class="form-control" formControlName="username" placeholder="請填入帳號">
+          </label>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label w-100">密碼:
+            <input class="form-control" formControlName="password" placeholder="請填入密碼">
+          </label>
+        </div>
+
+        <button class="btn btn-warning" type="button" (click)="clear()">清除</button>
+        <button class="btn btn-info ms-5" type="submit" [disabled]="!loginForm.valid">登入</button>
+      </form>
+      }
+      @else {
+      <h1 class="text-center">管理員登入</h1>
+      <form [formGroup]="loginForm" (ngSubmit)="onSumbit()">
+        <div class="mb-3">
+          <label class="form-label w-100">帳號:
+            <input class="form-control" formControlName="username" placeholder="請填入帳號">
+          </label>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label w-100">密碼:
+            <input class="form-control" formControlName="password" placeholder="請填入密碼">
+          </label>
+        </div>
+
+        <button class="btn btn-warning" type="button" (click)="clear()">清除</button>
+        <button class="btn btn-info ms-5" type="submit" [disabled]="!loginForm.valid">登入</button>
+      </form>
+      }
+
+      @if(Message() == "登入成功"){
+      <div class="alert alert-success mt-3 text-center">
+        {{Message()}}
+      </div>
+      }
+      @else if (Message()) {
+      <div class="alert alert-danger mt-3 text-center">
+        {{ Message() }}
+      </div>
+      }
+    </div>
+    <div class="col-12 col-md-6"></div>
+
+  </div>
+</div>
+
+<!-- <button class="btn btn-danger" (click)="test()">test</button> -->

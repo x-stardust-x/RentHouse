@@ -18,7 +18,7 @@ export const routes: Routes = [
     path:'member',
     loadComponent :() => import('./@component/member-component/member-component').then(c => c.MemberComponent),
     canActivate : [authGuard],
-    data:{roles : ['member']},
+    data:{roles : ['young','old']},
     children:[],
   },
   {

@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Authservice } from '../../@service/authservice';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register-component',
@@ -11,13 +12,19 @@ import { Authservice } from '../../@service/authservice';
 export class RegisterComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authsev = inject(Authservice);
+  private readonly router = inject(Router);
   message = signal("");
   registerForm = this.fb.nonNullable.group({
-    username: '',
-    password: '',
-    identity: 'young', // 預設
-    nickname: '',
-    email: '',
+    email: ['',
+      [Validators.required,
+        Validators.email
+      ]],
+    pwd: ['',
+      [Validators.required,
+        Validators.pattern(/^(?=.*[A-Za-z]).{4,}$/)
+      ]],
+    username: ["",[Validators.required]],
+    identity: [0,[Validators.required]], // 預設
     address: ''
   });
   identityOptions = [
@@ -31,12 +38,11 @@ export class RegisterComponent {
     const payload = {
       account: {
         username: formValue.username,
-        password: formValue.password,
+        pwd: formValue.pwd,
+        email : formValue.email,
         identity: formValue.identity
       },
       user: {
-        nickname: formValue.nickname,
-        email: formValue.email,
         address: formValue.address
       }
     };
@@ -47,8 +53,10 @@ export class RegisterComponent {
         this.message.set("註冊成功");
         console.log(res);
 
-        // 🔥 可選：跳轉登入頁
-        // this.router.navigate(['/login']);
+         setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 2000);
+
       },
       error: (err) => {
         this.message.set(err.error?.message ??

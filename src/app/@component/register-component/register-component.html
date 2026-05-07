@@ -9,22 +9,29 @@
 
       <!-- 帳號 -->
       <div class="mb-3">
-        <label class="form-label w-100">帳號
-          <input class="form-control" formControlName="username">
+        <label class="form-label w-100">帳號(電子信箱)
+          <input class="form-control" formControlName="email">
         </label>
       </div>
 
       <!-- 密碼 -->
       <div class="mb-3">
         <label class="form-label w-100">密碼
-          <input type="password" class="form-control" formControlName="password">
+          <input type="password" class="form-control" formControlName="pwd">
+        </label>
+      </div>
+
+      <!-- 暱稱 -->
+      <div class="mb-3">
+        <label class="form-label w-100">暱稱
+          <input class="form-control" formControlName="username">
         </label>
       </div>
 
       <!-- 身分 -->
       <div class="mb-3">
         <label class="form-label w-100">身分</label>
-        <select class="form-select" formControlName="identity">
+        <select class="form-select" formControlName="identity" >
           @for (item of identityOptions; track $index) {
             <option [value]="item.value">
               {{ item.label }}
@@ -37,19 +44,7 @@
 
       <h5>個人資料</h5>
 
-      <!-- 暱稱 -->
-      <div class="mb-3">
-        <label class="form-label w-100">暱稱
-          <input class="form-control" formControlName="nickname">
-        </label>
-      </div>
 
-      <!-- Email -->
-      <div class="mb-3">
-        <label class="form-label w-100">信箱
-          <input class="form-control" formControlName="email">
-        </label>
-      </div>
 
       <!-- 地址 -->
       <div class="mb-3">
@@ -65,7 +60,7 @@
           註冊
         </button>
       </div>
-      @if(message() == "登入成功"){
+      @if(message() == "註冊成功"){
         <div class="alert alert-success">{{message()}}</div>
       }
       @else if(message()){

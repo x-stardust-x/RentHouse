@@ -9,4 +9,7 @@ import { Component } from '@angular/core';
 export class RentalMatchingComponent {
   city: string = '';
   rentalItemCount: number = 0;
+  viewMode: 'grid' | 'map' = 'grid';
+
+  constructor() {}
 }

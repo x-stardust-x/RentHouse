@@ -1,0 +1,182 @@
+<div style="padding: 20px; font-family: sans-serif; max-width: 900px; margin: auto;">
+  <h2>🏠 租屋網戰情控制台 (CRUD 測試)</h2>
+
+  <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+
+    <!-- 左側：新增/修改表單區 -->
+    <div style="flex: 1; border: 2px solid #ccc; padding: 20px; border-radius: 8px; min-width: 300px;">
+      <h3>{{ isEditMode ? '✏️ 修改房屋資料' : '🆕 新增房屋' }}</h3>
+
+      <div style="margin-bottom: 10px;">
+        <label>房屋名稱：</label><br>
+        <!-- [(ngModel)] 就是神奇的雙向綁定！這裡打字，ts檔的formData就會同步更新 -->
+        <input type="text" [(ngModel)]="formData.name" style="width: 100%; padding: 5px;">
+      </div>
+
+      <div style="margin-bottom: 10px;">
+        <label>地址：</label><br>
+        <input type="text" [(ngModel)]="formData.address" style="width: 100%; padding: 5px;">
+      </div>
+
+      <div style="margin-bottom: 10px;">
+        <label>租金 (元)：</label><br>
+        <input type="number" [(ngModel)]="formData.rentPrice" style="width: 100%; padding: 5px;">
+      </div>
+
+      <div style="margin-bottom: 15px;">
+        <label>房屋描述：</label><br>
+        <textarea [(ngModel)]="formData.description" style="width: 100%; padding: 5px; height: 80px;"></textarea>
+      </div>
+
+      <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+  <h4>🏡 房屋詳細資訊</h4>
+
+  <div style="margin-bottom: 10px;">
+    <label>坪數 (坪)：</label>
+    <input type="number" [(ngModel)]="formData.areaSize" placeholder="例如: 8">
+  </div>
+
+  <div style="margin-bottom: 10px;">
+    <label>樓層資訊：</label>
+    <input type="text" [(ngModel)]="formData.floorInfo" placeholder="例如: 5F / 12F">
+  </div>
+
+  <div style="margin-bottom: 10px;">
+    <label>房屋類型：</label>
+    <select [(ngModel)]="formData.houseType">
+      <option value="獨立套房">獨立套房</option>
+      <option value="分租套房">分租套房</option>
+      <option value="雅房">雅房</option>
+      <option value="整層住家">整層住家</option>
+    </select>
+  </div>
+</div>
+
+<div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-radius: 5px;">
+  <h4>✨ 租金包含項目</h4>
+
+  <label style="margin-right: 15px;">
+    <input type="checkbox" [(ngModel)]="formData.includeUtilities"> 包水電
+  </label>
+
+  <label style="margin-right: 15px;">
+    <input type="checkbox" [(ngModel)]="formData.includeWifi"> 包網路
+  </label>
+
+  <label>
+    <input type="checkbox" [(ngModel)]="formData.includeManagememtFee"> 包管理費
+  </label>
+</div>
+
+      <button (click)="submitForm()" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer;">
+        {{ isEditMode ? '儲存修改' : '確認新增' }}
+      </button>
+
+      <!-- 如果是修改模式，顯示取消按鈕 -->
+      @if (isEditMode) {
+        <button (click)="cancelEdit()" style="padding: 10px 20px; margin-left: 10px; background-color: #6c757d; color: white; border: none; cursor: pointer;">
+          取消
+        </button>
+      }
+    </div>
+
+
+    <!-- 右側：資料庫列表區 -->
+    <div style="flex: 2; border: 2px solid #007bff; padding: 20px; border-radius: 8px; min-width: 300px;">
+      <h3>📂 目前資料庫裡的房屋</h3>
+
+      <!-- 如果陣列是空的，顯示提示 -->
+      @if (houses().length === 0) {
+        <p style="color: gray;">目前資料庫空空如也，趕快新增一筆吧！</p>
+      }
+
+      <!-- Angular 17 最新的 @for 迴圈寫法 -->
+      @for (house of houses(); track house.id) {
+
+        <div style="border-bottom: 1px dashed #ccc; padding-bottom: 15px; margin-bottom: 15px;">
+
+          <!-- 📦 🌟 關鍵魔法陣：有了 display: flex，裡面的東西就會左右並排 -->
+          <div style="display: flex; flex-direction: row; gap: 20px;">
+
+            <!-- ⬅️ 左半部文字區 (flex: 1 讓它自動佔滿剩下的空間) -->
+            <div style="flex: 1;">
+  <h4 style="margin: 0 0 5px 0; color: #007bff;">[{{house.id}}] {{ house.name }}</h4>
+  <p style="margin: 0; font-size: 14px;">📍 {{ house.address }}</p>
+  <p style="margin: 0; font-size: 14px;">💰 租金：{{ house.rentPrice }} 元</p>
+  <p style="margin: 5px 0; font-size: 14px; color: #555;">{{ house.description }}</p>
+
+  <div style="font-size: 14px; color: #555; margin-bottom: 8px; margin-top: 10px;">
+    <span style="background: #e9ecef; padding: 4px 8px; border-radius: 12px; margin-right: 5px;">
+      🏢 {{ house.houseType || '未提供房型' }}
+    </span>
+    <span style="background: #e9ecef; padding: 4px 8px; border-radius: 12px; margin-right: 5px;">
+      📏 {{ house.areaSize ? house.areaSize + ' 坪' : '未提供坪數' }}
+    </span>
+    <span style="background: #e9ecef; padding: 4px 8px; border-radius: 12px; margin-right: 5px;">
+      🪜 {{ house.floorInfo || '未提供樓層' }}
+    </span>
+  </div>
+
+  <div style="font-size: 14px; color: #28a745; margin-bottom: 15px; font-weight: bold;">
+    ✨ 租金包含：
+    @if(house.includeUtilities) { <span style="margin-right: 5px;">💧水電</span> }
+    @if(house.includeWifi) { <span style="margin-right: 5px;">📶網路</span> }
+    @if(house.includeManagememtFee) { <span style="margin-right: 5px;">🛡️管理費</span> }
+
+    @if(!house.includeUtilities && !house.includeWifi && !house.includeManagememtFee) {
+      <span style="color: #999; font-weight: normal;">無附加項目</span>
+    }
+  </div>
+  <div style="margin-top: 10px;">
+    <button (click)="editHouse(house)" style="padding: 5px 10px; margin-right: 5px; cursor: pointer;">✏️ 編輯</button>
+    <button (click)="deleteHouse(house.id)" style="padding: 5px 10px; background-color: #dc3545; color: white; border: none; cursor: pointer;">🗑️ 刪除</button>
+  </div>
+</div>
+
+            <!-- ➡️ 右半部圖片區 (固定寬高，用灰色當底) -->
+            <div style="width: 180px; height: 135px; background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 8px; display: flex; justify-content: center; align-items: center; overflow: hidden;">
+              @if (house.coverUrl) {
+                <img [src]="'https://localhost:44368' + house.coverUrl" style="width: 100%; height: 100%; object-fit: cover;">
+              } @else {
+                <span style="color: #999; font-size: 14px;">沒有首圖</span>
+              }
+            </div>
+
+          </div> <!-- 魔法陣結束 -->
+          <div style="display: flex; gap: 10px; overflow-x: auto; padding: 5px; background: #f8f9fa; border-radius: 5px;">
+              @for (img of house.images; track img.id) {
+
+                <div style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+                  <!-- 顯示小圖 (如果是首圖，給他一個金色的邊框) -->
+                  <img [src]="'https://localhost:44368' + img.url"
+                       style="width: 80px; height: 60px; object-fit: cover; border-radius: 4px;"
+                       [style.border]="img.isCover ? '3px solid gold' : '1px solid #ccc'">
+
+                  <!-- 如果它還不是首圖，顯示按鈕讓你點 -->
+                  @if (!img.isCover) {
+                    <button (click)="setAsCover(img.id)" style="font-size: 12px; margin-top: 5px; cursor: pointer;">
+                      設為首圖
+                    </button>
+                  } @else {
+                    <span style="font-size: 12px; color: #b8860b; margin-top: 5px;">👑 首圖</span>
+                  }
+                  <button (click)="deleteImage(img.id)" style="font-size: 12px; background-color: #dc3545; color: white; border: none; cursor: pointer; border-radius: 3px; padding: 2px 5px;">
+                      刪除
+                    </button>
+                </div>
+
+              }
+            </div>
+
+          <!-- 下方的上傳按鈕 (保持在最底部) -->
+          <div style="margin-top: 15px; padding: 10px; background-color: #e9ecef; border-radius: 5px;">
+            <strong style="color: #495057;">📸 為這間房子新增照片</strong><br>
+            <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" style="margin-top: 5px;">
+            <button (click)="uploadPhotoForHouse(house.id, fileInput)" style="padding: 5px 10px; background-color: #17a2b8; color: white; border: none; cursor: pointer; margin-top: 5px;">
+              🚀 立即上傳並綁定
+            </button>
+          </div>
+
+        </div>
+
+      }

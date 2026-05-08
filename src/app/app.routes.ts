@@ -34,8 +34,13 @@ export const routes: Routes = [
     canActivate : [loginGuard]
   },
   {
+    path: 'rent', // 🌟 搬到這裡！
+    loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
+  },
+  {
     path:'**',
     // loadComponent :() => import('./@component/login-component/login-component').then(c => c.LoginComponent),
     redirectTo: 'home'
   },
+
 ];

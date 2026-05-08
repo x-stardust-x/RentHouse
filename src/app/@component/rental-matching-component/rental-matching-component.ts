@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-rental-matching-component',
@@ -11,5 +12,9 @@ export class RentalMatchingComponent {
   rentalItemCount: number = 0;
   viewMode: 'grid' | 'map' = 'grid';
 
-  constructor() {}
+  constructor(private router: Router) {}
+
+  navigateToDetail(id: string) {
+    this.router.navigate(['/rental-matching-detail', id]);
+  }
 }

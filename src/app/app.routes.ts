@@ -38,6 +38,10 @@ export const routes: Routes = [
     loadComponent: () => import('./@component/rental-matching-component/rental-matching-component').then(c => c.RentalMatchingComponent),
   },
   {
+    path: 'rental-matching-detail/:id',
+    loadComponent: () => import('./@component/rental-matching-detail-component/rental-matching-detail-component').then(c => c.RentalMatchingDetailComponent),
+  },
+  {
     path: '**',
     // loadComponent :() => import('./@component/login-component/login-component').then(c => c.LoginComponent),
     redirectTo: 'home'

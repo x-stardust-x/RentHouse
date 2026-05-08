@@ -12,19 +12,19 @@ export const routes: Routes = [
   {
     path:'login',
     loadComponent :() => import('./@component/login-component/login-component').then(c => c.LoginComponent),
-    canActivate : [loginGuard]
+    // canActivate : [loginGuard]
   },
   {
     path:'member',
     loadComponent :() => import('./@component/member-component/member-component').then(c => c.MemberComponent),
-    canActivate : [authGuard],
+    // canActivate : [authGuard],
     data:{roles : ['young','old']},
     children:[],
   },
   {
     path:'admin',
     loadComponent :() => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
-    canActivate : [authGuard],
+    // canActivate : [authGuard],
     data:{roles : ['admin']},
     children:[],
   },

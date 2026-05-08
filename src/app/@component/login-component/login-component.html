@@ -1,30 +1,30 @@
-<a href="register" class="btn btn-info link-underline-opacity-0 link-dark">register</a>
-
-
 <div class="container d-flex justify-content-center align-items-center min-vh-100">
   <div class="row w-100 justify-content-center">
 
     <div class="col-12 col-md-6">
       <h1>歡迎回家</h1>
       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda<p>
-      <div class="d-flex justify-content-start mb-3">
+      <div class="d-flex justify-content-between mb-3">
         <div class="btn-group" role="group" aria-label="Basic example">
         <button type="button" class="btn btn-outline-primary" (click)="changeMember()">會員</button>
         <button type="button" class="btn btn-outline-primary" (click)="changeAdmin()">管理員</button>
         </div>
+        @if(!is_admin){
+          <a href="register" class="btn btn-info link-underline-opacity-0 link-dark">會員註冊</a>
+        }
       </div>
       @if (!is_admin) {
       <h1 class="text-center">會員登入</h1>
       <form [formGroup]="loginForm" (ngSubmit)="onSumbit()">
         <div class="mb-3">
           <label class="form-label w-100">帳號:
-            <input class="form-control" formControlName="username" placeholder="請填入帳號">
+            <input class="form-control" formControlName="email" placeholder="請填入帳號">
           </label>
         </div>
 
         <div class="mb-3">
           <label class="form-label w-100">密碼:
-            <input class="form-control" formControlName="password" placeholder="請填入密碼">
+            <input type="password" class="form-control" formControlName="pwd" placeholder="請填入密碼">
           </label>
         </div>
 
@@ -37,13 +37,13 @@
       <form [formGroup]="loginForm" (ngSubmit)="onSumbit()">
         <div class="mb-3">
           <label class="form-label w-100">帳號:
-            <input class="form-control" formControlName="username" placeholder="請填入帳號">
+            <input class="form-control" formControlName="email" placeholder="請填入帳號">
           </label>
         </div>
 
         <div class="mb-3">
           <label class="form-label w-100">密碼:
-            <input class="form-control" formControlName="password" placeholder="請填入密碼">
+            <input class="form-control" formControlName="pwd" placeholder="請填入密碼">
           </label>
         </div>
 

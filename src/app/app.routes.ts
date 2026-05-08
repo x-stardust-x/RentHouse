@@ -10,23 +10,23 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'login',
-    loadComponent: () => import('./@component/login-component/login-component').then(c => c.LoginComponent),
-    canActivate: [loginGuard]
+    path:'login',
+    loadComponent :() => import('./@component/login-component/login-component').then(c => c.LoginComponent),
+    // canActivate : [loginGuard]
   },
   {
-    path: 'member',
-    loadComponent: () => import('./@component/member-component/member-component').then(c => c.MemberComponent),
-    canActivate: [authGuard],
-    data: { roles: ['member'] },
-    children: [],
+    path:'member',
+    loadComponent :() => import('./@component/member-component/member-component').then(c => c.MemberComponent),
+    // canActivate : [authGuard],
+    data:{roles : ['young','old']},
+    children:[],
   },
   {
-    path: 'admin',
-    loadComponent: () => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
-    canActivate: [authGuard],
-    data: { roles: ['admin'] },
-    children: [],
+    path:'admin',
+    loadComponent :() => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
+    // canActivate : [authGuard],
+    data:{roles : ['admin']},
+    children:[],
   },
   {
     path: 'register',

@@ -14,7 +14,7 @@ export class Authservice {
   private router = inject(Router);
   private api = 'https://localhost:7215/api/Auth';
 
-  login(data: { username: string; password: string } , isAdmin : boolean){
+  login(data: { email: string; pwd: string } , isAdmin : boolean){
     if(isAdmin){
       return this.http.post<LoginResponse>(this.api + "/login/admin", data);
     }

@@ -10,17 +10,20 @@
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="#">Home</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Features</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Pricing</a>
-        </li>
-        <li class="nav-item">
+        <!-- @if(!isloggedin){
+          沒登入時 不會看見下面 link
+          member admin
+          之後會admin 需不需要獨立出一個分業?
+        }
+        @else{
+          登入能看見
+          member
+        } -->
+        <li>
           <a class="nav-link" routerLink="login">login</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/member">member</a>
+          <a class="nav-link" routerLink="member/dashboard">member</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLink="/admin">admin</a>

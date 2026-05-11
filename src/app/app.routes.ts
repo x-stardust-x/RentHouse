@@ -10,23 +10,32 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path:'login',
-    loadComponent :() => import('./@component/login-component/login-component').then(c => c.LoginComponent),
+    path: 'login',
+    loadComponent: () => import('./@component/login-component/login-component').then(c => c.LoginComponent),
     // canActivate : [loginGuard]
   },
   {
-    path:'member',
-    loadComponent :() => import('./@component/member-component/member-component').then(c => c.MemberComponent),
+    path: 'member',
+    // loadComponent: () => import('./@component/member-component/member-component').then(c => c.MemberComponent),
     // canActivate : [authGuard],
-    data:{roles : ['young','old']},
-    children:[],
+    data: { roles: ['young', 'old'] },
+    children: [{
+      path: 'dashboard',
+      loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
+    }, {
+      path: 'info',
+      loadComponent: () => import('./@component/@member/member-info-component/member-info-component').then(c => c.MemberInfoComponent),
+    }, {
+      path: 'edit',
+      loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
+    }],
   },
   {
-    path:'admin',
-    loadComponent :() => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
+    path: 'admin',
+    loadComponent: () => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
     // canActivate : [authGuard],
-    data:{roles : ['admin']},
-    children:[],
+    data: { roles: ['admin'] },
+    children: [],
   },
   {
     path: 'register',
@@ -46,7 +55,7 @@ export const routes: Routes = [
     loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
   },
   {
-    path:'**',
+    path: '**',
     // loadComponent :() => import('./@component/login-component/login-component').then(c => c.LoginComponent),
     redirectTo: 'home'
   },

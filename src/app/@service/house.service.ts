@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 export class HouseService {
   // ⚠️ 關鍵提醒：請務必去確認你 C# Swagger 網址上的 Port 號！
   // 如果你的不是 44368，請把這行數字改成你的！
-  private apiUrl = 'https://localhost:44368/api/RentHouse';
+  private apiUrl = 'https://localhost:7215/api/RentHouse';
 
   constructor(private http: HttpClient) { }
 

@@ -2,3 +2,205 @@
 <app-location-select (districtSelected)="onDistrictSelected($event)">
 
 </app-location-select>
+<button (click)="loadUserLocation(1)">test 1</button>
+<button (click)="loadUserLocation(userid)">userid</button>
+
+@if (userLocation()) {
+  <div>縣市：{{ userLocation().cityName }}</div>
+  <div>區域：{{ userLocation().districtName }}</div>
+  <div>郵遞區號：{{ userLocation().zipCode }}</div>
+}
+
+<!-- <div *ngIf="userLocation() as u">
+
+  <div>縣市：{{ u.cityName }}</div>
+  <div>區域：{{ u.districtName }}</div>
+  <div>郵遞區號：{{ u.zipCode }}</div>
+
+</div> -->
+
+
+<form
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+  class="card p-4 shadow">
+
+  <h3 class="mb-4">
+    編輯個人資料
+  </h3>
+
+  <!-- 姓名 -->
+  <div class="mb-3">
+
+    <label class="form-label">
+      中文姓名
+    </label>
+
+    <input
+      type="text"
+      class="form-control"
+      formControlName="realName">
+
+  </div>
+
+  <!-- 英文名 -->
+  <div class="mb-3">
+
+    <label class="form-label">
+      英文姓名
+    </label>
+
+    <input
+      type="text"
+      class="form-control"
+      formControlName="englishName">
+
+  </div>
+
+  <!-- 電話 -->
+  <div class="mb-3">
+
+    <label class="form-label">
+      電話
+    </label>
+
+    <input
+      type="text"
+      class="form-control"
+      formControlName="phone">
+
+  </div>
+
+  <!-- 地區 -->
+  <div class="row mb-3">
+
+    <!-- City -->
+    <div class="col">
+
+      <select
+        class="form-select"
+        (change)="onCityChange($event)">
+
+        <option value="">
+          選擇縣市
+        </option>
+
+        @for (c of locationService.cities(); track c.id) {
+
+          <option
+            [value]="c.id"
+            [selected]="c.id === selectedCityId()">
+
+            {{ c.cityName }}
+
+          </option>
+        }
+
+      </select>
+
+    </div>
+
+    <!-- District -->
+    <div class="col">
+
+      <select
+        class="form-select"
+        formControlName="districtId">
+
+        <option value="0">
+          選擇區域
+        </option>
+
+        @for (d of locationService.districts(); track d.id) {
+
+          <option [value]="d.id">
+
+            {{ d.districtName }}
+
+          </option>
+        }
+
+      </select>
+
+    </div>
+
+  </div>
+
+  <!-- 自介 -->
+  <div class="mb-3">
+
+    <textarea
+      rows="4"
+      class="form-control"
+      formControlName="bio">
+    </textarea>
+
+  </div>
+
+  <!-- Habit -->
+  <div class="row">
+
+    <div class="col-md-6 mb-3">
+
+      <label>睡覺時間</label>
+
+      <input
+        type="number"
+        class="form-control"
+        formControlName="sleepTime">
+
+    </div>
+
+    <div class="col-md-6 mb-3">
+
+      <label>起床時間</label>
+
+      <input
+        type="number"
+        class="form-control"
+        formControlName="wakeTime">
+
+    </div>
+
+  </div>
+
+  <!-- Checkbox -->
+  <div class="form-check mb-2">
+
+    <input
+      class="form-check-input"
+      type="checkbox"
+      formControlName="pet">
+
+    <label class="form-check-label">
+
+      接受寵物
+
+    </label>
+
+  </div>
+
+  <div class="form-check mb-3">
+
+    <input
+      class="form-check-input"
+      type="checkbox"
+      formControlName="smoke">
+
+    <label class="form-check-label">
+
+      抽菸
+
+    </label>
+
+  </div>
+
+  <button
+    type="submit"
+    class="btn btn-primary">
+
+    儲存修改
+
+  </button>
+
+</form>

@@ -1,1 +1,67 @@
-<p>member-info-component works!</p>
+@if (usersev.profile(); as p) {
+
+<div class="card shadow p-4">
+
+  <div class="text-center mb-3">
+
+    <img
+      [src]="p.avatarUrl || 'https://placehold.co/150'"
+      class="rounded-circle"
+      width="150"
+      height="150">
+
+    <h3 class="mt-3">
+      {{ p.realName }}
+    </h3>
+
+    <div class="text-muted">
+      {{ p.englishName }}
+    </div>
+
+  </div>
+
+  <hr>
+
+  <div class="mb-2">
+    📍 {{ p.cityName }} {{ p.districtName }}
+  </div>
+
+  <div class="mb-2">
+    ☎ {{ p.phone }}
+  </div>
+
+  <div class="mb-2">
+    ⭐ {{ p.rating }} ({{ p.reviewCount }} reviews)
+  </div>
+
+  <div class="mb-2">
+    🛏 睡覺時間：{{ p.sleepTime }} 點
+  </div>
+
+  <div class="mb-2">
+    ⏰ 起床時間：{{ p.wakeTime }} 點
+  </div>
+
+  <div class="mb-2">
+    🧹 整潔度：{{ p.cleanLevel }}/5
+  </div>
+
+  <div class="mb-2">
+    🔊 噪音容忍：{{ p.noiseTolerance }}/5
+  </div>
+
+  <div class="mb-2">
+    🐶 寵物：{{ p.pet ? '可接受' : '不可接受' }}
+  </div>
+
+  <div class="mb-2">
+    🚬 抽菸：{{ p.smoke ? '會抽菸' : '不抽菸' }}
+  </div>
+
+  <div class="mt-3">
+    {{ p.bio }}
+  </div>
+
+</div>
+
+}

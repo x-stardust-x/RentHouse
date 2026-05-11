@@ -14,19 +14,21 @@ export class LocationService {
   loadCities() {
     this.http.get<City[]>(this.baseUrl + "cities")
       .subscribe(res => {
-        console.log(res);
-
         this.cities.set(res)});
   }
 
   loadDistricts(cityId: number) {
     this.http.get<District[]>(this.baseUrl + `districts?cityId=${cityId}`)
       .subscribe(res => {
-        console.log(res);
         this.districts.set(res)});
   }
 
   clearDistricts() {
     this.districts.set([]);
   }
+
+  getUserLocation(userId: number) {
+    return this.http.get<any>(this.baseUrl + `user-location/${userId}`);
+  }
+
 }

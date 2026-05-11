@@ -1,0 +1,18 @@
+
+<div class="contact-container">
+  <h2>傳送訊息</h2>
+
+  <input type="text" name="name" [(ngModel)]="formData.name" placeholder="您的稱呼">
+
+  <input type="email" name="email" [(ngModel)]="formData.email" placeholder="example@email.com">
+
+  <select name="subject" [(ngModel)]="formData.subject">
+    <option value="" disabled>請選擇相關主旨</option>
+    <option value="租屋諮詢">租屋諮詢</option>
+    <option value="意見回饋">意見回饋</option>
+  </select>
+
+  <textarea name="content" [(ngModel)]="formData.content" placeholder="請詳細描述問題"></textarea>
+
+  <button (click)="onSubmit()">送出訊息</button>
+</div>

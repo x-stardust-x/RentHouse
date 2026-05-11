@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 export class HouseService {
   // ⚠️ 關鍵提醒：請務必去確認你 C# Swagger 網址上的 Port 號！
   // 如果你的不是 44368，請把這行數字改成你的！
-  private apiUrl = 'https://localhost:44368/api/RentHouse';
+  private apiUrl = 'https://localhost:44304/api/RentHouse';
 
   constructor(private http: HttpClient) { }
 
@@ -32,8 +32,7 @@ export class HouseService {
   // 🗑️ 刪 (Delete) - 刪除房屋
   deleteHouse(id: number)
    {
-    // 💡 關鍵細節：因為你的 C# 刪除成功是回傳純文字 Ok("刪除成功")，而不是 JSON
-    // 所以必須特別告訴 Angular「請把我當純文字接收」，不然會報解析錯誤！
+    
     return this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' });
   }
 //  圖片上傳相關 API //

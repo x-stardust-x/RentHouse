@@ -1,0 +1,60 @@
+.contact-container {
+  max-width: 500px;
+  margin: 40px auto; /* 置中並與上下保持距離 */
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* 加一點立體陰影 */
+  display: flex;
+  flex-direction: column; /* 讓元素垂直往下排 */
+  gap: 20px; /* 每個輸入框之間的間距 */
+
+  h2 {
+    text-align: center;
+    color: #333333;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box; /* 確保 padding 不會撐破寬度 */
+    transition: border-color 0.3s;
+
+    &:focus {
+      outline: none;
+      border-color: #0056b3; /* 點擊時外框變藍色 */
+      box-shadow: 0 0 5px rgba(0, 86, 179, 0.2);
+    }
+  }
+
+  textarea {
+    min-height: 150px; /* 內容區塊拉高一點 */
+    resize: vertical; /* 只允許上下拉伸 */
+  }
+
+  button {
+    padding: 14px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #0056b3; /* 滑鼠移過去顏色變深 */
+    }
+
+    &:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+  }
+}

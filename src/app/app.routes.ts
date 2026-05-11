@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './@guard/auth-guard';
 import { loginGuard } from './@guard/login-guard';
+import { ContactComponent } from './@component/contact-component/contact';
 
 export const routes: Routes = [
   {
@@ -45,10 +46,14 @@ export const routes: Routes = [
     path: 'rent', // 🌟 搬到這裡！
     loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
   },
+  { 
+    path: 'contact', component: ContactComponent 
+  },
   {
     path:'**',
     // loadComponent :() => import('./@component/login-component/login-component').then(c => c.LoginComponent),
     redirectTo: 'home'
   },
+  
 
 ];

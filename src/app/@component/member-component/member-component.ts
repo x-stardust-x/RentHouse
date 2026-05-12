@@ -10,12 +10,20 @@ import { Authservice } from '../../@service/authservice';
 export class MemberComponent {
   logout = inject(Authservice);
   authsev = inject(Authservice);
+
+
+
   Logout(){
     this.logout.logout();
   }
   test(){
+
+    var id = this.authsev.getUserId();
+    console.log(id);
+
     this.authsev.test().subscribe(res =>{
       console.log(res);
     });
   }
+
 }

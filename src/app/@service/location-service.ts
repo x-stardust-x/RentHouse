@@ -10,6 +10,18 @@ export class LocationService {
   private readonly http = inject(HttpClient);
   cities = signal<City[]>([]);
   districts = signal<District[]>([]);
+  usercity = signal<District[]>([]);
+  allDistricts = signal<District[]>([]);
+
+  loadAllDistricts() {
+
+    this.http.get<District[]>(
+      this.baseUrl + 'districts-all'
+    )
+    .subscribe(res => {
+      this.allDistricts.set(res);
+    });
+  }
 
   loadCities() {
     this.http.get<City[]>(this.baseUrl + "cities")
@@ -28,7 +40,9 @@ export class LocationService {
   }
 
   getUserLocation(userId: number) {
-    return this.http.get<any>(this.baseUrl + `user-location/${userId}`);
+    return this.http.get<any>(this.baseUrl + `user-location/${userId}`).subscribe(res =>{
+      this.usercity.set(res);
+    });
   }
 
 }

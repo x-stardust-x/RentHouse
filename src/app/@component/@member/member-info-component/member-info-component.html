@@ -5,7 +5,7 @@
   <div class="text-center mb-3">
 
     <img
-      [src]="p.avatarUrl || 'https://placehold.co/150'"
+      [src]="p.avatar || 'https://placehold.co/150'"
       class="rounded-circle"
       width="150"
       height="150">
@@ -18,13 +18,20 @@
       {{ p.englishName }}
     </div>
 
+    <div class="mb-2">
+    📍 {{ p.cityName }} {{ p.districtName }}
+  </div>
+
   </div>
 
   <hr>
 
+
+
   <div class="mb-2">
-    📍 {{ p.cityName }} {{ p.districtName }}
+    📍 {{ p.address }}
   </div>
+
 
   <div class="mb-2">
     ☎ {{ p.phone }}

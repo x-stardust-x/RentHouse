@@ -4,7 +4,7 @@ export interface UserProfile {
   realName: string;
   englishName?: string;
 
-  avatarUrl?: string;
+  avatar?: string;
 
   phone?: string;
 
@@ -15,6 +15,7 @@ export interface UserProfile {
   rating: number;
   reviewCount: number;
 
+  districtId : number;
   cityName: string;
   districtName: string;
   zipCode: string;
@@ -31,31 +32,31 @@ export interface UserProfile {
   interests?: string;
 }
 
-export interface UpdateProfileDto {
+// export interface UpdateProfileDto {
 
-  realName: string;
+//   realName: string;
 
-  englishName?: string;
+//   englishName?: string;
 
-  phone?: string;
+//   phone?: string;
 
-  address?: string;
+//   address?: string;
 
-  bio?: string;
+//   bio?: string;
 
-  districtId: number;
+//   districtId: number;
 
-  sleepTime: number;
+//   sleepTime: number;
 
-  wakeTime: number;
+//   wakeTime: number;
 
-  cleanLevel: number;
+//   cleanLevel: number;
 
-  noiseTolerance: number;
+//   noiseTolerance: number;
 
-  pet: boolean;
+//   pet: boolean;
 
-  smoke: boolean;
+//   smoke: boolean;
 
-  interests?: string;
-}
+//   interests?: string;
+// }

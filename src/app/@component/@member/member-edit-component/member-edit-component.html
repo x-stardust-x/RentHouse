@@ -1,206 +1,91 @@
-<p>member-edit-component works!</p>
-<app-location-select (districtSelected)="onDistrictSelected($event)">
+<form [formGroup]="userProfileForm" (ngSubmit)="onSubmit()" class="container mt-4">
 
-</app-location-select>
-<button (click)="loadUserLocation(1)">test 1</button>
-<button (click)="loadUserLocation(userid)">userid</button>
+  <h3 class="mb-4">會員資料編輯</h3>
 
-@if (userLocation()) {
-  <div>縣市：{{ userLocation().cityName }}</div>
-  <div>區域：{{ userLocation().districtName }}</div>
-  <div>郵遞區號：{{ userLocation().zipCode }}</div>
-}
-
-<!-- <div *ngIf="userLocation() as u">
-
-  <div>縣市：{{ u.cityName }}</div>
-  <div>區域：{{ u.districtName }}</div>
-  <div>郵遞區號：{{ u.zipCode }}</div>
-
-</div> -->
-
-
-<form
-  [formGroup]="form"
-  (ngSubmit)="submit()"
-  class="card p-4 shadow">
-
-  <h3 class="mb-4">
-    編輯個人資料
-  </h3>
-
-  <!-- 姓名 -->
-  <div class="mb-3">
-
-    <label class="form-label">
-      中文姓名
-    </label>
-
-    <input
-      type="text"
-      class="form-control"
-      formControlName="realName">
-
-  </div>
-
-  <!-- 英文名 -->
-  <div class="mb-3">
-
-    <label class="form-label">
-      英文姓名
-    </label>
-
-    <input
-      type="text"
-      class="form-control"
-      formControlName="englishName">
-
-  </div>
-
-  <!-- 電話 -->
-  <div class="mb-3">
-
-    <label class="form-label">
-      電話
-    </label>
-
-    <input
-      type="text"
-      class="form-control"
-      formControlName="phone">
-
-  </div>
-
-  <!-- 地區 -->
-  <div class="row mb-3">
-
-    <!-- City -->
-    <div class="col">
-
-      <select
-        class="form-select"
-        (change)="onCityChange($event)">
-
-        <option value="">
-          選擇縣市
-        </option>
-
-        @for (c of locationService.cities(); track c.id) {
-
-          <option
-            [value]="c.id"
-            [selected]="c.id === selectedCityId()">
-
-            {{ c.cityName }}
-
-          </option>
-        }
-
-      </select>
-
-    </div>
-
-    <!-- District -->
-    <div class="col">
-
-      <select
-        class="form-select"
-        formControlName="districtId">
-
-        <option value="0">
-          選擇區域
-        </option>
-
-        @for (d of locationService.districts(); track d.id) {
-
-          <option [value]="d.id">
-
-            {{ d.districtName }}
-
-          </option>
-        }
-
-      </select>
-
-    </div>
-
-  </div>
-
-  <!-- 自介 -->
-  <div class="mb-3">
-
-    <textarea
-      rows="4"
-      class="form-control"
-      formControlName="bio">
-    </textarea>
-
-  </div>
-
-  <!-- Habit -->
   <div class="row">
 
+    <!-- 基本資料 -->
     <div class="col-md-6 mb-3">
-
-      <label>睡覺時間</label>
-
-      <input
-        type="number"
-        class="form-control"
-        formControlName="sleepTime">
-
+      <label class="form-label">真實姓名</label>
+      <input type="text" class="form-control" formControlName="realName">
     </div>
 
     <div class="col-md-6 mb-3">
+      <label class="form-label">英文名字</label>
+      <input type="text" class="form-control" formControlName="englishName">
+    </div>
 
-      <label>起床時間</label>
+    <div class="col-md-6 mb-3">
+      <label class="form-label">電話</label>
+      <input type="text" class="form-control" formControlName="phone">
+    </div>
 
-      <input
-        type="number"
-        class="form-control"
-        formControlName="wakeTime">
+    <div class="col-12 mb-3">
+      <label class="form-label">地址</label>
+      <input type="text" class="form-control" formControlName="address">
+    </div>
 
+    <div class="col-12 mb-3">
+      <label class="form-label">自我介紹</label>
+      <textarea class="form-control" rows="3" formControlName="bio"></textarea>
+    </div>
+
+    <div class="row g-2">
+
+    <!-- City -->
+
+    <app-location-select
+      [districtId]="userProfileForm.value.districtId"
+      (districtSelected)="onDistrictSelected($event)">
+    </app-location-select>
+
+  </div>
+
+    <!-- 作息 -->
+    <div class="col-md-6 mb-3">
+      <label class="form-label">睡覺時間</label>
+      <input type="number" class="form-control" formControlName="sleepTime">
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="form-label">起床時間</label>
+      <input type="number" class="form-control" formControlName="wakeTime">
+    </div>
+
+
+    <!-- 個性 -->
+    <div class="col-md-6 mb-3">
+      <label class="form-label">清潔程度 (0-5)</label>
+      <input type="number" class="form-control" formControlName="cleanLevel" max="5" min="1">
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label class="form-label">噪音容忍度 (0-5)</label>
+      <input type="number" class="form-control" formControlName="noiseTolerance" max="5" min="1">
+    </div>
+
+    <!-- 開關 -->
+    <div class="col-md-6 form-check mb-2">
+      <input class="form-check-input" type="checkbox" formControlName="pet">
+      <label class="form-check-label">可養寵物</label>
+    </div>
+
+    <div class="col-md-6 form-check mb-2">
+      <input class="form-check-input" type="checkbox" formControlName="smoke">
+      <label class="form-check-label">可吸菸</label>
+    </div>
+
+    <!-- 興趣 -->
+    <div class="col-12 mb-3">
+      <label class="form-label">興趣</label>
+      <input type="text" class="form-control" formControlName="interests">
     </div>
 
   </div>
 
-  <!-- Checkbox -->
-  <div class="form-check mb-2">
-
-    <input
-      class="form-check-input"
-      type="checkbox"
-      formControlName="pet">
-
-    <label class="form-check-label">
-
-      接受寵物
-
-    </label>
-
-  </div>
-
-  <div class="form-check mb-3">
-
-    <input
-      class="form-check-input"
-      type="checkbox"
-      formControlName="smoke">
-
-    <label class="form-check-label">
-
-      抽菸
-
-    </label>
-
-  </div>
-
-  <button
-    type="submit"
-    class="btn btn-primary">
-
+  <!-- 按鈕 -->
+  <button type="submit" class="btn btn-primary" [disabled]="!userProfileForm.valid">
     儲存修改
-
   </button>
 
 </form>

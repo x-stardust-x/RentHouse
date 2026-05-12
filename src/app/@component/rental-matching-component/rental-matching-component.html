@@ -1,4 +1,5 @@
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<link rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
 
 <p>rental-matching-component works!</p>
@@ -26,7 +27,8 @@
     <div class="location">
 
       <div class="filter-title">
-        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0, 'wght' 700;">location_on</span>
+        <span class="material-symbols-outlined"
+          style="font-variation-settings: 'FILL' 0, 'wght' 700;">location_on</span>
         <h3>地點</h3>
       </div>
 
@@ -42,7 +44,8 @@
     <div class="price-range">
 
       <div class="filter-title">
-        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0, 'wght' 700;">price_change</span>
+        <span class="material-symbols-outlined"
+          style="font-variation-settings: 'FILL' 0, 'wght' 700;">price_change</span>
         <h3>價格範圍</h3>
       </div>
 
@@ -82,7 +85,7 @@
 
     </div>
 
-    <div class="rental-item-card">
+    <!-- <div class="rental-item-card">
       <img src="images/daan_cozy_shared_suite.jpg" alt="共享資源圖片" class="img-fluid mb-4">
       <h2>大安區溫馨共居套房</h2>
       <p>$15,000<span> / 月</span></p>
@@ -92,17 +95,47 @@
       </div>
       <p>位於大安區的溫馨共居套房，提供舒適的住宿環境，適合尋求安靜生活的租客。套房內設有基本家具，並且禁止吸菸，確保室內空氣清新。周邊交通便利，生活機能完善，是您理想的居住選擇。</p>
       <button (click)="navigateToDetail('1')" class="btn btn-primary">查看詳情</button>
+    </div> -->
+
+
+    @for (item of houses(); track item.id) {
+
+    <div class="rental-item-card">
+      <img [src]="item.url || 'assets/default-house.jpg'" alt="{{ item.name }}" class="rental-item-image">
+
+      <h2>{{ item.name }}</h2>
+
+      <p class="price">{{ item.rentPrice }}<span> / 月</span></p>
+
+      <p class="info">{{ item.address }} · {{ item.floorInfo }}</p>
+
+      <div class="habit-tags">
+        @if (item.pet) { <span class="tag">可養寵物</span> }
+        @if (item.smoke === false) { <span class="tag">禁菸</span> }
+      </div>
+
+      <button (click)="navigateToDetail(item.id)" class="btn btn-primary">查看詳情</button>
     </div>
+
+    } @empty {
+
+    <div class="empty-state">
+      <p>目前沒有可用的共居或技能共享空間，請稍後再試。</p>
+    </div>
+
+    }
+
+
+
+
   </div>
 
-  <!-- @for (item of items(); track item.id) {
-<div class="rental-item-card">
-  <img [src]="item.imageUrl" alt="{{ item.title }}" class="rental-item-image">
-  <h2>{{ item.title }}</h2>
-  <p>{{ item.price }}<span> / 月</span></p>
-  <div class="habit-tags
-} @empty {
-  <p>目前沒有可用的共居或技能共享空間，請稍後再試。</p>
-} -->
+
+
+
+
+
+
+
 
 </main>

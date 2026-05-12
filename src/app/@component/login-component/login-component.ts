@@ -1,6 +1,6 @@
 import { LoginResponse } from './../../@interface/login-response';
 import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Authservice } from '../../@service/authservice';
 import { Router } from '@angular/router';
 
@@ -17,8 +17,8 @@ export class LoginComponent {
   Message = signal("");
   is_admin = false;
   loginForm = this.fb.nonNullable.group({
-    username: '',
-    password: ''
+    email: ['',[Validators.required]],
+    pwd: ['',[Validators.required]],
   });
 
   onSumbit() {
@@ -36,7 +36,7 @@ export class LoginComponent {
           this.router.navigate(['/admin']);
         }
         else{
-          this.router.navigate(['/member']);
+          this.router.navigate(['/member/dashboard']);
         }
       },
       error: (err) =>{
@@ -47,8 +47,8 @@ export class LoginComponent {
   }
   clear() {
     this.loginForm.reset({
-      username: '',
-      password: ''
+      email: '',
+      pwd: ''
     });
       this.Message.set("");
   }

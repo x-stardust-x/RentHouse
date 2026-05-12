@@ -1,4 +1,4 @@
-<a href="../">login</a>
+
 
 <div class="container d-flex justify-content-center align-items-center min-vh-100">
   <div class="col-12 col-md-6">
@@ -9,22 +9,77 @@
 
       <!-- 帳號 -->
       <div class="mb-3">
-        <label class="form-label w-100">帳號
-          <input class="form-control" formControlName="username">
+        <label class="form-label w-100">帳號(電子信箱)
+          <input class="form-control" formControlName="email">
         </label>
       </div>
+      @if (registerForm.get('email')?.errors?.['email']) {
+        <p class="text text-danger">信箱格式錯誤(Ex : xxx@gmail.com)</p>
+      }
 
       <!-- 密碼 -->
       <div class="mb-3">
         <label class="form-label w-100">密碼
-          <input type="password" class="form-control" formControlName="password">
+          <input type="password" class="form-control" formControlName="pwd">
+        </label>
+      </div>
+      @if (registerForm.get('pwd')?.errors?.['pattern']) {
+        <p class="text text-danger">密碼格式錯誤(長度最少為4，至少要有一個英文字)</p>
+      }
+
+      <!-- 確認密碼 -->
+      <div class="mb-3">
+        <label class="form-label w-100">確認密碼
+          <input type="password" class="form-control" formControlName="pwdcheck">
+        </label>
+      </div>
+
+      <!-- 暱稱 -->
+      <div class="mb-3">
+        <label class="form-label w-100">暱稱
+          <input class="form-control" formControlName="username">
+        </label>
+      </div>
+
+      <!-- 生日 -->
+      <div class="mb-3">
+
+      <label class="form-label d-block">
+        生日
+      </label>
+
+      <mat-form-field
+        appearance="outline"
+        class="w-100 custom-date-field">
+
+        <input
+          matInput
+          [matDatepicker]="picker"
+          [max]="maxDate"
+          formControlName="birthday">
+
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker">
+        </mat-datepicker-toggle>
+
+        <mat-datepicker #picker></mat-datepicker>
+
+      </mat-form-field>
+
+    </div>
+
+      <!-- 年齡 -->
+      <div class="mb-3">
+        <label class="form-label w-100">年齡
+          <input readonly class="form-control" formControlName="age">
         </label>
       </div>
 
       <!-- 身分 -->
       <div class="mb-3">
         <label class="form-label w-100">身分</label>
-        <select class="form-select" formControlName="identity">
+        <select class="form-select" formControlName="identity" >
           @for (item of identityOptions; track $index) {
             <option [value]="item.value">
               {{ item.label }}
@@ -33,39 +88,15 @@
         </select>
       </div>
 
-      <hr>
-
-      <h5>個人資料</h5>
-
-      <!-- 暱稱 -->
-      <div class="mb-3">
-        <label class="form-label w-100">暱稱
-          <input class="form-control" formControlName="nickname">
-        </label>
-      </div>
-
-      <!-- Email -->
-      <div class="mb-3">
-        <label class="form-label w-100">信箱
-          <input class="form-control" formControlName="email">
-        </label>
-      </div>
-
-      <!-- 地址 -->
-      <div class="mb-3">
-        <label class="form-label w-100">地址
-          <input class="form-control" formControlName="address">
-        </label>
-      </div>
-
       <!-- buttons -->
       <div class="d-flex justify-content-between">
+        <button type="button" class="btn btn-secondary" routerLink="/login">返回</button>
         <button type="button" class="btn btn-secondary" (click)="clear()">清除</button>
         <button type="submit" class="btn btn-primary" [disabled]="!registerForm.valid">
           註冊
         </button>
       </div>
-      @if(message() == "登入成功"){
+      @if(message() == "註冊成功"){
         <div class="alert alert-success">{{message()}}</div>
       }
       @else if(message()){

@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './@guard/auth-guard';
 import { loginGuard } from './@guard/login-guard';
+import { ContactComponent } from './@component/contact-component/contact';
 
 export const routes: Routes = [
   {
@@ -12,19 +13,28 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () => import('./@component/login-component/login-component').then(c => c.LoginComponent),
-    canActivate: [loginGuard]
+    // canActivate : [loginGuard]
   },
   {
     path: 'member',
-    loadComponent: () => import('./@component/member-component/member-component').then(c => c.MemberComponent),
-    canActivate: [authGuard],
-    data: { roles: ['member'] },
-    children: [],
+    // loadComponent: () => import('./@component/member-component/member-component').then(c => c.MemberComponent),
+    // canActivate : [authGuard],
+    data: { roles: ['young', 'old'] },
+    children: [{
+      path: 'dashboard',
+      loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
+    }, {
+      path: 'info',
+      loadComponent: () => import('./@component/@member/member-info-component/member-info-component').then(c => c.MemberInfoComponent),
+    }, {
+      path: 'edit',
+      loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
+    }],
   },
   {
     path: 'admin',
     loadComponent: () => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
-    canActivate: [authGuard],
+    // canActivate : [authGuard],
     data: { roles: ['admin'] },
     children: [],
   },
@@ -45,10 +55,14 @@ export const routes: Routes = [
     path: 'rent', // 🌟 搬到這裡！
     loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
   },
+  { 
+    path: 'contact', component: ContactComponent 
+  },
   {
-    path:'**',
+    path: '**',
     // loadComponent :() => import('./@component/login-component/login-component').then(c => c.LoginComponent),
     redirectTo: 'home'
   },
+  
 
 ];

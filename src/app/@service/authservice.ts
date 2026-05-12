@@ -14,7 +14,7 @@ export class Authservice {
   private router = inject(Router);
   private api = 'https://localhost:7215/api/Auth';
 
-  login(data: { username: string; password: string } , isAdmin : boolean){
+  login(data: { email: string; pwd: string } , isAdmin : boolean){
     if(isAdmin){
       return this.http.post<LoginResponse>(this.api + "/login/admin", data);
     }
@@ -65,8 +65,16 @@ export class Authservice {
     const decoded = this.decodeToken(token);
 
     // ⚠️ .NET 預設 role key 可能是這個
-    return decoded.role ||
-          decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+    return decoded.role || null
+  }
+
+  getUserId(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    const decoded = this.decodeToken(token);
+
+    return decoded.UserId || null
   }
 
   test(){

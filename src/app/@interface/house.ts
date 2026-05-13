@@ -14,4 +14,12 @@ export interface CreateHouseDto {
   houseType: string;
   viewCount?: number;
   status: number;
+
+  sleepTime: number;
+  wakeTime: number;
+  cleanLevel: number;
+  noiseTolerance: number;
+  pet: boolean;
+  smoke: boolean;
+  interests: string;
 }

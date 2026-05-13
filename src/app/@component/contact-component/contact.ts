@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-contact',
-  standalone: true,           
+  standalone: true,
   imports: [FormsModule],
   templateUrl: './contact.html',
   styleUrls: ['./contact.scss']
@@ -19,15 +19,15 @@ export class ContactComponent {
     content: ''
   };
 constructor(private contactService: ContactService) {}
-  
+
 
   onSubmit() {
-  
+
   this.contactService.sendContactMessage(this.formData).subscribe({
     // 2. 幫 res 加上 : any
     next: (res: any) => {
       alert('訊息已送出！');
-      
+
       this.formData = { name: '', email: '', subject: '', content: '' };
     },
     // 3. 幫 err 加上 : any

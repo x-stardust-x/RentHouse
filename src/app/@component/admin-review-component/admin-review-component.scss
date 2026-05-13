@@ -1,0 +1,102 @@
+.dashboard-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: #f8fafc;
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  color: #64748b;
+
+  h3 { color: #334155; margin-bottom: 10px; }
+}
+
+.house-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover { box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); }
+}
+
+.house-info-layout {
+  display: flex;
+  gap: 30px;
+
+  @media (max-width: 768px) { flex-direction: column; }
+}
+
+.house-text-info {
+  flex: 1;
+
+  .house-title { margin: 0 0 12px 0; color: #0f172a; font-size: 1.3rem; font-weight: 700; }
+  .info-text { margin: 5px 0; color: #475569; font-weight: 500; }
+  .price-highlight { color: #e11d48; font-size: 1.2rem; font-weight: bold; }
+  .desc-text { color: #64748b; font-size: 0.95rem; margin: 15px 0; line-height: 1.5; }
+
+  .tags-container {
+    margin-bottom: 15px;
+    .tag-badge {
+      display: inline-block;
+      background-color: #e0f2fe;
+      color: #0369a1;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-right: 8px;
+      font-weight: 600;
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 15px;
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .btn-approve { background-color: #10b981; color: white; &:hover { background-color: #059669; transform: translateY(-2px); } }
+    .btn-reject { background-color: #f1f5f9; color: #ef4444; border: 1px solid #ef4444; &:hover { background-color: #fee2e2; transform: translateY(-2px); } }
+  }
+}
+
+.house-cover {
+  width: 220px;
+  flex-shrink: 0;
+
+  img { width: 100%; height: 220px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+  .no-cover { display: flex; align-items: center; justify-content: center; width: 100%; height: 220px; background-color: #f1f5f9; color: #94a3b8; border-radius: 8px; border: 2px dashed #cbd5e1; }
+}
+
+.gallery-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+
+  .gallery-item {
+    position: relative;
+
+    img {
+      width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 3px solid transparent;
+      &.is-cover-img { border-color: #eab308; }
+    }
+    .crown-badge {
+      display: block; text-align: center; font-size: 0.8rem; font-weight: bold; color: #eab308; margin-top: 5px;
+    }
+  }
+}

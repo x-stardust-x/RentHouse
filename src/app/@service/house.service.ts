@@ -32,7 +32,7 @@ export class HouseService {
   // 🗑️ 刪 (Delete) - 刪除房屋
   deleteHouse(id: number)
    {
-    
+
     return this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' });
   }
 //  圖片上傳相關 API //
@@ -42,7 +42,7 @@ export class HouseService {
     formData.append('files', file); // ⚠️ 這裡的 'files' 必須跟 C# Swagger 上寫的參數名稱一模一樣！
 
     // 注意網址！上傳是呼叫 /api/Image/Upload
-    return this.http.post('https://localhost:44368/api/Image/Upload', formData);
+    return this.http.post('https://localhost:44304/api/Image/Upload', formData);
   }
 
   // 呼叫設定首圖的 API

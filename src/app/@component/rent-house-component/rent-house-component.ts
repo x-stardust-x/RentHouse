@@ -1,30 +1,25 @@
 import { Component, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
-
 import { HouseService } from '../../@service/house.service';
-
-
 import { CreateHouseDto } from '../../@interface/house';
 
 @Component({
   selector: 'app-rent-house-component',
-  imports: [FormsModule],                     
-  templateUrl: './rent-house-component.html', 
-  styleUrl: './rent-house-component.scss'     
+  imports: [FormsModule],
+  templateUrl: './rent-house-component.html',
+  styleUrl: './rent-house-component.scss'
 })
 export class RentHouseComponent implements OnInit {
 
   houses = signal<any[]>([]);
 
-  
+  // 綁定表單資料 (DTO)
   formData: CreateHouseDto = {
-    accountId: 1,
+    accountId: 1, // TODO: 改為動態取得帳號 ID
     name: '測試豪華套房',
     address: '高雄市三民區',
     description: '採光超好，附機車位',
     rentPrice: 15000,
-    // 🆕 新增的預設值寫在這裡：
     includeUtilities: false,
     includeWifi: false,
     includeManagememtFee: false,
@@ -32,11 +27,24 @@ export class RentHouseComponent implements OnInit {
     leaseTerm: 12,
     floorInfo: '',
     houseType: '獨立套房',
-    status: 1
+    status: 1,
+
+    sleepTime: 23,
+    wakeTime: 7,
+    cleanLevel: 3,
+    noiseTolerance: 3,
+    pet: false,
+    smoke: false,
+    interests: ''
   };
 
   isEditMode = false;
   editingId = 0;
+
+  // 暫存選擇的照片 (實體檔案、預覽網址、是否為首圖)
+  pendingPhotos: { file: File, previewUrl: string, isCover: boolean }[] = [];
+
+  protected readonly title = signal('rent-house-web');
 
   constructor(private houseService: HouseService) {}
 
@@ -44,6 +52,7 @@ export class RentHouseComponent implements OnInit {
     this.loadHouses();
   }
 
+  // 取得房屋列表
   loadHouses() {
     this.houseService.getHouses().subscribe({
       next: (data) => this.houses.set(data),
@@ -51,8 +60,38 @@ export class RentHouseComponent implements OnInit {
     });
   }
 
+  // 處理多圖選取與預覽
+  onFilesSelected(event: any) {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+
+        reader.onload = (e: any) => {
+          this.pendingPhotos.push({
+            file: file,
+            previewUrl: e.target.result,
+            // 第一張預設為首圖
+            isCover: this.pendingPhotos.length === 0
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  }
+
+  // 設定首圖
+  setPendingCover(selectedIndex: number) {
+    this.pendingPhotos.forEach((photo, index) => {
+      photo.isCover = (index === selectedIndex);
+    });
+  }
+
+  // 提交表單 (新增/修改)
   submitForm() {
     if (this.isEditMode) {
+      // 修改模式
       this.houseService.updateHouse(this.editingId, this.formData).subscribe({
         next: (res) => {
           alert('✏️ 修改成功！');
@@ -62,38 +101,53 @@ export class RentHouseComponent implements OnInit {
         error: (err) => console.error('修改失敗', err)
       });
     } else {
+      // 新增模式：先建立房屋實體
       this.houseService.createHouse(this.formData).subscribe({
-        next: (res) => {
-          alert('🎉 新增成功！');
-          this.loadHouses();
+        next: (res: any) => {
+          const newHouseId = res?.id || res?.HouseId || res?.houseId;
+
+          // 若有照片則進行上傳與綁定
+          if (this.pendingPhotos.length > 0 && newHouseId) {
+            this.pendingPhotos.forEach(photo => {
+              this.uploadAndBindPhoto(newHouseId, photo.file, photo.isCover);
+            });
+
+            alert('🎉 房屋申請已送出！包含多張照片與首圖設定，等待管理員審核中。');
+            this.loadHouses();
+            this.resetForm();
+          } else {
+            alert('🎉 房屋申請已送出！(未附照片)，等待管理員審核中。');
+            this.loadHouses();
+            this.resetForm();
+            window.location.reload();
+          }
         },
-        error: (err) => console.error('新增失敗', err)
+        error: (err) => console.error('新增房屋申請失敗', err)
       });
     }
   }
 
-  deleteHouse(id: number) {
-    if (confirm('🚨 確定要刪除這間房子嗎？')) {
-      this.houseService.deleteHouse(id).subscribe({
-        next: (res) => {
-          alert('🗑️ 刪除成功！');
-          this.loadHouses();
-        },
-        error: (err) => console.error('刪除失敗', err)
-      });
-    }
+  // 處理單張照片上傳與資料庫綁定
+  uploadAndBindPhoto(houseId: number, file: File, isCover: boolean) {
+    this.houseService.uploadImage(file).subscribe({
+      next: (uploadRes: any) => {
+        const recordData = {
+          houseId: houseId,
+          url: uploadRes.urls[0],
+          description: '',
+          isCover: isCover
+        };
+
+        this.houseService.addImageRecord(recordData).subscribe({
+          error: (err) => console.error('照片資料庫綁定失敗', err)
+        });
+      },
+      error: (err) => console.error('照片實體檔上傳失敗', err)
+    });
   }
 
-  editHouse(house: any) {
-    this.isEditMode = true;
-    this.editingId = house.id;
-    this.formData = { ...house };
-  }
-
-  
-  cancelEdit() {
-    this.isEditMode = false;
-    this.editingId = 0;
+  // 清空表單與暫存照片
+  resetForm() {
     this.formData = {
       accountId: 1,
       name: '',
@@ -107,86 +161,22 @@ export class RentHouseComponent implements OnInit {
       leaseTerm: 12,
       floorInfo: '',
       houseType: '獨立套房',
-      status: 1
+      status: 1,
+      sleepTime: 23,
+    wakeTime: 7,
+    cleanLevel: 3,
+    noiseTolerance: 3,
+    pet: false,
+    smoke: false,
+    interests: ''
     };
-  }
- 
-  selectedFile: File | null = null;
-
-  
-  onFileSelected(event: any) {
-    this.selectedFile = event.target.files[0];
+    this.pendingPhotos = [];
   }
 
- 
-  uploadPhotoForHouse(houseId: number, fileInput: HTMLInputElement) {
-    if (!this.selectedFile) {
-      alert('⚠️ 請先選擇一張照片喔！');
-      return;
-    }
-
-    
-    this.houseService.uploadImage(this.selectedFile).subscribe({
-      next: (uploadRes: any) => {
-
-        
-        const recordData = { houseId: houseId, url: uploadRes.urls[0], description: '' };
-
-        
-        this.houseService.addImageRecord(recordData).subscribe({
-          next: (recordRes: any) => {
-            alert('🎉 完美連招！照片已成功上傳，並綁定到這間房子上了！');
-
-            
-            this.selectedFile = null;
-            fileInput.value = '';
-
-            
-            this.loadHouses();
-          },
-          error: (err) => console.error('第二式(登記)失敗', err)
-        });
-
-      },
-      error: (err) => console.error('第一式(上傳)失敗', err)
-    });
-  }
-
-
-
-  setAsCover(imageId: number) {
-    this.houseService.setCoverImage(imageId).subscribe({
-      next: () => {
-        alert('👑 首圖更換成功！');
-        this.loadHouses(); 
-      },
-      error: (err) => console.error('設定首圖失敗', err)
-    });
-  }
-deleteImage(imageId: number) {
-    if (confirm('🚨 確定要銷毀這張照片嗎？（實體檔案也會一併刪除喔！）')) {
-      this.houseService.deleteImage(imageId).subscribe({
-        next: () => {
-          alert('🗑️ 照片刪除成功！證據已銷毀！');
-          this.loadHouses(); 
-        },
-        error: (err) => console.error('刪除照片失敗', err)
-      });
-    }
-  }
-  protected readonly title = signal('rent-house-web');
-  
-  testSetCover() {
-    const testId = 1; 
-    this.houseService.setCoverImage(testId).subscribe({
-      next: (res) => {
-        console.log('成功啦！：', res);
-        alert('設定首圖成功！快看 F12 Console');
-      },
-      error: (err) => {
-        console.error('失敗了：', err);
-      }
-    });
+  // 取消編輯模式
+  cancelEdit() {
+    this.isEditMode = false;
+    this.editingId = 0;
+    this.resetForm();
   }
 }
-

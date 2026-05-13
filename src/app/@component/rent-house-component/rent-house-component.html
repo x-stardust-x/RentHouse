@@ -1,11 +1,10 @@
-
 <div class="dashboard-container">
-  <h2>🏠 租屋網戰情控制台 (CRUD 測試)</h2>
+  <h2>🏠 房東專區：房屋上架申請</h2>
 
   <div class="dashboard-layout">
 
     <div class="form-section">
-      <h3>{{ isEditMode ? '✏️ 修改房屋資料' : '🆕 新增房屋' }}</h3>
+      <h3>{{ isEditMode ? '✏️ 修改草稿' : '🆕 新增房屋申請' }}</h3>
 
       <div class="form-group">
         <label>房屋名稱：</label>
@@ -37,6 +36,79 @@
           <label>樓層資訊：</label>
           <input type="text" [(ngModel)]="formData.floorInfo" placeholder="例如: 5F / 12F">
         </div>
+        <!-- 🛋️ 生活習慣與規定設定 -->
+<div class="form-section mt-4 mb-4 p-4" style="background-color: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+  <h4 style="color: #1e293b; margin-bottom: 20px; font-weight: bold;">🛋️ 生活習慣與規定</h4>
+
+  <div class="row g-3">
+    <!-- 睡眠時間 (整數) -->
+    <div class="col-md-3">
+      <label class="form-label fw-bold text-secondary">就寢時間</label>
+      <select class="form-select" [(ngModel)]="formData.sleepTime" name="sleepTime">
+        <option [ngValue]="21">21:00 以前</option>
+        <option [ngValue]="22">22:00</option>
+        <option [ngValue]="23">23:00</option>
+        <option [ngValue]="0">00:00</option>
+        <option [ngValue]="1">01:00 以後</option>
+      </select>
+    </div>
+
+    <!-- 起床時間 (整數) -->
+    <div class="col-md-3">
+      <label class="form-label fw-bold text-secondary">起床時間</label>
+      <select class="form-select" [(ngModel)]="formData.wakeTime" name="wakeTime">
+        <option [ngValue]="6">06:00 以前</option>
+        <option [ngValue]="7">07:00</option>
+        <option [ngValue]="8">08:00</option>
+        <option [ngValue]="9">09:00</option>
+        <option [ngValue]="10">10:00 以後</option>
+      </select>
+    </div>
+
+    <!-- 潔癖程度 (整數) -->
+    <div class="col-md-3">
+      <label class="form-label fw-bold text-secondary">潔癖程度 (1-5)</label>
+      <select class="form-select" [(ngModel)]="formData.cleanLevel" name="cleanLevel">
+        <option [ngValue]="1">1 - 隨意就好</option>
+        <option [ngValue]="2">2 - 偶爾打掃</option>
+        <option [ngValue]="3">3 - 乾淨一般</option>
+        <option [ngValue]="4">4 - 注重整潔</option>
+        <option [ngValue]="5">5 - 極度潔癖</option>
+      </select>
+    </div>
+
+    <!-- 噪音容忍度 (整數) -->
+    <div class="col-md-3">
+      <label class="form-label fw-bold text-secondary">噪音容忍度 (1-5)</label>
+      <select class="form-select" [(ngModel)]="formData.noiseTolerance" name="noiseTolerance">
+        <option [ngValue]="1">1 - 非常怕吵</option>
+        <option [ngValue]="2">2 - 稍微怕吵</option>
+        <option [ngValue]="3">3 - 一般音量</option>
+        <option [ngValue]="4">4 - 算耐吵</option>
+        <option [ngValue]="5">5 - 完全不怕吵</option>
+      </select>
+    </div>
+
+    <!-- 寵物與抽菸 (布林值 Checkboxes) -->
+    <div class="col-md-6 mt-4">
+      <label class="form-label fw-bold text-secondary d-block">特殊規定</label>
+      <div class="form-check form-check-inline mt-2">
+        <input class="form-check-input" type="checkbox" id="petCheck" [(ngModel)]="formData.pet" name="pet">
+        <label class="form-check-label fw-bold text-dark" for="petCheck">🐾 允許養寵物</label>
+      </div>
+      <div class="form-check form-check-inline mt-2 ms-3">
+        <input class="form-check-input" type="checkbox" id="smokeCheck" [(ngModel)]="formData.smoke" name="smoke">
+        <label class="form-check-label fw-bold text-dark" for="smokeCheck">🚬 允許抽菸</label>
+      </div>
+    </div>
+
+    <!-- 興趣標籤 (字串) -->
+    <div class="col-md-6 mt-4">
+      <label class="form-label fw-bold text-secondary">興趣標籤</label>
+      <input type="text" class="form-control" [(ngModel)]="formData.interests" name="interests" placeholder="例如：看電影、打電動、爬山...">
+    </div>
+  </div>
+</div>
         <div class="form-group">
           <label>房屋類型：</label>
           <select [(ngModel)]="formData.houseType">
@@ -46,6 +118,42 @@
             <option value="整層住家">整層住家</option>
           </select>
         </div>
+      </div>
+
+
+      <div class="mb-3 mt-4" style="padding: 15px; background: #fff; border: 1px dashed #cbd5e1; border-radius: 8px;">
+        <h4 style="font-size: 1rem; margin-top: 0; margin-bottom: 15px; color: #334155;">📷 房屋相簿與首圖設定</h4>
+
+        <label class="form-label fw-bold text-muted" style="font-size: 0.9rem;">請選擇照片 (可按住 Ctrl 複選)</label>
+
+
+        <input type="file" class="form-control mb-3" multiple (change)="onFilesSelected($event)" accept="image/*">
+
+
+        @if (pendingPhotos && pendingPhotos.length > 0) {
+          <div class="d-flex flex-wrap bg-light p-3 rounded border">
+            @for (photo of pendingPhotos; track $index) {
+              <div class="me-3 mb-3 text-center bg-white border p-2 rounded shadow-sm">
+
+
+                <img [src]="photo.previewUrl" class="img-thumbnail mb-2" style="width: 120px; height: 120px; object-fit: cover;">
+
+
+                <div class="form-check d-flex justify-content-center align-items-center">
+                  <input class="form-check-input me-1" type="radio"
+                         name="coverRadioSelect"
+                         [checked]="photo.isCover"
+                         (change)="setPendingCover($index)"
+                         style="cursor: pointer;">
+                  <label class="form-check-label fw-bold ms-1" [class.text-danger]="photo.isCover">
+                    {{ photo.isCover ? '⭐ 首圖' : '設為首圖' }}
+                  </label>
+                </div>
+
+              </div>
+            }
+          </div>
+        }
       </div>
 
       <div class="included-items-block">
@@ -62,90 +170,14 @@
       </div>
 
       <div class="form-actions">
+
         <button class="btn-submit" (click)="submitForm()">
-          {{ isEditMode ? '儲存修改' : '確認新增' }}
+          {{ isEditMode ? '儲存修改' : '確認送出申請' }}
         </button>
         @if (isEditMode) {
           <button class="btn-cancel" (click)="cancelEdit()">取消</button>
         }
       </div>
-    </div>
-
-
-    <div class="list-section">
-      <h3>📂 目前資料庫裡的房屋</h3>
-
-      @if (houses().length === 0) {
-        <p class="empty-text">目前資料庫空空如也，趕快新增一筆吧！</p>
-      }
-
-      @for (house of houses(); track house.id) {
-        <div class="house-card">
-          
-          <div class="house-info-layout">
-            <div class="house-text-info">
-              <h4>[{{house.id}}] {{ house.name }}</h4>
-              <p class="info-text">📍 {{ house.address }}</p>
-              <p class="info-text">💰 租金：{{ house.rentPrice }} 元</p>
-              <p class="desc-text">{{ house.description }}</p>
-
-              <div class="tags-container">
-                <span class="tag-badge">🏢 {{ house.houseType || '未提供房型' }}</span>
-                <span class="tag-badge">📏 {{ house.areaSize ? house.areaSize + ' 坪' : '未提供坪數' }}</span>
-                <span class="tag-badge">🪜 {{ house.floorInfo || '未提供樓層' }}</span>
-              </div>
-
-              <div class="included-container">
-                ✨ 租金包含：
-                @if(house.includeUtilities) { <span>💧水電</span> }
-                @if(house.includeWifi) { <span>📶網路</span> }
-                @if(house.includeManagememtFee) { <span>🛡️管理費</span> }
-
-                @if(!house.includeUtilities && !house.includeWifi && !house.includeManagememtFee) {
-                  <span class="no-items">無附加項目</span>
-                }
-              </div>
-
-              <div class="action-buttons">
-                <button class="btn-edit" (click)="editHouse(house)">✏️ 編輯</button>
-                <button class="btn-delete" (click)="deleteHouse(house.id)">🗑️ 刪除</button>
-              </div>
-            </div>
-
-            <div class="house-cover">
-              @if (house.coverUrl) {
-                <img [src]="'https://localhost:44368' + house.coverUrl">
-              } @else {
-                <span class="no-cover">沒有首圖</span>
-              }
-            </div>
-          </div>
-
-          <div class="image-gallery">
-            @for (img of house.images; track img.id) {
-              <div class="gallery-item">
-                <img [src]="'https://localhost:44368' + img.url" [class.is-cover]="img.isCover">
-
-                @if (!img.isCover) {
-                  <button class="btn-set-cover" (click)="setAsCover(img.id)">設為首圖</button>
-                } @else {
-                  <span class="crown-text">👑 首圖</span>
-                }
-                <button class="btn-delete-img" (click)="deleteImage(img.id)">刪除</button>
-              </div>
-            }
-          </div>
-
-          <div class="upload-section">
-            <strong class="upload-title">📸 為這間房子新增照片</strong><br>
-            <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*">
-            <button class="btn-upload" (click)="uploadPhotoForHouse(house.id, fileInput)">
-              🚀 立即上傳並綁定
-            </button>
-          </div>
-
-        </div>
-      }
     </div>
 
   </div>

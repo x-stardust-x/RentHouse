@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './@guard/auth-guard';
 import { loginGuard } from './@guard/login-guard';
 import { ContactComponent } from './@component/contact-component/contact';
+import { AdminReviewComponent } from './@component/admin-review-component/admin-review-component';
 
 export const routes: Routes = [
   {
@@ -52,17 +53,23 @@ export const routes: Routes = [
     loadComponent: () => import('./@component/rental-matching-detail-component/rental-matching-detail-component').then(c => c.RentalMatchingDetailComponent),
   },
   {
-    path: 'rent', // 🌟 搬到這裡！
+    path: 'admin-review',
+    component: AdminReviewComponent,
+
+  },
+  {
+    path: 'rent',
     loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
   },
-  { 
-    path: 'contact', component: ContactComponent 
+  {
+    path: 'contact', component: ContactComponent
   },
+
   {
     path: '**',
     // loadComponent :() => import('./@component/login-component/login-component').then(c => c.LoginComponent),
     redirectTo: 'home'
   },
-  
+
 
 ];

@@ -59,8 +59,24 @@
               發布日期：
               {{ item.createdAt | date:'yyyy/MM/dd HH:mm' }}
             </span>
+            <span>
+              編輯日期：
+              {{ item.updatedAt | date:'yyyy/MM/dd HH:mm' }}
+            </span>
           </div>
 
+          @if (item.cover) {
+
+          <div class="mb-3 overflow-hidden rounded">
+
+            <img [src]="item.cover" class="img-fluid w-100" style="
+                height: 250px;
+                object-fit: cover;
+              ">
+
+          </div>
+
+          }
           <!-- Intro -->
           <p class="card-text fw-semibold">
             {{ item.intro }}

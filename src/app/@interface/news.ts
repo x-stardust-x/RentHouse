@@ -4,6 +4,7 @@ export interface News {
 
   category: string;
 
+  cover : string;
   title: string;
 
   intro: string;

@@ -26,6 +26,31 @@
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
         <div class="row g-3">
+
+          <!-- 圖片 -->
+          <div class="col-12">
+
+            <label class="form-label">封面圖片</label>
+
+            <input type="file" class="form-control" accept="image/*" (change)="onFileChange($event)">
+
+          </div>
+
+          <!-- 預覽 -->
+          @if (imagePreview()) {
+
+          <div class="col-12">
+
+            <div class="card border-0 shadow-sm overflow-hidden">
+
+              <img [src]="imagePreview()" class="img-fluid rounded" style="max-height: 150px; object-fit: cover;">
+
+            </div>
+
+          </div>
+
+          }
+
           <!-- 分類 -->
           <div class="col-md-6">
             <label class="form-label">分類</label>

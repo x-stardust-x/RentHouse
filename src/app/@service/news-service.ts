@@ -37,10 +37,7 @@ export class NewsService {
   delete(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`);
   }
-  uploadImage(file: File): Observable<any> {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    return this.http.post(`${this.baseUrl}/upload`, formData);
+  uploadImage(formData: FormData) {
+    return this.http.post('https://localhost:7215/api/upload', formData);
   }
 }

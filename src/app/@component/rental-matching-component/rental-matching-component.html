@@ -2,9 +2,6 @@
   href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
 
-<p>rental-matching-component works!</p>
-
-
 <main style="display: flex; gap: 2em;">
 
   <div class="rental-item-filter">
@@ -76,11 +73,13 @@
     <div class="layout">
 
       <button class="grid" (click)="viewMode = 'grid'" type="button">
-        <span class="material-icons">grid_view</span>
+        <span class="material-symbols-outlined">grid_view</span>
+        <!-- <span class="material-icons">grid_view</span> -->
       </button>
 
       <button class="stack" (click)="viewMode = 'map'" type="button">
-        <span class="material-icons">map_view</span>
+        <!-- <span class="material-icons">grid_view</span> -->
+        <span class="material-symbols-outlined">map</span>
       </button>
 
     </div>
@@ -125,17 +124,6 @@
 
     }
 
-
-
-
   </div>
-
-
-
-
-
-
-
-
 
 </main>

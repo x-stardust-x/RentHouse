@@ -11,22 +11,22 @@
 <div class="top" style="overflow-x: clip;">
 
   <div
-    style="width: 100%; height: 100vh; position: relative; background-color: rgba(0, 0, 0, 0.5); background-image: url('images/daan_cozy_shared_suite_01.jpg'); background-blend-mode: multiply; background-repeat: no-repeat; background-size: cover;">
+    style="width: 100%; height: 100vh; position: relative; background-color: rgba(0, 0, 0, 0.2); background-blend-mode: multiply; background-repeat: no-repeat; background-size: cover;"
+    [style.background-image]="'url(' + (house()?.url || 'images/default_image_16-9.jpg') + ')'">
     <!-- <img src="images/daan_cozy_shared_suite_01.jpg" alt="" style="width: 100%"> -->
-
 
 
     <div class="top-info"
       style="width: 100%; display: flex; gap: 1em; justify-content: space-between; align-items: flex-start; margin: auto; padding: 3em;">
 
       <div class="main-info" style="display: flex; flex-direction: column; gap: .5em;">
-        <h1>大安區溫馨共居套房</h1>
-        <!-- <h1>{{ name }}</h1> -->
+        <!-- <h1>大安區溫馨共居套房</h1> -->
+        <h1>{{ house()?.name }}</h1>
 
         <div class="location" style="display: flex; align-items: center; gap: 0.5em;">
           <span class="material-symbols-outlined"
             style="font-variation-settings: 'FILL' 0, 'wght' 700;">location_on</span>
-          <p style="margin-bottom: unset;">台北市大安區和平東路二段</p>
+          <p style="margin-bottom: unset;">{{ house()?.address }}</p>
         </div>
       </div>
 
@@ -50,8 +50,13 @@
     <div style="display: flex; gap: 2em; position: absolute; bottom: 3em; right: -6em">
 
       <div style="width: 100%">
-        <img src="images/daan_cozy_shared_suite_01.jpg" alt=""
+
+        <img [src]="house().url || 'images/default_image_16-9.jpg'" alt="房屋圖片"
           style="width: 16em; height: auto; aspect-ratio: 1 / 1; object-fit: cover;">
+
+        <!-- <img src="images/daan_cozy_shared_suite_01.jpg" alt=""
+          style="width: 16em; height: auto; aspect-ratio: 1 / 1; object-fit: cover;"> -->
+
       </div>
 
       <div>
@@ -60,12 +65,12 @@
       </div>
 
       <div>
-        <img src="images/daan_cozy_shared_suite_02.jpg" alt=""
+        <img [src]="house().url || 'images/default_image_16-9.jpg'" alt="房屋圖片"
           style="width: 16em; height: auto; aspect-ratio: 1 / 1; object-fit: cover;">
       </div>
 
       <div>
-        <img src="images/daan_cozy_shared_suite_03.jpg" alt=""
+        <img [src]="house().url || 'images/default_image_16-9.jpg'" alt="房屋圖片"
           style="width: 16em; height: auto; aspect-ratio: 1 / 1; object-fit: cover;">
       </div>
 
@@ -80,37 +85,63 @@
 
     <div class="intro" style="border: black 2px solid; padding: 1em;">
       <h2>關於這個空間</h2>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore provident cupiditate saepe beatae quos
-        dignissimos, id veritatis quidem. Et provident laboriosam dolore maxime repellendus? Eum culpa alias provident
-        mollitia enim.</p>
+      <p>{{ house()?.description }}</p>
     </div>
 
     <div style="border: black 2px solid; padding: 1em;">
       <h2>生活習慣</h2>
 
-      <div style="width: 100%; display: grid; grid-template-columns: repeat(3, 150px); gap: 2em;">
+      <div style="width: 100%; display: grid; grid-template-columns: repeat(3, 25%); gap: 2em;">
 
-        <div style="display: flex; gap: .5em; border: black 2px solid; padding: 1em; width: fit-content;">
-          <span class="material-symbols-outlined"
-            style="font-variation-settings: 'FILL' 0, 'wght' 700;">smoke_free</span>
-          <p>全面禁菸</p>
-        </div>
+        <!-- 安靜/熄燈時間 -->
+        @if (house()?.sleepTime) {
 
+        }
+
+        <!-- 起床/活動時間 -->
+        @if (house()?.wakeTime) {
+
+        }
+
+        <!-- 需達到整潔程度 -->
+        @if (house()?.cleanLevel) {
+
+        }
+
+        <!-- 噪音線制 -->
+        @if (house()?.noiseTolerance) {
         <div style="display: flex; gap: .5em; border: black 2px solid; padding: 1em; width: fit-content;">
           <span class="material-symbols-outlined"
             style="font-variation-settings: 'FILL' 0, 'wght' 700;">volume_off</span>
           <p>保持安靜</p>
         </div>
+        }
 
-        <div style="display: flex; gap: .5em; border: black 2px solid; padding: 1em; width: fit-content;">
-          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0, 'wght' 700;">wb_sunny</span>
-          <p>晨型人</p>
-        </div>
-
+        <!-- 能否養寵物 -->
+        @if (house()?.pet) {
         <div style="display: flex; gap: .5em; border: black 2px solid; padding: 1em; width: fit-content;">
           <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0, 'wght' 700;">pets</span>
           <p>可養寵物</p>
         </div>
+        }
+
+        <!-- 能否抽菸 -->
+        @if (house()?.smoke) {
+        <div style="display: flex; gap: .5em; border: black 2px solid; padding: 1em; width: fit-content;">
+          <span class="material-symbols-outlined"
+            style="font-variation-settings: 'FILL' 0, 'wght' 700;">smoke_free</span>
+          <p>全面禁菸</p>
+        </div>
+        }
+
+
+
+        <!-- <div style="display: flex; gap: .5em; border: black 2px solid; padding: 1em; width: fit-content;">
+          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0, 'wght' 700;">wb_sunny</span>
+          <p>晨型人</p>
+        </div> -->
+
+
 
       </div>
 
@@ -120,23 +151,38 @@
     <div style="border: black 2px solid; padding: 1em;">
       <h2>提供的設施與服務</h2>
 
+      <!-- 照理說，這裡應該要能讓出租人自行新增設施與服務，後端要新增這個功能 -->
+
       <div>
+
+        <!-- 是否含 wifi -->
+        @if (house()?.includeWifi) {
         <div style="display: flex; gap: .5em; border: black 2px solid; padding: 1em; width: fit-content;">
           <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0, 'wght' 700;">wifi</span>
           <p>Wifi</p>
         </div>
+        }
+
+        <!-- 這裡會有更多 設施與服務，等後端功能做完測試 -->
+
+
+
+
+
       </div>
     </div>
 
 
     <div style="border: black 2px solid; padding: 1em;">
       <h2>位置資訊</h2>
-      <p>台北市大安區和平東路二段</p>
+      <p>{{ house()?.address }}</p>
+      <!-- <p>台北市大安區和平東路二段</p> -->
 
       <iframe
         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.2851170507593!2d121.53818317566915!3d25.02532267782208!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442aa296cd602fd%3A0x186b8e638107ce79!2zMTA26Ie65YyX5biC5aSn5a6J5Y2A5ZKM5bmz5p2x6Lev5LqM5q61!5e1!3m2!1szh-TW!2stw!4v1778145513089!5m2!1szh-TW!2stw"
         width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"></iframe>
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
     </div>
 
 
@@ -161,7 +207,17 @@
           </div>
 
         </div>
-        <h2>陳先生</h2>
+
+
+
+
+        <!-- ======== 後面處理出租人資訊 ======== -->
+        <!-- ==================================== -->
+
+        <h2>{{ house()?.userName }}</h2>
+        <h2>{{ house()?.account?.userName }}</h2>
+        <h2>{{ house()?.accountId }}</h2>
+        <!-- <h2>陳先生</h2> -->
         <p>出租人</p>
 
         <div style="display: flex;">
@@ -169,8 +225,14 @@
           <p>(<span>12</span>則評價)</p>
         </div>
 
+        <!-- ==================================== -->
+        <!-- ==================================== -->
       </div>
 
+
+
+
+      <!-- <p>{{ house()?.account?.description }}</p> -->
       <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit, autem non accusantium eum doloremque facere
         maiores cupiditate mollitia illo rerum excepturi eius ad ipsum blanditiis saepe deleniti nihil voluptatibus
         quibusdam!</p>
@@ -180,10 +242,17 @@
 
     <div style="border: black 2px solid; padding: 1em;">
 
-      <p>NT$<span style="font-size: 1.5rem;"> 15,000 </span><span>/月</span></p>
+      <p>NT$<span style="font-size: 1.5rem;"> {{ house()?.rentPrice }} </span><span>/月</span></p>
+
+      <!-- 如果資料庫條件符合含有水電 或 網路 或 管理費，顯示符合的條件 -->
+      <!-- @if -->
+
+      <!-- ==================================== -->
+      <!-- ==================================== -->
+
       <p>包含水電、網路及管理費</p>
 
-      <select name="reatal-period" id="reatal-period">
+      <select name="rental-period" id="reatal-period">
         <!-- <option value="">選擇租期</option> -->
         <option value="six-months">6個月</option>
         <option value="one-year">1年 (12個月)</option>

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, signal, effect, inject, Input } from '@angular/core';
+import { Component, EventEmitter, Output, signal, effect, inject, Input, input } from '@angular/core';
 import { LocationService } from '../../@service/location-service';
 import { City,District } from '../../@interface/location';
 
@@ -49,7 +49,7 @@ import { City,District } from '../../@interface/location';
 export class LocationSelectComponent {
 
   locationService = inject(LocationService);
-  @Input() districtId: number | null = null;
+  districtId = input<number | null>(null);
   @Output() districtSelected = new EventEmitter<District>();
 
   selectedCityId = signal<number | null>(null);
@@ -60,7 +60,7 @@ export class LocationSelectComponent {
     this.locationService.loadAllDistricts();
     effect(() => {
 
-      const id = this.districtId;
+      const id = this.districtId();
 
       if (!id) return;
 
@@ -71,13 +71,19 @@ export class LocationSelectComponent {
       if (!district) return;
 
       // 自動選 city
-      this.selectedCityId.set(district.cityId);
+      setTimeout(() => {
+        this.selectedCityId.set(district.cityId);
+      });
 
       // 載入 district list
-      this.locationService.loadDistricts(district.cityId);
+      setTimeout(() => {
+        this.locationService.loadDistricts(district.cityId);
+      });
 
       // 自動選 district
-      this.selectedDistrictId.set(id);
+      setTimeout(() => {
+        this.selectedDistrictId.set(id);
+      });
 
     });
 

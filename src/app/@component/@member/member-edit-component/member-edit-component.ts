@@ -19,9 +19,8 @@ export class MemberEditComponent {
   public readonly locsev = inject(LocationService);
   userProfileForm!: FormGroup;
   userId = 1;
-  ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
+
+  constructor() {
     this.locsev.loadCities();
     this.userProfileForm = this.fb.group({
       id: [0],
@@ -58,40 +57,50 @@ export class MemberEditComponent {
     });
 
     this.usersev.loadProfile(this.userId);
-    var Nowprofile = this.usersev.profile();
+    this.usersev.loadProfile(this.userId);
 
-    this.userProfileForm.patchValue({
-      id: Nowprofile?.id,
-      realName: Nowprofile?.realName,
-      englishName: Nowprofile?.englishName,
+    effect(() => {
 
-      avatar: Nowprofile?.avatar,
+      const profile = this.usersev.profile();
 
-      phone: Nowprofile?.phone,
+      if (!profile) return;
 
-      address: Nowprofile?.address,
+      this.userProfileForm.patchValue({
+        id: profile.id,
+        realName: profile.realName,
+        englishName: profile.englishName,
 
-      bio: Nowprofile?.bio,
+        avatar: profile.avatar,
 
-      rating: Nowprofile?.rating,
-      reviewCount: Nowprofile?.reviewCount,
+        phone: profile.phone,
 
-      districtId: Nowprofile?.districtId,
-      sleepTime: Nowprofile?.sleepTime,
-      wakeTime: Nowprofile?.wakeTime,
+        address: profile.address,
 
-      cleanLevel: Nowprofile?.cleanLevel,
-      noiseTolerance: Nowprofile?.noiseTolerance,
+        bio: profile.bio,
 
-      pet: Nowprofile?.pet,
-      smoke: Nowprofile?.smoke,
+        rating: profile.rating,
+        reviewCount: profile.reviewCount,
 
-      interests: Nowprofile?.interests
-    })
+        districtId: profile.districtId,
+
+        sleepTime: profile.sleepTime,
+        wakeTime: profile.wakeTime,
+
+        cleanLevel: profile.cleanLevel,
+        noiseTolerance: profile.noiseTolerance,
+
+        pet: profile.pet,
+        smoke: profile.smoke,
+
+        interests: profile.interests
+      });
+
+    });
   }
 
+
   onDistrictSelected(d: District) {
-    var cityname = this.locsev.cities().find(x=> x.id == d.cityId)?.cityName;
+    var cityname = this.locsev.cities().find(x => x.id == d.cityId)?.cityName;
     this.userProfileForm.patchValue({
       districtId: d.id
     });

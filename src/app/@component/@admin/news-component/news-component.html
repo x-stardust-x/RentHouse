@@ -1,0 +1,99 @@
+<section class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+
+    <h2 class="mb-0">最新消息</h2>
+
+    <button class="btn btn-primary" routerLink="/admin/news/create">
+      + 新增新聞
+    </button>
+
+  </div>
+  @if (newsev.newsData().length > 0) {
+
+  <div class="row g-4">
+    @for (item of newsev.newsData(); track $index) {
+
+    <div class="col-12">
+      <div class="card shadow-sm border-0">
+
+        <div class="card-body">
+
+          <!-- Header -->
+          <div class="d-flex justify-content-between align-items-start flex-wrap mb-3">
+
+            <div>
+              <span class="badge bg-primary mb-2">
+                {{ item.category }}
+              </span>
+
+              <h3 class="card-title mb-2">
+                {{ item.title }}
+              </h3>
+            </div>
+
+            <div class="d-flex gap-2">
+
+              <!-- 狀態 -->
+              <span class="badge m-auto" [ngClass]="item.status === 1 ? 'bg-success' : 'bg-secondary'">
+                {{ item.status === 1 ? '已發布' : '草稿' }}
+              </span>
+
+              <!-- 編輯按鈕 -->
+              <button class="btn btn-sm btn-outline-warning" [routerLink]="['/admin/news/edit', item.id]">
+                編輯
+              </button>
+
+              <!-- 刪除 -->
+              <button class="btn btn-sm btn-outline-danger" (click)="deleteNews(item.id)">
+                刪除
+              </button>
+
+            </div>
+
+          </div>
+
+          <!-- Meta -->
+          <div class="text-muted small mb-3 d-flex flex-wrap gap-3">
+            <span>編號：{{ item.id }}</span>
+            <span>
+              發布日期：
+              {{ item.createdAt | date:'yyyy/MM/dd HH:mm' }}
+            </span>
+          </div>
+
+          <!-- Intro -->
+          <p class="card-text fw-semibold">
+            {{ item.intro }}
+          </p>
+
+          <!-- Content -->
+          <div class="card-text mb-4">
+            {{ item.content }}
+          </div>
+
+          <!-- Footer -->
+          <div class="border-top pt-3 d-flex flex-column gap-1 text-muted small">
+            <small>
+              SEO 標題：{{ item.seoTitle }}
+            </small>
+
+            <small>
+              SEO 描述：{{ item.seoDesc }}
+            </small>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    }
+  </div>
+
+  } @else {
+
+  <div class="alert alert-secondary">
+    目前沒有新聞資料。
+  </div>
+
+  }
+</section>

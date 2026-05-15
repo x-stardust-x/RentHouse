@@ -47,6 +47,9 @@ export const routes: Routes = [
     }, {
       path: 'news/edit/:id',
       loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
+    },{
+      path: 'logs',
+      loadComponent: () => import('./@component/@admin/logs-component/logs-component').then(c => c.LogsComponent),
     }],
   },
   {

@@ -6,6 +6,7 @@ import { LocationService } from '../../../@service/location-service';
 import { UserProfile } from '../../../@interface/user-profile';
 import { LocationSelectComponent } from "../../location-select-component/location-select-component";
 import { District } from '../../../@interface/location';
+import { NewsService } from '../../../@service/news-service';
 
 @Component({
   selector: 'app-member-edit-component',
@@ -17,8 +18,11 @@ export class MemberEditComponent {
   private readonly fb = inject(FormBuilder);
   public readonly usersev = inject(UserService);
   public readonly locsev = inject(LocationService);
+  public readonly newsService = inject(NewsService);
   userProfileForm!: FormGroup;
   userId = 1;
+  imagePreview = signal<string>('');
+
 
   constructor() {
     this.locsev.loadCities();
@@ -57,14 +61,13 @@ export class MemberEditComponent {
     });
 
     this.usersev.loadProfile(this.userId);
-    this.usersev.loadProfile(this.userId);
 
     effect(() => {
 
       const profile = this.usersev.profile();
 
       if (!profile) return;
-
+      this.imagePreview.set(profile.avatar || '');
       this.userProfileForm.patchValue({
         id: profile.id,
         realName: profile.realName,
@@ -109,5 +112,43 @@ export class MemberEditComponent {
   onSubmit() {
     var form: UserProfile = this.userProfileForm.getRawValue();
     this.usersev.updateProfile(form);
+  }
+
+  onFileChange(event: Event) {
+
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files?.length) return;
+
+    const file = input.files[0];
+
+    // 預覽
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      this.imagePreview.set(reader.result as string);
+    };
+
+    reader.readAsDataURL(file);
+
+    // 上傳圖片
+    this.uploadImage(file);
+
+  }
+  uploadImage(file: File) {
+
+    const formData = new FormData();
+
+    formData.append('file', file);
+
+    this.newsService.uploadImage(formData)
+      .subscribe((res: any) => {
+        // 存 URL 到 form
+        this.userProfileForm.patchValue({
+          avatar: res.url
+        });
+
+      });
+
   }
 }

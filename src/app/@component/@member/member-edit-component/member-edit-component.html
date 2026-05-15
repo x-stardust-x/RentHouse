@@ -5,6 +5,30 @@
   <div class="row">
 
     <!-- 基本資料 -->
+
+          <!-- 圖片 -->
+          <div class="col-12">
+
+            <label class="form-label">頭像</label>
+
+            <input type="file" class="form-control" accept="image/*" (change)="onFileChange($event)">
+
+          </div>
+
+          <!-- 預覽 -->
+          @if (imagePreview()) {
+
+          <div class="col-12 my-2">
+
+            <div class="card border-0 shadow-sm overflow-hidden">
+
+              <img [src]="imagePreview()" class="img-thumbnail rounded" style="max-height: 150px; max-width: 150px; object-fit: cover;">
+
+            </div>
+
+          </div>
+
+          }
     <div class="col-md-6 mb-3">
       <label class="form-label">真實姓名</label>
       <input type="text" class="form-control" formControlName="realName">
@@ -55,12 +79,12 @@
 
     <!-- 個性 -->
     <div class="col-md-6 mb-3">
-      <label class="form-label">清潔程度 (0-5)</label>
+      <label class="form-label">清潔程度 (1-5)</label>
       <input type="number" class="form-control" formControlName="cleanLevel" max="5" min="1">
     </div>
 
     <div class="col-md-6 mb-3">
-      <label class="form-label">噪音容忍度 (0-5)</label>
+      <label class="form-label">噪音容忍度 (1-5)</label>
       <input type="number" class="form-control" formControlName="noiseTolerance" max="5" min="1">
     </div>
 

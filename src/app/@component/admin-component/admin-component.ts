@@ -1,4 +1,4 @@
-import { Component,inject } from '@angular/core';
+import { Component,inject, signal } from '@angular/core';
 import { Authservice } from '../../@service/authservice';
 import { NewsService } from '../../@service/news-service';
 import { RouterLink, RouterOutlet } from "@angular/router";
@@ -12,9 +12,11 @@ import { RouterLink, RouterOutlet } from "@angular/router";
 export class AdminComponent {
   authsev = inject(Authservice);
   newsev = inject(NewsService);
+  ipAddress = signal<string | Object>('');
 
   constructor(){
     this.newsev.getAll();
+    this.getClientIPAddress();
   }
 
 
@@ -26,6 +28,16 @@ export class AdminComponent {
       console.log(res);
 
     });
+  }
+  getClientIPAddress(){
+    this.authsev.getClientIPAddress().subscribe(res =>{
+      this.ipAddress.set(res);
+    });
+  }
+
+  test2(){
+    console.log(this.ipAddress());
+
   }
 
 }

@@ -3,6 +3,9 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NewsService } from '../../../@service/news-service';
+import { LogService } from '../../../@service/log-service';
+import { Authservice } from '../../../@service/authservice';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-news-form',
@@ -16,11 +19,14 @@ export class NewsFormComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private newsService = inject(NewsService);
+  private logservice = inject(LogService);
+  private authservice = inject(Authservice);
 
   form!: FormGroup;
   imagePreview = signal<string>('');
   id: number | null = null;
   isEdit = false;
+  ipAdrress = signal<string>('');
 
   ngOnInit(): void {
 
@@ -57,32 +63,36 @@ export class NewsFormComponent implements OnInit {
 
   // 4. submit（create / update 共用）
   onSubmit() {
+    this.authservice.getClientIPAddress().pipe(
 
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+      switchMap(ip => {
 
-    const data = this.form.value;
+        const log = {
+          userId: 1,
+          action: this.isEdit
+            ? `更新消息 id:${this.id}`
+            : '新增一筆新聞',
+          ipAddress: ip,
+        };
 
-    if (this.isEdit && this.id) {
-      console.log(data);
+        const data = this.form.value;
 
-      // update
-      this.newsService.update(this.id, data).subscribe(() => {
-        alert('更新成功');
-        this.router.navigate(['/admin/news']);
-      });
+        const request = this.isEdit && this.id
+          ? this.newsService.update(this.id, data)
+          : this.newsService.create(data);
 
-    } else {
+        return request.pipe(
+          switchMap(() => this.logservice.postLog(log))
+        );
+      })
 
-      // create
-      this.newsService.create(data).subscribe(() => {
-        alert('新增成功');
-        this.router.navigate(['/admin/news']);
-      });
+    ).subscribe(() => {
 
-    }
+      alert(this.isEdit ? '更新成功' : '新增成功');
+
+      this.router.navigate(['/admin/news']);
+
+    });
   }
   onFileChange(event: Event) {
 

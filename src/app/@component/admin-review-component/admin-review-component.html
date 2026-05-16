@@ -12,12 +12,11 @@
       </div>
     }
 
-
     @for (house of pendingHouses(); track house.id) {
       <div class="house-card">
 
-
         <div class="house-info-layout">
+          
           <div class="house-text-info">
             <h4 class="house-title">[{{house.id}}] {{ house.name }}</h4>
             <p class="info-text">📍 {{ house.address }}</p>
@@ -40,25 +39,34 @@
               }
             </div>
 
-
-            <div class="action-buttons mt-4">
+            <div class="habit-compact-container mt-4">
+              <h6 class="habit-title">🛋️ 房東設定的生活習慣與規定</h6>
+              <div class="habit-grid">
+                <div class="habit-item"><span class="label">就寢時間：</span><span class="value">{{ house.sleepTime === 0 ? '00:00' : house.sleepTime + ':00' }}</span></div>
+                <div class="habit-item"><span class="label">起床時間：</span><span class="value">{{ house.wakeTime < 10 ? '0' + house.wakeTime + ':00' : house.wakeTime + ':00' }}</span></div>
+                <div class="habit-item"><span class="label">潔癖程度：</span><span class="value score">{{ house.cleanLevel }} / 5</span></div>
+                <div class="habit-item"><span class="label">噪音容忍：</span><span class="value score">{{ house.noiseTolerance }} / 5</span></div>
+                <div class="habit-item"><span class="label">寵物：</span><span class="value" [class]="house.pet ? 'text-success' : 'text-danger'">{{ house.pet ? '🐾 允許' : '🚫 禁寵' }}</span></div>
+                <div class="habit-item"><span class="label">抽菸：</span><span class="value" [class]="house.smoke ? 'text-success' : 'text-danger'">{{ house.smoke ? '🚬 允許' : '🚫 禁菸' }}</span></div>
+                <div class="habit-item full-width"><span class="label">興趣標籤：</span><span class="value tags">{{ house.interests || '無特別填寫' }}</span></div>
+              </div>
+            </div>
+          </div> <div class="right-action-panel">
+            
+            <div class="action-buttons mb-3">
               <button class="btn-approve" (click)="approveHouse(house)">✅ 核准上架</button>
               <button class="btn-reject" (click)="rejectHouse(house.id)">❌ 退回申請</button>
             </div>
-          </div>
 
+            <div class="house-cover">
+              @if (getCoverUrl(house)) {
+                <img [src]="'https://localhost:44304' + getCoverUrl(house)" alt="首圖">
+              } @else {
+                <div class="no-cover">房東未設定首圖</div>
+              }
+            </div>
 
-          <div class="house-cover">
-            @if (getCoverUrl(house)) {
-              <img [src]="'https://localhost:44304' + getCoverUrl(house)" alt="首圖">
-            } @else {
-              <div class="no-cover">房東未設定首圖</div>
-            }
-          </div>
-        </div>
-
-
-        <div class="image-gallery-check mt-3 pt-3 border-top">
+          </div> </div> <div class="image-gallery-check mt-3 pt-3 border-top">
           <h5 style="font-size: 1rem; color: #475569; margin-bottom: 15px;">📸 房東上傳的照片相簿 (請檢查是否違規)：</h5>
           <div class="gallery-flex">
             @for (img of house.images; track img.id) {
@@ -72,7 +80,5 @@
           </div>
         </div>
 
-      </div>
-    }
-  </div>
-</div>
+      </div> }
+  </div> </div> ```

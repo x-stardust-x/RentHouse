@@ -29,6 +29,12 @@ export class HouseService {
     return this.http.put(`${this.apiUrl}/${id}`, data);
   }
 
+  // 核准API
+  approveHouseStatus(id: number) {
+  
+  return this.http.put(`${this.apiUrl}/Approve/${id}`, {}); 
+}
+
   // 🗑️ 刪 (Delete) - 刪除房屋
   deleteHouse(id: number)
    {

@@ -65,8 +65,16 @@ export class Authservice {
     const decoded = this.decodeToken(token);
 
     // ⚠️ .NET 預設 role key 可能是這個
-    return decoded.role ||
-          decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+    return decoded.role || null
+  }
+
+  getUserId(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    const decoded = this.decodeToken(token);
+
+    return decoded.UserId || null
   }
 
   test(){

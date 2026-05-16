@@ -1,0 +1,165 @@
+<button class="btn btn-info" routerLink="../info">info</button>
+<button class="btn btn-warning" routerLink="../edit">edit</button>
+@if (usersev.profile(); as p){
+<div class="container py-4">
+
+  <!-- header -->
+  <div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+      <h5>歡迎回來</h5>
+      <p class="text-secondary">
+        這裡是您的個人主頁控制台，隨時掌握媒合與刊登狀態。
+      </p>
+    </div>
+
+    <button class="btn btn-success">
+      編輯基本資料
+    </button>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- 左側 -->
+    <div class="col-lg-4">
+
+      <!-- 個人卡 -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <img [src]="p.avatar || 'https://placehold.co/150'" class="rounded-circle" width="150" height="150">
+
+          <div>
+            <h4 class="mb-1">{{p.realName}}</h4>
+            <h6 class="mb-1">{{p.englishName}}</h6>
+            <p class="text-secondary mb-0">
+              {{p.cityName}}，{{p.districtName}}
+            </p>
+          </div>
+        </div>
+
+        <!-- 標籤 -->
+        <div class="d-flex flex-wrap gap-2">
+          @for (tag of tags(); track $index) {
+            <span class="badge text-bg-light">
+              {{ tag }}
+            </span>
+          }
+        </div>
+
+      </div>
+
+      <!-- 認證
+      <div class="card border-0 shadow-sm rounded-4 p-4">
+
+        <div class="d-flex justify-content-between mb-3">
+          <span>身份認證</span>
+          <span class="badge bg-success">已完成</span>
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <span>產權驗證</span>
+          <span class="badge bg-warning">審核中</span>
+        </div>
+
+      </div> -->
+
+    </div>
+
+    <!-- 右側 -->
+    <div class="col-lg-8">
+
+      <!-- 刊登管理 -->
+      <div class="d-flex justify-content-between mb-3">
+        <h3>刊登管理</h3>
+        <a href="">查看全部</a>
+      </div>
+
+      <div class="row g-3 mb-5">
+
+        <!-- 房源卡 -->
+        <div class="col-md-6">
+
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+
+            <img src="..." class="w-100">
+
+            <div class="p-3">
+
+              <h5>陽光通風雅房 - 近捷運</h5>
+
+              <p class="text-secondary">
+                台北市大安區和平東二段
+              </p>
+
+              <div class="d-flex justify-content-between align-items-center">
+
+                <h3 class="text-success">NT$ 8,500</h3>
+
+                <small class="text-secondary">
+                  👁 124
+                </small>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- 新增 -->
+        <div class="col-md-6">
+
+          <div class="border border-2 border-dashed rounded-4 h-100
+                      d-flex flex-column justify-content-center align-items-center">
+
+            <div class="display-5">+</div>
+
+            <h5>新增刊登物件</h5>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- 媒合進度 -->
+      <h3 class="mb-3">媒合進度</h3>
+
+      <div class="card border-0 shadow-sm rounded-4 p-3 mb-3">
+
+        <div class="d-flex justify-content-between align-items-center">
+
+          <div class="d-flex gap-3 align-items-center">
+
+            <img src="..." class="rounded-circle" width="60">
+
+            <div>
+              <h5 class="mb-1">林小美</h5>
+              <p class="mb-0 text-secondary">
+                申請租用：陽光通風雅房
+              </p>
+            </div>
+
+          </div>
+
+          <div class="d-flex gap-2">
+            <button class="btn btn-light">
+              查看履歷
+            </button>
+
+            <button class="btn btn-success">
+              發送訊息
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+}

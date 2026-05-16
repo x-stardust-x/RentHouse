@@ -55,20 +55,28 @@ export class RentalMatchingComponent implements OnInit {
     return null;
   }
 
-  // 保留你原本的導航功能，並確保傳進來的 id 轉成字串
-  navigateToDetail(id: any) {
-    this.router.navigate(['/rental-matching-detail', id.toString()]);
-  }
-  // 🌟 放大魔法狀態 (裝放大照片的網址)
+  
+  // 放大魔法狀態 (裝放大照片的網址)
   lightboxImage = signal<string | null>(null);
 
-  // 🌟 啟動放大魔法
+  // 啟動放大魔法
   openLightbox(imageUrl: string) {
     this.lightboxImage.set(imageUrl);
   }
 
-  // 🌟 關閉放大魔法
+  // 關閉放大魔法
   closeLightbox() {
     this.lightboxImage.set(null);
   }
+
+  navigateToDetail(id: number | undefined): void {
+    if (id) {
+      this.router.navigate(['/rental-matching-detail', id]);
+    } else {
+      console.warn('找不到該房屋的 ID');
+    }
+
+  }
+
+  // items = this.houses;
 }

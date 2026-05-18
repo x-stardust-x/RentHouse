@@ -28,4 +28,7 @@ export interface MatchHouseDto {
   noiseTolerance?: number | null;
   pet?: boolean | null;
   smoke?: boolean | null;
+
+  //房屋圖片
+  imageUrls: string[];
 }

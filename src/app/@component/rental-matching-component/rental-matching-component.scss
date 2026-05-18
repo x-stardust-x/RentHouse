@@ -69,6 +69,39 @@ p {
   color: #666;
 }
 
+// .mdc-slider__track--inactive {
+//   background: #c6c6c6 !important;
+// }
+
+.mat-expansion-panel-header {
+  padding: unset !important;
+}
+
+.mat-expansion-panel {
+  background: unset !important;
+}
+
+.mat-expansion-panel:not([class*=mat-elevation-z]) {
+  box-shadow: unset;
+}
+
+.mat-expansion-panel {
+  overflow: unset;
+}
+
+.mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled=true]):hover {
+  background: unset;
+  // background: var(--mat-expansion-header-hover-state-layer-color, color-mix(in srgb, var(--mat-sys-on-surface) calc(var(--mat-sys-hover-state-layer-opacity) * 100%), transparent));
+}
+
+.mat-expansion-panel-body {
+  padding: unset !important;
+  padding: 0 0 0 !important;
+  margin: 0 24px 16px;
+  background: red !important;
+}
+
+
 /* 表單元件基本樣式 */
 .categories,
 .location,

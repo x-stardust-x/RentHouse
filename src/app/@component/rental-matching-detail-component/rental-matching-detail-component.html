@@ -15,7 +15,6 @@
     [style.background-image]="'url(' + (house()?.url || 'images/default_image_16-9.jpg') + ')'">
     <!-- <img src="images/daan_cozy_shared_suite_01.jpg" alt="" style="width: 100%"> -->
 
-
     <div class="top-info"
       style="width: 100%; display: flex; gap: 1em; justify-content: space-between; align-items: flex-start; margin: auto; padding: 3em;">
 
@@ -151,7 +150,8 @@
     <div style="border: black 2px solid; padding: 1em;">
       <h2>提供的設施與服務</h2>
 
-      <!-- 照理說，這裡應該要能讓出租人自行新增設施與服務，後端要新增這個功能 -->
+      <!-- 照理說，這裡應該要能讓出租人自行新增設施與服務，
+       後端要新增這個功能 -->
 
       <div>
 
@@ -178,9 +178,8 @@
       <p>{{ house()?.address }}</p>
       <!-- <p>台北市大安區和平東路二段</p> -->
 
-      <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.2851170507593!2d121.53818317566915!3d25.02532267782208!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442aa296cd602fd%3A0x186b8e638107ce79!2zMTA26Ie65YyX5biC5aSn5a6J5Y2A5ZKM5bmz5p2x6Lev5LqM5q61!5e1!3m2!1szh-TW!2stw!4v1778145513089!5m2!1szh-TW!2stw"
-        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+
+      <iframe [src]="mapUrl()" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
         referrerpolicy="no-referrer-when-downgrade">
       </iframe>
     </div>
@@ -188,11 +187,14 @@
 
   </div>
 
+
+
   <div style="flex: 1; gap: 2em; display: flex; flex-direction: column;">
 
-    <div style="border: black 2px solid; padding: 1em;">
-      <div style="display: flex; align-items: center;">
-        <div style="position: relative; width: fit-content;">
+    <!-- 出租人資料 -->
+    <div style="border: black 2px solid; padding: 1em; display: flex; flex-direction: column; gap: 2em;">
+      <div style="display: flex; flex-direction: row; gap: 2em;">
+        <div style="position: relative; width: fit-content; height: fit-content;">
 
           <div style=" width: fit-content;">
             <img src="images/mr_chen.jpg" alt="出租人"
@@ -200,44 +202,84 @@
           </div>
 
           <div
-            style="display: flex; align-items: center; gap: .2em; padding: .1em; width: fit-content; position: absolute; bottom: -.5em; right: 0; background: pink;">
+            style="display: flex; align-items: center; gap: .2em; padding: .1em; width: max-content; position: absolute; bottom: -.5em; right: 0; background: pink;">
             <span class="material-symbols-outlined"
               style="font-variation-settings: 'FILL' 0, 'wght' 700; font-size: 1.125em;">verified</span>
-            <p>已驗證</p>
+            <p style="width: max-width !important;">已驗證</p>
           </div>
 
         </div>
 
-
-
-
         <!-- ======== 後面處理出租人資訊 ======== -->
         <!-- ==================================== -->
 
-        <h2>{{ house()?.userName }}</h2>
-        <h2>{{ house()?.account?.userName }}</h2>
-        <h2>{{ house()?.accountId }}</h2>
-        <!-- <h2>陳先生</h2> -->
-        <p>出租人</p>
+        <div>
 
-        <div style="display: flex;">
-          <p>4.9</p>
-          <p>(<span>12</span>則評價)</p>
+          <h2>{{ house()?.userName }}</h2>
+          <!-- <h2>{{ house()?.accountId }}</h2> -->
+
+          <!-- <h2>陳先生</h2> -->
+          <p>出租人</p>
+
+          <div style="display: flex;">
+
+            <div class="star-rating-wrapper">
+
+              <p>{{ house()?.reviewCount === 0 ? '0.0' : (house()?.rating | number:'1.1-1') }}</p>
+              <!-- <p>{{ house()?.rating | number:'1.1-1' }}</p> -->
+
+              <div class="star-rating">
+
+                <div class="stars-empty">
+                  <span class="material-symbols-outlined"
+                    style="font-variation-settings: 'FILL' 0, 'wght' 700; font-size: 1.125em;">star</span>
+                  <span class="material-symbols-outlined"
+                    style="font-variation-settings: 'FILL' 0, 'wght' 700; font-size: 1.125em;">star</span>
+                  <span class="material-symbols-outlined"
+                    style="font-variation-settings: 'FILL' 0, 'wght' 700; font-size: 1.125em;">star</span>
+                  <span class="material-symbols-outlined"
+                    style="font-variation-settings: 'FILL' 0, 'wght' 700; font-size: 1.125em;">star</span>
+                  <span class="material-symbols-outlined"
+                    style="font-variation-settings: 'FILL' 0, 'wght' 700; font-size: 1.125em;">star</span>
+                </div>
+
+                <!-- <div class="stars-filled" [style.width.%]="(house()?.rating / 5) * 100"> -->
+                <div class="stars-filled"
+                  [style.width.%]="house()?.reviewCount === 0 ? 0 : (house()?.rating / 5) * 100">
+                  <span class="material-symbols-outlined"
+                    style="font-variation-settings: 'FILL' 1, 'wght' 700; font-size: 1.125em;">star</span>
+                  <span class="material-symbols-outlined"
+                    style="font-variation-settings: 'FILL' 1, 'wght' 700; font-size: 1.125em;">star</span>
+                  <span class="material-symbols-outlined"
+                    style="font-variation-settings: 'FILL' 1, 'wght' 700; font-size: 1.125em;">star</span>
+                  <span class="material-symbols-outlined"
+                    style="font-variation-settings: 'FILL' 1, 'wght' 700; font-size: 1.125em;">star</span>
+                  <span class="material-symbols-outlined"
+                    style="font-variation-settings: 'FILL' 1, 'wght' 700; font-size: 1.125em;">star</span>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+
+          <!-- <p>4.9</p> -->
+
+
+          <p>(<span>{{ house()?.reviewCount }}</span>則評價)</p>
+          <!-- <p>(<span>12</span>則評價)</p> -->
+
         </div>
 
         <!-- ==================================== -->
         <!-- ==================================== -->
       </div>
 
+      <p>{{ house()?.bio }}</p>
 
+      <a href="#" style="display: inline-block; border: black 2px solid; padding: 1em; background: white; width: fit-content;">查看完整個人檔案</a>
 
-
-      <!-- <p>{{ house()?.account?.description }}</p> -->
-      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit, autem non accusantium eum doloremque facere
-        maiores cupiditate mollitia illo rerum excepturi eius ad ipsum blanditiis saepe deleniti nihil voluptatibus
-        quibusdam!</p>
-
-      <a href="#" style="border: black 2px solid; padding: 1em; background: white;">查看完整個人檔案</a>
     </div>
 
     <div style="border: black 2px solid; padding: 1em;">
@@ -245,17 +287,45 @@
       <p>NT$<span style="font-size: 1.5rem;"> {{ house()?.rentPrice }} </span><span>/月</span></p>
 
       <!-- 如果資料庫條件符合含有水電 或 網路 或 管理費，顯示符合的條件 -->
+
+      <!-- 照理說，這裡應該要能讓出租人自行新增設施與服務，
+       並且決定水電、網路、管理費有沒有包含在費用中
+       後端要新增這個功能 -->
+
       <!-- @if -->
 
+      <!-- 需要改成類似switch方式來寫，以及解決頓號顯示 -->
+      <p>包含
+        <!-- 費用中包含 wifi -->
+        @if (house()?.includeWifi) {
+        <span>Wifi</span>
+        <span>、</span>
+        }
+        @if (house()?.includeUtilities) {
+        <span>水電</span>
+        <span>、</span>
+        }
+        @if (house()?.includeManagementFee) {
+        <span>管理費</span>
+        }
+
+        <!-- <p>包含水電、網路及管理費</p> -->
+
+
+      </p>
+
       <!-- ==================================== -->
       <!-- ==================================== -->
 
-      <p>包含水電、網路及管理費</p>
+
+
 
       <select name="rental-period" id="reatal-period">
         <!-- <option value="">選擇租期</option> -->
-        <option value="six-months">6個月</option>
         <option value="one-year">1年 (12個月)</option>
+        <option value="six-months">6個月</option>
+        <option value="one-year">3個月</option>
+        <option value="one-year">1個月</option>
       </select>
 
 

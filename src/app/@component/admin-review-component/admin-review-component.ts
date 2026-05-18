@@ -45,12 +45,12 @@ export class AdminReviewComponent implements OnInit {
   // 核准上架 (將狀態更新為 2)
   approveHouse(house: any) {
     if (confirm(`✅ 確定要核准【${house.name}】正式上架嗎？`)) {
-      const updatedData = { ...house, status: 2 };
-
-      this.houseService.updateHouse(house.id, updatedData).subscribe({
+      
+      
+      this.houseService.approveHouseStatus(house.id).subscribe({
         next: () => {
           alert('🎉 核准成功！該房屋已正式上架提供租客瀏覽！');
-          this.loadPendingHouses();
+          this.loadPendingHouses(); // 重新載入清單，這間房子就會消失了
         },
         error: (err) => console.error('核准失敗', err)
       });

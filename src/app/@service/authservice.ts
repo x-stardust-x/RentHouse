@@ -12,7 +12,7 @@ import { LoginResponse } from '../@interface/login-response';
 export class Authservice {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private api = 'https://localhost:7215/api/Auth';
+  private api = 'https://localhost:44304/api/Auth';
 
   login(data: { email: string; pwd: string } , isAdmin : boolean){
     if(isAdmin){
@@ -78,7 +78,7 @@ export class Authservice {
   }
 
   test(){
-    return this.http.get("https://localhost:7215/api/Auth/getalladmin");
+    return this.http.get("https://localhost:44304/api/Auth/getalladmin");
   }
 
 }

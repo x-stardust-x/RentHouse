@@ -2,7 +2,7 @@ import { Component, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HouseService } from '../../@service/house.service';
 import { CreateHouseDto } from '../../@interface/house';
-
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-rent-house-component',
   imports: [FormsModule],
@@ -15,9 +15,10 @@ export class RentHouseComponent implements OnInit {
 
   // 綁定表單資料 (DTO)
   formData: CreateHouseDto = {
-    accountId: 1, // TODO: 改為動態取得帳號 ID
+    accountId: 3, // TODO: 改為動態取得帳號 ID
+    districtId: undefined, // 先不指定，讓房東選擇
     name: '測試豪華套房',
-    address: '高雄市三民區',
+    address: '',
     description: '採光超好，附機車位',
     rentPrice: 15000,
     includeUtilities: false,
@@ -46,10 +47,14 @@ export class RentHouseComponent implements OnInit {
 
   protected readonly title = signal('rent-house-web');
 
-  constructor(private houseService: HouseService) {}
+  constructor(
+    private houseService: HouseService, 
+    private http: HttpClient
+  ) {}
 
   ngOnInit() {
-    this.loadHouses();
+    this.loadHouses();      
+    this.fetchDistricts();  
   }
 
   // 取得房屋列表
@@ -59,6 +64,27 @@ export class RentHouseComponent implements OnInit {
       error: (err) => console.error('取得列表失敗', err)
     });
   }
+  allDistricts: any[] = [];        // 裝 C# 送來的所有原始資料
+  cityList: string[] = [];         // 裝過濾後「不重複」的縣市名單 (例如：['台北市', '高雄市'])
+  filteredDistricts: any[] = [];   // 當前選中縣市底下的區域清單
+  selectedCity: string | null = null; // 房東目前選到的縣市
+  
+  fetchDistricts() {
+    const apiUrl = 'https://localhost:44304/api/RentHouse/Districts'; // 請確認你的正確網址
+    this.http.get<any[]>(apiUrl).subscribe(res => {
+      this.allDistricts = res;
+      // 利用 Set 的特性，把重複的縣市名稱剃除掉，整理出乾淨的縣市清單！
+      this.cityList = [...new Set(this.allDistricts.map(d => d.cityName))];
+    });
+  }
+  // 🌟 房東一改變縣市，就觸發這個魔法！
+  onCityChange() {
+    // 1. 把該縣市底下的區域挑出來
+    this.filteredDistricts = this.allDistricts.filter(d => d.cityName === this.selectedCity);
+    // 2. 清空原本選好的區域 ID，強迫房東重新選一個區域
+    this.formData.districtId = undefined;
+  }
+
 
   // 處理多圖選取與預覽
   onFilesSelected(event: any) {
@@ -72,7 +98,7 @@ export class RentHouseComponent implements OnInit {
           this.pendingPhotos.push({
             file: file,
             previewUrl: e.target.result,
-            // 第一張預設為首圖
+            
             isCover: this.pendingPhotos.length === 0
           });
         };
@@ -171,6 +197,23 @@ export class RentHouseComponent implements OnInit {
     interests: ''
     };
     this.pendingPhotos = [];
+  }
+  removePendingPhoto(index: number) {
+    
+    const isDeletingCover = this.pendingPhotos[index].isCover;
+
+    
+    this.pendingPhotos.splice(index, 1);
+    
+    //如果你有一個用來裝「真正要上傳的實體 File」的陣列 (例如 selectedFiles)，
+    // 記得也要在這裡一併刪除它喔！例如把它取消註解： 
+    // this.selectedFiles.splice(index, 1);
+
+    // 3. 貼心防呆：如果刪除的是首圖，且還有剩下的照片，自動把第一張設為首圖
+    if (isDeletingCover && this.pendingPhotos.length > 0) {
+      this.pendingPhotos.forEach(p => p.isCover = false); // 全部重置
+      this.pendingPhotos[0].isCover = true;               // 第一張接任首圖
+    }
   }
 
   // 取消編輯模式

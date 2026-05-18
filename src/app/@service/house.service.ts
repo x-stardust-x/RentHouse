@@ -5,9 +5,8 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class HouseService {
-  // ⚠️ 關鍵提醒：請務必去確認你 C# Swagger 網址上的 Port 號！
-  // 如果你的不是 44368，請把這行數字改成你的！
-  private apiUrl = 'https://localhost:7215/api/RentHouse';
+  
+  private apiUrl = 'https://localhost:44304/api/RentHouse';
 
   constructor(private http: HttpClient) { }
 
@@ -28,6 +27,12 @@ export class HouseService {
   {
     return this.http.put(`${this.apiUrl}/${id}`, data);
   }
+
+  // 核准API
+  approveHouseStatus(id: number) {
+  
+  return this.http.put(`${this.apiUrl}/Approve/${id}`, {}); 
+}
 
   // 🗑️ 刪 (Delete) - 刪除房屋
   deleteHouse(id: number)

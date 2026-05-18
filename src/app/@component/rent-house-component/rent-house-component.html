@@ -11,10 +11,34 @@
         <input type="text" [(ngModel)]="formData.name">
       </div>
 
-      <div class="form-group">
-        <label>地址：</label>
-        <input type="text" [(ngModel)]="formData.address">
-      </div>
+      <div class="form-group mb-4">
+  <label class="fw-bold mb-2">房屋地址：</label>
+  <div class="row g-2">
+    
+    <div class="col-md-3">
+      <select class="form-select" [(ngModel)]="selectedCity" (change)="onCityChange()">
+        <option [ngValue]="null" disabled>選擇縣市</option>
+        @for (city of cityList; track city) {
+          <option [value]="city">{{ city }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <select class="form-select" [(ngModel)]="formData.districtId" [disabled]="!selectedCity">
+        <option [ngValue]="null" disabled>選擇區域</option>
+        @for (district of filteredDistricts; track district.districtId) {
+          <option [value]="district.districtId">{{ district.districtName }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="col-md-6">
+      <input type="text" class="form-control" [(ngModel)]="formData.address" placeholder="請輸入路名、巷弄與門牌 (例如：九如一路100號)">
+    </div>
+
+  </div>
+</div>
 
       <div class="form-group">
         <label>租金 (元)：</label>
@@ -133,15 +157,20 @@
         @if (pendingPhotos && pendingPhotos.length > 0) {
           <div class="d-flex flex-wrap bg-light p-3 rounded border">
             @for (photo of pendingPhotos; track $index) {
-              <div class="me-3 mb-3 text-center bg-white border p-2 rounded shadow-sm">
+              <div class="me-3 mb-3 text-center bg-white border p-2 rounded shadow-sm position-relative">
 
+                <button type="button" 
+                        class="btn btn-danger position-absolute d-flex justify-content-center align-items-center"
+                        style="top: -10px; right: -10px; width: 24px; height: 24px; border-radius: 50%; padding: 0; font-size: 12px; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"
+                        (click)="removePendingPhoto($index)">
+                  ✕
+                </button>
 
                 <img [src]="photo.previewUrl" class="img-thumbnail mb-2" style="width: 120px; height: 120px; object-fit: cover;">
 
-
                 <div class="form-check d-flex justify-content-center align-items-center">
                   <input class="form-check-input me-1" type="radio"
-                         name="coverRadioSelect"
+                         name="coverRadioSelect_{{$index}}" 
                          [checked]="photo.isCover"
                          (change)="setPendingCover($index)"
                          style="cursor: pointer;">
@@ -149,12 +178,11 @@
                     {{ photo.isCover ? '⭐ 首圖' : '設為首圖' }}
                   </label>
                 </div>
-
+                
               </div>
             }
           </div>
         }
-      </div>
 
       <div class="included-items-block">
         <h4>✨ 租金包含項目</h4>

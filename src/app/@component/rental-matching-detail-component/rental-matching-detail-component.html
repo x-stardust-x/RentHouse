@@ -8,11 +8,38 @@
 </style>
 
 
+<!-- @if (detailData()) {
+<div style="padding: 2em; text-align: center;">
+  <h2>資料載入中...</h2>
+</div>
+} -->
+
+
+<!-- <div [style.display]="detailData() ? 'block' : 'none'">
+
+  <app-rental-header [data]="detailData()"></app-rental-header>
+
+  <div class="grid">
+    <app-rental-features [data]="detailData()"></app-rental-features>
+    <app-rental-booking [data]="detailData()"></app-rental-booking>
+  </div> -->
+
+
+
 <div class="top" style="overflow-x: clip;">
+
+
+  <!-- <div style="background-color: #ffcccc; padding: 20px; margin: 20px; border: 2px solid red;">
+    <h2>除錯面板：請檢查這裡的屬性名稱</h2>
+    <pre>{{ detailData() | json }}</pre>
+  </div> -->
+
+
+
 
   <div
     style="width: 100%; height: 100vh; position: relative; background-color: rgba(0, 0, 0, 0.2); background-blend-mode: multiply; background-repeat: no-repeat; background-size: cover;"
-    [style.background-image]="'url(' + (house()?.url || 'images/default_image_16-9.jpg') + ')'">
+    [style.background-image]="'url(' + (detailData()?.url || 'images/default_image_16-9.jpg') + ')'">
     <!-- <img src="images/daan_cozy_shared_suite_01.jpg" alt="" style="width: 100%"> -->
 
     <div class="top-info"
@@ -20,12 +47,14 @@
 
       <div class="main-info" style="display: flex; flex-direction: column; gap: .5em;">
         <!-- <h1>大安區溫馨共居套房</h1> -->
-        <h1>{{ house()?.name }}</h1>
+        <h1>{{ detailData()?.name }}</h1>
 
         <div class="location" style="display: flex; align-items: center; gap: 0.5em;">
           <span class="material-symbols-outlined"
             style="font-variation-settings: 'FILL' 0, 'wght' 700;">location_on</span>
-          <p style="margin-bottom: unset;">{{ house()?.address }}</p>
+          <p style="margin-bottom: unset;">{{ detailData()?.address }}</p>
+
+          <!-- <p>除錯資訊：{{ detailData() | json }}</p> -->
         </div>
       </div>
 
@@ -50,7 +79,7 @@
 
       <div style="width: 100%">
 
-        <img [src]="house().url || 'images/default_image_16-9.jpg'" alt="房屋圖片"
+        <img [src]="detailData()?.url ?? 'images/default_image_16-9.jpg'" alt="房屋圖片"
           style="width: 16em; height: auto; aspect-ratio: 1 / 1; object-fit: cover;">
 
         <!-- <img src="images/daan_cozy_shared_suite_01.jpg" alt=""
@@ -64,12 +93,12 @@
       </div>
 
       <div>
-        <img [src]="house().url || 'images/default_image_16-9.jpg'" alt="房屋圖片"
+        <img [src]="detailData()?.url || 'images/default_image_16-9.jpg'" alt="房屋圖片"
           style="width: 16em; height: auto; aspect-ratio: 1 / 1; object-fit: cover;">
       </div>
 
       <div>
-        <img [src]="house().url || 'images/default_image_16-9.jpg'" alt="房屋圖片"
+        <img [src]="detailData()?.url || 'images/default_image_16-9.jpg'" alt="房屋圖片"
           style="width: 16em; height: auto; aspect-ratio: 1 / 1; object-fit: cover;">
       </div>
 
@@ -82,101 +111,99 @@
 
   <div style="flex: 2; display: flex; flex-direction: column; gap: 2em;">
 
-    <div class="intro" style="border: black 2px solid; padding: 1em;">
-      <h2>關於這個空間</h2>
-      <p>{{ house()?.description }}</p>
+
+
+    <div style="background-color: yellow; padding: 1em;">
+      當前 displayType 為：{{ detailData()?.displayType }}
+      (型別檢查：{{ typeof detailData()?.displayType }})
     </div>
 
-    <div style="border: black 2px solid; padding: 1em;">
-      <h2>生活習慣</h2>
 
-      <div style="width: 100%; display: grid; grid-template-columns: repeat(3, 25%); gap: 2em;">
+    <!-- <div style="border: 2px solid purple; padding: 20px;">
+      <h2>暴力檢視</h2>
+      <p>顯示名稱: {{ detailData()?.name }}</p>
+      <p>顯示內容: {{ detailData()?.requiredKnowledge }}</p>
+      <p>顯示 JSON: {{ detailData() | json }}</p>
+    </div> -->
 
-        <!-- 安靜/熄燈時間 -->
-        @if (house()?.sleepTime) {
 
-        }
 
-        <!-- 起床/活動時間 -->
-        @if (house()?.wakeTime) {
 
-        }
+    <div class="content-wrapper">
 
-        <!-- 需達到整潔程度 -->
-        @if (house()?.cleanLevel) {
+      @if (isRoom()) {
 
-        }
-
-        <!-- 噪音線制 -->
-        @if (house()?.noiseTolerance) {
-        <div style="display: flex; gap: .5em; border: black 2px solid; padding: 1em; width: fit-content;">
-          <span class="material-symbols-outlined"
-            style="font-variation-settings: 'FILL' 0, 'wght' 700;">volume_off</span>
-          <p>保持安靜</p>
+      <div class="room-details">
+        <div class="intro" style="border:red 2px solid; padding: 1em;">
+          <h2>關於這個空間</h2>
+          <p>{{ detailData()?.description }}</p>
         </div>
-        }
 
-        <!-- 能否養寵物 -->
-        @if (house()?.pet) {
-        <div style="display: flex; gap: .5em; border: black 2px solid; padding: 1em; width: fit-content;">
-          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0, 'wght' 700;">pets</span>
-          <p>可養寵物</p>
+        <div style="border:red 2px solid; padding: 1em;">
+          <h2>生活習慣</h2>
+          <div style="width: 100%; display: grid; grid-template-columns: repeat(3, 25%); gap: 2em;">
+            @if (detailData()?.noiseTolerance) {
+            <div style="display: flex; gap: .5em; border: black 2px solid; padding: 1em; width: fit-content;">
+              <span class="material-symbols-outlined"
+                style="font-variation-settings: 'FILL' 0, 'wght' 700;">volume_off</span>
+              <p>保持安靜</p>
+            </div>
+            }
+            @if (detailData()?.pet) {
+            <div style="display: flex; gap: .5em; border: black 2px solid; padding: 1em; width: fit-content;">
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0, 'wght' 700;">pets</span>
+              <p>可養寵物</p>
+            </div>
+            }
+            @if (detailData()?.smoke) {
+            <div style="display: flex; gap: .5em; border: black 2px solid; padding: 1em; width: fit-content;">
+              <span class="material-symbols-outlined"
+                style="font-variation-settings: 'FILL' 0, 'wght' 700;">smoke_free</span>
+              <p>全面禁菸</p>
+            </div>
+            }
+          </div>
         </div>
-        }
 
-        <!-- 能否抽菸 -->
-        @if (house()?.smoke) {
-        <div style="display: flex; gap: .5em; border: black 2px solid; padding: 1em; width: fit-content;">
-          <span class="material-symbols-outlined"
-            style="font-variation-settings: 'FILL' 0, 'wght' 700;">smoke_free</span>
-          <p>全面禁菸</p>
+        <div style="border: red 2px solid; padding: 1em;">
+          <h2>提供的設施與服務</h2>
+          <div>
+            @if (detailData()?.includeWifi) {
+            <div style="display: flex; gap: .5em; border: black 2px solid; padding: 1em; width: fit-content;">
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0, 'wght' 700;">wifi</span>
+              <p>Wifi</p>
+            </div>
+            }
+          </div>
         </div>
-        }
-
-
-
-        <!-- <div style="display: flex; gap: .5em; border: black 2px solid; padding: 1em; width: fit-content;">
-          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0, 'wght' 700;">wb_sunny</span>
-          <p>晨型人</p>
-        </div> -->
-
-
 
       </div>
 
-    </div>
 
+      }
 
-    <div style="border: black 2px solid; padding: 1em;">
-      <h2>提供的設施與服務</h2>
-
-      <!-- 照理說，這裡應該要能讓出租人自行新增設施與服務，
-       後端要新增這個功能 -->
-
-      <div>
-
-        <!-- 是否含 wifi -->
-        @if (house()?.includeWifi) {
-        <div style="display: flex; gap: .5em; border: black 2px solid; padding: 1em; width: fit-content;">
-          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0, 'wght' 700;">wifi</span>
-          <p>Wifi</p>
-        </div>
-        }
-
-        <!-- 這裡會有更多 設施與服務，等後端功能做完測試 -->
-
-
-
-
-
+      @if (isSkill()) {
+      <div style="border: 2px solid blue; padding: 1em;">
+        <h2>授課形式</h2>
+        <p>{{ detailData()?.isOnline ? '線上' : '實體' }}</p>
       </div>
+      }
+
+      @if (isTool()) {
+      <div style="border: 2px solid green; padding: 1em;">
+        <h2>庫存數量</h2>
+        <p>{{ detailData()?.quantity ?? 0 }} 個</p>
+      </div>
+      }
     </div>
+
+
+
 
 
     <div style="border: black 2px solid; padding: 1em;">
       <h2>位置資訊</h2>
-      <p>{{ house()?.address }}</p>
-      <!-- <p>台北市大安區和平東路二段</p> -->
+      <p>{{ detailData()?.address }}</p>
 
 
       <iframe [src]="mapUrl()" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
@@ -215,7 +242,7 @@
 
         <div>
 
-          <h2>{{ house()?.userName }}</h2>
+          <h2>{{ detailData()?.userName }}</h2>
           <!-- <h2>{{ house()?.accountId }}</h2> -->
 
           <!-- <h2>陳先生</h2> -->
@@ -225,7 +252,7 @@
 
             <div class="star-rating-wrapper">
 
-              <p>{{ house()?.reviewCount === 0 ? '0.0' : (house()?.rating | number:'1.1-1') }}</p>
+              <p>{{ detailData()?.reviewCount === 0 ? '0.0' : (detailData()?.rating | number:'1.1-1') }}</p>
               <!-- <p>{{ house()?.rating | number:'1.1-1' }}</p> -->
 
               <div class="star-rating">
@@ -245,7 +272,7 @@
 
                 <!-- <div class="stars-filled" [style.width.%]="(house()?.rating / 5) * 100"> -->
                 <div class="stars-filled"
-                  [style.width.%]="house()?.reviewCount === 0 ? 0 : (house()?.rating / 5) * 100">
+                  [style.width.%]="detailData()?.reviewCount === 0 ? 0 : (detailData()?.rating / 5) * 100">
                   <span class="material-symbols-outlined"
                     style="font-variation-settings: 'FILL' 1, 'wght' 700; font-size: 1.125em;">star</span>
                   <span class="material-symbols-outlined"
@@ -267,7 +294,7 @@
           <!-- <p>4.9</p> -->
 
 
-          <p>(<span>{{ house()?.reviewCount }}</span>則評價)</p>
+          <p>(<span>{{ detailData()?.reviewCount }}</span>則評價)</p>
           <!-- <p>(<span>12</span>則評價)</p> -->
 
         </div>
@@ -276,15 +303,16 @@
         <!-- ==================================== -->
       </div>
 
-      <p>{{ house()?.bio }}</p>
+      <p>{{ detailData()?.bio }}</p>
 
-      <a href="#" style="display: inline-block; border: black 2px solid; padding: 1em; background: white; width: fit-content;">查看完整個人檔案</a>
+      <a href="#"
+        style="display: inline-block; border: black 2px solid; padding: 1em; background: white; width: fit-content;">查看完整個人檔案</a>
 
     </div>
 
     <div style="border: black 2px solid; padding: 1em;">
 
-      <p>NT$<span style="font-size: 1.5rem;"> {{ house()?.rentPrice }} </span><span>/月</span></p>
+      <p>NT$<span style="font-size: 1.5rem;"> {{ detailData()?.rentPrice }} </span><span>/月</span></p>
 
       <!-- 如果資料庫條件符合含有水電 或 網路 或 管理費，顯示符合的條件 -->
 
@@ -297,15 +325,15 @@
       <!-- 需要改成類似switch方式來寫，以及解決頓號顯示 -->
       <p>包含
         <!-- 費用中包含 wifi -->
-        @if (house()?.includeWifi) {
+        @if (detailData()?.includeWifi) {
         <span>Wifi</span>
         <span>、</span>
         }
-        @if (house()?.includeUtilities) {
+        @if (detailData()?.includeUtilities) {
         <span>水電</span>
         <span>、</span>
         }
-        @if (house()?.includeManagementFee) {
+        @if (detailData()?.includeManagementFee) {
         <span>管理費</span>
         }
 
@@ -341,3 +369,4 @@
   </div>
 
 </div>
+<!-- </div> -->

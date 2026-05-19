@@ -15,7 +15,23 @@
         <h3>類別</h3>
       </div>
 
-      <div>
+
+      <div style="display: flex; flex-direction: column;">
+        <label>
+          <input type="radio" name="category" value="all" [checked]="selectedCategory() === 'all'"
+            (change)="selectedCategory.set('all')"> 不限
+        </label>
+        <label>
+          <input type="radio" name="category" value="room" [checked]="selectedCategory() === 'room'"
+            (change)="selectedCategory.set('room')"> 房間出租
+        </label>
+        <label>
+          <input type="radio" name="category" value="product" [checked]="selectedCategory() === 'product'"
+            (change)="selectedCategory.set('product')"> 工具 / 技能
+        </label>
+      </div>
+
+      <!-- <div>
         <input type="radio" name="rental-category" id="no-limit">
         <label for="no-limit">不限</label>
       </div>
@@ -28,7 +44,7 @@
       <div>
         <input type="radio" name="rental-category" id="tools-skills">
         <label for="tools-skills">工具 / 技能</label>
-      </div>
+      </div> -->
 
     </div>
 
@@ -327,7 +343,8 @@
   <div>
 
     <h1>探索共享資源</h1>
-    <p>在 {{ city }} 發現 {{ rentalItemCount }} 個優質共居與技能共享空間</p>
+    <!-- <p>在 {{ item.city }} 發現 {{ item.rentalItemCount }} 個優質共居與技能共享空間</p>
+    <p>在 {{ item.city }} 發現 {{ item.rentalItemCount }} 個優質共居與技能共享空間</p> -->
 
     <div class="layout">
 
@@ -356,32 +373,102 @@
     </div> -->
 
 
-    @for (item of houses(); track item.id) {
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2em;">
 
-    <div class="rental-item-card">
-      <img [src]="item.url || 'assets/default-house.jpg'" alt="{{ item.name }}" class="rental-item-image">
+      @for (item of displayedItems(); track item.displayType + '_' + item.id) {
 
-      <h2>{{ item.name }}</h2>
+      <div class="rental-item-card">
+        @if (item.displayType === 'room') {
+        <img [src]="item.url || 'assets/default-house.jpg'" alt="{{ item.name }}" class="rental-item-image">
+        } @else {
+        <img src="assets/default-product.jpg" alt="{{ item.name }}" class="rental-item-image">
+        }
 
-      <p class="price">{{ item.rentPrice }}<span> / 月</span></p>
+        <h2>{{ item.name }}</h2>
 
-      <p class="info">{{ item.address }} · {{ item.floorInfo }}</p>
+        @if (item.displayType === 'room') {
+        <p class="price">{{ item.rentPrice | number }}<span> / 月</span></p>
+        } @else {
+        <p class="price">{{ item.price | number }}<span> / {{ item.priceUnit }}</span></p>
+        }
 
-      <div class="habit-tags">
-        @if (item.pet) { <span class="tag">可養寵物</span> }
-        @if (item.smoke === false) { <span class="tag">禁菸</span> }
+        <p class="info">
+          @if (item.displayType === 'room') {
+          {{ item.address || '無地點資訊' }}
+          } @else {
+          <span class="category-badge">{{ item.category }}</span>
+          }
+        </p>
+
+        <!-- @if (item.displayType === 'room') {
+        {{ item.address }} · {{ item.floorInfo }}</p>
+        } @else {
+        <p class="info">
+          <span class="category-badge">{{ item.category }}</span> · {{ item.description }}
+        </p>
+        } -->
+
+        <div class="habit-tags">
+          @if (item.displayType === 'room') {
+          @if (item.pet) { <span class="tag">可養寵物</span> }
+          @if (item.smoke === false) { <span class="tag">禁菸</span> }
+          }
+
+          @if (item.displayType === 'product') {
+          @if (item.ownTool) {
+          <span class="tag tool-tag">需自備：{{ item.ownTool }}</span>
+          }
+          @if (item.requiredKnowledge) {
+          <span class="tag knowledge-tag">門檻：{{ item.requiredKnowledge }}</span>
+          }
+          }
+        </div>
+
+        <button (click)="navigateToDetail(item.id, item.displayType)" class="btn btn-primary">
+          查看詳情
+        </button>
       </div>
 
-      <button (click)="navigateToDetail(item.id)" class="btn btn-primary">查看詳情</button>
+      } @empty {
+
+      <div class="empty-state">
+        <p>目前沒有可用的共居或技能共享空間，請稍後再試。</p>
+      </div>
+
+      }
+
     </div>
 
-    } @empty {
 
-    <div class="empty-state">
-      <p>目前沒有可用的共居或技能共享空間，請稍後再試。</p>
-    </div>
+    <!-- @for (item of houses(); track item.id) {
 
-    }
+      <div class="rental-item-card">
+        <img [src]="item.url || 'assets/default-house.jpg'" alt="{{ item.name }}" class="rental-item-image">
+
+        <h2>{{ item.name }}</h2>
+
+        <p class="price">{{ item.rentPrice }}<span> / 月</span></p>
+
+        <p class="info">{{ item.address }} · {{ item.floorInfo }}</p>
+
+        <div class="habit-tags">
+          @if (item.pet) { <span class="tag">可養寵物</span> }
+          @if (item.smoke === false) { <span class="tag">禁菸</span> }
+        </div>
+
+        <button (click)="navigateToDetail(item.id)" class="btn btn-primary">查看詳情</button>
+      </div>
+
+      } @empty {
+
+      <div class="empty-state">
+        <p>目前沒有可用的共居或技能共享空間，請稍後再試。</p>
+      </div>
+
+      } -->
+
+
+
 
   </div>
 

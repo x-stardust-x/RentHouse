@@ -31,8 +31,8 @@ export class RentHouseComponent implements OnInit {
     houseType: '獨立套房',
     status: 1,
 
-    sleepTime: 23,
-    wakeTime: 7,
+    sleepTime: '23:30',
+    wakeTime: '07:00',
     cleanLevel: 3,
     noiseTolerance: 3,
     pet: false,
@@ -118,6 +118,26 @@ export class RentHouseComponent implements OnInit {
 
 // 提交表單 (新增/修改)
   submitForm() {
+
+    if (this.formData.sleepTime) {
+      if (this.formData.sleepTime.length === 5) {
+        this.formData.sleepTime += ':00';
+      }
+    } else {
+      this.formData.sleepTime = '23:30:00';
+    }
+
+    if (this.formData.wakeTime) {
+      if (this.formData.wakeTime.length === 5) {
+        this.formData.wakeTime += ':00';
+      }
+    } else {
+      this.formData.wakeTime = '07:00:00';
+    }
+
+    console.log('🕵️‍♂️ 偵探回報：即將送出的 formData 包裹內容為：', this.formData);
+
+
     if (this.isEditMode) {
       this.houseService.updateHouse(this.editingId, this.formData).subscribe({
         next: (res) => {
@@ -145,8 +165,7 @@ export class RentHouseComponent implements OnInit {
                 if (completedUploads === totalPhotos) {
                   alert('🎉 房屋申請已送出！包含多張照片與首圖設定，等待管理員審核中。');
                   this.resetForm();
-                  // 如果你是同一個頁面切換身份，可以呼叫 this.loadHouses()
-                   window.location.reload();
+                  window.location.reload();
                 }
               });
             });
@@ -212,8 +231,8 @@ export class RentHouseComponent implements OnInit {
       floorInfo: '',
       houseType: '獨立套房',
       status: 1,
-      sleepTime: 23,
-    wakeTime: 7,
+      sleepTime: '23:30',
+    wakeTime: '07:00',
     cleanLevel: 3,
     noiseTolerance: 3,
     pet: false,

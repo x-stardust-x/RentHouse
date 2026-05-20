@@ -26,10 +26,6 @@ export interface MatchHouseDto {
   wakeTime?: number | null;
   cleanLevel?: number | null;
   noiseTolerance?: number | null;
-  pet?: boolean;
-  // pet?: boolean | null;
+  pet?: boolean | null;
   smoke?: boolean | null;
-
-  //房屋圖片
-  imageUrls: string[];
 }

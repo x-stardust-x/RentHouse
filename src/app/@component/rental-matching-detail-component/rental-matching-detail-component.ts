@@ -78,8 +78,9 @@ export class RentalMatchingDetailComponent implements OnInit {
 
   // 使用 computed 動態生成安全的 Google 地圖網址
   mapUrl = computed<SafeResourceUrl | null>(() => {
+
     // 防呆：如果不是房間，或者沒有地址，就不生成地圖
-    if (this.displayType() !== 'room') return null;
+    // if (this.displayType() !== 'room') return null;
 
     const address = this.detailData()?.address;
     if (!address) return null;

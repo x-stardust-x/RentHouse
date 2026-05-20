@@ -8,6 +8,12 @@
 </style>
 
 
+<!-- <div style="background-color: #ffcccc; padding: 20px; margin: 20px; border: 2px solid red;">
+  <h2>除錯面板：請檢查這裡的屬性名稱</h2>
+  <pre>{{ detailData() | json }}</pre>
+</div> -->
+
+
 <!-- @if (detailData()) {
 <div style="padding: 2em; text-align: center;">
   <h2>資料載入中...</h2>
@@ -115,7 +121,7 @@
 
     <div style="background-color: yellow; padding: 1em;">
       當前 displayType 為：{{ detailData()?.displayType }}
-      (型別檢查：{{ typeof detailData()?.displayType }})
+      <!-- (型別檢查：{{ typeof detailData()?.displayType }}) -->
     </div>
 
 
@@ -224,8 +230,13 @@
         <div style="position: relative; width: fit-content; height: fit-content;">
 
           <div style=" width: fit-content;">
-            <img src="images/mr_chen.jpg" alt="出租人"
+
+            <!-- <img [src]="detailData()?userAvatar || detadetailData()?.avatarUrl || 'images/mr_chen.jpg'" alt="提供者"
+              style="width: 6em; height: auto; aspect-ratio: 1 / 1; border-radius: 50em;"> -->
+
+            <img src="images/mr_chen.jpg" alt="提供者"
               style="width: 6em; height: auto; aspect-ratio: 1 / 1; border-radius: 50em;">
+
           </div>
 
           <div
@@ -242,17 +253,41 @@
 
         <div>
 
-          <h2>{{ detailData()?.userName }}</h2>
+          <!-- <h2>{{ detailData()?.userName }}</h2> -->
           <!-- <h2>{{ house()?.accountId }}</h2> -->
 
-          <!-- <h2>陳先生</h2> -->
+
+          <h2>{{ detailData()?.realName }}</h2>
+          <!-- <h2>{{ detailData()?.userName }}</h2> -->
+
+          @if (isRoom()) {
           <p>出租人</p>
+          } @else if (detailData()?.category === '專業諮詢' || detailData()?.Category === '專業諮詢') {
+          <p>技能提供者</p>
+          } @else if (detailData()?.category === '工具共享' || detailData()?.Category === '工具共享') {
+          <p>工具提供者</p>
+          } @else {
+          <p>提供者</p>
+          }
+
+
+
+
+          <!-- @if (isSkill()) {
+          <p>技能提供者</p>
+          }
+
+          @if (isTool()) {
+          <p>工具提供者</p>
+          } -->
+
 
           <div style="display: flex;">
 
             <div class="star-rating-wrapper">
 
-              <p>{{ detailData()?.reviewCount === 0 ? '0.0' : (detailData()?.rating | number:'1.1-1') }}</p>
+              <p>{{ (detailData()?.reviewCount ?? 0) === 0 ? '0.0' : ((detailData()?.rating ?? 0) | number:'1.1-1') }}
+              </p>
               <!-- <p>{{ house()?.rating | number:'1.1-1' }}</p> -->
 
               <div class="star-rating">
@@ -272,7 +307,7 @@
 
                 <!-- <div class="stars-filled" [style.width.%]="(house()?.rating / 5) * 100"> -->
                 <div class="stars-filled"
-                  [style.width.%]="detailData()?.reviewCount === 0 ? 0 : (detailData()?.rating / 5) * 100">
+                  [style.width.%]="(detailData()?.reviewCount ?? 0) === 0 ? 0 : ((detailData()?.rating ?? 0) / 5) * 100">
                   <span class="material-symbols-outlined"
                     style="font-variation-settings: 'FILL' 1, 'wght' 700; font-size: 1.125em;">star</span>
                   <span class="material-symbols-outlined"
@@ -291,10 +326,8 @@
           </div>
 
 
-          <!-- <p>4.9</p> -->
 
-
-          <p>(<span>{{ detailData()?.reviewCount }}</span>則評價)</p>
+          <p>(<span>{{ detailData()?.reviewCount ?? 0 }}</span>則評價)</p>
           <!-- <p>(<span>12</span>則評價)</p> -->
 
         </div>
@@ -303,7 +336,7 @@
         <!-- ==================================== -->
       </div>
 
-      <p>{{ detailData()?.bio }}</p>
+      <p>{{ detailData()?.bio || '尚未提供個人介紹' }}</p>
 
       <a href="#"
         style="display: inline-block; border: black 2px solid; padding: 1em; background: white; width: fit-content;">查看完整個人檔案</a>
@@ -311,6 +344,11 @@
     </div>
 
     <div style="border: black 2px solid; padding: 1em;">
+
+
+
+
+      @if (isRoom()) {
 
       <p>NT$<span style="font-size: 1.5rem;"> {{ detailData()?.rentPrice }} </span><span>/月</span></p>
 
@@ -345,10 +383,7 @@
       <!-- ==================================== -->
       <!-- ==================================== -->
 
-
-
-
-      <select name="rental-period" id="reatal-period">
+      <select name="rental-period" id="rental-period">
         <!-- <option value="">選擇租期</option> -->
         <option value="one-year">1年 (12個月)</option>
         <option value="six-months">6個月</option>
@@ -361,6 +396,36 @@
         <a href="#" style="border: black 2px solid; padding: 1em; background: white;">立即預訂</a>
         <a href="#" style="border: black 2px solid; padding: 1em; background: white;">聯絡出租人</a>
       </div>
+
+      } @else {
+
+      <p>
+        NT$<span style="font-size: 1.5rem;"> {{ detailData()?.price ?? detailData()?.Price }} </span>
+        <span>/{{ detailData()?.priceUnit ?? detailData()?.PriceUnit ?? '次' }}</span>
+      </p>
+
+      @if (detailData()?.category === '工具共享' || detailData()?.Category === '工具共享') {
+      <p>押金：NT$ {{ detailData()?.deposit ?? detailData()?.Deposit ?? 0 }}</p>
+      <p>庫存數量：{{ detailData()?.quantity ?? detailData()?.Quantity ?? 1 }} 個</p>
+      }
+
+      @if (detailData()?.category === '專業諮詢' || detailData()?.Category === '專業諮詢') {
+      <p>授課形式：{{ (detailData()?.isOnline ?? detailData()?.IsOnline) ? '線上諮詢' : '實體面授' }}</p>
+      }
+
+
+      <div class="links-group" style="margin-block: 1em; display: flex; gap: 1em;">
+        <a href="#" style="border: black 2px solid; padding: 1em; background: white;">
+          {{ (detailData()?.category === '專業諮詢' || detailData()?.Category === '專業諮詢') ? '立即預約' : '立即借用' }}
+        </a>
+        <a href="#" style="border: black 2px solid; padding: 1em; background: white;">聯絡提供者</a>
+      </div>
+
+
+
+      }
+
+
 
       <p>目前不會向您收取任何費用</p>
 

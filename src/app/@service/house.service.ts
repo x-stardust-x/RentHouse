@@ -5,8 +5,8 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class HouseService {
-  
-  private apiUrl = 'https://localhost:44304/api/RentHouse';
+
+  private apiUrl = 'https://localhost:7215/api/RentHouse';
 
   constructor(private http: HttpClient) { }
 
@@ -30,8 +30,8 @@ export class HouseService {
 
   // 核准API
   approveHouseStatus(id: number) {
-  
-  return this.http.put(`${this.apiUrl}/Approve/${id}`, {}); 
+
+  return this.http.put(`${this.apiUrl}/Approve/${id}`, {});
 }
 
   // 🗑️ 刪 (Delete) - 刪除房屋

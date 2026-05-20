@@ -1,8 +1,9 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit,ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HouseService } from '../../@service/house.service';
 import { CreateHouseDto } from '../../@interface/house';
 import { HttpClient } from '@angular/common/http';
+
 @Component({
   selector: 'app-rent-house-component',
   imports: [FormsModule],
@@ -15,7 +16,7 @@ export class RentHouseComponent implements OnInit {
 
   // 綁定表單資料 (DTO)
   formData: CreateHouseDto = {
-    accountId: 3, // TODO: 改為動態取得帳號 ID
+    accountId: 1, // TODO: 改為動態取得帳號 ID
     districtId: undefined, // 先不指定，讓房東選擇
     name: '測試豪華套房',
     address: '',
@@ -48,13 +49,14 @@ export class RentHouseComponent implements OnInit {
   protected readonly title = signal('rent-house-web');
 
   constructor(
-    private houseService: HouseService, 
-    private http: HttpClient
+    private houseService: HouseService,
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
-    this.loadHouses();      
-    this.fetchDistricts();  
+    this.loadHouses();
+    this.fetchDistricts();
   }
 
   // 取得房屋列表
@@ -64,24 +66,24 @@ export class RentHouseComponent implements OnInit {
       error: (err) => console.error('取得列表失敗', err)
     });
   }
-  allDistricts: any[] = [];        // 裝 C# 送來的所有原始資料
-  cityList: string[] = [];         // 裝過濾後「不重複」的縣市名單 (例如：['台北市', '高雄市'])
-  filteredDistricts: any[] = [];   // 當前選中縣市底下的區域清單
-  selectedCity: string | null = null; // 房東目前選到的縣市
-  
+  allDistricts: any[] = [];
+  cityList: string[] = [];
+  filteredDistricts: any[] = [];
+  selectedCity: string | null = null;
   fetchDistricts() {
-    const apiUrl = 'https://localhost:44304/api/RentHouse/Districts'; // 請確認你的正確網址
+    const apiUrl = 'https://localhost:7215/api/RentHouse/Districts'; // 請確認你的正確網址
     this.http.get<any[]>(apiUrl).subscribe(res => {
       this.allDistricts = res;
       // 利用 Set 的特性，把重複的縣市名稱剃除掉，整理出乾淨的縣市清單！
       this.cityList = [...new Set(this.allDistricts.map(d => d.cityName))];
+      this.cdr.detectChanges();
     });
   }
-  // 🌟 房東一改變縣市，就觸發這個魔法！
+
   onCityChange() {
-    // 1. 把該縣市底下的區域挑出來
+
     this.filteredDistricts = this.allDistricts.filter(d => d.cityName === this.selectedCity);
-    // 2. 清空原本選好的區域 ID，強迫房東重新選一個區域
+
     this.formData.districtId = undefined;
   }
 
@@ -98,7 +100,7 @@ export class RentHouseComponent implements OnInit {
           this.pendingPhotos.push({
             file: file,
             previewUrl: e.target.result,
-            
+
             isCover: this.pendingPhotos.length === 0
           });
         };
@@ -114,10 +116,9 @@ export class RentHouseComponent implements OnInit {
     });
   }
 
-  // 提交表單 (新增/修改)
+// 提交表單 (新增/修改)
   submitForm() {
     if (this.isEditMode) {
-      // 修改模式
       this.houseService.updateHouse(this.editingId, this.formData).subscribe({
         next: (res) => {
           alert('✏️ 修改成功！');
@@ -132,20 +133,26 @@ export class RentHouseComponent implements OnInit {
         next: (res: any) => {
           const newHouseId = res?.id || res?.HouseId || res?.houseId;
 
-          // 若有照片則進行上傳與綁定
           if (this.pendingPhotos.length > 0 && newHouseId) {
-            this.pendingPhotos.forEach(photo => {
-              this.uploadAndBindPhoto(newHouseId, photo.file, photo.isCover);
-            });
+            // 🌟 升級：紀錄上傳進度，等所有照片都傳完再通知成功！
+            let completedUploads = 0;
+            const totalPhotos = this.pendingPhotos.length;
 
-            alert('🎉 房屋申請已送出！包含多張照片與首圖設定，等待管理員審核中。');
-            this.loadHouses();
-            this.resetForm();
+            this.pendingPhotos.forEach(photo => {
+              this.uploadAndBindPhoto(newHouseId, photo.file, photo.isCover, () => {
+                completedUploads++;
+                // 當上傳成功的數量等於總數量時，才顯示成功並重置
+                if (completedUploads === totalPhotos) {
+                  alert('🎉 房屋申請已送出！包含多張照片與首圖設定，等待管理員審核中。');
+                  this.resetForm();
+                  // 如果你是同一個頁面切換身份，可以呼叫 this.loadHouses()
+                   window.location.reload();
+                }
+              });
+            });
           } else {
             alert('🎉 房屋申請已送出！(未附照片)，等待管理員審核中。');
-            this.loadHouses();
             this.resetForm();
-            window.location.reload();
           }
         },
         error: (err) => console.error('新增房屋申請失敗', err)
@@ -154,21 +161,38 @@ export class RentHouseComponent implements OnInit {
   }
 
   // 處理單張照片上傳與資料庫綁定
-  uploadAndBindPhoto(houseId: number, file: File, isCover: boolean) {
+  uploadAndBindPhoto(houseId: number, file: File, isCover: boolean, onComplete: () => void) {
     this.houseService.uploadImage(file).subscribe({
       next: (uploadRes: any) => {
+        // 🌟 防呆：防止 C# 的大小寫陷阱
+        const imageUrls = uploadRes.urls || uploadRes.Urls;
+        const finalUrl = imageUrls && imageUrls.length > 0 ? imageUrls[0] : '';
+
+        if (!finalUrl) {
+          console.error('後端沒有回傳照片網址！', uploadRes);
+          onComplete(); // 失敗也讓進度往前走，以免畫面卡死
+          return;
+        }
+
         const recordData = {
           houseId: houseId,
-          url: uploadRes.urls[0],
+          url: finalUrl,
           description: '',
           isCover: isCover
         };
 
         this.houseService.addImageRecord(recordData).subscribe({
-          error: (err) => console.error('照片資料庫綁定失敗', err)
+          next: () => onComplete(), // 🌟 綁定成功，發出通知！
+          error: (err) => {
+            console.error('照片資料庫綁定失敗', err);
+            onComplete();
+          }
         });
       },
-      error: (err) => console.error('照片實體檔上傳失敗', err)
+      error: (err) => {
+        console.error('照片實體檔上傳失敗', err);
+        onComplete();
+      }
     });
   }
 
@@ -199,20 +223,16 @@ export class RentHouseComponent implements OnInit {
     this.pendingPhotos = [];
   }
   removePendingPhoto(index: number) {
-    
+
     const isDeletingCover = this.pendingPhotos[index].isCover;
 
-    
-    this.pendingPhotos.splice(index, 1);
-    
-    //如果你有一個用來裝「真正要上傳的實體 File」的陣列 (例如 selectedFiles)，
-    // 記得也要在這裡一併刪除它喔！例如把它取消註解： 
-    // this.selectedFiles.splice(index, 1);
 
-    // 3. 貼心防呆：如果刪除的是首圖，且還有剩下的照片，自動把第一張設為首圖
+    this.pendingPhotos.splice(index, 1);
+
+
     if (isDeletingCover && this.pendingPhotos.length > 0) {
-      this.pendingPhotos.forEach(p => p.isCover = false); // 全部重置
-      this.pendingPhotos[0].isCover = true;               // 第一張接任首圖
+      this.pendingPhotos.forEach(p => p.isCover = false);
+      this.pendingPhotos[0].isCover = true;
     }
   }
 

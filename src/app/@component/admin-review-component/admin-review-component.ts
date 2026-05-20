@@ -50,11 +50,13 @@ approveHouse(house: any) {
     next: (res: any) => { // 🌟 補上 : any，紅線退散！
       alert('房屋已核准上架！');
       house.status = 2;
+      window.location.reload();
     },
     error: (err: any) => { // 🌟 補上 : any，紅線退散！
       console.error(err);
       alert('核准失敗！');
     }
+
   });
 }
 

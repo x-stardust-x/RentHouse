@@ -1,4 +1,9 @@
 <p>admin-component works!</p>
-<a href="../">back</a>
+<button class="btn btn-warning" routerLink="/">Back</button>
+<button class="btn btn-info" routerLink="news">News</button>
+<button class="btn btn-info" routerLink="logs">Logs</button>
+
 <button class="btn btn-danger" (click)="Logout()">登出</button>
 <button class="btn btn-danger" (click)="test()">test</button>
+<button class="btn btn-danger" (click)="test2()">Get IP Address</button>
+<router-outlet></router-outlet>

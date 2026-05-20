@@ -1,6 +1,6 @@
 import { Component, signal, OnInit } from '@angular/core';
 import { HouseService } from '../../@service/house.service';
-
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-admin-review-component',
   imports: [],
@@ -12,7 +12,7 @@ export class AdminReviewComponent implements OnInit {
   // 待審核房屋清單 (status: 1)
   pendingHouses = signal<any[]>([]);
 
-  constructor(private houseService: HouseService) {}
+  constructor(private houseService: HouseService, private http: HttpClient) {}
 
   ngOnInit() {
     this.loadPendingHouses();
@@ -35,28 +35,48 @@ export class AdminReviewComponent implements OnInit {
   loadPendingHouses() {
     this.houseService.getHouses().subscribe({
       next: (data) => {
-        const reviewList = data.filter(house => house.status === 1);
+
+        const reviewList = data.filter(house => house.status !== 3);
         this.pendingHouses.set(reviewList);
       },
       error: (err) => console.error('取得待審核清單失敗', err)
     });
   }
 
-  // 核准上架 (將狀態更新為 2)
-  approveHouse(house: any) {
-    if (confirm(`✅ 確定要核准【${house.name}】正式上架嗎？`)) {
-      const updatedData = { ...house, status: 2 };
-
-      this.houseService.updateHouse(house.id, updatedData).subscribe({
-        next: () => {
-          alert('🎉 核准成功！該房屋已正式上架提供租客瀏覽！');
-          this.loadPendingHouses();
-        },
-        error: (err) => console.error('核准失敗', err)
-      });
+  // ✅ 核准上架功能
+approveHouse(house: any) {
+  // 🚨 注意：這裡的網址請務必換成你 Swagger 測試成功後的真實 Request URL！
+  this.http.put(`https://localhost:7215/api/RentHouse/Approve/${house.id}`, {}).subscribe({
+    next: (res: any) => { // 🌟 補上 : any，紅線退散！
+      alert('房屋已核准上架！');
+      house.status = 2;
+      window.location.reload();
+    },
+    error: (err: any) => { // 🌟 補上 : any，紅線退散！
+      console.error(err);
+      alert('核准失敗！');
     }
-  }
 
+  });
+}
+
+// 強制下架功能
+takeDownHouse(house: any) {
+  if (confirm('確定要將這間房屋強制下架，並移出列表嗎？')) {
+
+
+    this.http.put(`https://localhost:7215/api/RentHouse/TakeDown/${house.id}`, {}).subscribe({
+      next: (res: any) => {
+        alert('房屋已成功下架！');
+        this.pendingHouses.set(this.pendingHouses().filter((h: any) => h.id !== house.id));
+      },
+      error: (err: any) => {
+        console.error(err);
+        alert('下架失敗！');
+      }
+    });
+  }
+}
   // 退回申請 (刪除該筆房屋與照片資料)
   rejectHouse(id: number) {
     if (confirm('🚨 確定要「退回並刪除」這筆房屋申請嗎？資料將被銷毀！')) {

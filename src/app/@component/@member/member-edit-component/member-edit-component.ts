@@ -6,6 +6,7 @@ import { LocationService } from '../../../@service/location-service';
 import { UserProfile } from '../../../@interface/user-profile';
 import { LocationSelectComponent } from "../../location-select-component/location-select-component";
 import { District } from '../../../@interface/location';
+import { NewsService } from '../../../@service/news-service';
 
 @Component({
   selector: 'app-member-edit-component',
@@ -17,11 +18,13 @@ export class MemberEditComponent {
   private readonly fb = inject(FormBuilder);
   public readonly usersev = inject(UserService);
   public readonly locsev = inject(LocationService);
+  public readonly newsService = inject(NewsService);
   userProfileForm!: FormGroup;
   userId = 1;
-  ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
+  imagePreview = signal<string>('');
+
+
+  constructor() {
     this.locsev.loadCities();
     this.userProfileForm = this.fb.group({
       id: [0],
@@ -58,40 +61,49 @@ export class MemberEditComponent {
     });
 
     this.usersev.loadProfile(this.userId);
-    var Nowprofile = this.usersev.profile();
 
-    this.userProfileForm.patchValue({
-      id: Nowprofile?.id,
-      realName: Nowprofile?.realName,
-      englishName: Nowprofile?.englishName,
+    effect(() => {
 
-      avatar: Nowprofile?.avatar,
+      const profile = this.usersev.profile();
 
-      phone: Nowprofile?.phone,
+      if (!profile) return;
+      this.imagePreview.set(profile.avatar || '');
+      this.userProfileForm.patchValue({
+        id: profile.id,
+        realName: profile.realName,
+        englishName: profile.englishName,
 
-      address: Nowprofile?.address,
+        avatar: profile.avatar,
 
-      bio: Nowprofile?.bio,
+        phone: profile.phone,
 
-      rating: Nowprofile?.rating,
-      reviewCount: Nowprofile?.reviewCount,
+        address: profile.address,
 
-      districtId: Nowprofile?.districtId,
-      sleepTime: Nowprofile?.sleepTime,
-      wakeTime: Nowprofile?.wakeTime,
+        bio: profile.bio,
 
-      cleanLevel: Nowprofile?.cleanLevel,
-      noiseTolerance: Nowprofile?.noiseTolerance,
+        rating: profile.rating,
+        reviewCount: profile.reviewCount,
 
-      pet: Nowprofile?.pet,
-      smoke: Nowprofile?.smoke,
+        districtId: profile.districtId,
 
-      interests: Nowprofile?.interests
-    })
+        sleepTime: profile.sleepTime,
+        wakeTime: profile.wakeTime,
+
+        cleanLevel: profile.cleanLevel,
+        noiseTolerance: profile.noiseTolerance,
+
+        pet: profile.pet,
+        smoke: profile.smoke,
+
+        interests: profile.interests
+      });
+
+    });
   }
 
+
   onDistrictSelected(d: District) {
-    var cityname = this.locsev.cities().find(x=> x.id == d.cityId)?.cityName;
+    var cityname = this.locsev.cities().find(x => x.id == d.cityId)?.cityName;
     this.userProfileForm.patchValue({
       districtId: d.id
     });
@@ -100,5 +112,43 @@ export class MemberEditComponent {
   onSubmit() {
     var form: UserProfile = this.userProfileForm.getRawValue();
     this.usersev.updateProfile(form);
+  }
+
+  onFileChange(event: Event) {
+
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files?.length) return;
+
+    const file = input.files[0];
+
+    // 預覽
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      this.imagePreview.set(reader.result as string);
+    };
+
+    reader.readAsDataURL(file);
+
+    // 上傳圖片
+    this.uploadImage(file);
+
+  }
+  uploadImage(file: File) {
+
+    const formData = new FormData();
+
+    formData.append('file', file);
+
+    this.newsService.uploadImage(formData)
+      .subscribe((res: any) => {
+        // 存 URL 到 form
+        this.userProfileForm.patchValue({
+          avatar: res.url
+        });
+
+      });
+
   }
 }

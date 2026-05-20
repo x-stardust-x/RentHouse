@@ -62,7 +62,7 @@ export const routes: Routes = [
     loadComponent: () => import('./@component/rental-matching-component/rental-matching-component').then(c => c.RentalMatchingComponent),
   },
   {
-    path: 'rental-matching-detail/:id',
+    path: 'rental-matching-detail/:type/:id',
     loadComponent: () => import('./@component/rental-matching-detail-component/rental-matching-detail-component').then(c => c.RentalMatchingDetailComponent),
   },
   {

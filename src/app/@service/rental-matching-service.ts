@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 
 export class RentalMatchingService {
-  private apiUrl = 'https://localhost:44304/api/RentalMatching';
+  private apiUrl = 'https://localhost:7215/api/RentalMatching';
 
   // city: string = '';
   // rentalItemCount: number = 0;

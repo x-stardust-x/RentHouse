@@ -56,7 +56,7 @@ export class RentalMatchingComponent implements OnInit {
   }
 
 
-  // 放大魔法狀態 (裝放大照片的網址)
+  // 放大狀態 (裝放大照片的網址)
   lightboxImage = signal<string | null>(null);
 
   // 啟動放大魔法
@@ -64,7 +64,7 @@ export class RentalMatchingComponent implements OnInit {
     this.lightboxImage.set(imageUrl);
   }
 
-  // 關閉放大魔法
+  // 關閉放大
   closeLightbox() {
     this.lightboxImage.set(null);
   }

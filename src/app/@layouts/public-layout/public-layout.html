@@ -1,0 +1,22 @@
+<div class="public-layout">
+
+  <header class="public-layout__header">
+    <!-- 之後可以放前台導覽列 -->
+    <a routerLink="/" class="public-layout__logo">RentHouse</a>
+
+    <nav class="public-layout__nav">
+      <a routerLink="/">首頁</a>
+      <a routerLink="/rental-matching">租賃媒合</a>
+      <a routerLink="/login">登入</a>
+    </nav>
+  </header>
+
+  <main class="public-layout__content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="public-layout__footer">
+    © RentHouse
+  </footer>
+
+</div>

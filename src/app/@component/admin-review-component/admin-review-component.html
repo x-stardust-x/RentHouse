@@ -21,7 +21,7 @@
 
             <div class="house-text-info">
               <h4 class="house-title">[{{house.id}}] {{ house.name }}</h4>
-              <p class="info-text">📍 {{ house.address }}</p>
+              <p class="info-text">📍 {{ house.cityName }} {{ house.districtName }} {{ house.address }}</p>
               <p class="info-text">💰 租金：<span class="price-highlight">{{ house.rentPrice }}</span> 元/月</p>
               <p class="desc-text">{{ house.description }}</p>
 
@@ -58,7 +58,7 @@
 
             <div class="right-action-panel">
               <div class="action-buttons">
-                @if (house.status === 1) {
+                @if (house.status === 2 || house.status === 0) {
                   <button class="btn btn-success me-2" (click)="approveHouse(house)">
                     <i class="bi bi-check2-square"></i> 核准上架
                   </button>
@@ -67,7 +67,7 @@
                   </button>
                 }
 
-                @if (house.status === 2) {
+                @if (house.status === 1) {
                   <span class="badge bg-primary fs-6 me-2">上架中</span>
                   <button class="btn btn-warning text-dark" (click)="takeDownHouse(house)">
                     強制下架

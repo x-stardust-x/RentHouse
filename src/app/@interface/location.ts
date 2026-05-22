@@ -2,9 +2,15 @@ export interface City {
   id: number;
   cityName: string;
 }
+
 export interface District {
-  id: number;
-  cityId: number;
+
+  districtId: number;
+
+
+  cityName: string;
+
+
   districtName: string;
   zipCode: number;
 }

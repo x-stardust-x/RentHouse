@@ -15,23 +15,10 @@
   <label class="fw-bold mb-2">房屋地址：</label>
   <div class="row g-2">
 
-    <div class="col-md-3">
-      <select class="form-select" [(ngModel)]="selectedCity" (change)="onCityChange()">
-        <option [ngValue]="null" disabled>選擇縣市</option>
-        @for (city of cityList; track city) {
-          <option [value]="city">{{ city }}</option>
-        }
-      </select>
-    </div>
-
-    <div class="col-md-3">
-      <select class="form-select" [(ngModel)]="formData.districtId" [disabled]="!selectedCity">
-        <option [ngValue]="null" disabled>選擇區域</option>
-        @for (district of filteredDistricts; track district.districtId) {
-          <option [value]="district.districtId">{{ district.districtName }}</option>
-        }
-      </select>
-    </div>
+<app-location-select
+  [districtId]="formData.districtId ?? null"
+  (districtSelected)="onDistrictSelected($event)">
+</app-location-select>
 
     <div class="col-md-6">
       <input type="text" class="form-control" [(ngModel)]="formData.address" placeholder="請輸入路名、巷弄與門牌 (例如：九如一路100號)">

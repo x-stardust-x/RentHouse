@@ -25,7 +25,9 @@ export class MemberEditComponent {
 
 
   constructor() {
-    this.locsev.loadCities();
+    // 🌟 1. 修正：拔掉已經陣亡的 loadCities()，改用一網打盡的大撈取
+    this.locsev.loadAllDistricts();
+
     this.userProfileForm = this.fb.group({
       id: [0],
 
@@ -43,13 +45,16 @@ export class MemberEditComponent {
       rating: [0],
       reviewCount: [0],
 
+      // 🌟 地點相關欄位已經與新資料表格式完全對齊
       districtId: [0, Validators.required],
       cityName: [''],
       districtName: [''],
       zipCode: [''],
 
-      sleepTime: [0],
-      wakeTime: [0],
+      // 🌟 2. 核心修正：就寢與起床時間改用「空字串 ''」初始化
+      // 這樣才能完美對接微軟最新的 TimeOnly ("00:00:00") 字串格式，防止 400 錯！
+      sleepTime: [''],
+      wakeTime: [''],
 
       cleanLevel: [0],
       noiseTolerance: [0],
@@ -59,6 +64,7 @@ export class MemberEditComponent {
 
       interests: ['']
     });
+
 
     this.usersev.loadProfile(this.userId);
 
@@ -103,9 +109,14 @@ export class MemberEditComponent {
 
 
   onDistrictSelected(d: District) {
-    var cityname = this.locsev.cities().find(x => x.id == d.cityId)?.cityName;
+
+    const cityName = d.cityName;
+
     this.userProfileForm.patchValue({
-      districtId: d.id
+      districtId: d.districtId,
+      cityName: cityName,
+      districtName: d.districtName,
+      zipCode: d.zipCode
     });
   }
 

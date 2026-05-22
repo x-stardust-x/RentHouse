@@ -26,8 +26,7 @@ export class AdminReviewComponent implements OnInit {
       this.loadPendingHouses();
     }
   }
-
-  // 🛡️ 3. 新增：身分查核邏輯
+// 🛡️ 3. 新增：身分查核邏輯
   // 🛡️ 安靜版的查核邏輯：不跳警告、不轉址，只默默切換開關
   checkAdminRole() {
     const currentRole = localStorage.getItem('userRole');
@@ -35,6 +34,7 @@ export class AdminReviewComponent implements OnInit {
     // 如果是 Admin 就設為 true，其他所有人(包含沒登入)都會被設為 false
     this.isAdmin.set(currentRole === 'Admin');
   }
+
 
   // 取得首圖網址
   getCoverUrl(house: any): string | null {

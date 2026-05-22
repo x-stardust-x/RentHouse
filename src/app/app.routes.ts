@@ -117,7 +117,7 @@ export const routes: Routes = [
 
 
 
-      // 房屋上架審核
+      // 租賃物管理
       {
         path: 'admin-review',
         component: AdminReviewComponent,

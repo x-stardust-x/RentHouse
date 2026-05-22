@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-admin-review-component',
-  imports: [],
   templateUrl: './admin-review-component.html',
   styleUrl: './admin-review-component.scss'
 })

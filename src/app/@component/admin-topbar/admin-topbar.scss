@@ -1,0 +1,33 @@
+.admin-topbar {
+  min-height: 76px;
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  h1 {
+    margin: 0;
+    font-size: 1.35rem;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: #6b7280;
+    font-size: 0.9rem;
+  }
+}
+
+.admin-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  button {
+    border: 1px solid #e3ded3;
+    background: #ffffff;
+    border-radius: 999px;
+    padding: 10px 16px;
+    cursor: pointer;
+  }
+}

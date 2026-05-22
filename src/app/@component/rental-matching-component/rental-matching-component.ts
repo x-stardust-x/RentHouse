@@ -22,6 +22,8 @@ import { MatchProduct } from '../../@interface/match-product';
   templateUrl: './rental-matching-component.html',
   styleUrl: './rental-matching-component.scss',
 })
+
+
 export class RentalMatchingComponent implements OnInit {
 
   // 分類篩選：全部 / 房屋 / 工具技能
@@ -130,7 +132,6 @@ export class RentalMatchingComponent implements OnInit {
       },
       error: (err) => console.error('抓取工具/技能資料失敗', err)
     });
-  }
 
   /**
    * 取得首圖

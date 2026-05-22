@@ -10,6 +10,7 @@ import { register } from 'swiper/element/bundle';
 import { switchMap } from 'rxjs/operators';
 
 
+
 @Component({
   selector: 'app-rental-matching-detail-component',
   standalone: true,
@@ -101,13 +102,13 @@ export class RentalMatchingDetailComponent implements OnInit {
   constructor() {
 
     // 在 .ts 中監控 signal 的變化
-      effect(() => {
-        console.log('當前 detailData 的狀態:', this.detailData());
-        if (this.detailData() === null) {
-          console.warn('警告：detailData 被清空了！');
-          // 在這裡設定斷點 (Breakpoint)，看看是哪行程式碼導致它變回 null
-        }
-      });
+    effect(() => {
+      console.log('當前 detailData 的狀態:', this.detailData());
+      if (this.detailData() === null) {
+        console.warn('警告：detailData 被清空了！');
+        // 在這裡設定斷點 (Breakpoint)，看看是哪行程式碼導致它變回 null
+      }
+    });
 
   }
 
@@ -116,32 +117,126 @@ export class RentalMatchingDetailComponent implements OnInit {
 
 
   ngOnInit(): void {
-  this.route.params.pipe(
-    switchMap(params => {
-      const type = params['type'];
-      const itemId = Number(params['id']);
+    this.route.params.pipe(
+      switchMap(params => {
+        const type = params['type'];
+        const itemId = Number(params['id']);
 
-      if (isNaN(itemId)) return [];
+        if (isNaN(itemId)) return [];
 
-      this.displayType.set(type);
+        this.displayType.set(type);
 
-      // ✅ 關鍵：在請求發出時，不要強制把 detailData 設為 null
-      // 讓舊資料留在畫面上，直到新資料回來才替換，這樣就不會看到「資料載入中」
+        // ✅ 關鍵：在請求發出時，不要強制把 detailData 設為 null
+        // 讓舊資料留在畫面上，直到新資料回來才替換，這樣就不會看到「資料載入中」
 
-      return type === 'room'
-        ? this.rentalMatchingService.getRentalById(itemId)
-        : this.rentalMatchingService.getProductById(itemId);
-    })
-  ).subscribe({
-    next: (data: any) => {
-      this.detailData.set({ ...data, displayType: this.displayType() });
+        return type === 'room'
+          ? this.rentalMatchingService.getRentalById(itemId)
+          : this.rentalMatchingService.getProductById(itemId);
+      })
+    ).subscribe({
+      next: (data: any) => {
+        this.detailData.set({ ...data, displayType: this.displayType() });
+      }
+    });
+  }
+
+
+  selectedHeroImage = signal<string | null>(null);
+  selectedHeroIndex = signal(0);
+  heroImageChanging = signal(false);
+
+  heroImages(): { src: string; alt: string }[] {
+    const mainImage = this.detailData()?.url || 'images/default_image_16-9.jpg';
+
+    return [
+      {
+        src: this.detailData()?.url || 'images/house1.jpg',
+        alt: '租賃物預覽圖 1',
+        // alt: this.detailData()?.name || '租賃物主圖',
+      },
+      {
+        src: this.detailData()?.url || 'images/house2.jpg',
+        alt: '租賃物預覽圖 2',
+      },
+      {
+        src: this.detailData()?.url || 'images/house3.jpg',
+        alt: '租賃物預覽圖 3',
+      },
+      {
+        src: this.detailData()?.url || 'images/house4.jpg',
+        alt: '租賃物預覽圖 4',
+      },
+    ];
+  }
+
+  currentHeroImage(): string {
+    return this.selectedHeroImage() || this.heroImages()[0]?.src || 'images/default_image_16-9.jpg';
+  }
+
+  selectHeroImage(imageSrc: string, index: number): void {
+    if (this.currentHeroImage() === imageSrc) {
+      return;
     }
-  });
-}
+
+    this.heroImageChanging.set(true);
+    this.selectedHeroImage.set(imageSrc);
+    this.selectedHeroIndex.set(index);
+
+    window.setTimeout(() => {
+      this.heroImageChanging.set(false);
+    }, 520);
+  }
 
 
 
+  ngAfterViewInit(): void {
+    const header = document.querySelector<HTMLElement>('.public-layout__header');
 
+    if (!header) return;
+
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    const headerHideThreshold = 80;
+    const scrollDelta = 6;
+
+    const updateHeader = () => {
+      const currentScrollY = window.scrollY;
+      const scrollDifference = currentScrollY - lastScrollY;
+
+      if (currentScrollY > headerHideThreshold) {
+        header.classList.add('is-scrolled');
+      } else {
+        header.classList.remove('is-scrolled');
+        header.classList.remove('is-hidden');
+      }
+
+      // 往下滾動：隱藏
+      if (
+        currentScrollY > headerHideThreshold &&
+        scrollDifference > scrollDelta
+      ) {
+        header.classList.add('is-hidden');
+      }
+
+      // 往上滾動：顯示
+      if (scrollDifference < -scrollDelta) {
+        header.classList.remove('is-hidden');
+      }
+
+      lastScrollY = currentScrollY;
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateHeader);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+  }
 
 
   // ngOnInit(): void {
@@ -224,7 +319,9 @@ export class RentalMatchingDetailComponent implements OnInit {
   //   });
   // }
 
-  }
+
+
+}
 
 
 

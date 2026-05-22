@@ -5,6 +5,36 @@
 // Learn more about theming and how to use it for your application's
 // custom components at https://material.angular.dev/guide/theming
 
+:root {
+  --app-font-scale: 1;
+
+  --font-size-xs: calc(0.875rem * var(--app-font-scale));
+  --font-size-sm: calc(0.95rem * var(--app-font-scale));
+  --font-size-base: calc(1rem * var(--app-font-scale));
+  --font-size-md: calc(1.125rem * var(--app-font-scale));
+  --font-size-lg: calc(1.35rem * var(--app-font-scale));
+  --font-size-xl: calc(1.75rem * var(--app-font-scale));
+  --font-size-2xl: calc(2.25rem * var(--app-font-scale));
+
+  --line-height-base: 1.65;
+  --line-height-heading: 1.28;
+}
+
+html[data-font-size="small"] {
+  --app-font-scale: 0.94;
+}
+
+html[data-font-size="medium"] {
+  --app-font-scale: 1;
+}
+
+html[data-font-size="large"] {
+  --app-font-scale: 1.16;
+}
+
+
+
+
 html {
   height: 100%;
   @include mat.theme(
@@ -77,3 +107,8 @@ body {
 .active {
   color: red;
 }
+
+
+
+
+

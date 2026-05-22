@@ -9,6 +9,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatchProduct } from '../../@interface/match-product';
 
+
 @Component({
   selector: 'app-rental-matching-component',
   standalone: true,
@@ -23,6 +24,12 @@ import { MatchProduct } from '../../@interface/match-product';
   styleUrl: './rental-matching-component.scss',
 })
 export class RentalMatchingComponent implements OnInit {
+
+  isFilterCollapsed = signal(false);
+
+  toggleFilterPanel(): void {
+    this.isFilterCollapsed.update(value => !value);
+  }
 
   // 分類篩選：全部 / 房屋 / 工具技能
   selectedCategory = signal<'all' | 'room' | 'product'>('all');
@@ -131,14 +138,14 @@ export class RentalMatchingComponent implements OnInit {
       error: (err) => console.error('抓取工具/技能資料失敗', err)
     });
 
-  /**
-   * 取得首圖
-   * 支援：
-   * 1. coverUrl
-   * 2. images 陣列，優先找 isCover === true
-   * 3. imageUrls 陣列
-   * 4. url 單張圖片
-   */
+    /**
+     * 取得首圖
+     * 支援：
+     * 1. coverUrl
+     * 2. images 陣列，優先找 isCover === true
+     * 3. imageUrls 陣列
+     * 4. url 單張圖片
+     */
   }
   getCoverUrl(item: any): string | null {
     if (item.coverUrl) {

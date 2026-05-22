@@ -1,42 +1,974 @@
-.star-rating-wrapper {
+:root,
+:host {
+  --rental-color-bg: #f7efe5;
+  --rental-color-surface: #ffffff;
+  --rental-color-surface-soft: #fff8ef;
+  --rental-color-surface-warm: #fbf3e8;
+  --rental-color-primary: #d89a5f;
+  --rental-color-primary-deep: #b77943;
+  --rental-color-primary-soft: #f4d7bb;
+  --rental-color-primary-faint: #fff2e3;
+  --rental-color-text: #25211d;
+  --rental-color-muted: #857b70;
+  --rental-color-line: #eee2d4;
+  --rental-color-star-empty: #ded6cd;
+  --rental-color-shadow: rgba(91, 62, 37, 0.12);
+  --rental-color-shadow-strong: rgba(91, 62, 37, 0.18);
+  --rental-radius-page: 2rem;
+  --rental-radius-card: 1.25rem;
+  --rental-radius-pill: 999px;
+  --rental-container-width: 1180px;
+  --rental-transition: 220ms ease;
+
+  --text-shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.65),
+    0 2px 6px rgba(120, 72, 30, 0.12);
+  --text-shadow-readable: 0 1px 0 rgba(255, 255, 255, 0.75),
+    0 2px 4px rgba(80, 48, 24, 0.16);
+  --text-shadow-on-image: 0 2px 4px rgba(55, 35, 20, 0.38),
+    0 6px 16px rgba(55, 35, 20, 0.22);
+  --text-shadow-on-image-strong: 0 1px 2px rgba(35, 24, 16, 0.7),
+    0 4px 10px rgba(35, 24, 16, 0.42);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+:host {
+  display: block;
+  color: var(--rental-color-text);
+  background:
+    radial-gradient(circle at top left, rgba(216, 154, 95, 0.18), transparent 28rem),
+    linear-gradient(180deg, #fffaf3 0%, var(--rental-color-bg) 100%);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+p,
+h1,
+h2 {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.rental-detail-icon,
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 700, "GRAD" 0, "opsz" 24;
+  line-height: 1;
+}
+
+.top.rental-detail-hero-section {
+  width: min(var(--rental-container-width), calc(100% - 2rem));
+  margin: 1rem auto 0;
+  overflow: hidden;
+  border-radius: var(--rental-radius-page);
+  background: var(--rental-color-surface);
+  box-shadow: 0 1.5rem 4rem var(--rental-color-shadow-strong);
+}
+
+.rental-detail-hero {
+  position: relative;
+  min-height: clamp(28rem, 62vh, 42rem);
+  overflow: hidden;
+  isolation: isolate;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  border-radius: inherit;
+}
+
+.rental-detail-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(31, 24, 18, 0.58), rgba(31, 24, 18, 0.18) 48%, rgba(31, 24, 18, 0.38)),
+    linear-gradient(180deg, rgba(31, 24, 18, 0.1), rgba(31, 24, 18, 0.28));
+  backdrop-filter: saturate(1.02);
+}
+
+.rental-detail-hero__content,
+.top-info {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  color: #fff;
+}
+
+.rental-detail-hero__main-info,
+.main-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: min(42rem, 72%);
+}
+
+.rental-detail-hero__title {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.055em;
+  text-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.24);
+}
+
+.rental-detail-hero__location,
+.location {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: var(--rental-radius-pill);
+  background: rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(14px);
+}
+
+.rental-detail-hero__location-icon {
+  color: var(--rental-color-primary-soft);
+}
+
+.rental-detail-hero__address {
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.95rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rental-detail-hero__actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.rental-detail-hero__action,
+.share,
+.favorites {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: var(--rental-radius-pill);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(14px);
+  cursor: pointer;
+  transition: transform var(--rental-transition), background var(--rental-transition);
+}
+
+.rental-detail-hero__action:hover,
+.share:hover,
+.favorites:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.rental-detail-hero__thumbs {
+  position: absolute;
+  right: clamp(1rem, 4vw, 3rem);
+  bottom: clamp(1rem, 4vw, 3rem);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(5.5rem, 8rem));
+  gap: 1rem;
+  max-width: min(44rem, calc(100% - 2rem));
+  padding: 0.8rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 1.4rem;
+  background: rgba(255, 255, 255, 0.22);
+  // box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(18px);
+}
+
+.rental-detail-hero__thumb-item {
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  border: 3px solid rgba(255, 255, 255, 0.78);
+  border-radius: 1rem;
+  background: var(--rental-color-surface-warm);
+  // box-shadow: 0 0.8rem 1.5rem rgba(0, 0, 0, 0.14);
+}
+
+.rental-detail-hero__thumb-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--rental-transition), filter var(--rental-transition);
+}
+
+.rental-detail-hero__thumb-item:hover .rental-detail-hero__thumb-img {
+  transform: scale(1.06);
+  filter: saturate(1.05);
+}
+
+.rental-detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(20rem, 0.8fr);
+  gap: 1.5rem;
+  width: min(var(--rental-container-width), calc(100% - 2rem));
+  margin: 1.5rem auto 4rem;
+}
+
+.rental-detail-main-column,
+.rental-detail-side-column,
+.rental-detail-room-details,
+.rental-detail-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.rental-detail-side-column {
+  position: sticky;
+  top: 1rem;
+  align-self: start;
+}
+
+.rental-detail-card,
+.rental-detail-debug-box {
+  border: 1px solid var(--rental-color-line);
+  border-radius: var(--rental-radius-card);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 1rem 2.5rem var(--rental-color-shadow);
+}
+
+.rental-detail-card {
+  padding: clamp(1.1rem, 2vw, 1.5rem);
+}
+
+.rental-detail-debug-box {
+  padding: 1rem 1.25rem;
+  color: var(--rental-color-primary-deep);
+  background: var(--rental-color-primary-faint);
+  font-weight: 700;
+}
+
+.rental-detail-section-title {
+  margin-bottom: 1rem;
+  color: var(--rental-color-text);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.rental-detail-description,
+.rental-detail-card-text,
+.rental-detail-map-address,
+.rental-detail-provider-card__bio,
+.rental-detail-booking-note,
+.rental-detail-free-note,
+.rental-detail-included-fees {
+  color: var(--rental-color-muted);
+  line-height: 1.75;
+}
+
+.rental-detail-feature-grid,
+.rental-detail-service-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.rental-detail-feature-pill {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 1.2rem;
+  gap: 0.6rem;
+  min-height: 3.35rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--rental-color-line);
+  border-radius: 1rem;
+  background: var(--rental-color-surface-warm);
+  color: var(--rental-color-text);
+  transition: transform var(--rental-transition), border-color var(--rental-transition), box-shadow var(--rental-transition);
 }
 
-.star-rating {
+.rental-detail-feature-pill:hover {
+  transform: translateY(-2px);
+  border-color: var(--rental-color-primary-soft);
+  box-shadow: 0 0.8rem 1.8rem var(--rental-color-shadow);
+}
+
+.rental-detail-feature-pill__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  flex: 0 0 auto;
+  border-radius: 0.75rem;
+  color: var(--rental-color-primary-deep);
+  background: var(--rental-color-primary-faint);
+}
+
+.rental-detail-feature-pill__text {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.rental-detail-map-frame {
+  display: block;
+  width: 100%;
+  min-height: 22rem;
+  margin-top: 1rem;
+  overflow: hidden;
+  border: 0;
+  border-radius: 1rem;
+  filter: saturate(0.76) sepia(0.08);
+}
+
+.rental-detail-provider-card,
+.rental-detail-booking-card {
+  background: linear-gradient(180deg, #ffffff 0%, #fffaf4 100%);
+}
+
+.rental-detail-provider-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+
+.rental-detail-provider-card__avatar-wrap {
   position: relative;
-  display: inline-flex;
-  // display: inline-block;
-  letter-spacing: 2px; // 讓星星之間有一點間距
-  font-family: Times; // 確保星號渲染一致
-  line-height: 1;
+  width: fit-content;
+  height: fit-content;
+  flex: 0 0 auto;
+}
 
-  .stars-empty {
-    color: #e0e0e0; // 灰色底星
-    display: flex;
+.rental-detail-provider-card__avatar-frame {
+  width: fit-content;
+}
+
+.rental-detail-provider-card__avatar {
+  display: block;
+  width: 5.8rem;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0.7rem 1.5rem var(--rental-color-shadow);
+}
+
+.rental-detail-provider-card__verified-badge {
+  position: absolute;
+  right: -0.45rem;
+  bottom: -0.45rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  width: max-content;
+  padding: 0.22rem 0.5rem;
+  border: 2px solid #fff;
+  border-radius: var(--rental-radius-pill);
+  color: var(--rental-color-primary-deep);
+  background: var(--rental-color-primary-soft);
+  box-shadow: 0 0.45rem 1rem var(--rental-color-shadow);
+}
+
+.rental-detail-provider-card__verified-icon {
+  font-size: 1.1rem;
+  font-variation-settings: "FILL" 1, "wght" 700, "GRAD" 0, "opsz" 24;
+}
+
+.rental-detail-provider-card__verified-text {
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.rental-detail-provider-card__info {
+  min-width: 0;
+}
+
+.rental-detail-provider-card__name {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.rental-detail-provider-card__role {
+  margin-top: 0.25rem;
+  color: var(--rental-color-muted);
+  font-weight: 700;
+}
+
+.rental-detail-rating-row,
+.rental-detail-star-rating-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.rental-detail-star-rating-wrapper {
+  gap: 0.45rem;
+  margin-top: 0.65rem;
+}
+
+.rental-detail-rating-score {
+  font-weight: 800;
+  color: var(--rental-color-primary-deep);
+}
+
+.rental-detail-star-rating {
+  position: relative;
+  display: inline-block;
+  width: 6.25rem;
+  height: 1.25rem;
+  line-height: 1;
+}
+
+.rental-detail-stars {
+  position: absolute;
+  inset: 0 auto auto 0;
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+}
+
+.rental-detail-stars--empty {
+  color: var(--rental-color-star-empty);
+}
+
+.rental-detail-stars--filled {
+  overflow: hidden;
+  color: var(--rental-color-primary);
+}
+
+.rental-detail-stars--filled .rental-detail-star-icon {
+  font-variation-settings: "FILL" 1, "wght" 700, "GRAD" 0, "opsz" 24;
+}
+
+.rental-detail-star-icon {
+  font-size: 1.25rem;
+}
+
+.rental-detail-review-count {
+  margin-top: 0.45rem;
+  color: var(--rental-color-muted);
+  font-size: 0.92rem;
+}
+
+.rental-detail-provider-card__bio {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rental-color-line);
+}
+
+.rental-detail-outline-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 2.75rem;
+  margin-top: 1.25rem;
+  padding: 0 1rem;
+  border: 1px solid var(--rental-color-primary-soft);
+  border-radius: var(--rental-radius-pill);
+  color: var(--rental-color-primary-deep);
+  background: #fff;
+  font-weight: 800;
+  transition: background var(--rental-transition), transform var(--rental-transition);
+}
+
+.rental-detail-outline-link:hover {
+  transform: translateY(-2px);
+  background: var(--rental-color-primary-faint);
+}
+
+.rental-detail-price {
+  color: var(--rental-color-text);
+  font-weight: 800;
+}
+
+.rental-detail-price__number {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  letter-spacing: -0.04em;
+}
+
+.rental-detail-price__unit {
+  color: var(--rental-color-muted);
+  font-weight: 700;
+}
+
+.rental-detail-included-fees,
+.rental-detail-booking-note {
+  margin-top: 0.75rem;
+}
+
+.rental-detail-period-select {
+  width: 100%;
+  min-height: 3rem;
+  margin-top: 1rem;
+  padding: 0 1rem;
+  border: 1px solid var(--rental-color-line);
+  border-radius: 0.9rem;
+  color: var(--rental-color-text);
+  background: var(--rental-color-surface);
+  font-weight: 700;
+  outline: none;
+  transition: border-color var(--rental-transition), box-shadow var(--rental-transition);
+}
+
+.rental-detail-period-select:focus {
+  border-color: var(--rental-color-primary);
+  box-shadow: 0 0 0 0.25rem rgba(216, 154, 95, 0.18);
+}
+
+.rental-detail-links-group,
+.links-group {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-block: 1rem;
+}
+
+.rental-detail-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0 1rem;
+  border-radius: var(--rental-radius-pill);
+  font-weight: 900;
+  transition: transform var(--rental-transition), box-shadow var(--rental-transition), background var(--rental-transition);
+}
+
+.rental-detail-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.8rem 1.8rem var(--rental-color-shadow);
+}
+
+.rental-detail-button--primary {
+  color: #fff;
+  background: linear-gradient(135deg, var(--rental-color-primary), var(--rental-color-primary-deep));
+}
+
+.rental-detail-button--secondary {
+  color: var(--rental-color-primary-deep);
+  background: var(--rental-color-primary-faint);
+}
+
+.rental-detail-free-note {
+  padding-top: 1rem;
+  border-top: 1px solid var(--rental-color-line);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 1024px) {
+  .rental-detail-layout {
+    grid-template-columns: 1fr;
   }
 
-  .stars-filled {
-    position: absolute;
-    top: 0;
-    left: 0;
-    color: #ffca08; // 金色實星
-    display: flex;
-    width: 0;
-    white-space: nowrap;
-    overflow: hidden; // 👈 這是關鍵：超出寬度的部分會被切掉
-    transition: width 0.5s ease-out; // 增加一點動態效果
+  .rental-detail-side-column {
+    position: static;
+  }
+
+  .rental-detail-hero__thumbs {
+    grid-template-columns: repeat(4, minmax(4.75rem, 1fr));
   }
 }
 
-// .rating-number {
-//   font-weight: bold;
-//   color: #333;
-// }
+@media (max-width: 768px) {
 
-// .review-count {
-//   color: #666;
-//   font-size: 0.9rem;
-// }
+  .top.rental-detail-hero-section,
+  .rental-detail-layout {
+    width: min(100% - 1rem, var(--rental-container-width));
+  }
+
+  .rental-detail-hero {
+    min-height: 34rem;
+  }
+
+  .rental-detail-hero__content,
+  .top-info {
+    flex-direction: column;
+  }
+
+  .rental-detail-hero__main-info,
+  .main-info {
+    max-width: 100%;
+  }
+
+  .rental-detail-hero__actions {
+    justify-content: flex-start;
+  }
+
+  .rental-detail-hero__thumbs {
+    left: 1rem;
+    right: 1rem;
+    display: flex;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+  }
+
+  .rental-detail-hero__thumb-item {
+    width: 6rem;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  .rental-detail-feature-grid,
+  .rental-detail-service-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rental-detail-provider-card__header {
+    flex-direction: column;
+  }
+
+  .rental-detail-links-group,
+  .links-group {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+
+
+
+
+:root,
+:host {
+  --rental-color-primary: #f2a35e;
+  --rental-color-primary-deep: #d98234;
+  --rental-color-primary-soft: #ffe4c9;
+  --rental-color-primary-faint: #fff7ef;
+
+  --rental-color-white: #ffffff;
+  --rental-color-text: #1f2933;
+  --rental-color-muted: #6f7782;
+  --rental-color-overlay: rgba(20, 18, 16, 0.28);
+
+  --rental-shadow-soft: 0 18px 48px rgba(70, 45, 22, 0.18);
+  --rental-shadow-card: 0 12px 30px rgba(49, 36, 24, 0.22);
+
+  --rental-radius-lg: 28px;
+  --rental-radius-md: 20px;
+  --rental-radius-sm: 14px;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 700, "GRAD" 0, "opsz" 24;
+}
+
+.top.rental-hero {
+  width: 100%;
+  overflow: hidden;
+}
+
+.rental-hero {
+  position: relative;
+
+  &__stage {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+    isolation: isolate;
+    background: #111;
+  }
+
+  &__background {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+  }
+
+  &__main-image {
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    object-fit: cover;
+    object-position: center;
+    transform: scale(1.08);
+    filter: saturate(1.04) contrast(1.03);
+    transition:
+      opacity 0.52s ease,
+      transform 1.4s cubic-bezier(0.19, 1, 0.22, 1),
+      filter 0.52s ease;
+    animation: rentalHeroFocusIn 1.1s cubic-bezier(0.19, 1, 0.22, 1) both;
+
+    &.is-changing {
+      opacity: 0.74;
+      transform: scale(1.14);
+      filter: blur(3px) saturate(1.08) contrast(1.06);
+    }
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(90deg,
+        rgba(0, 0, 0, 0.46) 0%,
+        rgba(0, 0, 0, 0.2) 44%,
+        rgba(0, 0, 0, 0.22) 100%),
+      linear-gradient(0deg,
+        rgba(0, 0, 0, 0.42) 0%,
+        rgba(0, 0, 0, 0.03) 48%,
+        rgba(0, 0, 0, 0.18) 100%);
+    pointer-events: none;
+  }
+
+  &__info {
+    position: relative;
+    z-index: 2;
+    width: min(100%, 1440px);
+    margin-inline: auto;
+    padding: clamp(1.5rem, 4vw, 4rem);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  &__main-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    max-width: min(760px, 70vw);
+    color: var(--rental-color-white);
+    text-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: clamp(2.4rem, 3vw, 5.8rem);
+    line-height: 0.95;
+    letter-spacing: 0.05em;
+    font-weight: 900;
+    mix-blend-mode: difference;
+    text-shadow: var(--text-shadow-on-image-strong);
+  }
+
+  &__location {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: rgba(255, 255, 255, 0.92);
+  }
+
+  &__location-icon {
+    color: var(--rental-color-primary-soft);
+    font-size: 1.5rem;
+  }
+
+  &__address {
+    margin: 0;
+    font-size: clamp(0.95rem, 1.25vw, 1.125rem);
+    letter-spacing: 0.02em;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  &__action-button {
+    appearance: none;
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    background: rgba(255, 255, 255, 0.16);
+    color: var(--rental-color-white);
+    backdrop-filter: blur(14px);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.72rem 1rem;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
+    transition:
+      transform 0.25s ease,
+      background-color 0.25s ease,
+      border-color 0.25s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      background: rgba(242, 163, 94, 0.28);
+      border-color: rgba(255, 228, 201, 0.7);
+    }
+  }
+
+  &__action-icon {
+    font-size: 1.25rem;
+  }
+
+  &__action-text {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  /**
+   * 右下角縮圖範圍
+   * 這裡就是做出「限定顯示範圍 + overflow 裁切」的地方
+   */
+  &__thumb-area {
+    position: absolute;
+    z-index: 3;
+    right: -4em;
+    // right: clamp(1rem, 5vw, 5.5rem);
+    bottom: clamp(2rem, 7vw, 6.5rem);
+    width: min(720px, 58vw);
+    overflow: hidden;
+    padding-block: 1.2rem;
+    padding-left: 0;
+    padding-right: 1.2rem;
+    pointer-events: auto;
+  }
+
+  /**
+   * 外層裁切容器
+   * 縮圖往左拖曳或本身溢出時，左側會被切掉
+   */
+  &__thumb-viewport {
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--rental-radius-md);
+  }
+
+  &__thumb-swiper {
+    width: 100%;
+    overflow: visible;
+    padding: 0.3rem 0.4rem 0.7rem 0.4rem;
+  }
+
+  &__thumb-slide {
+    width: clamp(180px, 18vw, 300px);
+    height: clamp(130px, 13vw, 230px);
+  }
+
+  &__thumb-button {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 3px solid rgba(255, 255, 255, 0.72);
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--rental-color-white);
+    // box-shadow: var(--rental-shadow-card);
+    transform: scale(0.96);
+    transition:
+      transform 0.28s ease,
+      border-color 0.28s ease,
+      box-shadow 0.28s ease,
+      opacity 0.28s ease;
+
+    &:hover {
+      transform: scale(1);
+      border-color: var(--rental-color-primary-soft);
+    }
+
+    &.is-active {
+      transform: scale(1);
+      border-color: var(--rental-color-primary);
+      box-shadow:
+        0 0 0 5px rgba(242, 163, 94, 0.25),
+        0 18px 46px rgba(49, 36, 24, 0.36);
+    }
+  }
+
+  &__thumb-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition:
+      transform 0.8s cubic-bezier(0.19, 1, 0.22, 1),
+      filter 0.28s ease;
+
+    .rental-hero__thumb-button:hover &,
+    .rental-hero__thumb-button.is-active & {
+      transform: scale(1.08);
+    }
+
+    .rental-hero__thumb-button:not(.is-active) & {
+      filter: saturate(0.84) brightness(0.94);
+    }
+  }
+}
+
+@keyframes rentalHeroFocusIn {
+  0% {
+    opacity: 0.78;
+    transform: scale(1.16);
+    filter: blur(4px) saturate(1.08);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1.08);
+    filter: blur(0) saturate(1.04) contrast(1.03);
+  }
+}
+
+@media (max-width: 1024px) {
+  .rental-hero {
+    &__thumb-area {
+      width: min(680px, 72vw);
+      right: 1.5rem;
+      bottom: 2rem;
+    }
+
+    &__thumb-slide {
+      width: 220px;
+      height: 160px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .rental-hero {
+    &__stage {
+      min-height: 92vh;
+    }
+
+    &__main-image {
+      min-height: 92vh;
+    }
+
+    &__info {
+      padding: 1.5rem;
+      flex-direction: column;
+    }
+
+    &__main-info {
+      max-width: 100%;
+    }
+
+    &__actions {
+      width: 100%;
+      justify-content: flex-start;
+    }
+
+    &__thumb-area {
+      left: 1rem;
+      right: auto;
+      bottom: 1.2rem;
+      width: calc(100% - 2rem);
+      padding-right: 0;
+    }
+
+    &__thumb-slide {
+      width: 190px;
+      height: 135px;
+    }
+  }
+}

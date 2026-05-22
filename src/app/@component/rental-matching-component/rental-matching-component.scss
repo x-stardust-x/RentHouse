@@ -1,278 +1,997 @@
-/* ==========================================
-   開發者專用：極簡風暫時外觀排版 CSS
-   ========================================== */
+:root,
+:host {
+  --rental-list-color-primary: #f2a35e;
+  --rental-list-color-primary-deep: #b85f18;
+  --rental-list-color-primary-strong: #93480f;
+  --rental-list-color-primary-soft: #ffe4c9;
+  --rental-list-color-primary-faint: #fff7ef;
 
-/* 全域基礎重設 */
-main {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  color: #333;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+  --rental-list-color-bg: #fff8f0;
+  --rental-list-color-surface: #ffffff;
+  --rental-list-color-surface-soft: rgba(255, 255, 255, 0.92);
+
+  --rental-list-color-text: #2b2118;
+  --rental-list-color-muted: #51463d;
+  --rental-list-color-subtle: #7a6f65;
+  --rental-list-color-border: rgba(184, 95, 24, 0.22);
+
+  --rental-list-color-success-bg: #fff3df;
+  --rental-list-color-success-text: #80440f;
+
+  --rental-list-shadow-card: 0 18px 42px rgba(132, 82, 38, 0.12);
+  --rental-list-shadow-card-hover: 0 24px 56px rgba(132, 82, 38, 0.18);
+  --rental-list-shadow-soft: 0 10px 28px rgba(132, 82, 38, 0.1);
+
+  --rental-list-radius-xl: 28px;
+  --rental-list-radius-lg: 22px;
+  --rental-list-radius-md: 16px;
+  --rental-list-radius-sm: 12px;
+  --rental-list-radius-pill: 999px;
+
+  --rental-list-focus-ring: 0 0 0 4px rgba(184, 95, 24, 0.24);
+
+  --rental-list-text-shadow-soft:
+    0 1px 0 rgba(255, 255, 255, 0.78),
+    0 2px 4px rgba(80, 48, 24, 0.14);
+
+  --rental-list-container-width: 1180px;
 }
 
-/* 標題與段落 */
-h1 {
-  font-size: 1.8rem;
-  margin-bottom: 5px;
-  color: #111;
+/* ================================
+   列表頁整體
+   上方篩選 + 下方列表
+   ================================ */
+
+.rental-matching {
+  width: min(var(--rental-list-container-width), 100% - 2rem);
+  margin: 1.5rem auto 4rem;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  color: var(--rental-list-color-text);
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Microsoft JhengHei",
+    sans-serif;
+
+  background:
+    radial-gradient(circle at top left, rgba(255, 228, 201, 0.56), transparent 34rem),
+    linear-gradient(180deg, #fff8f0 0%, #fffdf9 45%, #fff8f0 100%);
+
+  .material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 700, "GRAD" 0, "opsz" 24;
+  }
 }
 
-h2 {
-  font-size: 1.3rem;
-  margin-top: 0;
-  color: #222;
+/* ================================
+   篩選面板
+   ================================ */
+
+.rental-matching__filter-panel {
+  position: relative;
+  top: auto;
+  width: 100%;
+  min-width: 0;
+  align-self: stretch;
+
+  padding: 1.25rem;
+  border-radius: var(--rental-list-radius-xl);
+  border: 1px solid var(--rental-list-color-border);
+
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 1rem;
+  row-gap: 0.75rem;
+
+  background:
+    radial-gradient(circle at 0% 0%, rgba(255, 228, 201, 0.64), transparent 20rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 247, 239, 0.92));
+
+  box-shadow: var(--rental-list-shadow-card);
+  overflow: hidden;
+  transition:
+    padding 0.32s ease,
+    box-shadow 0.32s ease,
+    background-color 0.32s ease;
 }
 
-h3 {
-  font-size: 1rem;
-  margin: 0;
-  color: #555;
-}
+.rental-matching__filter-topbar {
+  grid-column: 1 / -1;
 
-p {
-  color: #666;
-  font-size: 0.95rem;
-}
-
-/* ------------------------------------------
-   左側：篩選條件區 (Sidebar Filter)
-   ------------------------------------------ */
-.rental-item-filter {
-  flex: 0 0 280px;
-  /* 固定寬度 280px */
-  background-color: #f9f9f9;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 20px;
-  align-self: flex-start;
-  /* 防止被拉伸變長 */
-}
-
-.rental-item-filter h2 {
-  border-bottom: 2px solid #eaeaea;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-}
-
-/* 篩選小區塊標題（圖標 + 文字對齊） */
-.filter-title {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 10px;
-  margin-top: 15px;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
-.filter-title .material-symbols-outlined {
-  font-size: 18px;
-  color: #666;
+/* 篩選標題 */
+
+.rental-matching__filter-heading {
+  grid-column: 1 / -1;
+
+  margin: 0 0 0.25rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 2px solid rgba(242, 163, 94, 0.22);
+
+  color: var(--rental-list-color-text);
+  font-size: 1.45rem;
+  line-height: 1.25;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  text-shadow: var(--rental-list-text-shadow-soft);
 }
 
-// .mdc-slider__track--inactive {
-//   background: #c6c6c6 !important;
-// }
+/* 每個篩選分組 */
 
-.mat-expansion-panel-header {
-  padding: unset !important;
+.rental-matching__filter-section {
+  margin-bottom: 0;
 }
 
-.mat-expansion-panel {
-  background: unset !important;
+.rental-matching__filter-title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 0 0 0.65rem;
 }
 
-.mat-expansion-panel:not([class*=mat-elevation-z]) {
-  box-shadow: unset;
+.rental-matching__filter-title-text {
+  margin: 0;
+  color: var(--rental-list-color-text);
+  font-size: 1.05rem;
+  line-height: 1.25;
+  font-weight: 850;
 }
 
-.mat-expansion-panel {
-  overflow: unset;
+.rental-matching__filter-icon {
+  width: 2rem;
+  height: 2rem;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  border-radius: 0.7rem;
+  color: var(--rental-list-color-primary-strong);
+  background: var(--rental-list-color-primary-faint);
+  box-shadow: inset 0 0 0 1px rgba(242, 163, 94, 0.28);
+
+  font-size: 1.15rem;
 }
 
-.mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled=true]):hover {
-  background: unset;
-  // background: var(--mat-expansion-header-hover-state-layer-color, color-mix(in srgb, var(--mat-sys-on-surface) calc(var(--mat-sys-hover-state-layer-opacity) * 100%), transparent));
+/* ================================
+   篩選區塊排列
+   ================================ */
+
+.rental-matching__filter-section--categories {
+  grid-column: span 1;
 }
 
-.mat-expansion-panel-body {
-  padding: unset !important;
-  padding: 0 0 0 !important;
-  margin: 0 24px 16px;
-  background: red !important;
+.rental-matching__filter-section--location {
+  grid-column: span 1;
 }
 
-
-/* 表單元件基本樣式 */
-.categories,
-.location,
-.price-range,
-.life-style {
-  margin-bottom: 20px;
+.rental-matching__filter-section--price {
+  grid-column: span 2;
 }
 
-select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #fff;
+.rental-matching__divider {
+  grid-column: 1 / -1;
+
+  height: 1px;
+  margin: 0.25rem 0;
+  border: 0;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(184, 95, 24, 0.28),
+      transparent);
 }
 
-input[type="checkbox"] {
-  margin-right: 6px;
+.rental-matching__filter-title--sort {
+  grid-column: span 1;
+  margin-bottom: 0;
+}
+
+.rental-matching__sort-options {
+  grid-column: span 1;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+  margin-bottom: 0;
+}
+
+.rental-matching__room-filter-area {
+  grid-column: 1 / -1;
+
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 0.8fr) minmax(240px, 1fr) minmax(320px, 1.4fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+/* ================================
+   選項與表單控制項
+   ================================ */
+
+.rental-matching__option-group {
+  display: flex;
+  gap: 10px;
+}
+
+.rental-matching__option-group--vertical {
+  flex-direction: column;
+}
+
+.rental-matching__choice,
+.rental-matching__checkbox-row,
+.rental-matching__radio-row {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 0.45rem 0.65rem;
+  border-radius: var(--rental-list-radius-md);
+
+  color: var(--rental-list-color-muted);
+  background: rgba(255, 255, 255, 0.62);
+
+  transition:
+    background-color 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.22s ease;
+}
+
+.rental-matching__choice:hover,
+.rental-matching__checkbox-row:hover,
+.rental-matching__radio-row:hover {
+  background: rgba(255, 228, 201, 0.52);
+  transform: translateY(-1px);
+}
+
+.rental-matching__choice-input,
+.rental-matching__checkbox,
+.rental-matching__radio {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--rental-list-color-primary-deep);
   cursor: pointer;
 }
 
-input[type="checkbox"]+label {
-  margin-right: 15px;
-  font-size: 0.9rem;
+.rental-matching__choice-text,
+.rental-matching__checkbox-label,
+.rental-matching__radio-label {
+  color: var(--rental-list-color-muted);
+  font-size: 0.98rem;
+  line-height: 1.45;
+  font-weight: 700;
   cursor: pointer;
   user-select: none;
 }
 
-input[type="range"] {
-  flex: 1;
+.rental-matching__select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.55rem 0.75rem;
+
+  border: 2px solid rgba(184, 95, 24, 0.18);
+  border-radius: var(--rental-list-radius-md);
+
+  color: var(--rental-list-color-text);
+  background:
+    linear-gradient(180deg, #ffffff 0%, #fffaf4 100%);
+
+  font-size: 0.98rem;
+  font-weight: 700;
+  outline: none;
+
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease;
 }
 
-/* ------------------------------------------
-   右側：主要內容區與卡片 (Main Content & Cards)
-   ------------------------------------------ */
-/* 檢視模式切換按鈕組 */
-.layout {
-  display: flex;
-  gap: 5px;
-  margin-bottom: 20px;
+.rental-matching__select:focus {
+  border-color: var(--rental-list-color-primary-deep);
+  box-shadow: var(--rental-list-focus-ring);
 }
 
-/* 🚀 修改後的按鈕樣式：強制轉為完美正方形 */
-.layout button {
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.rental-matching__select-option {
+  color: var(--rental-list-color-text);
+}
+
+/* 價格範圍 */
+
+.rental-matching__range-slider {
+  display: grid;
+  grid-template-columns: auto minmax(180px, 1fr) auto;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.rental-matching__price-text {
+  color: var(--rental-list-color-primary-strong);
+  font-size: 0.95rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.rental-matching__mat-slider {
+  width: 100%;
+}
+
+/* 排序按鈕 */
+
+.rental-matching__sort-button {
+  min-height: 42px;
+  border: 1px solid rgba(184, 95, 24, 0.22);
+  border-radius: var(--rental-list-radius-pill);
+
+  color: var(--rental-list-color-primary-strong);
+  background: rgba(255, 228, 201, 0.46);
+
+  font-size: 0.96rem;
+  font-weight: 800;
   cursor: pointer;
 
-  /* 關鍵修正：給定完全一樣的寬高 */
-  width: 36px;
-  height: 36px;
+  transition:
+    transform 0.22s ease,
+    background-color 0.22s ease,
+    box-shadow 0.22s ease;
+}
 
-  /* 讓內部的 Material Icon 完美居中 */
-  display: flex;
+.rental-matching__sort-button:hover,
+.rental-matching__sort-button:focus-visible {
+  transform: translateY(-1px);
+  background: rgba(255, 228, 201, 0.78);
+  box-shadow: var(--rental-list-shadow-soft);
+}
+
+/* 智慧配對 */
+
+.rental-matching__smart-toggle {
+  min-height: 44px;
+  padding: 0.55rem 0.9rem;
+
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.35rem;
+
+  border: 1px solid rgba(184, 95, 24, 0.24);
+  border-radius: var(--rental-list-radius-pill);
+
+  color: var(--rental-list-color-primary-strong);
+  background: rgba(255, 228, 201, 0.55);
+
+  font-size: 0.98rem;
+  font-weight: 850;
+  cursor: pointer;
+
+  transition:
+    transform 0.22s ease,
+    background-color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.rental-matching__filter-toggle:hover,
+.rental-matching__filter-toggle:focus-visible {
+  transform: translateY(-1px);
+  background: rgba(255, 228, 201, 0.86);
+  box-shadow: var(--rental-list-shadow-soft);
+  outline: none;
+}
+
+.rental-matching__filter-toggle:focus-visible {
+  box-shadow:
+    var(--rental-list-focus-ring),
+    var(--rental-list-shadow-soft);
+}
+
+.rental-matching__filter-toggle-icon {
+  font-size: 1.35rem;
+  transition: transform 0.28s ease;
+}
+
+.rental-matching__filter-body {
+  grid-column: 1 / -1;
+
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 1rem;
+  row-gap: 0.75rem;
+
+  overflow: hidden;
+  max-height: 900px;
+  opacity: 1;
+  transform: translateY(0);
+
+  transition:
+    max-height 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.26s ease,
+    transform 0.32s ease,
+    margin-top 0.32s ease;
+}
+
+/* 收合狀態 */
+.rental-matching__filter-panel.is-collapsed {
+  padding-block: 1rem;
+}
+
+.rental-matching__filter-panel.is-collapsed .rental-matching__filter-body {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-8px);
+  margin-top: 0;
+  pointer-events: none;
+}
+
+.rental-matching__filter-panel.is-collapsed .rental-matching__filter-toggle-icon {
+  transform: rotate(0deg);
+}
+
+.rental-matching__filter-panel:not(.is-collapsed) .rental-matching__filter-toggle-icon {
+  transform: rotate(180deg);
+}
+
+.rental-matching__smart-toggle-text {
+  color: var(--rental-list-color-text);
+  font-size: 0.98rem;
+  line-height: 1.45;
+  font-weight: 800;
+}
+
+.rental-matching__line-break {
+  display: block;
+}
+
+/* 生活風格 */
+
+.rental-matching__filter-section--life-style {
+  margin-bottom: 0;
+}
+
+/* ================================
+   進階篩選 accordion
+   ================================ */
+
+.rental-matching__accordion {
+  display: block;
+  margin-top: 0;
+}
+
+.rental-matching__expansion-panel {
+  border: 1px solid var(--rental-list-color-border);
+  border-radius: var(--rental-list-radius-lg) !important;
+  background: rgba(255, 255, 255, 0.68) !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+.rental-matching__expansion-header {
+  min-height: 54px !important;
+  padding: 0 16px !important;
+}
+
+.rental-matching__expansion-title {
+  color: var(--rental-list-color-primary-strong);
+  font-size: 1.02rem;
+  font-weight: 900;
+}
+
+/* 展開後限制高度，避免篩選面板佔滿整個畫面 */
+
+.rental-matching__advanced-conditions {
+  max-height: 320px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0 0.9rem 0.9rem;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(184, 95, 24, 0.38) rgba(255, 228, 201, 0.38);
+}
+
+.rental-matching__advanced-conditions::-webkit-scrollbar {
+  width: 8px;
+}
+
+.rental-matching__advanced-conditions::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgba(255, 228, 201, 0.38);
+}
+
+.rental-matching__advanced-conditions::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(184, 95, 24, 0.38);
+}
+
+.rental-matching__advanced-section {
+  padding-block: 0.35rem;
+}
+
+.rental-matching__advanced-options {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.rental-matching__advanced-divider {
+  height: 1px;
+  margin: 0.85rem 0;
+  border: 0;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(184, 95, 24, 0.28),
+      transparent);
+}
+
+/* ================================
+   主要內容區
+   ================================ */
+
+.rental-matching__content {
+  width: 100%;
+  min-width: 0;
+}
+
+.rental-matching__content-header {
+  margin-bottom: 1.25rem;
+  padding: 1.5rem 1.75rem;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+
+  border: 1px solid var(--rental-list-color-border);
+  border-radius: var(--rental-list-radius-xl);
+
+  background:
+    radial-gradient(circle at 0% 0%, rgba(255, 228, 201, 0.74), transparent 20rem),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 247, 239, 0.9));
+
+  box-shadow: var(--rental-list-shadow-card);
+}
+
+.rental-matching__headline-group {
+  min-width: 0;
+}
+
+.rental-matching__eyebrow {
+  margin: 0 0 8px;
+
+  color: var(--rental-list-color-primary-strong);
+  font-size: 1.02rem;
+  line-height: 1.4;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.rental-matching__page-title {
+  margin: 0;
+
+  color: var(--rental-list-color-text);
+  font-size: clamp(2rem, 3vw, 3.25rem);
+  line-height: 0.98;
+  font-weight: 950;
+  letter-spacing: -0.06em;
+  text-shadow: var(--rental-list-text-shadow-soft);
+}
+
+/* 檢視切換 */
+
+.rental-matching__view-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 8px;
+  border-radius: var(--rental-list-radius-pill);
+  background: rgba(255, 228, 201, 0.56);
+}
+
+.rental-matching__view-button {
+  width: 48px;
+  height: 48px;
+  display: inline-grid;
+  place-items: center;
 
   padding: 0;
-  /* 清除原本的內距，避免寬高被二度撐開 */
-  transition: background 0.2s;
+  border: 0;
+  border-radius: 50%;
+
+  color: var(--rental-list-color-primary-strong);
+  background: #ffffff;
+
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(132, 82, 38, 0.12);
+
+  transition:
+    transform 0.22s ease,
+    background-color 0.22s ease,
+    box-shadow 0.22s ease;
 }
 
-.layout button:hover {
-  background: #f0f0f0;
+.rental-matching__view-button:hover,
+.rental-matching__view-button:focus-visible {
+  transform: translateY(-2px);
+  background: var(--rental-list-color-primary-soft);
+  box-shadow: var(--rental-list-shadow-soft);
 }
 
-/* 確保圖標大小一致 */
-.layout button .material-icons {
-  font-size: 20px;
-  /* 調整圖標大小，可依喜好微調 */
-  line-height: 1;
+.rental-matching__view-icon {
+  font-size: 1.45rem;
 }
 
-/* 房屋列表區塊：改用 Grid 讓卡片排得更整齊（自動橫向排列） */
-main>div:nth-child(2) {
-  flex: 1;
+/* ================================
+   卡片列表
+   ================================ */
+
+.rental-matching__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
 }
 
-/* 卡片本體 */
-.rental-item-card {
-  background: #fff;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
-  padding: 16px;
-  // margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-  transition: transform 0.2s, box-shadow 0.2s;
+.rental-matching__card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+
+  border: 1px solid var(--rental-list-color-border);
+  border-radius: var(--rental-list-radius-xl);
+
+  background: var(--rental-list-color-surface);
+  box-shadow: var(--rental-list-shadow-card);
+
+  transition:
+    transform 0.28s ease,
+    box-shadow 0.28s ease,
+    border-color 0.28s ease;
 }
 
-.rental-item-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+.rental-matching__card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(184, 95, 24, 0.38);
+  box-shadow: var(--rental-list-shadow-card-hover);
 }
 
-/* 房屋圖片 */
-.rental-item-image {
+.rental-matching__card-image {
+  display: block;
   width: 100%;
-  height: 200px;
+  height: clamp(180px, 16vw, 240px);
   object-fit: cover;
-  /* 確保各種比例的圖片都不會變形 */
-  border-radius: 6px;
-  background-color: #eaeaea;
-  margin-bottom: 12px;
+  background: var(--rental-list-color-primary-faint);
 }
 
-/* 價格標籤 */
-.price {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #e43f5a;
-  /* 微亮眼但不刺眼的紅色系，凸顯價格 */
-  margin: 8px 0;
+.rental-matching__card-body {
+  padding: 1.15rem;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
-.price span {
-  font-size: 0.85rem;
-  color: #888;
-  font-weight: normal;
+.rental-matching__card-title {
+  margin: 0 0 10px;
+
+  color: var(--rental-list-color-text);
+  font-size: clamp(1.2rem, 1.5vw, 1.45rem);
+  line-height: 1.32;
+  font-weight: 900;
+  letter-spacing: -0.03em;
 }
 
-/* 地址與樓層資訊 */
-.info {
-  font-size: 0.9rem;
-  color: #777;
-  margin: 5px 0 12px 0;
+.rental-matching__card-price {
+  margin: 0 0 10px;
+
+  color: var(--rental-list-color-primary-strong);
+  font-size: clamp(1.3rem, 1.6vw, 1.65rem);
+  line-height: 1.2;
+  font-weight: 950;
 }
 
-/* 生活習慣標籤組 */
-.habit-tags,
+.rental-matching__price-unit {
+  color: var(--rental-list-color-subtle);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.rental-matching__card-info {
+  min-height: 34px;
+  margin: 0 0 14px;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  color: var(--rental-list-color-muted);
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 700;
+}
+
+.rental-matching__card-info-icon {
+  color: var(--rental-list-color-primary-deep);
+  font-size: 1.18rem;
+}
+
+.rental-matching__category-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--rental-list-radius-pill);
+
+  color: var(--rental-list-color-primary-strong);
+  background: var(--rental-list-color-primary-faint);
+
+  font-weight: 850;
+}
+
+.rental-matching__tags,
 .habit-tags-group {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 15px;
+
+  margin: 0 0 20px;
 }
 
-.tag,
+.rental-matching__tag,
 .habit-tag {
-  background-color: #f0f4f8;
-  color: #4a69bd;
-  font-size: 0.8rem;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--rental-list-radius-pill);
+
+  color: var(--rental-list-color-success-text);
+  background: var(--rental-list-color-success-bg);
+
+  font-size: 0.95rem;
+  line-height: 1.35;
+  font-weight: 850;
+}
+
+.rental-matching__tag--tool {
+  background: #fff0df;
+}
+
+.rental-matching__tag--knowledge {
+  background: #fff8e9;
 }
 
 /* 查看詳情按鈕 */
-.btn-primary {
-  background-color: #1b1b2f;
-  /* 簡約深色調 */
-  color: #fff;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  cursor: pointer;
+
+.rental-matching__detail-button {
   width: 100%;
-  /* 寬度滿卡片，點擊更直覺 */
-  text-align: center;
-  font-weight: 500;
+  min-height: 52px;
+  margin-top: auto;
+
+  border: 0;
+  border-radius: var(--rental-list-radius-md);
+
+  color: #ffffff;
+  background:
+    linear-gradient(135deg,
+      var(--rental-list-color-primary-deep),
+      var(--rental-list-color-primary));
+
+  font-size: 1.06rem;
+  font-weight: 900;
+  cursor: pointer;
+
+  box-shadow: 0 12px 24px rgba(184, 95, 24, 0.24);
+
+  transition:
+    transform 0.24s ease,
+    box-shadow 0.24s ease,
+    filter 0.24s ease;
 }
 
-.btn-primary:hover {
-  background-color: #31314f;
+.rental-matching__detail-button:hover,
+.rental-matching__detail-button:focus-visible {
+  transform: translateY(-2px);
+  filter: saturate(1.06);
+  box-shadow: 0 16px 32px rgba(184, 95, 24, 0.3);
 }
 
-/* 空狀態（查無資料時） */
-.empty-state {
+/* 空狀態 */
+
+.rental-matching__empty-state {
+  grid-column: 1 / -1;
+
+  padding: clamp(32px, 5vw, 64px);
+  border: 2px dashed rgba(184, 95, 24, 0.28);
+  border-radius: var(--rental-list-radius-xl);
+
+  background: rgba(255, 255, 255, 0.78);
   text-align: center;
-  padding: 40px;
-  background: #f9f9f9;
-  border: 1px dashed #ccc;
-  border-radius: 8px;
-  margin-top: 20px;
+}
+
+.rental-matching__empty-text {
+  margin: 0;
+
+  color: var(--rental-list-color-muted);
+  font-size: 1.12rem;
+  line-height: 1.7;
+  font-weight: 800;
+}
+
+/* ================================
+   Angular Material component adjustments
+   ================================ */
+
+:host ::ng-deep {
+  .mat-expansion-panel-header {
+    padding: 0 16px !important;
+  }
+
+  .mat-expansion-panel {
+    background: transparent !important;
+  }
+
+  .mat-expansion-panel:not([class*="mat-elevation-z"]) {
+    box-shadow: none !important;
+  }
+
+  .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled="true"]):hover {
+    background: rgba(255, 228, 201, 0.38) !important;
+  }
+
+  .mat-expansion-panel-body {
+    padding: 0 !important;
+  }
+
+  .mat-mdc-slide-toggle .mdc-label {
+    color: var(--rental-list-color-text);
+    font-weight: 800;
+    line-height: 1.5;
+  }
+
+  .mdc-slider {
+    --mdc-slider-active-track-color: var(--rental-list-color-primary-deep);
+    --mdc-slider-inactive-track-color: rgba(184, 95, 24, 0.18);
+    --mdc-slider-handle-color: var(--rental-list-color-primary-deep);
+    --mdc-slider-focus-handle-color: var(--rental-list-color-primary-strong);
+    --mdc-slider-hover-handle-color: var(--rental-list-color-primary-strong);
+  }
+}
+
+/* ================================
+   RWD
+   ================================ */
+
+@media (max-width: 1180px) {
+  .rental-matching {
+    width: min(100% - 2rem, 960px);
+  }
+
+  .rental-matching__filter-panel {
+    .rental-matching__filter-body {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .rental-matching__filter-section--categories,
+  .rental-matching__filter-section--location,
+  .rental-matching__filter-title--sort,
+  .rental-matching__sort-options {
+    grid-column: span 1;
+  }
+
+  .rental-matching__filter-section--price {
+    grid-column: 1 / -1;
+  }
+
+  .rental-matching__room-filter-area {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .rental-matching__accordion {
+    grid-column: 1 / -1;
+  }
+
+  .rental-matching__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .rental-matching {
+    width: min(100% - 1.25rem, 640px);
+    margin-top: 1rem;
+  }
+
+  .rental-matching__filter-panel {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+
+  .rental-matching__filter-heading,
+  .rental-matching__filter-section--categories,
+  .rental-matching__filter-section--location,
+  .rental-matching__filter-section--price,
+  .rental-matching__filter-title--sort,
+  .rental-matching__sort-options,
+  .rental-matching__room-filter-area {
+    grid-column: 1 / -1;
+  }
+
+  .rental-matching__room-filter-area {
+    grid-template-columns: 1fr;
+  }
+
+  .rental-matching__content-header {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 1.25rem;
+    border-radius: var(--rental-list-radius-lg);
+  }
+
+  .rental-matching__range-slider {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .rental-matching__price-text--max {
+    justify-self: end;
+  }
+
+  .rental-matching__advanced-conditions {
+    max-height: 360px;
+  }
+
+  .rental-matching__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rental-matching__card {
+    border-radius: var(--rental-list-radius-lg);
+  }
+
+  .rental-matching__card-image {
+    height: 220px;
+  }
+
+  .rental-matching__filter-body {
+    grid-template-columns: 1fr;
+  }
+
+  .rental-matching__filter-topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rental-matching__filter-toggle {
+    width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .rental-matching {
+    width: min(100% - 1rem, 480px);
+  }
+
+  .rental-matching__filter-panel,
+  .rental-matching__content-header,
+  .rental-matching__card-body {
+    padding: 18px;
+  }
+
+  .rental-matching__sort-options {
+    grid-template-columns: 1fr;
+  }
+
+  .rental-matching__view-button {
+    width: 46px;
+    height: 46px;
+  }
 }

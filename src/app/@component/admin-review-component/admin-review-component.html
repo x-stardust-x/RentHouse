@@ -1,103 +1,111 @@
-<div class="dashboard-container">
-  <h2 style="text-align: center; margin-bottom: 30px; color: #1e293b; font-weight: bold;">
-    ⚖️ 管理員專區：房屋上架審核
-  </h2>
+@if (isAdmin()) {
 
-  <div class="review-list">
+  <div class="dashboard-container">
+    <h2 style="text-align: center; margin-bottom: 30px; color: #1e293b; font-weight: bold;">
+        管理員專區：房屋上架審核
+    </h2>
 
-    @if (pendingHouses().length === 0) {
-      <div class="empty-state">
-        <h3>☕ 辦公桌空空如也</h3>
-        <p>目前沒有待審核的房屋申請，管理員可以喝杯咖啡休息啦！</p>
-      </div>
-    }
+    <div class="review-list">
 
-    @for (house of pendingHouses(); track house.id) {
-      <div class="house-card">
+      @if (pendingHouses().length === 0) {
+        <div class="empty-state">
+          <h3>☕ 辦公桌空空如也</h3>
+          <p>目前沒有待審核的房屋申請，管理員可以喝杯咖啡休息啦！</p>
+        </div>
+      }
 
-        <div class="house-info-layout">
+      @for (house of pendingHouses(); track house.id) {
+        <div class="house-card">
 
-          <div class="house-text-info">
-            <h4 class="house-title">[{{house.id}}] {{ house.name }}</h4>
-            <p class="info-text">📍 {{ house.address }}</p>
-            <p class="info-text">💰 租金：<span class="price-highlight">{{ house.rentPrice }}</span> 元/月</p>
-            <p class="desc-text">{{ house.description }}</p>
+          <div class="house-info-layout">
 
-            <div class="tags-container">
-              <span class="tag-badge">🏢 {{ house.houseType || '未提供房型' }}</span>
-              <span class="tag-badge">📏 {{ house.areaSize ? house.areaSize + ' 坪' : '未提供坪數' }}</span>
-              <span class="tag-badge">🪜 {{ house.floorInfo || '未提供樓層' }}</span>
-            </div>
+            <div class="house-text-info">
+              <h4 class="house-title">[{{house.id}}] {{ house.name }}</h4>
+              <p class="info-text">📍 {{ house.cityName }} {{ house.districtName }} {{ house.address }}</p>
+              <p class="info-text">💰 租金：<span class="price-highlight">{{ house.rentPrice }}</span> 元/月</p>
+              <p class="desc-text">{{ house.description }}</p>
 
-            <div class="included-container">
-              ✨ 租金包含：
-              @if(house.includeUtilities) { <span class="text-success fw-bold ms-1">💧水電</span> }
-              @if(house.includeWifi) { <span class="text-success fw-bold ms-1">📶網路</span> }
-              @if(house.includeManagememtFee) { <span class="text-success fw-bold ms-1">🛡️管理費</span> }
-              @if(!house.includeUtilities && !house.includeWifi && !house.includeManagememtFee) {
-                <span class="text-muted ms-1">無附加項目</span>
-              }
-            </div>
-
-            <div class="habit-compact-container mt-4">
-              <h6 class="habit-title">🛋️ 房東設定的生活習慣與規定</h6>
-              <div class="habit-grid">
-                <div class="habit-item"><span class="label">就寢時間：</span><span class="value">{{ house.sleepTime === 0 ? '00:00' : house.sleepTime + ':00' }}</span></div>
-                <div class="habit-item"><span class="label">起床時間：</span><span class="value">{{ house.wakeTime < 10 ? '0' + house.wakeTime + ':00' : house.wakeTime + ':00' }}</span></div>
-                <div class="habit-item"><span class="label">潔癖程度：</span><span class="value score">{{ house.cleanLevel }} / 5</span></div>
-                <div class="habit-item"><span class="label">噪音容忍：</span><span class="value score">{{ house.noiseTolerance }} / 5</span></div>
-                <div class="habit-item"><span class="label">寵物：</span><span class="value" [class]="house.pet ? 'text-success' : 'text-danger'">{{ house.pet ? '🐾 允許' : '🚫 禁寵' }}</span></div>
-                <div class="habit-item"><span class="label">抽菸：</span><span class="value" [class]="house.smoke ? 'text-success' : 'text-danger'">{{ house.smoke ? '🚬 允許' : '🚫 禁菸' }}</span></div>
-                <div class="habit-item full-width"><span class="label">興趣標籤：</span><span class="value tags">{{ house.interests || '無特別填寫' }}</span></div>
+              <div class="tags-container">
+                <span class="tag-badge">🏢 {{ house.houseType || '未提供房型' }}</span>
+                <span class="tag-badge">📏 {{ house.areaSize ? house.areaSize + ' 坪' : '未提供坪數' }}</span>
+                <span class="tag-badge">🪜 {{ house.floorInfo || '未提供樓層' }}</span>
               </div>
-            </div>
-          </div> <div class="right-action-panel">
 
-            <div class="action-buttons">
-
-  @if (house.status === 1) {
-    <button class="btn btn-success me-2" (click)="approveHouse(house)">
-      <i class="bi bi-check2-square"></i> 核准上架
-    </button>
-    <button class="btn btn-outline-danger" (click)="rejectHouse(house.id)">
-      <i class="bi bi-x-lg"></i> 退回申請
-    </button>
-  }
-
-  @if (house.status === 2) {
-    <span class="badge bg-primary fs-6 me-2">上架中</span>
-    <button class="btn btn-warning text-dark" (click)="takeDownHouse(house)">
-      強制下架
-    </button>
-  }
-
-  @if (house.status === 3) {
-    <span class="badge bg-secondary fs-6">已下架</span>
-  }
-
-</div>
-
-            <div class="house-cover">
-              @if (getCoverUrl(house)) {
-                <img [src]="'https://localhost:7215' + getCoverUrl(house)" alt="首圖">
-              } @else {
-                <div class="no-cover">房東未設定首圖</div>
-              }
-            </div>
-
-          </div> </div> <div class="image-gallery-check mt-3 pt-3 border-top">
-          <h5 style="font-size: 1rem; color: #475569; margin-bottom: 15px;">📸 房東上傳的照片相簿 (請檢查是否違規)：</h5>
-          <div class="gallery-flex">
-            @for (img of house.images; track img.id) {
-              <div class="gallery-item">
-                <img [src]="'https://localhost:7215' + img.url" [class.is-cover-img]="img.isCover">
-                @if (img.isCover) {
-                  <span class="crown-badge">👑 首圖</span>
+              <div class="included-container">
+                ✨ 租金包含：
+                @if(house.includeUtilities) { <span class="text-success fw-bold ms-1">💧水電</span> }
+                @if(house.includeWifi) { <span class="text-success fw-bold ms-1">📶網路</span> }
+                @if(house.includeManagememtFee) { <span class="text-success fw-bold ms-1">🛡️管理費</span> }
+                @if(!house.includeUtilities && !house.includeWifi && !house.includeManagememtFee) {
+                  <span class="text-muted ms-1">無附加項目</span>
                 }
               </div>
-            }
-          </div>
-        </div>
 
-      </div> }
-  </div> </div> ```
+              <div class="habit-compact-container mt-4">
+                <h6 class="habit-title">🛋️ 房東設定的生活習慣與規定</h6>
+                <div class="habit-grid">
+                  <div class="habit-item"><span class="label">就寢時間：</span><span class="value">{{ house.sleepTime }}</span></div>
+                  <div class="habit-item"><span class="label">起床時間：</span><span class="value">{{ house.wakeTime }}</span></div>
+
+                  <div class="habit-item"><span class="label">潔癖程度：</span><span class="value score">{{ house.cleanLevel }} / 5</span></div>
+                  <div class="habit-item"><span class="label">噪音容忍：</span><span class="value score">{{ house.noiseTolerance }} / 5</span></div>
+                  <div class="habit-item"><span class="label">寵物：</span><span class="value" [class]="house.pet ? 'text-success' : 'text-danger'">{{ house.pet ? '🐾 允許' : '🚫 禁寵' }}</span></div>
+                  <div class="habit-item"><span class="label">抽菸：</span><span class="value" [class]="house.smoke ? 'text-success' : 'text-danger'">{{ house.smoke ? '🚬 允許' : '🚫 禁菸' }}</span></div>
+                  <div class="habit-item full-width"><span class="label">興趣標籤：</span><span class="value tags">{{ house.interests || '無特別填寫' }}</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="right-action-panel">
+              <div class="action-buttons">
+                @if (house.status === 2 || house.status === 0) {
+                  <button class="btn btn-success me-2" (click)="approveHouse(house)">
+                    <i class="bi bi-check2-square"></i> 核准上架
+                  </button>
+                  <button class="btn btn-outline-danger" (click)="rejectHouse(house.id)">
+                    <i class="bi bi-x-lg"></i> 退回申請
+                  </button>
+                }
+
+                @if (house.status === 1) {
+                  <span class="badge bg-primary fs-6 me-2">上架中</span>
+                  <button class="btn btn-warning text-dark" (click)="takeDownHouse(house)">
+                    強制下架
+                  </button>
+                }
+
+                @if (house.status === 3) {
+                  <span class="badge bg-secondary fs-6">已下架</span>
+                }
+              </div>
+
+              <div class="house-cover">
+                @if (getCoverUrl(house)) {
+                  <img [src]="'https://localhost:7215' + getCoverUrl(house)" alt="首圖">
+                } @else {
+                  <div class="no-cover">房東未設定首圖</div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="image-gallery-check mt-3 pt-3 border-top">
+            <h5 style="font-size: 1rem; color: #475569; margin-bottom: 15px;">📸 房東上傳的照片相簿 (請檢查是否違規)：</h5>
+            <div class="gallery-flex">
+              @for (img of house.images; track img.id) {
+                <div class="gallery-item">
+                  <img [src]="'https://localhost:7215' + img.url" [class.is-cover-img]="img.isCover">
+                  @if (img.isCover) {
+                    <span class="crown-badge">👑 首圖</span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+        </div>
+      }
+    </div>
+  </div>
+
+}

@@ -1,3 +1,5 @@
+@import 'swiper/css';
+
 /* ==========================================================================
    1. 頂部滿版大圖輪播區 (Full-Bleed Hero Stage)
    打破外層 1400px 限制，強行拉開至螢幕 100% 寬度
@@ -17,7 +19,8 @@
 .rental-hero__stage {
   position: relative;
   width: 100%;
-  height: 520px; /* 黃金比例大圖高度 */
+  height: 520px;
+  /* 黃金比例大圖高度 */
   // overflow: hidden;
   background-color: #2B2725;
 }
@@ -48,12 +51,10 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    to bottom,
-    rgba(43, 39, 37, 0.1) 0%,
-    rgba(43, 39, 37, 0.3) 50%,
-    rgba(43, 39, 37, 0.8) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(43, 39, 37, 0.1) 0%,
+      rgba(43, 39, 37, 0.3) 50%,
+      rgba(43, 39, 37, 0.8) 100%);
   pointer-events: none;
 }
 
@@ -66,7 +67,8 @@
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 1400px; /* 寬度對齊全站設計稿 */
+  max-width: 1400px;
+  /* 寬度對齊全站設計稿 */
   padding: 0 2rem;
   box-sizing: border-box;
   z-index: 10;
@@ -98,7 +100,8 @@
 }
 
 .rental-hero__location-icon {
-  color: var(--color-primary); /* 精緻的焦糖橘地標 */
+  color: var(--color-primary);
+  /* 精緻的焦糖橘地標 */
   font-size: 1.3rem !important;
 }
 
@@ -136,7 +139,9 @@
 
     .rental-hero__action-icon {
       /* 收藏按鈕移過去變紅色，分享變橘色 */
-      &.favorites { color: #E05353; }
+      &.favorites {
+        color: #E05353;
+      }
     }
   }
 }
@@ -156,7 +161,8 @@
    ========================================================================== */
 .rental-hero__thumb-area {
   position: absolute;
-  right: max(2rem, calc((100vw - 1400px) / 2 + 2rem)); /* 完美對齊右側邊界 */
+  right: max(2rem, calc((100vw - 1400px) / 2 + 2rem));
+  /* 完美對齊右側邊界 */
   top: 2.5rem;
   z-index: 20;
   width: 320px;
@@ -172,7 +178,8 @@
 }
 
 .rental-hero__thumb-slide {
-  width: 75px !important; /* 固定縮圖寬度 */
+  width: 75px !important;
+  /* 固定縮圖寬度 */
 }
 
 .rental-hero__thumb-button {
@@ -211,7 +218,8 @@
    ========================================================================== */
 .rental-detail-layout {
   display: grid;
-  grid-template-columns: 1fr 380px; /* 左主內容、右側邊欄黏性預訂卡 */
+  /* 💥 終極修正：將 1fr 改為 minmax(0, 1fr)，死死鎖住左側欄寬度，防止被輪播撐開 */
+  grid-template-columns: minmax(0, 1fr) 380px;
   gap: 2.5rem;
   align-items: start;
   font-family: sans-serif;
@@ -248,12 +256,172 @@
   }
 }
 
+/* ==========================================================================
+   5. 厚厝味：詳情頁評價區塊樣式 (雙重破防：解除 Grid 撐開 + 穿透 Angular 隔離)
+   ========================================================================== */
+
+.rental-detail-intro-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* 使用 ::ng-deep 確保樣式能順利套用到 Swiper 動態產生的 DOM 上 */
+:host ::ng-deep {
+  .rental-detail-reviews-list.swiper {
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+    overflow: hidden;
+    padding: 0.5rem 0.25rem 2rem 0.25rem;
+    box-sizing: border-box;
+  }
+
+  /* 確保每張評價卡片（Slide） */
+  .review-card.swiper-slide {
+    width: 380px !important;
+    flex-shrink: 0 !important;
+
+    /* 💥 新增：當進入手機版窄螢幕時，卡片寬度改為 100%，才不會把外層防線擠破 */
+    @media (max-width: 480px) {
+      width: 100% !important;
+    }
+  }
+
+  /* 客製化分頁小圓點顏色 */
+  .swiper-pagination-bullet-active {
+    background: var(--color-primary, #E66F43) !important;
+    width: 12px;
+    border-radius: 4px;
+  }
+}
+
+/* 評價單一卡片樣式維持 */
+.review-card {
+  width: 380px;
+  flex-shrink: 0;
+  position: relative;
+  transition-property: transform;
+
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border, #EAE4DE);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(43, 39, 37, 0.02);
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(43, 39, 37, 0.06);
+  }
+}
+
+/* --- 卡片內部細節樣式 --- */
+.review-card__header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.review-card__avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  flex-shrink: 0;
+
+  &--youth { background-color: #79948D; }
+  &--elder { background-color: var(--color-primary, #E66F43); }
+  &--partner { background-color: #A88D78; }
+}
+
+.review-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.review-card__user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.review-card__name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-main, #2B2725);
+}
+
+.review-card__badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+
+  &--youth { background-color: #EBF2F0; color: #4A6B62; }
+  &--elder { background-color: #FDF1EC; color: var(--color-primary, #E66F43); }
+  &--partner { background-color: #F4EFEA; color: #7A5F49; }
+}
+
+.review-card__rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .stars {
+    color: #F5A623;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+  }
+}
+
+.review-card__date {
+  font-size: 0.8rem;
+  color: var(--color-text-muted, #8E8680);
+}
+
+.review-card__comment {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--color-text-main, #2B2725);
+  margin: 0;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 客製化 Swiper 的分頁小圓點顏色 */
+:host ::ng-deep .swiper-pagination-bullet-active {
+  background: var(--color-primary, #E66F43) !important;
+}
+
+/* ==========================================================================
+   6. 內文與其它細節樣式
+   ========================================================================== */
+
 /* 內文描述 */
 .rental-detail-description {
   font-size: 1rem;
   line-height: 1.7;
   color: #4A4542;
-  white-space: pre-line; /* 保留資料庫撈出來的換行 */
+  white-space: pre-line;
+  /* 保留資料庫撈出來的換行 */
 }
 
 /* 特色膠囊標籤網格 (生活習慣、Wifi等) */
@@ -299,11 +467,12 @@
 }
 
 /* ==========================================================================
-   5. 右側側邊欄：出租人卡片 & 黏性預訂面板
+   7. 右側側邊欄：出租人卡片 & 黏性預訂面板
    ========================================================================== */
 .rental-detail-side-column {
   position: sticky;
-  top: 96px; /* 隨著頁面滾動時，卡片會優雅黏定在右側 */
+  top: 96px;
+  /* 隨著頁面滾動時，卡片會優雅黏定在右側 */
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -312,7 +481,8 @@
 /* 出租人/提供者名片 */
 .rental-detail-provider-card {
   padding: 1.5rem;
-  margin-bottom: 0; /* 覆蓋通用 margin */
+  margin-bottom: 0;
+  /* 覆蓋通用 margin */
 }
 
 .rental-detail-provider-card__header {
@@ -340,7 +510,7 @@
   object-fit: cover;
 }
 
-/* 已驗證藍勾勾 (改為我們專屬的優雅墨綠色調) */
+/* 已驗證藍勾勾 */
 .rental-detail-provider-card__verified-badge {
   position: absolute;
   bottom: -4px;
@@ -353,7 +523,7 @@
   display: flex;
   align-items: center;
   gap: 0.1rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .rental-detail-provider-card__verified-icon {
@@ -400,14 +570,14 @@
 .rental-detail-rating-score {
   font-size: 1rem;
   font-weight: 800;
-  color: #FFB100; /* 黃金星星色 */
+  color: #FFB100;
   margin: 0;
 }
 
 .rental-detail-star-rating {
   position: relative;
   display: inline-block;
-  color: #EAE4DE; /* 未亮星星底色 */
+  color: #EAE4DE;
 }
 
 .rental-detail-stars {
@@ -424,7 +594,7 @@
   top: 0;
   left: 0;
   overflow: hidden;
-  color: #FFB100; /* 已亮星星色 */
+  color: #FFB100;
   white-space: nowrap;
 }
 
@@ -568,7 +738,7 @@
 }
 
 /* ==========================================================================
-   6. 響應式斷點 (RWD 完美相容行動裝置)
+   8. 響應式斷點 (RWD)
    ========================================================================== */
 @media (max-width: 992px) {
   .rental-hero {
@@ -576,7 +746,7 @@
   }
 
   .rental-hero__stage {
-    height: 380px; /* 平板手機調低主圖高度 */
+    height: 380px;
   }
 
   .rental-hero__info {
@@ -596,16 +766,16 @@
   }
 
   .rental-hero__thumb-area {
-    display: none; /* 行動版隱藏浮動縮圖，保持畫面乾淨 */
+    display: none;
   }
 
   .rental-detail-layout {
-    grid-template-columns: 1fr; /* 轉為單欄 */
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.5rem;
   }
 
   .rental-detail-side-column {
     position: relative;
-    top: 0; /* 取消黏性固定 */
+    top: 0;
   }
 }

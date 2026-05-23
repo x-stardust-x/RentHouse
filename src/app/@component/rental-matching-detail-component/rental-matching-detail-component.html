@@ -43,12 +43,8 @@
 
     <!-- 背景大圖 -->
     <div class="rental-hero__background">
-      <img
-        class="rental-hero__main-image"
-        [class.is-changing]="heroImageChanging()"
-        [src]="currentHeroImage()"
-        alt="租賃物主圖"
-      >
+      <img class="rental-hero__main-image" [class.is-changing]="heroImageChanging()" [src]="currentHeroImage()"
+        alt="租賃物主圖">
 
       <div class="rental-hero__overlay"></div>
     </div>
@@ -88,29 +84,15 @@
 
       <div class="rental-hero__thumb-viewport">
 
-        <swiper-container
-          class="rental-hero__thumb-swiper"
-          slides-per-view="auto"
-          space-between="18"
-          free-mode="true"
-          grab-cursor="true"
-          watch-slides-progress="true"
-        >
+        <swiper-container class="rental-hero__thumb-swiper" slides-per-view="auto" space-between="18" free-mode="true"
+          grab-cursor="true" watch-slides-progress="true">
 
           @for (image of heroImages(); track image.src; let i = $index) {
           <swiper-slide class="rental-hero__thumb-slide">
 
-            <button
-              type="button"
-              class="rental-hero__thumb-button"
-              [class.is-active]="currentHeroImage() === image.src"
-              (click)="selectHeroImage(image.src, i)"
-            >
-              <img
-                class="rental-hero__thumb-image"
-                [src]="image.src"
-                [alt]="image.alt"
-              >
+            <button type="button" class="rental-hero__thumb-button" [class.is-active]="currentHeroImage() === image.src"
+              (click)="selectHeroImage(image.src, i)">
+              <img class="rental-hero__thumb-image" [src]="image.src" [alt]="image.alt">
             </button>
 
           </swiper-slide>
@@ -159,10 +141,12 @@
 
         <div class="rental-detail-card rental-detail-habits-card">
           <h2 class="rental-detail-section-title">生活習慣</h2>
+
           <div class="rental-detail-feature-grid">
             @if (detailData()?.noiseTolerance) {
             <div class="rental-detail-feature-pill">
-              <span class="material-symbols-outlined rental-detail-icon rental-detail-feature-pill__icon">volume_off</span>
+              <span
+                class="material-symbols-outlined rental-detail-icon rental-detail-feature-pill__icon">volume_off</span>
               <p class="rental-detail-feature-pill__text">保持安靜</p>
             </div>
             }
@@ -174,113 +158,252 @@
             }
             @if (detailData()?.smoke) {
             <div class="rental-detail-feature-pill">
-              <span class="material-symbols-outlined rental-detail-icon rental-detail-feature-pill__icon">smoke_free</span>
+              <span
+                class="material-symbols-outlined rental-detail-icon rental-detail-feature-pill__icon">smoke_free</span>
               <p class="rental-detail-feature-pill__text">全面禁菸</p>
             </div>
             }
           </div>
-        </div>
 
-        <div class="rental-detail-card rental-detail-services-card">
-          <h2 class="rental-detail-section-title">提供的設施與服務</h2>
-          <div class="rental-detail-feature-grid rental-detail-service-grid">
-            @if (detailData()?.includeWifi) {
-            <div class="rental-detail-feature-pill">
-              <span class="material-symbols-outlined rental-detail-icon rental-detail-feature-pill__icon">wifi</span>
-              <p class="rental-detail-feature-pill__text">Wifi</p>
+
+          <!-- <div class="advanced-conditions-display">
+            @for (category of objectKeys(parsedRules); track category) {
+            <div class="rental-matching__advanced-section">
+              <div class="filter-title">
+                <span class="material-symbols-outlined">
+                  {{ HABIT_ICONS[category] || 'help' }}
+                </span>
+                <h3 class="rental-matching__filter-title-text">
+                  {{ HABIT_LABELS[category] || category }}
+                </h3>
+              </div>
+
+              <div class="rental-matching__advanced-options">
+                @for (item of parsedRules[category]; track item) {
+                <span class="habit-tag">
+                  {{ item }}
+                </span>
+                }
+              </div>
             </div>
             }
+            } -->
+
+
           </div>
+
+          <div class="rental-detail-card rental-detail-services-card">
+            <h2 class="rental-detail-section-title">提供的設施與服務</h2>
+            <div class="rental-detail-feature-grid rental-detail-service-grid">
+
+              @for (item of facilities; track item.name) {
+              <div class="rental-detail-feature-pill">
+                <span class="material-symbols-outlined rental-detail-icon rental-detail-feature-pill__icon">
+                  {{ item.icon }}
+                </span>
+                <p class="rental-detail-feature-pill__text">{{ item.name }}</p>
+              </div>
+              } @empty {
+              <p class="no-facilities-text">此房屋目前未提供特定設施與服務</p>
+              }
+
+            </div>
+          </div>
+
         </div>
 
-      </div>
 
+        }
 
-      }
+        @if (isSkill()) {
+        <div class="rental-detail-card rental-detail-skill-card">
+          <h2 class="rental-detail-section-title">授課形式</h2>
+          <p class="rental-detail-card-text">{{ detailData()?.isOnline ? '線上' : '實體' }}</p>
+        </div>
 
-      @if (isSkill()) {
-      <div class="rental-detail-card rental-detail-skill-card">
-        <h2 class="rental-detail-section-title">授課形式</h2>
-        <p class="rental-detail-card-text">{{ detailData()?.isOnline ? '線上' : '實體' }}</p>
-      </div>
-      }
+        <div class="rental-detail-card rental-detail-skill-card">
+          <h2 class="rental-detail-section-title">須具備的相關專業知識</h2>
+          <p class="rental-detail-card-text">{{ detailData()?.requiredKnowledge }}</p>
+        </div>
 
-      @if (isTool()) {
-      <div class="rental-detail-card rental-detail-tool-card">
+        <div class="rental-detail-card rental-detail-skill-card">
+          <h2 class="rental-detail-section-title">須自備的用具</h2>
+          <p class="rental-detail-card-text">{{ detailData()?.ownTool }}</p>
+        </div>
+        }
+
+        @if (isTool()) {
+        <!-- <div class="rental-detail-card rental-detail-tool-card">
         <h2 class="rental-detail-section-title">庫存數量</h2>
         <p class="rental-detail-card-text">{{ detailData()?.quantity ?? 0 }} 個</p>
-      </div>
-      }
-    </div>
+      </div> -->
 
-
-
-
-
-    <div class="rental-detail-card rental-detail-map-card">
-      <h2 class="rental-detail-section-title">位置資訊</h2>
-      <p class="rental-detail-map-address">{{ detailData()?.address }}</p>
-
-
-      <iframe class="rental-detail-map-frame" [src]="mapUrl()" width="600" height="450" allowfullscreen="" loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade">
-      </iframe>
-    </div>
-
-
-  </div>
-
-
-
-  <div class="rental-detail-side-column">
-
-    <!-- 出租人資料 -->
-    <div class="rental-detail-card rental-detail-provider-card">
-      <div class="rental-detail-provider-card__header">
-        <div class="rental-detail-provider-card__avatar-wrap">
-
-          <div class="rental-detail-provider-card__avatar-frame">
-
-            <!-- <img [src]="detailData()?userAvatar || detadetailData()?.avatarUrl || 'images/mr_chen.jpg'" alt="提供者"
-              style="width: 6em; height: auto; aspect-ratio: 1 / 1; border-radius: 50em;"> -->
-
-            <img class="rental-detail-provider-card__avatar" src="images/mr_chen.jpg" alt="提供者">
-
-          </div>
-
-          <div class="rental-detail-provider-card__verified-badge">
-            <span class="material-symbols-outlined rental-detail-icon rental-detail-provider-card__verified-icon">verified</span>
-            <p class="rental-detail-provider-card__verified-text">已驗證</p>
-          </div>
-
+        <div class="rental-detail-card rental-detail-tool-card">
+          <h2 class="rental-detail-section-title">工具介紹</h2>
+          <p class="rental-detail-card-text">{{ detailData()?.description }}</p>
         </div>
 
-        <!-- ======== 後面處理出租人資訊 ======== -->
-        <!-- ==================================== -->
+        <div class="rental-detail-card rental-detail-tool-card">
+          <h2 class="rental-detail-section-title">使用門檻 / 條件</h2>
+          <!-- <p class="rental-detail-card-text">{{ detailData()?.description }}</p> -->
+        </div>
 
-        <div class="rental-detail-provider-card__info">
+        <div class="rental-detail-card rental-detail-tool-card">
+          <h2 class="rental-detail-section-title">損壞賠償或使用須知</h2>
+          <!-- <p class="rental-detail-card-text">{{ detailData()?.description }}</p> -->
+        </div>
 
-          <!-- <h2>{{ detailData()?.userName }}</h2> -->
-          <!-- <h2>{{ house()?.accountId }}</h2> -->
+        }
+
+      </div>
+
+      <div class="content-wrapper rental-detail-content-wrapper">
+        <div class="intro rental-detail-card rental-detail-intro-card">
+          <h2 class="rental-detail-section-title">評價</h2>
+
+          <swiper-container class="rental-detail-reviews-list" slides-per-view="auto" space-between="20"
+            free-mode="true" grab-cursor="true">
+
+            <swiper-slide class="review-card">
+              <div class="review-card__header">
+                <div class="review-card__avatar review-card__avatar--youth">林</div>
+                <div class="review-card__meta">
+                  <div class="review-card__user-info">
+                    <span class="review-card__name">林子翔</span>
+                    <span class="review-card__badge review-card__badge--youth">青年承租人</span>
+                  </div>
+                  <div class="review-card__rating">
+                    <span class="stars">★★★★★</span>
+                    <span class="review-card__date">2026/05/12</span>
+                  </div>
+                </div>
+              </div>
+              <p class="review-card__comment">
+                向王伯伯借了木工工具箱，伯伯超熱心！不但工具保養得很好，還親自指導了我 20 分鐘鋸木頭的訣竅，讓我的手作小長凳順利完成了，在社區裡真的很有家的味道！
+              </p>
+            </swiper-slide>
+
+            <swiper-slide class="review-card">
+              <div class="review-card__header">
+                <div class="review-card__avatar review-card__avatar--elder">陳</div>
+                <div class="review-card__meta">
+                  <div class="review-card__user-info">
+                    <span class="review-card__name">陳美鳳阿姨</span>
+                    <span class="review-card__badge review-card__badge--elder">銀髮房東</span>
+                  </div>
+                  <div class="review-card__rating">
+                    <span class="stars">★★★★★</span>
+                    <span class="review-card__date">2026/04/28</span>
+                  </div>
+                </div>
+              </div>
+              <p class="review-card__comment">
+                小翔非常愛惜物品，歸還工具時還擦拭得乾乾淨淨。下午借完工具後，還順便在大廳幫我設定了手機的健保快易通 App，真是個貼心的少年人，非常推薦借給他！
+              </p>
+            </swiper-slide>
+
+            <swiper-slide class="review-card">
+              <div class="review-card__header">
+                <div class="review-card__avatar review-card__avatar--partner">張</div>
+                <div class="review-card__meta">
+                  <div class="review-card__user-info">
+                    <span class="review-card__name">張家豪</span>
+                    <span class="review-card__badge review-card__badge--partner">共居夥伴</span>
+                  </div>
+                  <div class="review-card__rating">
+                    <span class="stars">★★★★☆</span>
+                    <span class="review-card__date">2026/04/15</span>
+                  </div>
+                </div>
+              </div>
+              <p class="review-card__comment">
+                電鑽馬達很有力，配件也非常齊全，使用門檻不高。社區裡有這樣能互相交流工具與技能的平台真的太方便了，省去了自己買一堆少用工具的費用，大推！
+              </p>
+            </swiper-slide>
+
+          </swiper-container>
+
+        </div>
+      </div>
 
 
-          <h2 class="rental-detail-provider-card__name">{{ detailData()?.realName }}</h2>
-          <!-- <h2>{{ detailData()?.userName }}</h2> -->
-
-          @if (isRoom()) {
-          <p class="rental-detail-provider-card__role">出租人</p>
-          } @else if (detailData()?.category === '專業諮詢' || detailData()?.Category === '專業諮詢') {
-          <p class="rental-detail-provider-card__role">技能提供者</p>
-          } @else if (detailData()?.category === '工具共享' || detailData()?.Category === '工具共享') {
-          <p class="rental-detail-provider-card__role">工具提供者</p>
-          } @else {
-          <p class="rental-detail-provider-card__role">提供者</p>
-          }
 
 
+      <div class="rental-detail-card rental-detail-map-card">
+
+        @if (isRoom()) {
+        <h2 class="rental-detail-section-title">位置資訊</h2>
+        }
+        @if (isSkill()) {
+        <h2 class="rental-detail-section-title">授課位置</h2>
+        }
+        @if (isTool()) {
+        <h2 class="rental-detail-section-title">交收位置</h2>
+        }
+
+        <p class="rental-detail-map-address">{{ detailData()?.address }}</p>
 
 
-          <!-- @if (isSkill()) {
+        <iframe class="rental-detail-map-frame" [src]="mapUrl()" width="600" height="450" allowfullscreen=""
+          loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+
+
+    </div>
+
+
+
+    <div class="rental-detail-side-column">
+
+      <!-- 出租人資料 -->
+      <div class="rental-detail-card rental-detail-provider-card">
+        <div class="rental-detail-provider-card__header">
+          <div class="rental-detail-provider-card__avatar-wrap">
+
+            <div class="rental-detail-provider-card__avatar-frame">
+
+              <!-- <img [src]="detailData()?userAvatar || detadetailData()?.avatarUrl || 'images/mr_chen.jpg'" alt="提供者"
+              style="width: 6em; height: auto; aspect-ratio: 1 / 1; border-radius: 50em;"> -->
+
+              <img class="rental-detail-provider-card__avatar" src="images/mr_chen.jpg" alt="提供者">
+
+            </div>
+
+            <div class="rental-detail-provider-card__verified-badge">
+              <span
+                class="material-symbols-outlined rental-detail-icon rental-detail-provider-card__verified-icon">verified</span>
+              <p class="rental-detail-provider-card__verified-text">已驗證</p>
+            </div>
+
+          </div>
+
+          <!-- ======== 後面處理出租人資訊 ======== -->
+          <!-- ==================================== -->
+
+          <div class="rental-detail-provider-card__info">
+
+            <!-- <h2>{{ detailData()?.userName }}</h2> -->
+            <!-- <h2>{{ house()?.accountId }}</h2> -->
+
+
+            <h2 class="rental-detail-provider-card__name">{{ detailData()?.realName }}</h2>
+            <!-- <h2>{{ detailData()?.userName }}</h2> -->
+
+            @if (isRoom()) {
+            <p class="rental-detail-provider-card__role">出租人</p>
+            } @else if (detailData()?.category === '專業諮詢' || detailData()?.Category === '專業諮詢') {
+            <p class="rental-detail-provider-card__role">技能提供者</p>
+            } @else if (detailData()?.category === '工具共享' || detailData()?.Category === '工具共享') {
+            <p class="rental-detail-provider-card__role">工具提供者</p>
+            } @else {
+            <p class="rental-detail-provider-card__role">提供者</p>
+            }
+
+
+
+
+            <!-- @if (isSkill()) {
           <p>技能提供者</p>
           }
 
@@ -289,145 +412,155 @@
           } -->
 
 
-          <div class="rental-detail-rating-row">
+            <div class="rental-detail-rating-row">
 
-            <div class="star-rating-wrapper rental-detail-star-rating-wrapper">
+              <div class="star-rating-wrapper rental-detail-star-rating-wrapper">
 
-              <p class="rental-detail-rating-score">{{ (detailData()?.reviewCount ?? 0) === 0 ? '0.0' : ((detailData()?.rating ?? 0) | number:'1.1-1') }}
-              </p>
-              <!-- <p>{{ house()?.rating | number:'1.1-1' }}</p> -->
+                <p class="rental-detail-rating-score">{{ (detailData()?.reviewCount ?? 0) === 0 ? '0.0' :
+                  ((detailData()?.rating ?? 0) | number:'1.1-1') }}
+                </p>
+                <!-- <p>{{ house()?.rating | number:'1.1-1' }}</p> -->
 
-              <div class="star-rating rental-detail-star-rating">
+                <div class="star-rating rental-detail-star-rating">
 
-                <div class="stars-empty rental-detail-stars rental-detail-stars--empty">
-                  <span class="material-symbols-outlined rental-detail-star-icon">star</span>
-                  <span class="material-symbols-outlined rental-detail-star-icon">star</span>
-                  <span class="material-symbols-outlined rental-detail-star-icon">star</span>
-                  <span class="material-symbols-outlined rental-detail-star-icon">star</span>
-                  <span class="material-symbols-outlined rental-detail-star-icon">star</span>
-                </div>
+                  <div class="stars-empty rental-detail-stars rental-detail-stars--empty">
+                    <span class="material-symbols-outlined rental-detail-star-icon">star</span>
+                    <span class="material-symbols-outlined rental-detail-star-icon">star</span>
+                    <span class="material-symbols-outlined rental-detail-star-icon">star</span>
+                    <span class="material-symbols-outlined rental-detail-star-icon">star</span>
+                    <span class="material-symbols-outlined rental-detail-star-icon">star</span>
+                  </div>
 
-                <!-- <div class="stars-filled" [style.width.%]="(house()?.rating / 5) * 100"> -->
-                <div class="stars-filled rental-detail-stars rental-detail-stars--filled"
-                  [style.width.%]="(detailData()?.reviewCount ?? 0) === 0 ? 0 : ((detailData()?.rating ?? 0) / 5) * 100">
-                  <span class="material-symbols-outlined rental-detail-star-icon">star</span>
-                  <span class="material-symbols-outlined rental-detail-star-icon">star</span>
-                  <span class="material-symbols-outlined rental-detail-star-icon">star</span>
-                  <span class="material-symbols-outlined rental-detail-star-icon">star</span>
-                  <span class="material-symbols-outlined rental-detail-star-icon">star</span>
+                  <!-- <div class="stars-filled" [style.width.%]="(house()?.rating / 5) * 100"> -->
+                  <div class="stars-filled rental-detail-stars rental-detail-stars--filled"
+                    [style.width.%]="(detailData()?.reviewCount ?? 0) === 0 ? 0 : ((detailData()?.rating ?? 0) / 5) * 100">
+                    <span class="material-symbols-outlined rental-detail-star-icon">star</span>
+                    <span class="material-symbols-outlined rental-detail-star-icon">star</span>
+                    <span class="material-symbols-outlined rental-detail-star-icon">star</span>
+                    <span class="material-symbols-outlined rental-detail-star-icon">star</span>
+                    <span class="material-symbols-outlined rental-detail-star-icon">star</span>
+                  </div>
+
                 </div>
 
               </div>
-
             </div>
+
+
+
+            <p class="rental-detail-review-count">(<span class="rental-detail-review-count__number">{{
+                detailData()?.reviewCount ?? 0 }}</span>則評價)</p>
+            <!-- <p>(<span>12</span>則評價)</p> -->
+
           </div>
 
-
-
-          <p class="rental-detail-review-count">(<span class="rental-detail-review-count__number">{{ detailData()?.reviewCount ?? 0 }}</span>則評價)</p>
-          <!-- <p>(<span>12</span>則評價)</p> -->
-
+          <!-- ==================================== -->
+          <!-- ==================================== -->
         </div>
 
-        <!-- ==================================== -->
-        <!-- ==================================== -->
+        <p class="rental-detail-provider-card__bio">{{ detailData()?.bio || '尚未提供個人介紹' }}</p>
+
+        <a class="rental-detail-outline-link" href="#">查看完整個人檔案</a>
+
       </div>
 
-      <p class="rental-detail-provider-card__bio">{{ detailData()?.bio || '尚未提供個人介紹' }}</p>
 
-      <a class="rental-detail-outline-link" href="#">查看完整個人檔案</a>
-
-    </div>
-
-    <div class="rental-detail-card rental-detail-booking-card">
+      <div class="rental-detail-card rental-detail-booking-card">
+        <h2 class="rental-detail-section-title">契合度分析</h2>
+        <!-- 從你前台 UI 看到的「契合度 85%」，點進詳情頁後，可以具體呈現為什麼契合（例：「生活風格皆喜愛安靜」、「共同興趣：手作工藝」）。 -->
+      </div>
 
 
+      <div class="rental-detail-card rental-detail-booking-card">
 
+        @if (isRoom()) {
 
-      @if (isRoom()) {
+        <p class="rental-detail-price">NT$<span class="rental-detail-price__number"> {{ detailData()?.rentPrice }}
+          </span><span class="rental-detail-price__unit">/月</span></p>
 
-      <p class="rental-detail-price">NT$<span class="rental-detail-price__number"> {{ detailData()?.rentPrice }} </span><span class="rental-detail-price__unit">/月</span></p>
+        <!-- 如果資料庫條件符合含有水電 或 網路 或 管理費，顯示符合的條件 -->
 
-      <!-- 如果資料庫條件符合含有水電 或 網路 或 管理費，顯示符合的條件 -->
-
-      <!-- 照理說，這裡應該要能讓出租人自行新增設施與服務，
+        <!-- 照理說，這裡應該要能讓出租人自行新增設施與服務，
        並且決定水電、網路、管理費有沒有包含在費用中
        後端要新增這個功能 -->
 
-      <!-- @if -->
+        <!-- @if -->
 
-      <!-- 需要改成類似switch方式來寫，以及解決頓號顯示 -->
-      <p class="rental-detail-included-fees">包含
-        <!-- 費用中包含 wifi -->
-        @if (detailData()?.includeWifi) {
-        <span class="rental-detail-included-fees__item">Wifi</span>
-        <span class="rental-detail-included-fees__separator">、</span>
+        <!-- 需要改成類似switch方式來寫，以及解決頓號顯示 -->
+        <p class="rental-detail-included-fees">包含
+          <!-- 費用中包含 wifi -->
+          @if (detailData()?.includeWifi) {
+          <span class="rental-detail-included-fees__item">Wifi</span>
+          <span class="rental-detail-included-fees__separator">、</span>
+          }
+          @if (detailData()?.includeUtilities) {
+          <span class="rental-detail-included-fees__item">水電</span>
+          <span class="rental-detail-included-fees__separator">、</span>
+          }
+          @if (detailData()?.includeManagementFee) {
+          <span class="rental-detail-included-fees__item">管理費</span>
+          }
+
+          <!-- <p>包含水電、網路及管理費</p> -->
+
+
+        </p>
+
+        <!-- ==================================== -->
+        <!-- ==================================== -->
+
+        <select class="rental-detail-period-select" name="rental-period" id="rental-period">
+          <!-- <option value="">選擇租期</option> -->
+          <option class="rental-detail-period-select__option" value="one-year">1年 (12個月)</option>
+          <option class="rental-detail-period-select__option" value="six-months">6個月</option>
+          <option class="rental-detail-period-select__option" value="one-year">3個月</option>
+          <option class="rental-detail-period-select__option" value="one-year">1個月</option>
+        </select>
+
+
+        <div class="links-group rental-detail-links-group">
+          <a class="rental-detail-button rental-detail-button--primary" href="#">立即預訂</a>
+          <a class="rental-detail-button rental-detail-button--secondary" href="#">聯絡出租人</a>
+        </div>
+
+        } @else {
+
+        <p class="rental-detail-price">
+          NT$<span class="rental-detail-price__number"> {{ detailData()?.price ?? detailData()?.Price }} </span>
+          <span class="rental-detail-price__unit">/{{ detailData()?.priceUnit ?? detailData()?.PriceUnit ?? '次'
+            }}</span>
+        </p>
+
+        @if (detailData()?.category === '工具共享' || detailData()?.Category === '工具共享') {
+        <p class="rental-detail-booking-note">押金：NT$ {{ detailData()?.deposit ?? detailData()?.Deposit ?? 0 }}</p>
+        <p class="rental-detail-booking-note">庫存數量：{{ detailData()?.quantity ?? detailData()?.Quantity ?? 1 }} 個</p>
         }
-        @if (detailData()?.includeUtilities) {
-        <span class="rental-detail-included-fees__item">水電</span>
-        <span class="rental-detail-included-fees__separator">、</span>
+
+        @if (detailData()?.category === '專業諮詢' || detailData()?.Category === '專業諮詢') {
+        <p class="rental-detail-booking-note">授課形式：{{ (detailData()?.isOnline ?? detailData()?.IsOnline) ? '線上諮詢' :
+          '實體面授'
+          }}</p>
         }
-        @if (detailData()?.includeManagementFee) {
-        <span class="rental-detail-included-fees__item">管理費</span>
+
+
+        <div class="links-group rental-detail-links-group">
+          <a class="rental-detail-button rental-detail-button--primary" href="#">
+            {{ (detailData()?.category === '專業諮詢' || detailData()?.Category === '專業諮詢') ? '立即預約' : '立即借用' }}
+          </a>
+          <a class="rental-detail-button rental-detail-button--secondary" href="#">聯絡提供者</a>
+        </div>
+
+
+
         }
 
-        <!-- <p>包含水電、網路及管理費</p> -->
 
 
-      </p>
+        <p class="rental-detail-free-note">目前不會向您收取任何費用</p>
 
-      <!-- ==================================== -->
-      <!-- ==================================== -->
-
-      <select class="rental-detail-period-select" name="rental-period" id="rental-period">
-        <!-- <option value="">選擇租期</option> -->
-        <option class="rental-detail-period-select__option" value="one-year">1年 (12個月)</option>
-        <option class="rental-detail-period-select__option" value="six-months">6個月</option>
-        <option class="rental-detail-period-select__option" value="one-year">3個月</option>
-        <option class="rental-detail-period-select__option" value="one-year">1個月</option>
-      </select>
-
-
-      <div class="links-group rental-detail-links-group">
-        <a class="rental-detail-button rental-detail-button--primary" href="#">立即預訂</a>
-        <a class="rental-detail-button rental-detail-button--secondary" href="#">聯絡出租人</a>
       </div>
-
-      } @else {
-
-      <p class="rental-detail-price">
-        NT$<span class="rental-detail-price__number"> {{ detailData()?.price ?? detailData()?.Price }} </span>
-        <span class="rental-detail-price__unit">/{{ detailData()?.priceUnit ?? detailData()?.PriceUnit ?? '次' }}</span>
-      </p>
-
-      @if (detailData()?.category === '工具共享' || detailData()?.Category === '工具共享') {
-      <p class="rental-detail-booking-note">押金：NT$ {{ detailData()?.deposit ?? detailData()?.Deposit ?? 0 }}</p>
-      <p class="rental-detail-booking-note">庫存數量：{{ detailData()?.quantity ?? detailData()?.Quantity ?? 1 }} 個</p>
-      }
-
-      @if (detailData()?.category === '專業諮詢' || detailData()?.Category === '專業諮詢') {
-      <p class="rental-detail-booking-note">授課形式：{{ (detailData()?.isOnline ?? detailData()?.IsOnline) ? '線上諮詢' : '實體面授' }}</p>
-      }
-
-
-      <div class="links-group rental-detail-links-group">
-        <a class="rental-detail-button rental-detail-button--primary" href="#">
-          {{ (detailData()?.category === '專業諮詢' || detailData()?.Category === '專業諮詢') ? '立即預約' : '立即借用' }}
-        </a>
-        <a class="rental-detail-button rental-detail-button--secondary" href="#">聯絡提供者</a>
-      </div>
-
-
-
-      }
-
-
-
-      <p class="rental-detail-free-note">目前不會向您收取任何費用</p>
 
     </div>
 
   </div>
-
-</div>
-<!-- </div> -->
+  <!-- </div> -->

@@ -8,11 +8,17 @@
 
       <nav class="public-layout__nav" aria-label="前台主要導覽">
 
-        <a class="nav-link" routerLink="home" routerLinkActive="is-active">首頁</a>
-
         <a class="nav-link" routerLink="/admin" routerLinkActive="is-active">管理員</a>
 
         <a class="nav-link" routerLink="login" routerLinkActive="is-active">登入</a>
+
+        <br>
+
+        <a class="nav-link" routerLink="home" routerLinkActive="is-active">首頁</a>
+
+        <a class="nav-link" routerLink="" routerLinkActive="">關於厚厝味</a>
+
+        <a class="nav-link" routerLink="" routerLinkActive="">安全保障</a>
 
         <a class="nav-link" routerLink="member/dashboard" routerLinkActive="is-active">會員中心</a>
 
@@ -20,7 +26,7 @@
 
         <a class="nav-link" routerLink="/rent" routerLinkActive="is-active">租屋管理</a>
 
-        <a class="nav-link" routerLink="/home" routerLinkActive="is-active">個人主頁</a>
+        <a class="nav-link" routerLink="" routerLinkActive="">個人主頁</a>
 
         <a class="nav-link" routerLink="/contact" routerLinkActive="is-active">聯絡我們</a>
 
@@ -68,7 +74,42 @@
   </main>
 
   <footer class="public-layout__footer">
-    © RentHouse
+    <div class="footer-container">
+
+      <div class="footer-brand-col">
+        <div class="footer-logo">厚厝味</div>
+        <p class="footer-slogan">共享居住與技能互助，打造跨世代的溫暖港灣。</p>
+        <div class="footer-contact-info">
+          <p><span class="material-symbols-outlined">mail</span> contact@houcuowei.com</p>
+          <p><span class="material-symbols-outlined">location_on</span> 高雄市前鎮區高雄軟體園區</p>
+        </div>
+      </div>
+
+      <div class="footer-links-flat-col">
+        <ul class="footer-links-grid">
+          <li><a routerLink="home">首頁</a></li>
+          <li><a routerLink="/about">關於厚厝味</a></li>
+          <li><a routerLink="/">安全保障</a></li>
+          <li><a routerLink="/rental-matching-component">租賃物媒合</a></li>
+          <li><a routerLink="/news">最新消息</a></li>
+          <li><a routerLink="/faq">FAQ 常見問題</a></li>
+          <li><a routerLink="/contact">聯絡我們 / 合作洽談</a></li>
+          <li><a routerLink="login">登入 / 註冊</a></li>
+          <li><a routerLink="member/dashboard">個人主頁 (會員中心)</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-bottom-container">
+        <p class="copyright">© 2026 厚厝味 HouCuoWei. All rights reserved.</p>
+        <div class="footer-bottom-legal">
+          <a href="#">服務條款</a>
+          <a href="#">隱私權政策</a>
+        </div>
+      </div>
+    </div>
   </footer>
 
 </div>

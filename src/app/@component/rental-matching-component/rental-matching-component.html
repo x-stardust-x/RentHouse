@@ -200,8 +200,6 @@
 
             <div class="advanced-coonditions rental-matching__advanced-conditions">
 
-              <!-- 作息與噪音管理 -->
-              <!-- ✅ 作息型態：[早睡早起 / 正常作息 / 夜貓子] -->
               <div class="rental-matching__advanced-section">
                 <div class="filter-title rental-matching__filter-title">
                   <span class="material-symbols-outlined rental-matching__filter-icon">routine</span>
@@ -210,25 +208,24 @@
 
                 <div class="rental-matching__advanced-options">
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__radio" type="radio" name="routine" id="">
-                    <label class="rental-matching__radio-label" for="routine">早睡早起</label>
+                    <input class="rental-matching__checkbox" type="checkbox" name="routine" id="routine_early">
+                    <label class="rental-matching__radio-label" for="routine_early">早睡早起</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__radio" type="radio" name="routine" id="">
-                    <label class="rental-matching__radio-label" for="routine">正常作息</label>
+                    <input class="rental-matching__checkbox" type="checkbox" name="routine" id="routine_normal">
+                    <label class="rental-matching__radio-label" for="routine_normal">正常作息</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__radio" type="radio" name="routine" id="">
-                    <label class="rental-matching__radio-label" for="routine">夜貓子</label>
+                    <input class="rental-matching__checkbox" type="checkbox" name="routine" id="routine_night">
+                    <label class="rental-matching__radio-label" for="routine_night">夜貓子</label>
                   </div>
                 </div>
               </div>
 
               <hr class="rental-matching__advanced-divider">
 
-              <!-- ✅ 深夜洗衣/洗澡限制：[22:00後禁止 / 23:00後禁止 / 無限制] -->
               <div class="rental-matching__advanced-section">
                 <div class="filter-title rental-matching__filter-title">
                   <span class="material-symbols-outlined rental-matching__filter-icon">do_not_disturb_on</span>
@@ -237,26 +234,24 @@
 
                 <div class="rental-matching__advanced-options">
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__radio" type="radio" name="routine" id="">
-                    <label class="rental-matching__radio-label" for="routine">無限制</label>
+                    <input class="rental-matching__checkbox" type="checkbox" name="showerRestriction" id="shower_none">
+                    <label class="rental-matching__radio-label" for="shower_none">無限制</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__radio" type="radio" name="routine" id="">
-                    <label class="rental-matching__radio-label" for="routine">22:00後禁止</label>
+                    <input class="rental-matching__checkbox" type="checkbox" name="showerRestriction" id="shower_22">
+                    <label class="rental-matching__radio-label" for="shower_22">22:00後禁止</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__radio" type="radio" name="routine" id="">
-                    <label class="rental-matching__radio-label" for="routine">23:00後禁止</label>
+                    <input class="rental-matching__checkbox" type="checkbox" name="showerRestriction" id="shower_23">
+                    <label class="rental-matching__radio-label" for="shower_23">23:00後禁止</label>
                   </div>
                 </div>
               </div>
 
               <hr class="rental-matching__advanced-divider">
 
-              <!-- 社交與人際界線 -->
-              <!-- ✅ 訪客留宿規範：[完全謝絕訪客 / 僅限白天拜訪 / 可帶異性或同性過夜] -->
               <div class="rental-matching__advanced-section">
                 <div class="filter-title rental-matching__filter-title">
                   <span class="material-symbols-outlined rental-matching__filter-icon">groups</span>
@@ -265,26 +260,25 @@
 
                 <div class="rental-matching__advanced-options">
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__radio" type="radio" name="routine" id="">
-                    <label class="rental-matching__radio-label" for="routine">完全謝絕訪客</label>
+                    <input class="rental-matching__checkbox" type="checkbox" name="visitorPolicy" id="visitor_none">
+                    <label class="rental-matching__radio-label" for="visitor_none">完全謝絕訪客</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__radio" type="radio" name="routine" id="">
-                    <label class="rental-matching__radio-label" for="routine">僅限白天拜訪</label>
+                    <input class="rental-matching__checkbox" type="checkbox" name="visitorPolicy" id="visitor_day">
+                    <label class="rental-matching__radio-label" for="visitor_day">僅限白天拜訪</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__radio" type="radio" name="routine" id="">
-                    <label class="rental-matching__radio-label" for="routine">可帶異性或同性過夜</label>
+                    <input class="rental-matching__checkbox" type="checkbox" name="visitorPolicy"
+                      id="visitor_overnight">
+                    <label class="rental-matching__radio-label" for="visitor_overnight">可帶異性或同性過夜</label>
                   </div>
                 </div>
               </div>
 
               <hr class="rental-matching__advanced-divider">
 
-              <!-- 廚房與飲食文化 -->
-              <!-- ✅ 開伙習慣：[可大火快炒 / 僅限輕食微波 / 禁開伙] -->
               <div class="rental-matching__advanced-section">
                 <div class="filter-title rental-matching__filter-title">
                   <span class="material-symbols-outlined rental-matching__filter-icon">chef_hat</span>
@@ -293,26 +287,24 @@
 
                 <div class="rental-matching__advanced-options">
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__radio" type="radio" name="routine" id="">
-                    <label class="rental-matching__radio-label" for="routine">可大火快炒</label>
+                    <input class="rental-matching__checkbox" type="checkbox" name="cooking" id="cooking_heavy">
+                    <label class="rental-matching__radio-label" for="cooking_heavy">可大火快炒</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__radio" type="radio" name="routine" id="">
-                    <label class="rental-matching__radio-label" for="routine">僅限輕食微波</label>
+                    <input class="rental-matching__checkbox" type="checkbox" name="cooking" id="cooking_light">
+                    <label class="rental-matching__radio-label" for="cooking_light">僅限輕食微波</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__radio" type="radio" name="routine" id="">
-                    <label class="rental-matching__radio-label" for="routine">禁開伙</label>
+                    <input class="rental-matching__checkbox" type="checkbox" name="cooking" id="cooking_none">
+                    <label class="rental-matching__radio-label" for="cooking_none">禁開伙</label>
                   </div>
                 </div>
               </div>
 
               <hr class="rental-matching__advanced-divider">
 
-
-              <!-- ✅ 冰箱使用分配：[各自獨立分層 / 貼標籤即可 / 共同分享] -->
               <div class="rental-matching__advanced-section">
                 <div class="filter-title rental-matching__filter-title">
                   <span class="material-symbols-outlined rental-matching__filter-icon">kitchen</span>
@@ -321,27 +313,24 @@
 
                 <div class="rental-matching__advanced-options">
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__radio" type="radio" name="routine" id="">
-                    <label class="rental-matching__radio-label" for="routine">各自獨立分層</label>
+                    <input class="rental-matching__checkbox" type="checkbox" name="fridge" id="fridge_layer">
+                    <label class="rental-matching__radio-label" for="fridge_layer">各自獨立分層</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__radio" type="radio" name="routine" id="">
-                    <label class="rental-matching__radio-label" for="routine">貼標籤即可</label>
+                    <input class="rental-matching__checkbox" type="checkbox" name="fridge" id="fridge_label">
+                    <label class="rental-matching__radio-label" for="fridge_label">貼標籤即可</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__radio" type="radio" name="routine" id="">
-                    <label class="rental-matching__radio-label" for="routine">共同分享</label>
+                    <input class="rental-matching__checkbox" type="checkbox" name="fridge" id="fridge_share">
+                    <label class="rental-matching__radio-label" for="fridge_share">共同分享</label>
                   </div>
                 </div>
               </div>
 
               <hr class="rental-matching__advanced-divider">
 
-
-              <!-- 互動與傳承期望 -->
-              <!-- ✅ 期望交流頻率：[純租屋互不打擾 / 願意每週共餐聊天 / 期待技能傳承交流] -->
               <div class="rental-matching__advanced-section">
                 <div class="filter-title rental-matching__filter-title">
                   <span class="material-symbols-outlined rental-matching__filter-icon">conversation</span>
@@ -350,18 +339,18 @@
 
                 <div class="rental-matching__advanced-options">
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__radio" type="radio" name="routine" id="">
-                    <label class="rental-matching__radio-label" for="routine">純租屋互不打擾</label>
+                    <input class="rental-matching__checkbox" type="checkbox" name="interaction" id="interact_none">
+                    <label class="rental-matching__radio-label" for="interact_none">純租屋互不打擾</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__radio" type="radio" name="routine" id="">
-                    <label class="rental-matching__radio-label" for="routine">願意每週共餐聊天</label>
+                    <input class="rental-matching__checkbox" type="checkbox" name="interaction" id="interact_meal">
+                    <label class="rental-matching__radio-label" for="interact_meal">願意每週共餐聊天</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__radio" type="radio" name="routine" id="">
-                    <label class="rental-matching__radio-label" for="routine">期待技能傳承交流</label>
+                    <input class="rental-matching__checkbox" type="checkbox" name="interaction" id="interact_skill">
+                    <label class="rental-matching__radio-label" for="interact_skill">期待技能傳承交流</label>
                   </div>
                 </div>
               </div>

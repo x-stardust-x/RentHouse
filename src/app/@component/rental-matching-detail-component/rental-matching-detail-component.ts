@@ -20,7 +20,7 @@ import { HouseFacilityService } from '../../@service/house-facility-service';
 })
 export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
 
-  // 1. 修正：宣告為屬性，不能用 const
+  // 1. 定義圖示對應 (跟之前一樣)
   readonly HABIT_ICONS: { [key: string]: string } = {
     'routines': 'routine',
     'showerRestrictions': 'do_not_disturb_on',
@@ -30,13 +30,14 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
     'interactionFrequencies': 'conversation'
   };
 
+  // 2. 新增標籤名稱對應 (這是解決冒號問題的關鍵)
   readonly HABIT_LABELS: { [key: string]: string } = {
     'routines': '作息型態',
-    'showerRestrictions': '深夜洗衣/洗澡限制',
-    'visitorPolicies': '訪客留宿規範',
-    'cookingHabits': '廚房與飲食文化',
-    'fridgeAllocations': '冰箱使用分配',
-    'interactionFrequencies': '期望交流頻率'
+    'showerRestrictions': '深夜限制',
+    'visitorPolicies': '訪客規範',
+    'cookingHabits': '廚房文化',
+    'fridgeAllocations': '冰箱分配',
+    'interactionFrequencies': '交流頻率'
   };
 
   // 2. 宣告屬性
@@ -98,26 +99,9 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   // 2. 修正 ngOnInit 路由訂閱，徹底清除 ID 旁邊的「:1」
   // ===================================================================
   ngOnInit(): void {
-
-    // 在 ngOnInit 或資料撈取後的處理函數中
-    // this.http.get<any>(`api/houses/${id}`).subscribe(data => {
-    //   // 假設後端回傳的欄位叫 advancedRules
-    //   if (data.advancedRules) {
-    //     try {
-    //       // 關鍵：將 JSON 字串轉成 JS 物件
-    //       this.parsedRules = JSON.parse(data.advancedRules);
-    //       // 現在 this.parsedRules 就會像這樣：
-    //       // { "routines": ["早睡早起"], "cookingHabits": ["禁開伙"] }
-    //     } catch (e) {
-    //       console.error("JSON 解析失敗", e);
-    //     }
-    //   }
-    // });
-
     this.route.params.pipe(
       switchMap(params => {
         const type = params['type'];
-        // 💡 確保拉出來的 ID 經過精確的 parseInt 解析，把任何帶有「:1」或字串的雜質完全濾掉，變成純數字
         const rawId = params['id'];
         const itemId = typeof rawId === 'string' && rawId.includes(':')
           ? parseInt(rawId.split(':')[0], 10)
@@ -125,26 +109,35 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
 
         if (isNaN(itemId)) return [];
         this.displayType.set(type);
+
         return type === 'room'
           ? this.rentalMatchingService.getRentalById(itemId)
           : this.rentalMatchingService.getProductById(itemId);
       })
     ).subscribe({
       next: (data: any) => {
-        // 1. 先把主資料塞進去
+        console.log("🔥 API 原始回傳資料:", data);
+        // 1. 設定主資料
         this.detailData.set({ ...data, displayType: this.displayType() });
-
-        // 💡 確保這裡抓取的是剛剛主資料回傳、百分之百正確的純數字 id (例如 16 或 17)
         const cleanHouseId = Number(data?.id || data?.Id);
 
+        // 2. 解析 JSON 生活習慣 (從拿到的 data 解析，確保順序正確)
+        if (data && data.advancedRules) {
+          try {
+            this.parsedRules = typeof data.advancedRules === 'string'
+              ? JSON.parse(data.advancedRules)
+              : data.advancedRules;
+            console.log('解析後的規則內容:', this.parsedRules);
+          } catch (e) {
+            console.error("JSON 解析失敗", e);
+          }
+        }
+
+        // 3. 取得設施資料 (確保 cleanHouseId 存在後再執行)
         if (this.displayType() === 'room' && cleanHouseId) {
-          // 🔥 直連後端，確保網址是乾乾淨淨的 /api/HouseFacility/17
+          // ⚠️ 請檢查這裡的路徑，如果是 404，試試看改為 HouseFacilities (複數)
           this.http.get<any[]>(`https://localhost:7215/api/HouseFacility/${cleanHouseId}`).subscribe({
             next: (facilitiesList: any[]) => {
-              console.log('🎉 終極雷達 - 成功拿到該房設施：', facilitiesList);
-
-              // 使用 setTimeout 巧妙包裹，把更新 Signal 的動作推遲到下一個事件循環
-              // 完美解決 NG0100 ExpressionChangedAfterItHasBeenCheckedError 錯誤！
               setTimeout(() => {
                 this.detailData.set({
                   ...this.detailData(),
@@ -152,9 +145,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
                 });
               }, 0);
             },
-            error: (err: any) => {
-              console.error('❌ 設施 API 依然失敗，原因：', err);
-            }
+            error: (err) => console.error('設施 API 失敗 (請確認後端路徑是否正確):', err)
           });
         }
       }

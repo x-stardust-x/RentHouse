@@ -1,997 +1,2031 @@
-:root,
-:host {
-  --rental-list-color-primary: #f2a35e;
-  --rental-list-color-primary-deep: #b85f18;
-  --rental-list-color-primary-strong: #93480f;
-  --rental-list-color-primary-soft: #ffe4c9;
-  --rental-list-color-primary-faint: #fff7ef;
-
-  --rental-list-color-bg: #fff8f0;
-  --rental-list-color-surface: #ffffff;
-  --rental-list-color-surface-soft: rgba(255, 255, 255, 0.92);
-
-  --rental-list-color-text: #2b2118;
-  --rental-list-color-muted: #51463d;
-  --rental-list-color-subtle: #7a6f65;
-  --rental-list-color-border: rgba(184, 95, 24, 0.22);
-
-  --rental-list-color-success-bg: #fff3df;
-  --rental-list-color-success-text: #80440f;
-
-  --rental-list-shadow-card: 0 18px 42px rgba(132, 82, 38, 0.12);
-  --rental-list-shadow-card-hover: 0 24px 56px rgba(132, 82, 38, 0.18);
-  --rental-list-shadow-soft: 0 10px 28px rgba(132, 82, 38, 0.1);
-
-  --rental-list-radius-xl: 28px;
-  --rental-list-radius-lg: 22px;
-  --rental-list-radius-md: 16px;
-  --rental-list-radius-sm: 12px;
-  --rental-list-radius-pill: 999px;
-
-  --rental-list-focus-ring: 0 0 0 4px rgba(184, 95, 24, 0.24);
-
-  --rental-list-text-shadow-soft:
-    0 1px 0 rgba(255, 255, 255, 0.78),
-    0 2px 4px rgba(80, 48, 24, 0.14);
-
-  --rental-list-container-width: 1180px;
-}
-
-/* ================================
-   列表頁整體
-   上方篩選 + 下方列表
-   ================================ */
-
+/* ==========================================================================
+   2. 主頁面佈局容器 (Main Container Grid)
+   ========================================================================== */
 .rental-matching {
-  width: min(var(--rental-list-container-width), 100% - 2rem);
-  margin: 1.5rem auto 4rem;
-  padding: 0;
-
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-
-  color: var(--rental-list-color-text);
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    "Microsoft JhengHei",
-    sans-serif;
-
-  background:
-    radial-gradient(circle at top left, rgba(255, 228, 201, 0.56), transparent 34rem),
-    linear-gradient(180deg, #fff8f0 0%, #fffdf9 45%, #fff8f0 100%);
-
-  .material-symbols-outlined {
-    font-variation-settings: "FILL" 0, "wght" 700, "GRAD" 0, "opsz" 24;
-  }
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  font-family: 'PingFang TC', 'Heiti TC', 'Microsoft JhengHei', sans-serif;
+  color: var(--color-text-main);
 }
 
-/* ================================
-   篩選面板
-   ================================ */
-
+/* ==========================================================================
+   3. 左側篩選面板 (Filter Panel)
+   ========================================================================== */
 .rental-matching__filter-panel {
-  position: relative;
-  top: auto;
-  width: 100%;
-  min-width: 0;
-  align-self: stretch;
-
-  padding: 1.25rem;
-  border-radius: var(--rental-list-radius-xl);
-  border: 1px solid var(--rental-list-color-border);
-
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  column-gap: 1rem;
-  row-gap: 0.75rem;
-
-  background:
-    radial-gradient(circle at 0% 0%, rgba(255, 228, 201, 0.64), transparent 20rem),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 247, 239, 0.92));
-
-  box-shadow: var(--rental-list-shadow-card);
-  overflow: hidden;
-  transition:
-    padding 0.32s ease,
-    box-shadow 0.32s ease,
-    background-color 0.32s ease;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(43, 39, 37, 0.02);
+  position: sticky;
+  top: 96px;
+  max-height: calc(100vh - 130px);
+  overflow-y: auto;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .rental-matching__filter-topbar {
-  grid-column: 1 / -1;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--color-bg-main);
 }
-
-/* 篩選標題 */
 
 .rental-matching__filter-heading {
-  grid-column: 1 / -1;
-
-  margin: 0 0 0.25rem;
-  padding-bottom: 0.85rem;
-  border-bottom: 2px solid rgba(242, 163, 94, 0.22);
-
-  color: var(--rental-list-color-text);
-  font-size: 1.45rem;
-  line-height: 1.25;
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  text-shadow: var(--rental-list-text-shadow-soft);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin: 0;
 }
 
-/* 每個篩選分組 */
+.rental-matching__filter-toggle {
+  display: none;
+  align-items: center;
+  gap: 0.25rem;
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
 
 .rental-matching__filter-section {
-  margin-bottom: 0;
+  margin-bottom: 1.75rem;
 }
 
 .rental-matching__filter-title {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  margin: 0 0 0.65rem;
-}
-
-.rental-matching__filter-title-text {
-  margin: 0;
-  color: var(--rental-list-color-text);
-  font-size: 1.05rem;
-  line-height: 1.25;
-  font-weight: 850;
+  gap: 0.5rem;
+  color: var(--color-text-main);
+  margin-bottom: 1rem;
 }
 
 .rental-matching__filter-icon {
-  width: 2rem;
-  height: 2rem;
-  display: inline-grid;
-  place-items: center;
-  flex: 0 0 auto;
-
-  border-radius: 0.7rem;
-  color: var(--rental-list-color-primary-strong);
-  background: var(--rental-list-color-primary-faint);
-  box-shadow: inset 0 0 0 1px rgba(242, 163, 94, 0.28);
-
-  font-size: 1.15rem;
+  font-size: 1.25rem;
+  color: var(--color-text-muted);
 }
 
-/* ================================
-   篩選區塊排列
-   ================================ */
-
-.rental-matching__filter-section--categories {
-  grid-column: span 1;
-}
-
-.rental-matching__filter-section--location {
-  grid-column: span 1;
-}
-
-.rental-matching__filter-section--price {
-  grid-column: span 2;
-}
-
-.rental-matching__divider {
-  grid-column: 1 / -1;
-
-  height: 1px;
-  margin: 0.25rem 0;
-  border: 0;
-  background: linear-gradient(90deg,
-      transparent,
-      rgba(184, 95, 24, 0.28),
-      transparent);
-}
-
-.rental-matching__filter-title--sort {
-  grid-column: span 1;
-  margin-bottom: 0;
-}
-
-.rental-matching__sort-options {
-  grid-column: span 1;
-
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.65rem;
-  margin-bottom: 0;
-}
-
-.rental-matching__room-filter-area {
-  grid-column: 1 / -1;
-
-  display: grid;
-  grid-template-columns:
-    minmax(220px, 0.8fr) minmax(240px, 1fr) minmax(320px, 1.4fr);
-  gap: 1rem;
-  align-items: start;
-}
-
-/* ================================
-   選項與表單控制項
-   ================================ */
-
-.rental-matching__option-group {
-  display: flex;
-  gap: 10px;
+.rental-matching__filter-title-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
 }
 
 .rental-matching__option-group--vertical {
+  display: flex;
   flex-direction: column;
+  gap: 0.75rem;
 }
 
-.rental-matching__choice,
-.rental-matching__checkbox-row,
-.rental-matching__radio-row {
-  min-height: 40px;
+.rental-matching__choice {
   display: flex;
   align-items: center;
-  gap: 10px;
-
-  padding: 0.45rem 0.65rem;
-  border-radius: var(--rental-list-radius-md);
-
-  color: var(--rental-list-color-muted);
-  background: rgba(255, 255, 255, 0.62);
-
-  transition:
-    background-color 0.22s ease,
-    box-shadow 0.22s ease,
-    transform 0.22s ease;
-}
-
-.rental-matching__choice:hover,
-.rental-matching__checkbox-row:hover,
-.rental-matching__radio-row:hover {
-  background: rgba(255, 228, 201, 0.52);
-  transform: translateY(-1px);
-}
-
-.rental-matching__choice-input,
-.rental-matching__checkbox,
-.rental-matching__radio {
-  width: 20px;
-  height: 20px;
-  accent-color: var(--rental-list-color-primary-deep);
+  gap: 0.5rem;
   cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--color-text-main);
 }
 
-.rental-matching__choice-text,
-.rental-matching__checkbox-label,
-.rental-matching__radio-label {
-  color: var(--rental-list-color-muted);
-  font-size: 0.98rem;
-  line-height: 1.45;
-  font-weight: 700;
-  cursor: pointer;
-  user-select: none;
+.rental-matching__choice-input {
+  accent-color: var(--color-primary);
+  width: 16px;
+  height: 16px;
 }
 
 .rental-matching__select {
   width: 100%;
-  min-height: 44px;
-  padding: 0.55rem 0.75rem;
-
-  border: 2px solid rgba(184, 95, 24, 0.18);
-  border-radius: var(--rental-list-radius-md);
-
-  color: var(--rental-list-color-text);
-  background:
-    linear-gradient(180deg, #ffffff 0%, #fffaf4 100%);
-
-  font-size: 0.98rem;
-  font-weight: 700;
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-main);
+  color: var(--color-text-main);
+  font-size: 0.95rem;
   outline: none;
-
-  transition:
-    border-color 0.22s ease,
-    box-shadow 0.22s ease;
+  cursor: pointer;
+  transition: border-color 0.2s;
 }
 
 .rental-matching__select:focus {
-  border-color: var(--rental-list-color-primary-deep);
-  box-shadow: var(--rental-list-focus-ring);
+  border-color: var(--color-primary);
 }
-
-.rental-matching__select-option {
-  color: var(--rental-list-color-text);
-}
-
-/* 價格範圍 */
 
 .rental-matching__range-slider {
-  display: grid;
-  grid-template-columns: auto minmax(180px, 1fr) auto;
+  display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .rental-matching__price-text {
-  color: var(--rental-list-color-primary-strong);
-  font-size: 0.95rem;
-  font-weight: 850;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
   white-space: nowrap;
 }
 
 .rental-matching__mat-slider {
+  flex: 1;
   width: 100%;
 }
 
-/* 排序按鈕 */
+.rental-matching__divider,
+.rental-matching__advanced-divider {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 1.5rem 0;
+}
+
+.rental-matching__sort-options {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
 
 .rental-matching__sort-button {
-  min-height: 42px;
-  border: 1px solid rgba(184, 95, 24, 0.22);
-  border-radius: var(--rental-list-radius-pill);
-
-  color: var(--rental-list-color-primary-strong);
-  background: rgba(255, 228, 201, 0.46);
-
-  font-size: 0.96rem;
-  font-weight: 800;
+  flex: 1;
+  background-color: var(--color-bg-main);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  padding: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
   cursor: pointer;
-
-  transition:
-    transform 0.22s ease,
-    background-color 0.22s ease,
-    box-shadow 0.22s ease;
+  transition: all 0.2s ease;
 }
 
-.rental-matching__sort-button:hover,
-.rental-matching__sort-button:focus-visible {
-  transform: translateY(-1px);
-  background: rgba(255, 228, 201, 0.78);
-  box-shadow: var(--rental-list-shadow-soft);
+.rental-matching__sort-button:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
-/* 智慧配對 */
-
-.rental-matching__smart-toggle {
-  min-height: 44px;
-  padding: 0.55rem 0.9rem;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-
-  border: 1px solid rgba(184, 95, 24, 0.24);
-  border-radius: var(--rental-list-radius-pill);
-
-  color: var(--rental-list-color-primary-strong);
-  background: rgba(255, 228, 201, 0.55);
-
-  font-size: 0.98rem;
-  font-weight: 850;
-  cursor: pointer;
-
-  transition:
-    transform 0.22s ease,
-    background-color 0.22s ease,
-    box-shadow 0.22s ease;
-}
-
-.rental-matching__filter-toggle:hover,
-.rental-matching__filter-toggle:focus-visible {
-  transform: translateY(-1px);
-  background: rgba(255, 228, 201, 0.86);
-  box-shadow: var(--rental-list-shadow-soft);
-  outline: none;
-}
-
-.rental-matching__filter-toggle:focus-visible {
-  box-shadow:
-    var(--rental-list-focus-ring),
-    var(--rental-list-shadow-soft);
-}
-
-.rental-matching__filter-toggle-icon {
-  font-size: 1.35rem;
-  transition: transform 0.28s ease;
-}
-
-.rental-matching__filter-body {
-  grid-column: 1 / -1;
-
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  column-gap: 1rem;
-  row-gap: 0.75rem;
-
-  overflow: hidden;
-  max-height: 900px;
-  opacity: 1;
-  transform: translateY(0);
-
-  transition:
-    max-height 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.26s ease,
-    transform 0.32s ease,
-    margin-top 0.32s ease;
-}
-
-/* 收合狀態 */
-.rental-matching__filter-panel.is-collapsed {
-  padding-block: 1rem;
-}
-
-.rental-matching__filter-panel.is-collapsed .rental-matching__filter-body {
-  max-height: 0;
-  opacity: 0;
-  transform: translateY(-8px);
-  margin-top: 0;
-  pointer-events: none;
-}
-
-.rental-matching__filter-panel.is-collapsed .rental-matching__filter-toggle-icon {
-  transform: rotate(0deg);
-}
-
-.rental-matching__filter-panel:not(.is-collapsed) .rental-matching__filter-toggle-icon {
-  transform: rotate(180deg);
-}
-
-.rental-matching__smart-toggle-text {
-  color: var(--rental-list-color-text);
-  font-size: 0.98rem;
-  line-height: 1.45;
-  font-weight: 800;
-}
-
-.rental-matching__line-break {
-  display: block;
-}
-
-/* 生活風格 */
-
-.rental-matching__filter-section--life-style {
-  margin-bottom: 0;
-}
-
-/* ================================
-   進階篩選 accordion
-   ================================ */
-
-.rental-matching__accordion {
-  display: block;
-  margin-top: 0;
-}
-
-.rental-matching__expansion-panel {
-  border: 1px solid var(--rental-list-color-border);
-  border-radius: var(--rental-list-radius-lg) !important;
-  background: rgba(255, 255, 255, 0.68) !important;
-  box-shadow: none !important;
-  overflow: hidden !important;
-}
-
-.rental-matching__expansion-header {
-  min-height: 54px !important;
-  padding: 0 16px !important;
-}
-
-.rental-matching__expansion-title {
-  color: var(--rental-list-color-primary-strong);
-  font-size: 1.02rem;
-  font-weight: 900;
-}
-
-/* 展開後限制高度，避免篩選面板佔滿整個畫面 */
-
-.rental-matching__advanced-conditions {
-  max-height: 320px;
-  overflow-y: auto;
-  margin: 0;
-  padding: 0 0.9rem 0.9rem;
-
-  scrollbar-width: thin;
-  scrollbar-color: rgba(184, 95, 24, 0.38) rgba(255, 228, 201, 0.38);
-}
-
-.rental-matching__advanced-conditions::-webkit-scrollbar {
-  width: 8px;
-}
-
-.rental-matching__advanced-conditions::-webkit-scrollbar-track {
-  border-radius: 999px;
-  background: rgba(255, 228, 201, 0.38);
-}
-
-.rental-matching__advanced-conditions::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-  background: rgba(184, 95, 24, 0.38);
-}
-
-.rental-matching__advanced-section {
-  padding-block: 0.35rem;
-}
-
-.rental-matching__advanced-options {
-  display: grid;
-  gap: 0.45rem;
-}
-
-.rental-matching__advanced-divider {
-  height: 1px;
-  margin: 0.85rem 0;
-  border: 0;
-  background: linear-gradient(90deg,
-      transparent,
-      rgba(184, 95, 24, 0.28),
-      transparent);
-}
-
-/* ================================
-   主要內容區
-   ================================ */
-
-.rental-matching__content {
-  width: 100%;
-  min-width: 0;
-}
-
-.rental-matching__content-header {
-  margin-bottom: 1.25rem;
-  padding: 1.5rem 1.75rem;
-
+/* ==========================================================================
+   4. 進階篩選與 Angular Material 客製化
+   ========================================================================== */
+.rental-matching__room-filter-area {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 20px;
-
-  border: 1px solid var(--rental-list-color-border);
-  border-radius: var(--rental-list-radius-xl);
-
-  background:
-    radial-gradient(circle at 0% 0%, rgba(255, 228, 201, 0.74), transparent 20rem),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 247, 239, 0.9));
-
-  box-shadow: var(--rental-list-shadow-card);
-}
-
-.rental-matching__headline-group {
-  min-width: 0;
-}
-
-.rental-matching__eyebrow {
-  margin: 0 0 8px;
-
-  color: var(--rental-list-color-primary-strong);
-  font-size: 1.02rem;
-  line-height: 1.4;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-}
-
-.rental-matching__page-title {
-  margin: 0;
-
-  color: var(--rental-list-color-text);
-  font-size: clamp(2rem, 3vw, 3.25rem);
-  line-height: 0.98;
-  font-weight: 950;
-  letter-spacing: -0.06em;
-  text-shadow: var(--rental-list-text-shadow-soft);
-}
-
-/* 檢視切換 */
-
-.rental-matching__view-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-
-  padding: 8px;
-  border-radius: var(--rental-list-radius-pill);
-  background: rgba(255, 228, 201, 0.56);
-}
-
-.rental-matching__view-button {
-  width: 48px;
-  height: 48px;
-  display: inline-grid;
-  place-items: center;
-
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-
-  color: var(--rental-list-color-primary-strong);
-  background: #ffffff;
-
-  cursor: pointer;
-  box-shadow: 0 8px 18px rgba(132, 82, 38, 0.12);
-
-  transition:
-    transform 0.22s ease,
-    background-color 0.22s ease,
-    box-shadow 0.22s ease;
-}
-
-.rental-matching__view-button:hover,
-.rental-matching__view-button:focus-visible {
-  transform: translateY(-2px);
-  background: var(--rental-list-color-primary-soft);
-  box-shadow: var(--rental-list-shadow-soft);
-}
-
-.rental-matching__view-icon {
-  font-size: 1.45rem;
-}
-
-/* ================================
-   卡片列表
-   ================================ */
-
-.rental-matching__grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  flex-direction: column;
   gap: 1.25rem;
 }
 
-.rental-matching__card {
+.rental-matching__smart-toggle-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-main);
+  line-height: 1.4;
+  display: inline-block;
+}
+
+.rental-matching__checkbox-row,
+.rental-matching__radio-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+  cursor: pointer;
+}
+
+.rental-matching__checkbox,
+.rental-matching__radio {
+  accent-color: var(--color-primary);
+  width: 16px;
+  height: 16px;
+}
+
+.rental-matching__checkbox-label,
+.rental-matching__radio-label {
+  font-size: 0.9rem;
+  color: var(--color-text-main);
+  cursor: pointer;
+}
+
+.rental-matching__accordion {
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.rental-matching__expansion-panel {
+  box-shadow: none !important;
+  background: transparent !important;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md) !important;
+}
+
+.rental-matching__expansion-header {
+  padding: 0 1rem !important;
+  height: 48px !important;
+}
+
+.rental-matching__expansion-title {
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  color: var(--color-primary) !important;
+}
+
+.rental-matching__advanced-conditions {
+  padding: 0.5rem 0;
+}
+
+.rental-matching__advanced-section {
+  margin-bottom: 1rem;
+}
+
+.rental-matching__advanced-options {
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  gap: 0.25rem;
+  padding-left: 0.25rem;
+}
+
+/* ==========================================================================
+   5. 右側主內容區與物件卡片網格 (Content & Cards Grid)
+   ========================================================================== */
+.rental-matching__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.rental-matching__content-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 1.25rem;
+}
+
+.rental-matching__eyebrow {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 0.25rem 0;
+}
+
+.rental-matching__page-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--color-text-main);
+  margin: 0;
+}
+
+.rental-matching__view-toggle {
+  display: flex;
+  background-color: #F5F1EC;
+  padding: 0.25rem;
+  border-radius: var(--radius-md);
+  gap: 0.15rem;
+}
+
+.rental-matching__view-button {
+  background: none;
+  border: none;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  transition: all 0.2s ease;
+}
+
+.rental-matching__view-button--grid {
+  background-color: var(--color-bg-card);
+  color: var(--color-primary);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.rental-matching__view-icon {
+  font-size: 1.25rem;
+}
+
+/* 網格核心 */
+.rental-matching__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 1.75rem;
+  width: 100%;
+}
+
+.rental-matching__card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-
-  border: 1px solid var(--rental-list-color-border);
-  border-radius: var(--rental-list-radius-xl);
-
-  background: var(--rental-list-color-surface);
-  box-shadow: var(--rental-list-shadow-card);
-
-  transition:
-    transform 0.28s ease,
-    box-shadow 0.28s ease,
-    border-color 0.28s ease;
+  box-shadow: 0 4px 15px rgba(43, 39, 37, 0.01);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
 }
 
 .rental-matching__card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(184, 95, 24, 0.38);
-  box-shadow: var(--rental-list-shadow-card-hover);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(43, 39, 37, 0.05);
 }
 
 .rental-matching__card-image {
-  display: block;
   width: 100%;
-  height: clamp(180px, 16vw, 240px);
+  aspect-ratio: 16 / 11;
   object-fit: cover;
-  background: var(--rental-list-color-primary-faint);
+  background-color: #EFEFEF;
 }
 
 .rental-matching__card-body {
-  padding: 1.15rem;
+  padding: 1.25rem;
   display: flex;
-  flex: 1;
   flex-direction: column;
+  flex: 1;
 }
 
 .rental-matching__card-title {
-  margin: 0 0 10px;
-
-  color: var(--rental-list-color-text);
-  font-size: clamp(1.2rem, 1.5vw, 1.45rem);
-  line-height: 1.32;
-  font-weight: 900;
-  letter-spacing: -0.03em;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 3.08rem;
 }
 
 .rental-matching__card-price {
-  margin: 0 0 10px;
-
-  color: var(--rental-list-color-primary-strong);
-  font-size: clamp(1.3rem, 1.6vw, 1.65rem);
-  line-height: 1.2;
-  font-weight: 950;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  margin: 0 0 0.75rem 0;
+  display: flex;
+  align-items: baseline;
 }
 
 .rental-matching__price-unit {
-  color: var(--rental-list-color-subtle);
-  font-size: 1rem;
-  font-weight: 800;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-left: 0.2rem;
 }
 
 .rental-matching__card-info {
-  min-height: 34px;
-  margin: 0 0 14px;
-
   display: flex;
   align-items: center;
-  gap: 6px;
-
-  color: var(--rental-list-color-muted);
-  font-size: 1rem;
-  line-height: 1.5;
-  font-weight: 700;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin: 0 0 1rem 0;
 }
 
 .rental-matching__card-info-icon {
-  color: var(--rental-list-color-primary-deep);
-  font-size: 1.18rem;
+  font-size: 1rem;
+  color: var(--color-primary);
+}
+
+.rental-matching__card-info-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .rental-matching__category-badge {
-  display: inline-flex;
-  align-items: center;
-  min-height: 34px;
-
-  padding: 0.35rem 0.8rem;
-  border-radius: var(--rental-list-radius-pill);
-
-  color: var(--rental-list-color-primary-strong);
-  background: var(--rental-list-color-primary-faint);
-
-  font-weight: 850;
+  background-color: #F5F1EC;
+  color: var(--color-text-main);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
 }
 
-.rental-matching__tags,
-.habit-tags-group {
+.rental-matching__tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-
-  margin: 0 0 20px;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+  margin-top: auto;
+  min-height: 26px;
 }
 
-.rental-matching__tag,
-.habit-tag {
-  display: inline-flex;
-  align-items: center;
-  min-height: 34px;
-
-  padding: 0.35rem 0.8rem;
-  border-radius: var(--rental-list-radius-pill);
-
-  color: var(--rental-list-color-success-text);
-  background: var(--rental-list-color-success-bg);
-
-  font-size: 0.95rem;
-  line-height: 1.35;
-  font-weight: 850;
+.rental-matching__tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  padding: 0.25rem 0.6rem;
+  border-radius: 30px;
 }
 
+/* 技能標籤客製色 - 如果想連動橘色，也可以改用 var(--color-primary-light) 等 */
 .rental-matching__tag--tool {
-  background: #fff0df;
+  color: #3A7D6F;
+  background-color: #EDF6F4;
 }
 
 .rental-matching__tag--knowledge {
-  background: #fff8e9;
+  color: #4A6FA5;
+  background-color: #EEF3F8;
 }
-
-/* 查看詳情按鈕 */
 
 .rental-matching__detail-button {
   width: 100%;
-  min-height: 52px;
-  margin-top: auto;
-
-  border: 0;
-  border-radius: var(--rental-list-radius-md);
-
-  color: #ffffff;
-  background:
-    linear-gradient(135deg,
-      var(--rental-list-color-primary-deep),
-      var(--rental-list-color-primary));
-
-  font-size: 1.06rem;
-  font-weight: 900;
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  border: none;
+  padding: 0.65rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
   cursor: pointer;
-
-  box-shadow: 0 12px 24px rgba(184, 95, 24, 0.24);
-
-  transition:
-    transform 0.24s ease,
-    box-shadow 0.24s ease,
-    filter 0.24s ease;
+  text-align: center;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
-.rental-matching__detail-button:hover,
-.rental-matching__detail-button:focus-visible {
-  transform: translateY(-2px);
-  filter: saturate(1.06);
-  box-shadow: 0 16px 32px rgba(184, 95, 24, 0.3);
+.rental-matching__detail-button:hover {
+  background-color: var(--color-primary-hover);
 }
 
-/* 空狀態 */
+.rental-matching__detail-button:active {
+  transform: scale(0.98);
+}
 
 .rental-matching__empty-state {
   grid-column: 1 / -1;
-
-  padding: clamp(32px, 5vw, 64px);
-  border: 2px dashed rgba(184, 95, 24, 0.28);
-  border-radius: var(--rental-list-radius-xl);
-
-  background: rgba(255, 255, 255, 0.78);
   text-align: center;
+  padding: 5rem 2rem;
+  background-color: var(--color-bg-card);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
 }
 
 .rental-matching__empty-text {
-  margin: 0;
-
-  color: var(--rental-list-color-muted);
-  font-size: 1.12rem;
-  line-height: 1.7;
-  font-weight: 800;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
 }
 
-/* ================================
-   Angular Material component adjustments
-   ================================ */
-
-:host ::ng-deep {
-  .mat-expansion-panel-header {
-    padding: 0 16px !important;
-  }
-
-  .mat-expansion-panel {
-    background: transparent !important;
-  }
-
-  .mat-expansion-panel:not([class*="mat-elevation-z"]) {
-    box-shadow: none !important;
-  }
-
-  .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled="true"]):hover {
-    background: rgba(255, 228, 201, 0.38) !important;
-  }
-
-  .mat-expansion-panel-body {
-    padding: 0 !important;
-  }
-
-  .mat-mdc-slide-toggle .mdc-label {
-    color: var(--rental-list-color-text);
-    font-weight: 800;
-    line-height: 1.5;
-  }
-
-  .mdc-slider {
-    --mdc-slider-active-track-color: var(--rental-list-color-primary-deep);
-    --mdc-slider-inactive-track-color: rgba(184, 95, 24, 0.18);
-    --mdc-slider-handle-color: var(--rental-list-color-primary-deep);
-    --mdc-slider-focus-handle-color: var(--rental-list-color-primary-strong);
-    --mdc-slider-hover-handle-color: var(--rental-list-color-primary-strong);
-  }
-}
-
-/* ================================
-   RWD
-   ================================ */
-
-@media (max-width: 1180px) {
+/* ==========================================================================
+   6. 響應式斷點設計 (RWD Mobile Support)
+   ========================================================================== */
+@media (max-width: 992px) {
   .rental-matching {
-    width: min(100% - 2rem, 960px);
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
   .rental-matching__filter-panel {
-    .rental-matching__filter-body {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  .rental-matching__filter-section--categories,
-  .rental-matching__filter-section--location,
-  .rental-matching__filter-title--sort,
-  .rental-matching__sort-options {
-    grid-column: span 1;
-  }
-
-  .rental-matching__filter-section--price {
-    grid-column: 1 / -1;
-  }
-
-  .rental-matching__room-filter-area {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .rental-matching__accordion {
-    grid-column: 1 / -1;
-  }
-
-  .rental-matching__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 760px) {
-  .rental-matching {
-    width: min(100% - 1.25rem, 640px);
-    margin-top: 1rem;
-  }
-
-  .rental-matching__filter-panel {
-    grid-template-columns: 1fr;
-    padding: 1rem;
-  }
-
-  .rental-matching__filter-heading,
-  .rental-matching__filter-section--categories,
-  .rental-matching__filter-section--location,
-  .rental-matching__filter-section--price,
-  .rental-matching__filter-title--sort,
-  .rental-matching__sort-options,
-  .rental-matching__room-filter-area {
-    grid-column: 1 / -1;
-  }
-
-  .rental-matching__room-filter-area {
-    grid-template-columns: 1fr;
-  }
-
-  .rental-matching__content-header {
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 1.25rem;
-    border-radius: var(--rental-list-radius-lg);
-  }
-
-  .rental-matching__range-slider {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
-  .rental-matching__price-text--max {
-    justify-self: end;
-  }
-
-  .rental-matching__advanced-conditions {
-    max-height: 360px;
-  }
-
-  .rental-matching__grid {
-    grid-template-columns: 1fr;
-  }
-
-  .rental-matching__card {
-    border-radius: var(--rental-list-radius-lg);
-  }
-
-  .rental-matching__card-image {
-    height: 220px;
-  }
-
-  .rental-matching__filter-body {
-    grid-template-columns: 1fr;
-  }
-
-  .rental-matching__filter-topbar {
-    align-items: flex-start;
-    flex-direction: column;
+    position: relative;
+    top: 0;
+    max-height: none;
   }
 
   .rental-matching__filter-toggle {
+    display: flex;
+  }
+
+  /* 與 HTML 的 [class.is-collapsed] 完美連動，收合時隱藏主體 */
+  .rental-matching__filter-panel.is-collapsed .rental-matching__filter-body {
+    display: none;
+  }
+
+  .rental-matching__filter-panel.is-collapsed {
+    padding-bottom: 0.75rem;
+  }
+
+  .rental-matching__filter-topbar {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .rental-matching__content-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .rental-matching__view-toggle {
     width: 100%;
+    justify-content: center;
   }
 }
 
-@media (max-width: 520px) {
-  .rental-matching {
-    width: min(100% - 1rem, 480px);
-  }
 
-  .rental-matching__filter-panel,
-  .rental-matching__content-header,
-  .rental-matching__card-body {
-    padding: 18px;
-  }
 
-  .rental-matching__sort-options {
-    grid-template-columns: 1fr;
-  }
 
-  .rental-matching__view-button {
-    width: 46px;
-    height: 46px;
-  }
-}
+
+
+
+
+
+
+
+// /* ==========================================================================
+//    青銀共居平台 - 溫馨連結風 (Warm & Connection) 核心變數
+//    ========================================================================== */
+// :host {
+//   --color-primary: #D96B43;        /* 溫暖陶磚橘 - 核心行動呼籲、亮點 */
+//   --color-primary-hover: #C55A34;  /* 深陶磚橘 - 按鈕 Hover 狀態 */
+//   --color-primary-light: #FBF0EC;  /* 超淺橘 - 標籤與輕微提示背景 */
+//   --color-secondary: #E9C46A;      /* 暖陽黃 - 輔助點綴 */
+//   --color-bg-main: #FAF8F5;        /* 奶油白 - 網頁大面積溫馨底色 */
+//   --color-bg-card: #FFFFFF;        /* 純白 - 卡片與面板背景，創造層次 */
+//   --color-text-main: #33302C;      /* 炭焦褐 - 高對比主要文字，比純黑更柔和 */
+//   --color-text-muted: #706A63;     /* 煙燻灰 - 次要與說明文字 */
+//   --color-border: #E6E1DA;          /* 暖米線 - 分隔線與邊框 */
+//   --font-family: 'PingFang TC', 'Heiti TC', 'Microsoft JhengHei', sans-serif;
+
+//   display: block;
+//   background-color: var(--color-bg-main);
+//   color: var(--color-text-main);
+//   font-family: var(--font-family);
+//   min-height: 100vh;
+// }
+
+// /* ==========================================================================
+//    主版面佈局 (Layout)
+//    ========================================================================== */
+// .rental-matching {
+//   display: flex;
+//   gap: 2.5rem;
+//   max-width: 1280px;
+//   margin: 0 auto;
+//   padding: 2rem 1.5rem;
+//   align-items: flex-start;
+// }
+
+// @media (max-width: 992px) {
+//   .rental-matching {
+//     flex-direction: column;
+//     padding: 1rem;
+//   }
+// }
+
+// /* ==========================================================================
+//    左側篩選面板 (Filter Panel)
+//    ========================================================================== */
+// .rental-matching__filter-panel {
+//   flex: 0 0 320px;
+//   background-color: var(--color-bg-card);
+//   border-radius: 20px;
+//   padding: 1.75rem;
+//   box-shadow: 0 8px 24px rgba(217, 107, 67, 0.04); /* 帶有微溫暖色調的柔和陰影 */
+//   border: 1px solid var(--color-border);
+//   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+// }
+
+// @media (max-width: 992px) {
+//   .rental-matching__filter-panel {
+//     flex: 1 1 100%;
+//     width: 100%;
+//   }
+// }
+
+// .rental-matching__filter-topbar {
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+//   margin-bottom: 1.5rem;
+// }
+
+// .rental-matching__filter-heading {
+//   font-size: 1.35rem;
+//   font-weight: 700;
+//   color: var(--color-text-main);
+//   margin: 0;
+// }
+
+// .rental-matching__filter-toggle {
+//   display: flex;
+//   align-items: center;
+//   gap: 0.25rem;
+//   background: none;
+//   border: none;
+//   color: var(--color-primary);
+//   font-weight: 600;
+//   cursor: pointer;
+//   padding: 0.5rem;
+//   border-radius: 8px;
+//   transition: background 0.2s;
+// }
+
+// .rental-matching__filter-toggle:hover {
+//   background-color: var(--color-primary-light);
+// }
+
+// /* 篩選內部區塊排版 */
+// .rental-matching__filter-section {
+//   margin-bottom: 1.75rem;
+// }
+
+// .rental-matching__filter-title {
+//   display: flex;
+//   align-items: center;
+//   gap: 0.5rem;
+//   color: var(--color-text-main);
+//   margin-bottom: 1rem;
+// }
+
+// .rental-matching__filter-icon {
+//   color: var(--color-primary);
+//   font-size: 1.35rem;
+// }
+
+// .rental-matching__filter-title-text {
+//   font-size: 1.05rem;
+//   font-weight: 600;
+//   margin: 0;
+// }
+
+// /* 表單元件美化：Radio 與 Checkbox 擴大點擊區域，對長輩更友善 */
+// .rental-matching__option-group--vertical {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 0.75rem;
+// }
+
+// .rental-matching__choice, .rental-matching__checkbox-row, .rental-matching__radio-row {
+//   display: flex;
+//   align-items: center;
+//   gap: 0.75rem;
+//   cursor: pointer;
+//   padding: 0.6rem 0.75rem;
+//   border-radius: 10px;
+//   transition: background-color 0.2s;
+// }
+
+// .rental-matching__choice:hover, .rental-matching__checkbox-row:hover, .rental-matching__radio-row:hover {
+//   background-color: var(--color-bg-main);
+// }
+
+// .rental-matching__choice-input, .rental-matching__checkbox, .rental-matching__radio {
+//   width: 1.25rem;
+//   height: 1.25rem;
+//   accent-color: var(--color-primary); /* 讓原生控制項符合主題色 */
+//   cursor: pointer;
+// }
+
+// .rental-matching__choice-text, .rental-matching__checkbox-label, .rental-matching__radio-label {
+//   font-size: 1rem;
+//   color: var(--color-text-main);
+// }
+
+// /* 下拉選單外觀 */
+// .rental-matching__select {
+//   width: 100%;
+//   padding: 0.75rem 1rem;
+//   border-radius: 12px;
+//   border: 1px solid var(--color-border);
+//   background-color: var(--color-bg-card);
+//   color: var(--color-text-main);
+//   font-size: 1rem;
+//   outline: none;
+//   cursor: pointer;
+//   transition: border-color 0.2s;
+// }
+
+// .rental-matching__select:focus {
+//   border-color: var(--color-primary);
+//   box-shadow: 0 0 0 3px rgba(217, 107, 67, 0.15);
+// }
+
+// /* 價格範圍滑桿 */
+// .rental-matching__range-slider {
+//   display: flex;
+//   align-items: center;
+//   gap: 1rem;
+//   padding: 0.5rem 0;
+// }
+
+// .rental-matching__price-text {
+//   font-size: 0.95rem;
+//   font-weight: 600;
+//   color: var(--color-primary);
+//   white-space: nowrap;
+// }
+
+// .rental-matching__mat-slider {
+//   flex: 1;
+// }
+
+// /* 分隔線 */
+// .rental-matching__divider, .rental-matching__advanced-divider {
+//   border: 0;
+//   height: 1px;
+//   background-color: var(--color-border);
+//   margin: 1.5rem 0;
+// }
+
+// /* 排序按鈕 */
+// .rental-matching__sort-options {
+//   display: flex;
+//   gap: 0.75rem;
+// }
+
+// .rental-matching__sort-button {
+//   flex: 1;
+//   padding: 0.6rem;
+//   border-radius: 10px;
+//   border: 1px solid var(--color-border);
+//   background-color: var(--color-bg-card);
+//   color: var(--color-text-muted);
+//   font-weight: 500;
+//   cursor: pointer;
+//   transition: all 0.2s;
+// }
+
+// .rental-matching__sort-button:hover {
+//   border-color: var(--color-primary);
+//   color: var(--color-primary);
+//   background-color: var(--color-primary-light);
+// }
+
+// /* 自動配對區塊 */
+// .rental-matching__smart-toggle {
+//   margin: 1.5rem 0;
+//   display: block;
+// }
+
+// .rental-matching__smart-toggle-text {
+//   font-size: 0.95rem;
+//   line-height: 1.5;
+//   color: var(--color-text-main);
+//   font-weight: 600;
+// }
+
+// /* 進階手風琴篩選 (Angular Material Accordion) */
+// .rental-matching__accordion {
+//   display: block;
+//   margin-top: 1rem;
+// }
+
+// .rental-matching__expansion-panel {
+//   background: var(--color-bg-main) !important;
+//   border-radius: 12px !important;
+//   box-shadow: none !important;
+//   border: 1px solid var(--color-border);
+// }
+
+// .rental-matching__expansion-title {
+//   color: var(--color-primary) !important;
+//   font-weight: 600;
+// }
+
+// .rental-matching__advanced-options {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 0.25rem;
+//   padding-top: 0.5rem;
+// }
+
+// /* ==========================================================================
+//    右側內容區塊 (Content Area)
+//    ========================================================================== */
+// .rental-matching__content {
+//   flex: 1;
+// }
+
+// .rental-matching__content-header {
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: flex-end;
+//   margin-bottom: 2rem;
+// }
+
+// @media (max-width: 576px) {
+//   .rental-matching__content-header {
+//     flex-direction: column;
+//     align-items: flex-start;
+//     gap: 1rem;
+//   }
+// }
+
+// .rental-matching__eyebrow {
+//   font-size: 0.95rem;
+//   font-weight: 700;
+//   color: var(--color-primary);
+//   letter-spacing: 1px;
+//   margin: 0 0 0.25rem 0;
+// }
+
+// .rental-matching__page-title {
+//   font-size: 2rem;
+//   font-weight: 800;
+//   color: var(--color-text-main);
+//   margin: 0;
+// }
+
+// /* 檢視切換按鈕 */
+// .rental-matching__view-toggle {
+//   display: flex;
+//   background-color: var(--color-border);
+//   padding: 0.35rem;
+//   border-radius: 12px;
+//   gap: 0.25rem;
+// }
+
+// .rental-matching__view-button {
+//   background: none;
+//   border: none;
+//   padding: 0.5rem;
+//   border-radius: 8px;
+//   cursor: pointer;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   color: var(--color-text-muted);
+//   transition: all 0.2s;
+// }
+
+// .rental-matching__view-button:hover {
+//   color: var(--color-primary);
+// }
+
+// /* 模擬被選中狀態 (如果是使用變數控制，可以加上 active class) */
+// .rental-matching__view-button--grid {
+//   background-color: var(--color-bg-card);
+//   color: var(--color-primary);
+//   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+// }
+
+// /* ==========================================================================
+//    資源卡片網格與卡片 (Card Grid & Item Card)
+//    ========================================================================== */
+// .rental-matching__grid {
+//   display: grid;
+//   grid-template-columns: repeat(auto-fill, minmax(280px, 1xl));
+//   gap: 1.75rem;
+// }
+
+// .rental-matching__card {
+//   background-color: var(--color-bg-card);
+//   border-radius: 20px;
+//   overflow: hidden;
+//   border: 1px solid var(--color-border);
+//   box-shadow: 0 6px 18px rgba(51, 48, 44, 0.03);
+//   display: flex;
+//   flex-direction: column;
+//   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+// }
+
+// /* 卡片浮起特效 */
+// .rental-matching__card:hover {
+//   transform: translateY(-6px);
+//   box-shadow: 0 12px 30px rgba(217, 107, 67, 0.1);
+//   border-color: rgba(217, 107, 67, 0.2);
+// }
+
+// .rental-matching__card-image {
+//   width: 100%;
+//   height: 200px;
+//   object-fit: cover;
+//   background-color: #EFEFEF;
+// }
+
+// .rental-matching__card-body {
+//   padding: 1.5rem;
+//   display: flex;
+//   flex-direction: column;
+//   flex: 1;
+// }
+
+// .rental-matching__card-title {
+//   font-size: 1.25rem;
+//   font-weight: 700;
+//   color: var(--color-text-main);
+//   margin: 0 0 0.5rem 0;
+//   line-height: 1.4;
+//   /* 兩行省略號處理 */
+//   display: -webkit-box;
+//   -webkit-line-clamp: 2;
+//   -webkit-box-orient: vertical;
+//   overflow: hidden;
+// }
+
+// .rental-matching__card-price {
+//   font-size: 1.35rem;
+//   font-weight: 800;
+//   color: var(--color-primary);
+//   margin: 0 0 1rem 0;
+// }
+
+// .rental-matching__price-unit {
+//   font-size: 0.9rem;
+//   font-weight: 500;
+//   color: var(--color-text-muted);
+// }
+
+// .rental-matching__card-info {
+//   display: flex;
+//   align-items: center;
+//   gap: 0.35rem;
+//   color: var(--color-text-muted);
+//   font-size: 0.95rem;
+//   margin: 0 0 1rem 0;
+// }
+
+// .rental-matching__card-info-icon {
+//   font-size: 1.15rem;
+//   color: var(--color-text-muted);
+// }
+
+// /* 膠囊標籤 (Tags) */
+// .rental-matching__tags {
+//   display: flex;
+//   flex-wrap: wrap;
+//   gap: 0.5rem;
+//   margin-bottom: 1.5rem;
+//   margin-top: auto; /* 讓標籤群與按鈕始終貼緊底部 */
+// }
+
+// .rental-matching__tag {
+//   font-size: 0.85rem;
+//   font-weight: 600;
+//   padding: 0.35rem 0.75rem;
+//   border-radius: 30px;
+//   background-color: var(--color-bg-main);
+//   color: var(--color-text-muted);
+//   border: 1px solid var(--color-border);
+// }
+
+// /* 針對工具或技能的特殊標籤色系，做出活潑的區隔 */
+// .rental-matching__tag--tool {
+//   background-color: #E8F5E9;
+//   color: #2E7D32;
+//   border-color: #C8E6C9;
+// }
+
+// .rental-matching__tag--knowledge {
+//   background-color: #E3F2FD;
+//   color: #1565C0;
+//   border-color: #BBDEFB;
+// }
+
+// .rental-matching__category-badge {
+//   background-color: var(--color-secondary);
+//   color: var(--color-text-main);
+//   padding: 0.2rem 0.5rem;
+//   border-radius: 6px;
+//   font-weight: 700;
+//   font-size: 0.85rem;
+// }
+
+// /* 核心行動呼籲按鈕 (CTA Button) */
+// .rental-matching__detail-button {
+//   width: 100%;
+//   padding: 0.85rem;
+//   background-color: var(--color-primary);
+//   color: #FFFFFF;
+//   border: none;
+//   border-radius: 14px;
+//   font-size: 1.05rem;
+//   font-weight: 700;
+//   cursor: pointer;
+//   transition: all 0.2s ease;
+//   box-shadow: 0 4px 12px rgba(217, 107, 67, 0.2);
+//   text-align: center;
+// }
+
+// .rental-matching__detail-button:hover {
+//   background-color: var(--color-primary-hover);
+//   box-shadow: 0 6px 20px rgba(217, 107, 67, 0.3);
+//   transform: translateY(-1px);
+// }
+
+// .rental-matching__detail-button:active {
+//   transform: translateY(1px);
+// }
+
+// /* ==========================================================================
+//    空狀態提示 (Empty State)
+//    ========================================================================== */
+// .rental-matching__empty-state {
+//   grid-column: 1 / -1;
+//   text-align: center;
+//   padding: 5rem 2rem;
+//   background-color: var(--color-bg-card);
+//   border-radius: 20px;
+//   border: 2px dashed var(--color-border);
+// }
+
+// .rental-matching__empty-text {
+//   color: var(--color-text-muted);
+//   font-size: 1.1rem;
+//   margin: 0;
+// }
+
+
+
+
+
+
+
+
+
+
+
+// :root,
+// :host {
+//   --rental-list-color-primary: #f2a35e;
+//   --rental-list-color-primary-deep: #b85f18;
+//   --rental-list-color-primary-strong: #93480f;
+//   --rental-list-color-primary-soft: #ffe4c9;
+//   --rental-list-color-primary-faint: #fff7ef;
+
+//   --rental-list-color-bg: #fff8f0;
+//   --rental-list-color-surface: #ffffff;
+//   --rental-list-color-surface-soft: rgba(255, 255, 255, 0.92);
+
+//   --rental-list-color-text: #2b2118;
+//   --rental-list-color-muted: #51463d;
+//   --rental-list-color-subtle: #7a6f65;
+//   --rental-list-color-border: rgba(184, 95, 24, 0.22);
+
+//   --rental-list-color-success-bg: #fff3df;
+//   --rental-list-color-success-text: #80440f;
+
+//   --rental-list-shadow-card: 0 18px 42px rgba(132, 82, 38, 0.12);
+//   --rental-list-shadow-card-hover: 0 24px 56px rgba(132, 82, 38, 0.18);
+//   --rental-list-shadow-soft: 0 10px 28px rgba(132, 82, 38, 0.1);
+
+//   --rental-list-radius-xl: 28px;
+//   --rental-list-radius-lg: 22px;
+//   --rental-list-radius-md: 16px;
+//   --rental-list-radius-sm: 12px;
+//   --rental-list-radius-pill: 999px;
+
+//   --rental-list-focus-ring: 0 0 0 4px rgba(184, 95, 24, 0.24);
+
+//   --rental-list-text-shadow-soft:
+//     0 1px 0 rgba(255, 255, 255, 0.78),
+//     0 2px 4px rgba(80, 48, 24, 0.14);
+
+//   --rental-list-container-width: 1180px;
+// }
+
+// /* ================================
+//    列表頁整體
+//    上方篩選 + 下方列表
+//    ================================ */
+
+// .rental-matching {
+//   width: min(var(--rental-list-container-width), 100% - 2rem);
+//   margin: 1.5rem auto 4rem;
+//   padding: 0;
+
+//   display: flex;
+//   flex-direction: column;
+//   gap: 1.5rem;
+
+//   color: var(--rental-list-color-text);
+//   font-family:
+//     system-ui,
+//     -apple-system,
+//     BlinkMacSystemFont,
+//     "Segoe UI",
+//     "Microsoft JhengHei",
+//     sans-serif;
+
+//   background:
+//     radial-gradient(circle at top left, rgba(255, 228, 201, 0.56), transparent 34rem),
+//     linear-gradient(180deg, #fff8f0 0%, #fffdf9 45%, #fff8f0 100%);
+
+//   .material-symbols-outlined {
+//     font-variation-settings: "FILL" 0, "wght" 700, "GRAD" 0, "opsz" 24;
+//   }
+// }
+
+// /* ================================
+//    篩選面板
+//    ================================ */
+
+// .rental-matching__filter-panel {
+//   position: relative;
+//   top: auto;
+//   width: 100%;
+//   min-width: 0;
+//   align-self: stretch;
+
+//   padding: 1.25rem;
+//   border-radius: var(--rental-list-radius-xl);
+//   border: 1px solid var(--rental-list-color-border);
+
+//   display: grid;
+//   grid-template-columns: repeat(4, minmax(0, 1fr));
+//   column-gap: 1rem;
+//   row-gap: 0.75rem;
+
+//   background:
+//     radial-gradient(circle at 0% 0%, rgba(255, 228, 201, 0.64), transparent 20rem),
+//     linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 247, 239, 0.92));
+
+//   box-shadow: var(--rental-list-shadow-card);
+//   overflow: hidden;
+//   transition:
+//     padding 0.32s ease,
+//     box-shadow 0.32s ease,
+//     background-color 0.32s ease;
+// }
+
+// .rental-matching__filter-topbar {
+//   grid-column: 1 / -1;
+
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+//   gap: 1rem;
+// }
+
+// /* 篩選標題 */
+
+// .rental-matching__filter-heading {
+//   grid-column: 1 / -1;
+
+//   margin: 0 0 0.25rem;
+//   padding-bottom: 0.85rem;
+//   border-bottom: 2px solid rgba(242, 163, 94, 0.22);
+
+//   color: var(--rental-list-color-text);
+//   font-size: 1.45rem;
+//   line-height: 1.25;
+//   font-weight: 900;
+//   letter-spacing: -0.03em;
+//   text-shadow: var(--rental-list-text-shadow-soft);
+// }
+
+// /* 每個篩選分組 */
+
+// .rental-matching__filter-section {
+//   margin-bottom: 0;
+// }
+
+// .rental-matching__filter-title {
+//   display: flex;
+//   align-items: center;
+//   gap: 0.65rem;
+//   margin: 0 0 0.65rem;
+// }
+
+// .rental-matching__filter-title-text {
+//   margin: 0;
+//   color: var(--rental-list-color-text);
+//   font-size: 1.05rem;
+//   line-height: 1.25;
+//   font-weight: 850;
+// }
+
+// .rental-matching__filter-icon {
+//   width: 2rem;
+//   height: 2rem;
+//   display: inline-grid;
+//   place-items: center;
+//   flex: 0 0 auto;
+
+//   border-radius: 0.7rem;
+//   color: var(--rental-list-color-primary-strong);
+//   background: var(--rental-list-color-primary-faint);
+//   box-shadow: inset 0 0 0 1px rgba(242, 163, 94, 0.28);
+
+//   font-size: 1.15rem;
+// }
+
+// /* ================================
+//    篩選區塊排列
+//    ================================ */
+
+// .rental-matching__filter-section--categories {
+//   grid-column: span 1;
+// }
+
+// .rental-matching__filter-section--location {
+//   grid-column: span 1;
+// }
+
+// .rental-matching__filter-section--price {
+//   grid-column: span 2;
+// }
+
+// .rental-matching__divider {
+//   grid-column: 1 / -1;
+
+//   height: 1px;
+//   margin: 0.25rem 0;
+//   border: 0;
+//   background: linear-gradient(90deg,
+//       transparent,
+//       rgba(184, 95, 24, 0.28),
+//       transparent);
+// }
+
+// .rental-matching__filter-title--sort {
+//   grid-column: span 1;
+//   margin-bottom: 0;
+// }
+
+// .rental-matching__sort-options {
+//   grid-column: span 1;
+
+//   display: grid;
+//   grid-template-columns: 1fr 1fr;
+//   gap: 0.65rem;
+//   margin-bottom: 0;
+// }
+
+// .rental-matching__room-filter-area {
+//   grid-column: 1 / -1;
+
+//   display: grid;
+//   grid-template-columns:
+//     minmax(220px, 0.8fr) minmax(240px, 1fr) minmax(320px, 1.4fr);
+//   gap: 1rem;
+//   align-items: start;
+// }
+
+// /* ================================
+//    選項與表單控制項
+//    ================================ */
+
+// .rental-matching__option-group {
+//   display: flex;
+//   gap: 10px;
+// }
+
+// .rental-matching__option-group--vertical {
+//   flex-direction: column;
+// }
+
+// .rental-matching__choice,
+// .rental-matching__checkbox-row,
+// .rental-matching__radio-row {
+//   min-height: 40px;
+//   display: flex;
+//   align-items: center;
+//   gap: 10px;
+
+//   padding: 0.45rem 0.65rem;
+//   border-radius: var(--rental-list-radius-md);
+
+//   color: var(--rental-list-color-muted);
+//   background: rgba(255, 255, 255, 0.62);
+
+//   transition:
+//     background-color 0.22s ease,
+//     box-shadow 0.22s ease,
+//     transform 0.22s ease;
+// }
+
+// .rental-matching__choice:hover,
+// .rental-matching__checkbox-row:hover,
+// .rental-matching__radio-row:hover {
+//   background: rgba(255, 228, 201, 0.52);
+//   transform: translateY(-1px);
+// }
+
+// .rental-matching__choice-input,
+// .rental-matching__checkbox,
+// .rental-matching__radio {
+//   width: 20px;
+//   height: 20px;
+//   accent-color: var(--rental-list-color-primary-deep);
+//   cursor: pointer;
+// }
+
+// .rental-matching__choice-text,
+// .rental-matching__checkbox-label,
+// .rental-matching__radio-label {
+//   color: var(--rental-list-color-muted);
+//   font-size: 0.98rem;
+//   line-height: 1.45;
+//   font-weight: 700;
+//   cursor: pointer;
+//   user-select: none;
+// }
+
+// .rental-matching__select {
+//   width: 100%;
+//   min-height: 44px;
+//   padding: 0.55rem 0.75rem;
+
+//   border: 2px solid rgba(184, 95, 24, 0.18);
+//   border-radius: var(--rental-list-radius-md);
+
+//   color: var(--rental-list-color-text);
+//   background:
+//     linear-gradient(180deg, #ffffff 0%, #fffaf4 100%);
+
+//   font-size: 0.98rem;
+//   font-weight: 700;
+//   outline: none;
+
+//   transition:
+//     border-color 0.22s ease,
+//     box-shadow 0.22s ease;
+// }
+
+// .rental-matching__select:focus {
+//   border-color: var(--rental-list-color-primary-deep);
+//   box-shadow: var(--rental-list-focus-ring);
+// }
+
+// .rental-matching__select-option {
+//   color: var(--rental-list-color-text);
+// }
+
+// /* 價格範圍 */
+
+// .rental-matching__range-slider {
+//   display: grid;
+//   grid-template-columns: auto minmax(180px, 1fr) auto;
+//   align-items: center;
+//   gap: 0.8rem;
+// }
+
+// .rental-matching__price-text {
+//   color: var(--rental-list-color-primary-strong);
+//   font-size: 0.95rem;
+//   font-weight: 850;
+//   white-space: nowrap;
+// }
+
+// .rental-matching__mat-slider {
+//   width: 100%;
+// }
+
+// /* 排序按鈕 */
+
+// .rental-matching__sort-button {
+//   min-height: 42px;
+//   border: 1px solid rgba(184, 95, 24, 0.22);
+//   border-radius: var(--rental-list-radius-pill);
+
+//   color: var(--rental-list-color-primary-strong);
+//   background: rgba(255, 228, 201, 0.46);
+
+//   font-size: 0.96rem;
+//   font-weight: 800;
+//   cursor: pointer;
+
+//   transition:
+//     transform 0.22s ease,
+//     background-color 0.22s ease,
+//     box-shadow 0.22s ease;
+// }
+
+// .rental-matching__sort-button:hover,
+// .rental-matching__sort-button:focus-visible {
+//   transform: translateY(-1px);
+//   background: rgba(255, 228, 201, 0.78);
+//   box-shadow: var(--rental-list-shadow-soft);
+// }
+
+// /* 智慧配對 */
+
+// .rental-matching__smart-toggle {
+//   min-height: 44px;
+//   padding: 0.55rem 0.9rem;
+
+//   display: inline-flex;
+//   align-items: center;
+//   justify-content: center;
+//   gap: 0.35rem;
+
+//   border: 1px solid rgba(184, 95, 24, 0.24);
+//   border-radius: var(--rental-list-radius-pill);
+
+//   color: var(--rental-list-color-primary-strong);
+//   background: rgba(255, 228, 201, 0.55);
+
+//   font-size: 0.98rem;
+//   font-weight: 850;
+//   cursor: pointer;
+
+//   transition:
+//     transform 0.22s ease,
+//     background-color 0.22s ease,
+//     box-shadow 0.22s ease;
+// }
+
+// .rental-matching__filter-toggle:hover,
+// .rental-matching__filter-toggle:focus-visible {
+//   transform: translateY(-1px);
+//   background: rgba(255, 228, 201, 0.86);
+//   box-shadow: var(--rental-list-shadow-soft);
+//   outline: none;
+// }
+
+// .rental-matching__filter-toggle:focus-visible {
+//   box-shadow:
+//     var(--rental-list-focus-ring),
+//     var(--rental-list-shadow-soft);
+// }
+
+// .rental-matching__filter-toggle-icon {
+//   font-size: 1.35rem;
+//   transition: transform 0.28s ease;
+// }
+
+// .rental-matching__filter-body {
+//   grid-column: 1 / -1;
+
+//   display: grid;
+//   grid-template-columns: repeat(4, minmax(0, 1fr));
+//   column-gap: 1rem;
+//   row-gap: 0.75rem;
+
+//   overflow: hidden;
+//   max-height: 900px;
+//   opacity: 1;
+//   transform: translateY(0);
+
+//   transition:
+//     max-height 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+//     opacity 0.26s ease,
+//     transform 0.32s ease,
+//     margin-top 0.32s ease;
+// }
+
+// /* 收合狀態 */
+// .rental-matching__filter-panel.is-collapsed {
+//   padding-block: 1rem;
+// }
+
+// .rental-matching__filter-panel.is-collapsed .rental-matching__filter-body {
+//   max-height: 0;
+//   opacity: 0;
+//   transform: translateY(-8px);
+//   margin-top: 0;
+//   pointer-events: none;
+// }
+
+// .rental-matching__filter-panel.is-collapsed .rental-matching__filter-toggle-icon {
+//   transform: rotate(0deg);
+// }
+
+// .rental-matching__filter-panel:not(.is-collapsed) .rental-matching__filter-toggle-icon {
+//   transform: rotate(180deg);
+// }
+
+// .rental-matching__smart-toggle-text {
+//   color: var(--rental-list-color-text);
+//   font-size: 0.98rem;
+//   line-height: 1.45;
+//   font-weight: 800;
+// }
+
+// .rental-matching__line-break {
+//   display: block;
+// }
+
+// /* 生活風格 */
+
+// .rental-matching__filter-section--life-style {
+//   margin-bottom: 0;
+// }
+
+// /* ================================
+//    進階篩選 accordion
+//    ================================ */
+
+// .rental-matching__accordion {
+//   display: block;
+//   margin-top: 0;
+// }
+
+// .rental-matching__expansion-panel {
+//   border: 1px solid var(--rental-list-color-border);
+//   border-radius: var(--rental-list-radius-lg) !important;
+//   background: rgba(255, 255, 255, 0.68) !important;
+//   box-shadow: none !important;
+//   overflow: hidden !important;
+// }
+
+// .rental-matching__expansion-header {
+//   min-height: 54px !important;
+//   padding: 0 16px !important;
+// }
+
+// .rental-matching__expansion-title {
+//   color: var(--rental-list-color-primary-strong);
+//   font-size: 1.02rem;
+//   font-weight: 900;
+// }
+
+// /* 展開後限制高度，避免篩選面板佔滿整個畫面 */
+
+// .rental-matching__advanced-conditions {
+//   max-height: 320px;
+//   overflow-y: auto;
+//   margin: 0;
+//   padding: 0 0.9rem 0.9rem;
+
+//   scrollbar-width: thin;
+//   scrollbar-color: rgba(184, 95, 24, 0.38) rgba(255, 228, 201, 0.38);
+// }
+
+// .rental-matching__advanced-conditions::-webkit-scrollbar {
+//   width: 8px;
+// }
+
+// .rental-matching__advanced-conditions::-webkit-scrollbar-track {
+//   border-radius: 999px;
+//   background: rgba(255, 228, 201, 0.38);
+// }
+
+// .rental-matching__advanced-conditions::-webkit-scrollbar-thumb {
+//   border-radius: 999px;
+//   background: rgba(184, 95, 24, 0.38);
+// }
+
+// .rental-matching__advanced-section {
+//   padding-block: 0.35rem;
+// }
+
+// .rental-matching__advanced-options {
+//   display: grid;
+//   gap: 0.45rem;
+// }
+
+// .rental-matching__advanced-divider {
+//   height: 1px;
+//   margin: 0.85rem 0;
+//   border: 0;
+//   background: linear-gradient(90deg,
+//       transparent,
+//       rgba(184, 95, 24, 0.28),
+//       transparent);
+// }
+
+// /* ================================
+//    主要內容區
+//    ================================ */
+
+// .rental-matching__content {
+//   width: 100%;
+//   min-width: 0;
+// }
+
+// .rental-matching__content-header {
+//   margin-bottom: 1.25rem;
+//   padding: 1.5rem 1.75rem;
+
+//   display: flex;
+//   align-items: flex-end;
+//   justify-content: space-between;
+//   gap: 20px;
+
+//   border: 1px solid var(--rental-list-color-border);
+//   border-radius: var(--rental-list-radius-xl);
+
+//   background:
+//     radial-gradient(circle at 0% 0%, rgba(255, 228, 201, 0.74), transparent 20rem),
+//     linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 247, 239, 0.9));
+
+//   box-shadow: var(--rental-list-shadow-card);
+// }
+
+// .rental-matching__headline-group {
+//   min-width: 0;
+// }
+
+// .rental-matching__eyebrow {
+//   margin: 0 0 8px;
+
+//   color: var(--rental-list-color-primary-strong);
+//   font-size: 1.02rem;
+//   line-height: 1.4;
+//   font-weight: 900;
+//   letter-spacing: 0.08em;
+// }
+
+// .rental-matching__page-title {
+//   margin: 0;
+
+//   color: var(--rental-list-color-text);
+//   font-size: clamp(2rem, 3vw, 3.25rem);
+//   line-height: 0.98;
+//   font-weight: 950;
+//   letter-spacing: -0.06em;
+//   text-shadow: var(--rental-list-text-shadow-soft);
+// }
+
+// /* 檢視切換 */
+
+// .rental-matching__view-toggle {
+//   display: inline-flex;
+//   align-items: center;
+//   gap: 10px;
+
+//   padding: 8px;
+//   border-radius: var(--rental-list-radius-pill);
+//   background: rgba(255, 228, 201, 0.56);
+// }
+
+// .rental-matching__view-button {
+//   width: 48px;
+//   height: 48px;
+//   display: inline-grid;
+//   place-items: center;
+
+//   padding: 0;
+//   border: 0;
+//   border-radius: 50%;
+
+//   color: var(--rental-list-color-primary-strong);
+//   background: #ffffff;
+
+//   cursor: pointer;
+//   box-shadow: 0 8px 18px rgba(132, 82, 38, 0.12);
+
+//   transition:
+//     transform 0.22s ease,
+//     background-color 0.22s ease,
+//     box-shadow 0.22s ease;
+// }
+
+// .rental-matching__view-button:hover,
+// .rental-matching__view-button:focus-visible {
+//   transform: translateY(-2px);
+//   background: var(--rental-list-color-primary-soft);
+//   box-shadow: var(--rental-list-shadow-soft);
+// }
+
+// .rental-matching__view-icon {
+//   font-size: 1.45rem;
+// }
+
+// /* ================================
+//    卡片列表
+//    ================================ */
+
+// .rental-matching__grid {
+//   display: grid;
+//   grid-template-columns: repeat(3, minmax(0, 1fr));
+//   gap: 1.25rem;
+// }
+
+// .rental-matching__card {
+//   display: flex;
+//   flex-direction: column;
+//   min-width: 0;
+//   overflow: hidden;
+
+//   border: 1px solid var(--rental-list-color-border);
+//   border-radius: var(--rental-list-radius-xl);
+
+//   background: var(--rental-list-color-surface);
+//   box-shadow: var(--rental-list-shadow-card);
+
+//   transition:
+//     transform 0.28s ease,
+//     box-shadow 0.28s ease,
+//     border-color 0.28s ease;
+// }
+
+// .rental-matching__card:hover {
+//   transform: translateY(-4px);
+//   border-color: rgba(184, 95, 24, 0.38);
+//   box-shadow: var(--rental-list-shadow-card-hover);
+// }
+
+// .rental-matching__card-image {
+//   display: block;
+//   width: 100%;
+//   height: clamp(180px, 16vw, 240px);
+//   object-fit: cover;
+//   background: var(--rental-list-color-primary-faint);
+// }
+
+// .rental-matching__card-body {
+//   padding: 1.15rem;
+//   display: flex;
+//   flex: 1;
+//   flex-direction: column;
+// }
+
+// .rental-matching__card-title {
+//   margin: 0 0 10px;
+
+//   color: var(--rental-list-color-text);
+//   font-size: clamp(1.2rem, 1.5vw, 1.45rem);
+//   line-height: 1.32;
+//   font-weight: 900;
+//   letter-spacing: -0.03em;
+// }
+
+// .rental-matching__card-price {
+//   margin: 0 0 10px;
+
+//   color: var(--rental-list-color-primary-strong);
+//   font-size: clamp(1.3rem, 1.6vw, 1.65rem);
+//   line-height: 1.2;
+//   font-weight: 950;
+// }
+
+// .rental-matching__price-unit {
+//   color: var(--rental-list-color-subtle);
+//   font-size: 1rem;
+//   font-weight: 800;
+// }
+
+// .rental-matching__card-info {
+//   min-height: 34px;
+//   margin: 0 0 14px;
+
+//   display: flex;
+//   align-items: center;
+//   gap: 6px;
+
+//   color: var(--rental-list-color-muted);
+//   font-size: 1rem;
+//   line-height: 1.5;
+//   font-weight: 700;
+// }
+
+// .rental-matching__card-info-icon {
+//   color: var(--rental-list-color-primary-deep);
+//   font-size: 1.18rem;
+// }
+
+// .rental-matching__category-badge {
+//   display: inline-flex;
+//   align-items: center;
+//   min-height: 34px;
+
+//   padding: 0.35rem 0.8rem;
+//   border-radius: var(--rental-list-radius-pill);
+
+//   color: var(--rental-list-color-primary-strong);
+//   background: var(--rental-list-color-primary-faint);
+
+//   font-weight: 850;
+// }
+
+// .rental-matching__tags,
+// .habit-tags-group {
+//   display: flex;
+//   flex-wrap: wrap;
+//   gap: 8px;
+
+//   margin: 0 0 20px;
+// }
+
+// .rental-matching__tag,
+// .habit-tag {
+//   display: inline-flex;
+//   align-items: center;
+//   min-height: 34px;
+
+//   padding: 0.35rem 0.8rem;
+//   border-radius: var(--rental-list-radius-pill);
+
+//   color: var(--rental-list-color-success-text);
+//   background: var(--rental-list-color-success-bg);
+
+//   font-size: 0.95rem;
+//   line-height: 1.35;
+//   font-weight: 850;
+// }
+
+// .rental-matching__tag--tool {
+//   background: #fff0df;
+// }
+
+// .rental-matching__tag--knowledge {
+//   background: #fff8e9;
+// }
+
+// /* 查看詳情按鈕 */
+
+// .rental-matching__detail-button {
+//   width: 100%;
+//   min-height: 52px;
+//   margin-top: auto;
+
+//   border: 0;
+//   border-radius: var(--rental-list-radius-md);
+
+//   color: #ffffff;
+//   background:
+//     linear-gradient(135deg,
+//       var(--rental-list-color-primary-deep),
+//       var(--rental-list-color-primary));
+
+//   font-size: 1.06rem;
+//   font-weight: 900;
+//   cursor: pointer;
+
+//   box-shadow: 0 12px 24px rgba(184, 95, 24, 0.24);
+
+//   transition:
+//     transform 0.24s ease,
+//     box-shadow 0.24s ease,
+//     filter 0.24s ease;
+// }
+
+// .rental-matching__detail-button:hover,
+// .rental-matching__detail-button:focus-visible {
+//   transform: translateY(-2px);
+//   filter: saturate(1.06);
+//   box-shadow: 0 16px 32px rgba(184, 95, 24, 0.3);
+// }
+
+// /* 空狀態 */
+
+// .rental-matching__empty-state {
+//   grid-column: 1 / -1;
+
+//   padding: clamp(32px, 5vw, 64px);
+//   border: 2px dashed rgba(184, 95, 24, 0.28);
+//   border-radius: var(--rental-list-radius-xl);
+
+//   background: rgba(255, 255, 255, 0.78);
+//   text-align: center;
+// }
+
+// .rental-matching__empty-text {
+//   margin: 0;
+
+//   color: var(--rental-list-color-muted);
+//   font-size: 1.12rem;
+//   line-height: 1.7;
+//   font-weight: 800;
+// }
+
+// /* ================================
+//    Angular Material component adjustments
+//    ================================ */
+
+// :host ::ng-deep {
+//   .mat-expansion-panel-header {
+//     padding: 0 16px !important;
+//   }
+
+//   .mat-expansion-panel {
+//     background: transparent !important;
+//   }
+
+//   .mat-expansion-panel:not([class*="mat-elevation-z"]) {
+//     box-shadow: none !important;
+//   }
+
+//   .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled="true"]):hover {
+//     background: rgba(255, 228, 201, 0.38) !important;
+//   }
+
+//   .mat-expansion-panel-body {
+//     padding: 0 !important;
+//   }
+
+//   .mat-mdc-slide-toggle .mdc-label {
+//     color: var(--rental-list-color-text);
+//     font-weight: 800;
+//     line-height: 1.5;
+//   }
+
+//   .mdc-slider {
+//     --mdc-slider-active-track-color: var(--rental-list-color-primary-deep);
+//     --mdc-slider-inactive-track-color: rgba(184, 95, 24, 0.18);
+//     --mdc-slider-handle-color: var(--rental-list-color-primary-deep);
+//     --mdc-slider-focus-handle-color: var(--rental-list-color-primary-strong);
+//     --mdc-slider-hover-handle-color: var(--rental-list-color-primary-strong);
+//   }
+// }
+
+// /* ================================
+//    RWD
+//    ================================ */
+
+// @media (max-width: 1180px) {
+//   .rental-matching {
+//     width: min(100% - 2rem, 960px);
+//   }
+
+//   .rental-matching__filter-panel {
+//     .rental-matching__filter-body {
+//       grid-template-columns: repeat(2, minmax(0, 1fr));
+//     }
+//   }
+
+//   .rental-matching__filter-section--categories,
+//   .rental-matching__filter-section--location,
+//   .rental-matching__filter-title--sort,
+//   .rental-matching__sort-options {
+//     grid-column: span 1;
+//   }
+
+//   .rental-matching__filter-section--price {
+//     grid-column: 1 / -1;
+//   }
+
+//   .rental-matching__room-filter-area {
+//     grid-template-columns: 1fr 1fr;
+//   }
+
+//   .rental-matching__accordion {
+//     grid-column: 1 / -1;
+//   }
+
+//   .rental-matching__grid {
+//     grid-template-columns: repeat(2, minmax(0, 1fr));
+//   }
+// }
+
+// @media (max-width: 760px) {
+//   .rental-matching {
+//     width: min(100% - 1.25rem, 640px);
+//     margin-top: 1rem;
+//   }
+
+//   .rental-matching__filter-panel {
+//     grid-template-columns: 1fr;
+//     padding: 1rem;
+//   }
+
+//   .rental-matching__filter-heading,
+//   .rental-matching__filter-section--categories,
+//   .rental-matching__filter-section--location,
+//   .rental-matching__filter-section--price,
+//   .rental-matching__filter-title--sort,
+//   .rental-matching__sort-options,
+//   .rental-matching__room-filter-area {
+//     grid-column: 1 / -1;
+//   }
+
+//   .rental-matching__room-filter-area {
+//     grid-template-columns: 1fr;
+//   }
+
+//   .rental-matching__content-header {
+//     align-items: flex-start;
+//     flex-direction: column;
+//     padding: 1.25rem;
+//     border-radius: var(--rental-list-radius-lg);
+//   }
+
+//   .rental-matching__range-slider {
+//     grid-template-columns: 1fr;
+//     gap: 8px;
+//   }
+
+//   .rental-matching__price-text--max {
+//     justify-self: end;
+//   }
+
+//   .rental-matching__advanced-conditions {
+//     max-height: 360px;
+//   }
+
+//   .rental-matching__grid {
+//     grid-template-columns: 1fr;
+//   }
+
+//   .rental-matching__card {
+//     border-radius: var(--rental-list-radius-lg);
+//   }
+
+//   .rental-matching__card-image {
+//     height: 220px;
+//   }
+
+//   .rental-matching__filter-body {
+//     grid-template-columns: 1fr;
+//   }
+
+//   .rental-matching__filter-topbar {
+//     align-items: flex-start;
+//     flex-direction: column;
+//   }
+
+//   .rental-matching__filter-toggle {
+//     width: 100%;
+//   }
+// }
+
+// @media (max-width: 520px) {
+//   .rental-matching {
+//     width: min(100% - 1rem, 480px);
+//   }
+
+//   .rental-matching__filter-panel,
+//   .rental-matching__content-header,
+//   .rental-matching__card-body {
+//     padding: 18px;
+//   }
+
+//   .rental-matching__sort-options {
+//     grid-template-columns: 1fr;
+//   }
+
+//   .rental-matching__view-button {
+//     width: 46px;
+//     height: 46px;
+//   }
+// }

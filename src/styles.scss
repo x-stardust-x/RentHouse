@@ -5,32 +5,76 @@
 // Learn more about theming and how to use it for your application's
 // custom components at https://material.angular.dev/guide/theming
 
+
+
+
+/* ==========================================================================
+   1. 全域變數調色盤 (Design System Tokens)
+   在這裡修改顏色，全站的元件會自動同步更新！
+   ========================================================================== */
 :root {
-  --app-font-scale: 1;
+  /* 核心色彩 (對齊設計稿) */
+  --color-primary: #E66F43;        /* 主打色：溫暖焦糖橘 (用於主按鈕、進度條、高亮標籤) */
+  --color-primary-hover: #CE5B30;  /* 深焦糖橘：滑鼠懸停時的深色 */
+  --color-primary-light: #FFF2EE;  /* 淺焦糖底色：用於選中狀態、淡色膠囊背景 */
 
-  --font-size-xs: calc(0.875rem * var(--app-font-scale));
-  --font-size-sm: calc(0.95rem * var(--app-font-scale));
-  --font-size-base: calc(1rem * var(--app-font-scale));
-  --font-size-md: calc(1.125rem * var(--app-font-scale));
-  --font-size-lg: calc(1.35rem * var(--app-font-scale));
-  --font-size-xl: calc(1.75rem * var(--app-font-scale));
-  --font-size-2xl: calc(2.25rem * var(--app-font-scale));
+  /* 中性底色 */
+  --color-bg-main: #FDFBF9;        /* 全局奶油白：比純白更溫柔、帶有極微量暖調 */
+  --color-bg-card: #FFFFFF;        /* 容器純白：卡片與面板的基底色 */
+  --color-border: #EAE4DE;         /* 溫潤細線條：用於分割線與邊框 */
 
-  --line-height-base: 1.65;
-  --line-height-heading: 1.28;
+  /* 文字色彩 */
+  --color-text-main: #2B2725;      /* 深炭焦黑：取代死黑，提升長時間閱讀的舒適度 */
+  --color-text-muted: #8E8680;     /* 煙燻暖灰：用於次要說明文字、未選取狀態 */
+
+  /* 圓角系統 */
+  --radius-lg: 16px;               /* 大容器、外層卡片圓角 */
+  --radius-md: 12px;               /* 按鈕、下拉選單、導覽項目圓角 */
+  --radius-sm: 6px;                /* 小標籤、膠囊圓角 */
 }
 
-html[data-font-size="small"] {
-  --app-font-scale: 0.94;
-}
 
-html[data-font-size="medium"] {
-  --app-font-scale: 1;
-}
 
-html[data-font-size="large"] {
-  --app-font-scale: 1.16;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 大、中、小 文字
+// :root {
+//   --app-font-scale: 1;
+
+//   --font-size-xs: calc(0.875rem * var(--app-font-scale));
+//   --font-size-sm: calc(0.95rem * var(--app-font-scale));
+//   --font-size-base: calc(1rem * var(--app-font-scale));
+//   --font-size-md: calc(1.125rem * var(--app-font-scale));
+//   --font-size-lg: calc(1.35rem * var(--app-font-scale));
+//   --font-size-xl: calc(1.75rem * var(--app-font-scale));
+//   --font-size-2xl: calc(2.25rem * var(--app-font-scale));
+
+//   --line-height-base: 1.65;
+//   --line-height-heading: 1.28;
+// }
+
+// html[data-font-size="small"] {
+//   --app-font-scale: 0.94;
+// }
+
+// html[data-font-size="medium"] {
+//   --app-font-scale: 1;
+// }
+
+// html[data-font-size="large"] {
+//   --app-font-scale: 1.16;
+// }
 
 
 

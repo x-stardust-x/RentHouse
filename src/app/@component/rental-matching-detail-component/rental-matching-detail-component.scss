@@ -1,974 +1,611 @@
-:root,
-:host {
-  --rental-color-bg: #f7efe5;
-  --rental-color-surface: #ffffff;
-  --rental-color-surface-soft: #fff8ef;
-  --rental-color-surface-warm: #fbf3e8;
-  --rental-color-primary: #d89a5f;
-  --rental-color-primary-deep: #b77943;
-  --rental-color-primary-soft: #f4d7bb;
-  --rental-color-primary-faint: #fff2e3;
-  --rental-color-text: #25211d;
-  --rental-color-muted: #857b70;
-  --rental-color-line: #eee2d4;
-  --rental-color-star-empty: #ded6cd;
-  --rental-color-shadow: rgba(91, 62, 37, 0.12);
-  --rental-color-shadow-strong: rgba(91, 62, 37, 0.18);
-  --rental-radius-page: 2rem;
-  --rental-radius-card: 1.25rem;
-  --rental-radius-pill: 999px;
-  --rental-container-width: 1180px;
-  --rental-transition: 220ms ease;
+/* ==========================================================================
+   1. 頂部滿版大圖輪播區 (Full-Bleed Hero Stage)
+   打破外層 1400px 限制，強行拉開至螢幕 100% 寬度
+   ========================================================================== */
 
-  --text-shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.65),
-    0 2px 6px rgba(120, 72, 30, 0.12);
-  --text-shadow-readable: 0 1px 0 rgba(255, 255, 255, 0.75),
-    0 2px 4px rgba(80, 48, 24, 0.16);
-  --text-shadow-on-image: 0 2px 4px rgba(55, 35, 20, 0.38),
-    0 6px 16px rgba(55, 35, 20, 0.22);
-  --text-shadow-on-image-strong: 0 1px 2px rgba(35, 24, 16, 0.7),
-    0 4px 10px rgba(35, 24, 16, 0.42);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-:host {
-  display: block;
-  color: var(--rental-color-text);
-  background:
-    radial-gradient(circle at top left, rgba(216, 154, 95, 0.18), transparent 28rem),
-    linear-gradient(180deg, #fffaf3 0%, var(--rental-color-bg) 100%);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
-p,
-h1,
-h2 {
-  margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.rental-detail-icon,
-.material-symbols-outlined {
-  font-variation-settings: "FILL" 0, "wght" 700, "GRAD" 0, "opsz" 24;
-  line-height: 1;
-}
-
-.top.rental-detail-hero-section {
-  width: min(var(--rental-container-width), calc(100% - 2rem));
-  margin: 1rem auto 0;
-  overflow: hidden;
-  border-radius: var(--rental-radius-page);
-  background: var(--rental-color-surface);
-  box-shadow: 0 1.5rem 4rem var(--rental-color-shadow-strong);
-}
-
-.rental-detail-hero {
+.rental-hero {
+  width: 100vw;
   position: relative;
-  min-height: clamp(28rem, 62vh, 42rem);
-  overflow: hidden;
-  isolation: isolate;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  border-radius: inherit;
+  left: 50%;
+  transform: translateX(-50%);
+
+  /* 往上推抵消公版 padding-top: 2.5rem，完美無縫卡在 Header 下方 */
+  margin-top: -2.5rem;
+  margin-bottom: 2.5rem;
 }
 
-.rental-detail-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background:
-    linear-gradient(90deg, rgba(31, 24, 18, 0.58), rgba(31, 24, 18, 0.18) 48%, rgba(31, 24, 18, 0.38)),
-    linear-gradient(180deg, rgba(31, 24, 18, 0.1), rgba(31, 24, 18, 0.28));
-  backdrop-filter: saturate(1.02);
-}
-
-.rental-detail-hero__content,
-.top-info {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
+.rental-hero__stage {
+  position: relative;
   width: 100%;
-  padding: clamp(1.25rem, 4vw, 3rem);
-  color: #fff;
+  height: 520px; /* 黃金比例大圖高度 */
+  // overflow: hidden;
+  background-color: #2B2725;
 }
 
-.rental-detail-hero__main-info,
-.main-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  max-width: min(42rem, 72%);
+/* 背景主圖與磨砂/漸層遮罩 */
+.rental-hero__background {
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
-.rental-detail-hero__title {
-  font-size: clamp(2rem, 5vw, 4rem);
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.055em;
-  text-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.24);
-}
-
-.rental-detail-hero__location,
-.location {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  width: fit-content;
-  max-width: 100%;
-  padding: 0.55rem 0.8rem;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: var(--rental-radius-pill);
-  background: rgba(255, 255, 255, 0.18);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(14px);
-}
-
-.rental-detail-hero__location-icon {
-  color: var(--rental-color-primary-soft);
-}
-
-.rental-detail-hero__address {
-  overflow: hidden;
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 0.95rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.rental-detail-hero__actions {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.rental-detail-hero__action,
-.share,
-.favorites {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  min-height: 2.75rem;
-  padding: 0 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.32);
-  border-radius: var(--rental-radius-pill);
-  color: #fff;
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(14px);
-  cursor: pointer;
-  transition: transform var(--rental-transition), background var(--rental-transition);
-}
-
-.rental-detail-hero__action:hover,
-.share:hover,
-.favorites:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.28);
-}
-
-.rental-detail-hero__thumbs {
-  position: absolute;
-  right: clamp(1rem, 4vw, 3rem);
-  bottom: clamp(1rem, 4vw, 3rem);
-  display: grid;
-  grid-template-columns: repeat(4, minmax(5.5rem, 8rem));
-  gap: 1rem;
-  max-width: min(44rem, calc(100% - 2rem));
-  padding: 0.8rem;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 1.4rem;
-  background: rgba(255, 255, 255, 0.22);
-  // box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.18);
-  backdrop-filter: blur(18px);
-}
-
-.rental-detail-hero__thumb-item {
-  overflow: hidden;
-  aspect-ratio: 1 / 1;
-  border: 3px solid rgba(255, 255, 255, 0.78);
-  border-radius: 1rem;
-  background: var(--rental-color-surface-warm);
-  // box-shadow: 0 0.8rem 1.5rem rgba(0, 0, 0, 0.14);
-}
-
-.rental-detail-hero__thumb-img {
-  display: block;
+.rental-hero__main-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform var(--rental-transition), filter var(--rental-transition);
+  transition: opacity 0.4s ease-in-out, transform 0.4s ease;
+
+  &.is-changing {
+    opacity: 0.6;
+    transform: scale(1.02);
+  }
 }
 
-.rental-detail-hero__thumb-item:hover .rental-detail-hero__thumb-img {
-  transform: scale(1.06);
-  filter: saturate(1.05);
+/* 下重上輕的深色漸層，確保白色文字 100% 可讀 */
+.rental-hero__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(43, 39, 37, 0.1) 0%,
+    rgba(43, 39, 37, 0.3) 50%,
+    rgba(43, 39, 37, 0.8) 100%
+  );
+  pointer-events: none;
 }
 
+/* ==========================================================================
+   2. Hero 區文字資訊與動作按鈕 (浮動於大圖上)
+   ========================================================================== */
+.rental-hero__info {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1400px; /* 寬度對齊全站設計稿 */
+  padding: 0 2rem;
+  box-sizing: border-box;
+  z-index: 10;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.rental-hero__main-info {
+  color: #FFFFFF;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  flex: 1;
+  padding-right: 2rem;
+}
+
+.rental-hero__title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin: 0 0 0.75rem 0;
+  letter-spacing: 0.5px;
+  line-height: 1.3;
+}
+
+.rental-hero__location {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.rental-hero__location-icon {
+  color: var(--color-primary); /* 精緻的焦糖橘地標 */
+  font-size: 1.3rem !important;
+}
+
+.rental-hero__address {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+  opacity: 0.95;
+}
+
+/* 分享與收藏按鈕 (輕量化毛玻璃質感) */
+.rental-hero__actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.rental-hero__action-button {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--color-text-main);
+    border-color: #FFFFFF;
+
+    .rental-hero__action-icon {
+      /* 收藏按鈕移過去變紅色，分享變橘色 */
+      &.favorites { color: #E05353; }
+    }
+  }
+}
+
+.rental-hero__action-icon {
+  font-size: 1.15rem !important;
+}
+
+.rental-hero__action-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* ==========================================================================
+   3. 右下角 Swiper 縮圖輪播區 (浮動於大圖上)
+   ========================================================================== */
+.rental-hero__thumb-area {
+  position: absolute;
+  right: max(2rem, calc((100vw - 1400px) / 2 + 2rem)); /* 完美對齊右側邊界 */
+  top: 2.5rem;
+  z-index: 20;
+  width: 320px;
+  background: rgba(43, 39, 37, 0.4);
+  backdrop-filter: blur(12px);
+  padding: 0.75rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rental-hero__thumb-viewport {
+  width: 100%;
+}
+
+.rental-hero__thumb-slide {
+  width: 75px !important; /* 固定縮圖寬度 */
+}
+
+.rental-hero__thumb-button {
+  background: none;
+  border: 2px solid transparent;
+  padding: 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  cursor: pointer;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: block;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &.is-active {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 12px rgba(230, 111, 67, 0.5);
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+.rental-hero__thumb-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ==========================================================================
+   4. 下方詳細資訊雙欄佈局 (Detail Main Layout)
+   ========================================================================== */
 .rental-detail-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.75fr) minmax(20rem, 0.8fr);
-  gap: 1.5rem;
-  width: min(var(--rental-container-width), calc(100% - 2rem));
-  margin: 1.5rem auto 4rem;
+  grid-template-columns: 1fr 380px; /* 左主內容、右側邊欄黏性預訂卡 */
+  gap: 2.5rem;
+  align-items: start;
+  font-family: sans-serif;
 }
 
-.rental-detail-main-column,
-.rental-detail-side-column,
-.rental-detail-room-details,
-.rental-detail-content-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.rental-detail-side-column {
-  position: sticky;
-  top: 1rem;
-  align-self: start;
-}
-
-.rental-detail-card,
-.rental-detail-debug-box {
-  border: 1px solid var(--rental-color-line);
-  border-radius: var(--rental-radius-card);
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 1rem 2.5rem var(--rental-color-shadow);
-}
-
+/* 通用細緻卡片 */
 .rental-detail-card {
-  padding: clamp(1.1rem, 2vw, 1.5rem);
-}
-
-.rental-detail-debug-box {
-  padding: 1rem 1.25rem;
-  color: var(--rental-color-primary-deep);
-  background: var(--rental-color-primary-faint);
-  font-weight: 700;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(43, 39, 37, 0.01);
 }
 
 .rental-detail-section-title {
-  margin-bottom: 1rem;
-  color: var(--rental-color-text);
-  font-size: 1.25rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin: 0 0 1.25rem 0;
+  position: relative;
+  padding-left: 0.75rem;
+
+  /* 標題小左線襯托質感 */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 4px;
+    bottom: 4px;
+    width: 4px;
+    background-color: var(--color-primary);
+    border-radius: 2px;
+  }
 }
 
-.rental-detail-description,
-.rental-detail-card-text,
-.rental-detail-map-address,
-.rental-detail-provider-card__bio,
-.rental-detail-booking-note,
-.rental-detail-free-note,
-.rental-detail-included-fees {
-  color: var(--rental-color-muted);
-  line-height: 1.75;
+/* 內文描述 */
+.rental-detail-description {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #4A4542;
+  white-space: pre-line; /* 保留資料庫撈出來的換行 */
 }
 
-.rental-detail-feature-grid,
-.rental-detail-service-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.9rem;
+/* 特色膠囊標籤網格 (生活習慣、Wifi等) */
+.rental-detail-feature-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .rental-detail-feature-pill {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  min-height: 3.35rem;
-  padding: 0.75rem 0.9rem;
-  border: 1px solid var(--rental-color-line);
-  border-radius: 1rem;
-  background: var(--rental-color-surface-warm);
-  color: var(--rental-color-text);
-  transition: transform var(--rental-transition), border-color var(--rental-transition), box-shadow var(--rental-transition);
-}
-
-.rental-detail-feature-pill:hover {
-  transform: translateY(-2px);
-  border-color: var(--rental-color-primary-soft);
-  box-shadow: 0 0.8rem 1.8rem var(--rental-color-shadow);
+  gap: 0.5rem;
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  border: 1px solid rgba(230, 111, 67, 0.1);
 }
 
 .rental-detail-feature-pill__icon {
-  display: inline-grid;
-  place-items: center;
-  width: 2.1rem;
-  height: 2.1rem;
-  flex: 0 0 auto;
-  border-radius: 0.75rem;
-  color: var(--rental-color-primary-deep);
-  background: var(--rental-color-primary-faint);
+  font-size: 1.2rem !important;
 }
 
 .rental-detail-feature-pill__text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* 地圖區塊 */
+.rental-detail-map-address {
   font-size: 0.95rem;
-  font-weight: 700;
+  color: var(--color-text-muted);
+  margin: 0 0 1rem 0;
 }
 
 .rental-detail-map-frame {
-  display: block;
   width: 100%;
-  min-height: 22rem;
-  margin-top: 1rem;
-  overflow: hidden;
-  border: 0;
-  border-radius: 1rem;
-  filter: saturate(0.76) sepia(0.08);
+  height: 350px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
 }
 
-.rental-detail-provider-card,
-.rental-detail-booking-card {
-  background: linear-gradient(180deg, #ffffff 0%, #fffaf4 100%);
+/* ==========================================================================
+   5. 右側側邊欄：出租人卡片 & 黏性預訂面板
+   ========================================================================== */
+.rental-detail-side-column {
+  position: sticky;
+  top: 96px; /* 隨著頁面滾動時，卡片會優雅黏定在右側 */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 出租人/提供者名片 */
+.rental-detail-provider-card {
+  padding: 1.5rem;
+  margin-bottom: 0; /* 覆蓋通用 margin */
 }
 
 .rental-detail-provider-card__header {
   display: flex;
-  align-items: flex-start;
   gap: 1.25rem;
+  align-items: center;
+  margin-bottom: 1.25rem;
 }
 
 .rental-detail-provider-card__avatar-wrap {
   position: relative;
-  width: fit-content;
-  height: fit-content;
-  flex: 0 0 auto;
 }
 
 .rental-detail-provider-card__avatar-frame {
-  width: fit-content;
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--color-border);
 }
 
 .rental-detail-provider-card__avatar {
-  display: block;
-  width: 5.8rem;
-  height: auto;
-  aspect-ratio: 1 / 1;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border: 4px solid #fff;
-  border-radius: 50%;
-  box-shadow: 0 0.7rem 1.5rem var(--rental-color-shadow);
 }
 
+/* 已驗證藍勾勾 (改為我們專屬的優雅墨綠色調) */
 .rental-detail-provider-card__verified-badge {
   position: absolute;
-  right: -0.45rem;
-  bottom: -0.45rem;
-  display: inline-flex;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #3A7D6F;
+  color: #FFFFFF;
+  padding: 0.1rem 0.4rem;
+  border-radius: 20px;
+  display: flex;
   align-items: center;
-  gap: 0.2rem;
-  width: max-content;
-  padding: 0.22rem 0.5rem;
-  border: 2px solid #fff;
-  border-radius: var(--rental-radius-pill);
-  color: var(--rental-color-primary-deep);
-  background: var(--rental-color-primary-soft);
-  box-shadow: 0 0.45rem 1rem var(--rental-color-shadow);
+  gap: 0.1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 .rental-detail-provider-card__verified-icon {
-  font-size: 1.1rem;
-  font-variation-settings: "FILL" 1, "wght" 700, "GRAD" 0, "opsz" 24;
+  font-size: 0.8rem !important;
 }
 
 .rental-detail-provider-card__verified-text {
-  font-size: 0.75rem;
-  font-weight: 800;
+  font-size: 0.65rem;
+  font-weight: 700;
+  margin: 0;
+  white-space: nowrap;
 }
 
 .rental-detail-provider-card__info {
-  min-width: 0;
+  flex: 1;
 }
 
 .rental-detail-provider-card__name {
-  font-size: 1.35rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin: 0 0 0.25rem 0;
 }
 
 .rental-detail-provider-card__role {
-  margin-top: 0.25rem;
-  color: var(--rental-color-muted);
-  font-weight: 700;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin: 0 0 0.5rem 0;
 }
 
-.rental-detail-rating-row,
+/* 精緻滿星評分系統 */
+.rental-detail-rating-row {
+  display: inline-block;
+  margin-bottom: 0.25rem;
+}
+
 .rental-detail-star-rating-wrapper {
   display: flex;
   align-items: center;
-}
-
-.rental-detail-star-rating-wrapper {
-  gap: 0.45rem;
-  margin-top: 0.65rem;
+  gap: 0.4rem;
 }
 
 .rental-detail-rating-score {
+  font-size: 1rem;
   font-weight: 800;
-  color: var(--rental-color-primary-deep);
+  color: #FFB100; /* 黃金星星色 */
+  margin: 0;
 }
 
 .rental-detail-star-rating {
   position: relative;
   display: inline-block;
-  width: 6.25rem;
-  height: 1.25rem;
-  line-height: 1;
+  color: #EAE4DE; /* 未亮星星底色 */
 }
 
 .rental-detail-stars {
-  position: absolute;
-  inset: 0 auto auto 0;
   display: flex;
-  width: max-content;
-  white-space: nowrap;
-}
-
-.rental-detail-stars--empty {
-  color: var(--rental-color-star-empty);
-}
-
-.rental-detail-stars--filled {
-  overflow: hidden;
-  color: var(--rental-color-primary);
-}
-
-.rental-detail-stars--filled .rental-detail-star-icon {
-  font-variation-settings: "FILL" 1, "wght" 700, "GRAD" 0, "opsz" 24;
 }
 
 .rental-detail-star-icon {
-  font-size: 1.25rem;
+  font-size: 1.1rem !important;
+  font-variant: initial;
+}
+
+.rental-detail-stars--filled {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  color: #FFB100; /* 已亮星星色 */
+  white-space: nowrap;
 }
 
 .rental-detail-review-count {
-  margin-top: 0.45rem;
-  color: var(--rental-color-muted);
-  font-size: 0.92rem;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin: 0;
 }
 
 .rental-detail-provider-card__bio {
-  margin-top: 1.25rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--rental-color-line);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #655E5A;
+  margin: 0 0 1rem 0;
 }
 
 .rental-detail-outline-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: fit-content;
-  min-height: 2.75rem;
-  margin-top: 1.25rem;
-  padding: 0 1rem;
-  border: 1px solid var(--rental-color-primary-soft);
-  border-radius: var(--rental-radius-pill);
-  color: var(--rental-color-primary-deep);
-  background: #fff;
-  font-weight: 800;
-  transition: background var(--rental-transition), transform var(--rental-transition);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-decoration: none;
+  display: inline-block;
+  transition: color 0.2s;
+
+  &:hover {
+    color: var(--color-primary-hover);
+    text-decoration: underline;
+  }
 }
 
-.rental-detail-outline-link:hover {
-  transform: translateY(-2px);
-  background: var(--rental-color-primary-faint);
+/* 預訂交易面板卡片 */
+.rental-detail-booking-card {
+  padding: 1.75rem;
+  margin-bottom: 0;
 }
 
 .rental-detail-price {
-  color: var(--rental-color-text);
-  font-weight: 800;
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: baseline;
 }
 
 .rental-detail-price__number {
-  font-size: clamp(1.75rem, 3vw, 2.5rem);
-  letter-spacing: -0.04em;
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  margin: 0 0.2rem;
 }
 
 .rental-detail-price__unit {
-  color: var(--rental-color-muted);
-  font-weight: 700;
-}
-
-.rental-detail-included-fees,
-.rental-detail-booking-note {
-  margin-top: 0.75rem;
-}
-
-.rental-detail-period-select {
-  width: 100%;
-  min-height: 3rem;
-  margin-top: 1rem;
-  padding: 0 1rem;
-  border: 1px solid var(--rental-color-line);
-  border-radius: 0.9rem;
-  color: var(--rental-color-text);
-  background: var(--rental-color-surface);
-  font-weight: 700;
-  outline: none;
-  transition: border-color var(--rental-transition), box-shadow var(--rental-transition);
-}
-
-.rental-detail-period-select:focus {
-  border-color: var(--rental-color-primary);
-  box-shadow: 0 0 0 0.25rem rgba(216, 154, 95, 0.18);
-}
-
-.rental-detail-links-group,
-.links-group {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
-  margin-block: 1rem;
-}
-
-.rental-detail-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 3rem;
-  padding: 0 1rem;
-  border-radius: var(--rental-radius-pill);
-  font-weight: 900;
-  transition: transform var(--rental-transition), box-shadow var(--rental-transition), background var(--rental-transition);
-}
-
-.rental-detail-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0.8rem 1.8rem var(--rental-color-shadow);
-}
-
-.rental-detail-button--primary {
-  color: #fff;
-  background: linear-gradient(135deg, var(--rental-color-primary), var(--rental-color-primary-deep));
-}
-
-.rental-detail-button--secondary {
-  color: var(--rental-color-primary-deep);
-  background: var(--rental-color-primary-faint);
-}
-
-.rental-detail-free-note {
-  padding-top: 1rem;
-  border-top: 1px solid var(--rental-color-line);
   font-size: 0.9rem;
 }
 
-@media (max-width: 1024px) {
+.rental-detail-included-fees {
+  font-size: 0.85rem;
+  color: #3A7D6F;
+  background-color: #EDF6F4;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  margin: 0 0 1.25rem 0;
+  font-weight: 600;
+}
+
+.rental-detail-booking-note {
+  font-size: 0.9rem;
+  color: var(--color-text-main);
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+}
+
+/* 下拉選單客製化 */
+.rental-detail-period-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-main);
+  color: var(--color-text-main);
+  font-size: 0.95rem;
+  outline: none;
+  cursor: pointer;
+  margin-bottom: 1.25rem;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: var(--color-primary);
+  }
+}
+
+/* 按鈕群組 */
+.rental-detail-links-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.rental-detail-button {
+  display: block;
+  text-align: center;
+  padding: 0.85rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.rental-detail-button--primary {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(230, 111, 67, 0.15);
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+    box-shadow: 0 6px 16px rgba(230, 111, 67, 0.25);
+  }
+}
+
+.rental-detail-button--secondary {
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-main);
+
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background-color: var(--color-primary-light);
+  }
+}
+
+.rental-detail-free-note {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  margin: 0;
+}
+
+/* ==========================================================================
+   6. 響應式斷點 (RWD 完美相容行動裝置)
+   ========================================================================== */
+@media (max-width: 992px) {
+  .rental-hero {
+    margin-top: -2.5rem;
+  }
+
+  .rental-hero__stage {
+    height: 380px; /* 平板手機調低主圖高度 */
+  }
+
+  .rental-hero__info {
+    bottom: 1.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 0 1.5rem;
+  }
+
+  .rental-hero__main-info {
+    padding-right: 0;
+  }
+
+  .rental-hero__title {
+    font-size: 1.65rem;
+  }
+
+  .rental-hero__thumb-area {
+    display: none; /* 行動版隱藏浮動縮圖，保持畫面乾淨 */
+  }
+
   .rental-detail-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* 轉為單欄 */
+    gap: 1.5rem;
   }
 
   .rental-detail-side-column {
-    position: static;
-  }
-
-  .rental-detail-hero__thumbs {
-    grid-template-columns: repeat(4, minmax(4.75rem, 1fr));
-  }
-}
-
-@media (max-width: 768px) {
-
-  .top.rental-detail-hero-section,
-  .rental-detail-layout {
-    width: min(100% - 1rem, var(--rental-container-width));
-  }
-
-  .rental-detail-hero {
-    min-height: 34rem;
-  }
-
-  .rental-detail-hero__content,
-  .top-info {
-    flex-direction: column;
-  }
-
-  .rental-detail-hero__main-info,
-  .main-info {
-    max-width: 100%;
-  }
-
-  .rental-detail-hero__actions {
-    justify-content: flex-start;
-  }
-
-  .rental-detail-hero__thumbs {
-    left: 1rem;
-    right: 1rem;
-    display: flex;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-  }
-
-  .rental-detail-hero__thumb-item {
-    width: 6rem;
-    flex: 0 0 auto;
-    scroll-snap-align: start;
-  }
-
-  .rental-detail-feature-grid,
-  .rental-detail-service-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .rental-detail-provider-card__header {
-    flex-direction: column;
-  }
-
-  .rental-detail-links-group,
-  .links-group {
-    grid-template-columns: 1fr;
-  }
-}
-
-
-
-
-
-
-
-:root,
-:host {
-  --rental-color-primary: #f2a35e;
-  --rental-color-primary-deep: #d98234;
-  --rental-color-primary-soft: #ffe4c9;
-  --rental-color-primary-faint: #fff7ef;
-
-  --rental-color-white: #ffffff;
-  --rental-color-text: #1f2933;
-  --rental-color-muted: #6f7782;
-  --rental-color-overlay: rgba(20, 18, 16, 0.28);
-
-  --rental-shadow-soft: 0 18px 48px rgba(70, 45, 22, 0.18);
-  --rental-shadow-card: 0 12px 30px rgba(49, 36, 24, 0.22);
-
-  --rental-radius-lg: 28px;
-  --rental-radius-md: 20px;
-  --rental-radius-sm: 14px;
-}
-
-.material-symbols-outlined {
-  font-variation-settings: "FILL" 0, "wght" 700, "GRAD" 0, "opsz" 24;
-}
-
-.top.rental-hero {
-  width: 100%;
-  overflow: hidden;
-}
-
-.rental-hero {
-  position: relative;
-
-  &__stage {
     position: relative;
-    width: 100%;
-    min-height: 100vh;
-    overflow: hidden;
-    isolation: isolate;
-    background: #111;
-  }
-
-  &__background {
-    position: absolute;
-    inset: 0;
-    z-index: -2;
-    overflow: hidden;
-  }
-
-  &__main-image {
-    width: 100%;
-    height: 100%;
-    min-height: 100vh;
-    object-fit: cover;
-    object-position: center;
-    transform: scale(1.08);
-    filter: saturate(1.04) contrast(1.03);
-    transition:
-      opacity 0.52s ease,
-      transform 1.4s cubic-bezier(0.19, 1, 0.22, 1),
-      filter 0.52s ease;
-    animation: rentalHeroFocusIn 1.1s cubic-bezier(0.19, 1, 0.22, 1) both;
-
-    &.is-changing {
-      opacity: 0.74;
-      transform: scale(1.14);
-      filter: blur(3px) saturate(1.08) contrast(1.06);
-    }
-  }
-
-  &__overlay {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background:
-      linear-gradient(90deg,
-        rgba(0, 0, 0, 0.46) 0%,
-        rgba(0, 0, 0, 0.2) 44%,
-        rgba(0, 0, 0, 0.22) 100%),
-      linear-gradient(0deg,
-        rgba(0, 0, 0, 0.42) 0%,
-        rgba(0, 0, 0, 0.03) 48%,
-        rgba(0, 0, 0, 0.18) 100%);
-    pointer-events: none;
-  }
-
-  &__info {
-    position: relative;
-    z-index: 2;
-    width: min(100%, 1440px);
-    margin-inline: auto;
-    padding: clamp(1.5rem, 4vw, 4rem);
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  &__main-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.65rem;
-    max-width: min(760px, 70vw);
-    color: var(--rental-color-white);
-    text-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-  }
-
-  &__title {
-    margin: 0;
-    font-size: clamp(2.4rem, 3vw, 5.8rem);
-    line-height: 0.95;
-    letter-spacing: 0.05em;
-    font-weight: 900;
-    mix-blend-mode: difference;
-    text-shadow: var(--text-shadow-on-image-strong);
-  }
-
-  &__location {
-    display: flex;
-    align-items: center;
-    gap: 0.55rem;
-    color: rgba(255, 255, 255, 0.92);
-  }
-
-  &__location-icon {
-    color: var(--rental-color-primary-soft);
-    font-size: 1.5rem;
-  }
-
-  &__address {
-    margin: 0;
-    font-size: clamp(0.95rem, 1.25vw, 1.125rem);
-    letter-spacing: 0.02em;
-  }
-
-  &__actions {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-  }
-
-  &__action-button {
-    appearance: none;
-    border: 1px solid rgba(255, 255, 255, 0.34);
-    background: rgba(255, 255, 255, 0.16);
-    color: var(--rental-color-white);
-    backdrop-filter: blur(14px);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    padding: 0.72rem 1rem;
-    border-radius: 999px;
-    cursor: pointer;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
-    transition:
-      transform 0.25s ease,
-      background-color 0.25s ease,
-      border-color 0.25s ease;
-
-    &:hover {
-      transform: translateY(-2px);
-      background: rgba(242, 163, 94, 0.28);
-      border-color: rgba(255, 228, 201, 0.7);
-    }
-  }
-
-  &__action-icon {
-    font-size: 1.25rem;
-  }
-
-  &__action-text {
-    margin: 0;
-    font-size: 0.95rem;
-    font-weight: 700;
-  }
-
-  /**
-   * 右下角縮圖範圍
-   * 這裡就是做出「限定顯示範圍 + overflow 裁切」的地方
-   */
-  &__thumb-area {
-    position: absolute;
-    z-index: 3;
-    right: -4em;
-    // right: clamp(1rem, 5vw, 5.5rem);
-    bottom: clamp(2rem, 7vw, 6.5rem);
-    width: min(720px, 58vw);
-    overflow: hidden;
-    padding-block: 1.2rem;
-    padding-left: 0;
-    padding-right: 1.2rem;
-    pointer-events: auto;
-  }
-
-  /**
-   * 外層裁切容器
-   * 縮圖往左拖曳或本身溢出時，左側會被切掉
-   */
-  &__thumb-viewport {
-    width: 100%;
-    overflow: hidden;
-    border-radius: var(--rental-radius-md);
-  }
-
-  &__thumb-swiper {
-    width: 100%;
-    overflow: visible;
-    padding: 0.3rem 0.4rem 0.7rem 0.4rem;
-  }
-
-  &__thumb-slide {
-    width: clamp(180px, 18vw, 300px);
-    height: clamp(130px, 13vw, 230px);
-  }
-
-  &__thumb-button {
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    border: 3px solid rgba(255, 255, 255, 0.72);
-    border-radius: 4px;
-    overflow: hidden;
-    cursor: pointer;
-    background: var(--rental-color-white);
-    // box-shadow: var(--rental-shadow-card);
-    transform: scale(0.96);
-    transition:
-      transform 0.28s ease,
-      border-color 0.28s ease,
-      box-shadow 0.28s ease,
-      opacity 0.28s ease;
-
-    &:hover {
-      transform: scale(1);
-      border-color: var(--rental-color-primary-soft);
-    }
-
-    &.is-active {
-      transform: scale(1);
-      border-color: var(--rental-color-primary);
-      box-shadow:
-        0 0 0 5px rgba(242, 163, 94, 0.25),
-        0 18px 46px rgba(49, 36, 24, 0.36);
-    }
-  }
-
-  &__thumb-image {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition:
-      transform 0.8s cubic-bezier(0.19, 1, 0.22, 1),
-      filter 0.28s ease;
-
-    .rental-hero__thumb-button:hover &,
-    .rental-hero__thumb-button.is-active & {
-      transform: scale(1.08);
-    }
-
-    .rental-hero__thumb-button:not(.is-active) & {
-      filter: saturate(0.84) brightness(0.94);
-    }
-  }
-}
-
-@keyframes rentalHeroFocusIn {
-  0% {
-    opacity: 0.78;
-    transform: scale(1.16);
-    filter: blur(4px) saturate(1.08);
-  }
-
-  100% {
-    opacity: 1;
-    transform: scale(1.08);
-    filter: blur(0) saturate(1.04) contrast(1.03);
-  }
-}
-
-@media (max-width: 1024px) {
-  .rental-hero {
-    &__thumb-area {
-      width: min(680px, 72vw);
-      right: 1.5rem;
-      bottom: 2rem;
-    }
-
-    &__thumb-slide {
-      width: 220px;
-      height: 160px;
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .rental-hero {
-    &__stage {
-      min-height: 92vh;
-    }
-
-    &__main-image {
-      min-height: 92vh;
-    }
-
-    &__info {
-      padding: 1.5rem;
-      flex-direction: column;
-    }
-
-    &__main-info {
-      max-width: 100%;
-    }
-
-    &__actions {
-      width: 100%;
-      justify-content: flex-start;
-    }
-
-    &__thumb-area {
-      left: 1rem;
-      right: auto;
-      bottom: 1.2rem;
-      width: calc(100% - 2rem);
-      padding-right: 0;
-    }
-
-    &__thumb-slide {
-      width: 190px;
-      height: 135px;
-    }
+    top: 0; /* 取消黏性固定 */
   }
 }

@@ -1,1 +1,170 @@
-<p>faqs-component works!</p>
+<div class="d-flex gap-2 mb-4 flex-wrap">
+
+  <!-- 全部 -->
+  <button class="btn" [class.btn-dark]="faqService.selectedCategoryId() === 0"
+    [class.btn-outline-dark]="faqService.selectedCategoryId() !== 0" (click)="changeCategory(0)">
+
+    全部
+
+    <span class="badge bg-secondary ms-1">
+      {{ faqService.faqItems().length }}
+    </span>
+
+  </button>
+
+  <!-- 分類 -->
+  @for(category of faqService.faqCategories(); track category.id){
+
+  <button class="btn" [class.btn-primary]="faqService.selectedCategoryId() === category.id"
+    [class.btn-outline-primary]="faqService.selectedCategoryId() !== category.id" (click)="changeCategory(category.id)">
+
+    {{ category.name }}
+
+    <span class="badge bg-light text-dark ms-1">
+      {{ faqService.faqCountMap().get(category.id) ?? 0 }}
+    </span>
+  </button>
+
+  }
+  <button class="btn btn-success mb-3" (click)="openAddModal()">
+
+    + 新增 FAQ
+
+  </button>
+
+</div>
+
+<!-- FAQ Items -->
+
+<div class="row g-3">
+
+  @for(item of faqService.filteredFAQItems(); track item.id){
+
+  <div class="col-12">
+
+    <div class="card shadow-sm">
+
+      <div class="card-body">
+
+        <div class="d-flex justify-content-between align-items-start">
+
+          <div>
+
+            <h5 class="fw-bold">
+              {{ item.question }}
+            </h5>
+
+            <p class="text-muted mb-0">
+              {{ item.answer }}
+            </p>
+
+          </div>
+
+          <div class="d-flex gap-2">
+
+            <button class="btn btn-sm btn-outline-warning" (click)="openEditModal(item)">
+              編輯
+            </button>
+
+            <button class="btn btn-sm btn-outline-danger" (click)="deleteFAQ(item.id)">
+              刪除
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  }
+
+</div>
+
+
+
+
+<div class="modal fade" id="faqModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ editMode() ? '編輯 FAQ' : '新增 FAQ' }}
+        </h5>
+
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- 分類 -->
+        <div class="mb-3">
+          <label class="form-label">分類</label>
+
+          <select class="form-select" [(ngModel)]="form.categoryId">
+
+            <option value="" disabled>請選擇分類</option>
+
+            @for(c of faqService.faqCategories(); track c.id){
+            <option [value]="c.id">
+              {{ c.name }}
+            </option>
+            }
+
+          </select>
+        </div>
+
+        <!-- 問題 -->
+        <div class="mb-3">
+          <label class="form-label">問題</label>
+          <input type="text" class="form-control" [(ngModel)]="form.question">
+        </div>
+
+        <!-- 答案 -->
+        <div class="mb-3">
+          <label class="form-label">答案</label>
+          <textarea class="form-control" rows="4" [(ngModel)]="form.answer">
+          </textarea>
+        </div>
+
+        <!-- 排序 -->
+        <div class="mb-3">
+          <label class="form-label">排序</label>
+          <input type="number" class="form-control" [(ngModel)]="form.sortorder">
+        </div>
+
+        <!-- 狀態 -->
+        <div class="form-check">
+
+          <input class="form-check-input" type="checkbox" [checked]="form.status === 1"
+            (change)="form.status = $any($event.target).checked ? 1 : 0">
+
+          <label class="form-check-label">
+            啟用
+          </label>
+
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
+          取消
+        </button>
+
+        <button class="btn btn-primary" (click)="saveFAQ()">
+
+          儲存
+
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+</div>

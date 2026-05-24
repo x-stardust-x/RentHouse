@@ -32,18 +32,18 @@
         <div class="rental-matching__option-group rental-matching__option-group--vertical">
           <label class="rental-matching__choice">
             <input class="rental-matching__choice-input" type="radio" name="category" value="all"
-              [checked]="selectedCategory() === 'all'" (change)="selectedCategory.set('all')"> <span
-              class="rental-matching__choice-text">不限</span>
+              [(ngModel)]="filters.category" (change)="applyFilters()">
+            <span class="rental-matching__choice-text">不限</span>
           </label>
           <label class="rental-matching__choice">
             <input class="rental-matching__choice-input" type="radio" name="category" value="room"
-              [checked]="selectedCategory() === 'room'" (change)="selectedCategory.set('room')"> <span
-              class="rental-matching__choice-text">房間出租</span>
+              [(ngModel)]="filters.category" (change)="applyFilters()">
+            <span class="rental-matching__choice-text">房間出租</span>
           </label>
           <label class="rental-matching__choice">
             <input class="rental-matching__choice-input" type="radio" name="category" value="product"
-              [checked]="selectedCategory() === 'product'" (change)="selectedCategory.set('product')"> <span
-              class="rental-matching__choice-text">工具 / 技能</span>
+              [(ngModel)]="filters.category" (change)="applyFilters()">
+            <span class="rental-matching__choice-text">工具 / 技能</span>
           </label>
         </div>
 
@@ -69,7 +69,8 @@
           <span class="material-symbols-outlined rental-matching__filter-icon">location_on</span>
           <h3 class="rental-matching__filter-title-text">地點</h3>
         </div>
-        <select class="rental-matching__select" name="city" id="city">
+        <select class="rental-matching__select" name="city" id="city" [(ngModel)]="filters.city"
+          (change)="applyFilters()">
           <option class="rental-matching__select-option" value="">選擇縣市</option>
           <option class="rental-matching__select-option" value="taipei">臺北市</option>
           <option class="rental-matching__select-option" value="new-taipei">新北市</option>
@@ -112,19 +113,19 @@
         <div class="range-slider rental-matching__range-slider">
 
           <span class="price-text min-price rental-matching__price-text rental-matching__price-text--min">{{
-            formatPrice(priceMin) }}元</span>
+            formatPrice(filters.priceMin) }}元</span>
 
           <mat-slider class="rental-matching__mat-slider" min="0" max="50000" step="1000">
             <input class="rental-matching__slider-thumb rental-matching__slider-thumb--start" matSliderStartThumb
-              [(ngModel)]="priceMin">
+              [(ngModel)]="filters.priceMin" (change)="applyFilters()">
             <input class="rental-matching__slider-thumb rental-matching__slider-thumb--end" matSliderEndThumb
-              [(ngModel)]="priceMax">
+              [(ngModel)]="filters.priceMax" (change)="applyFilters()">
             <!-- <input value="2000" matSliderStartThumb>
           <input value="22000" matSliderEndThumb> -->
           </mat-slider>
 
           <span class="price-text max-price rental-matching__price-text rental-matching__price-text--max">{{
-            formatPrice(priceMax) }}元</span>
+            formatPrice(filters.priceMax) }}元</span>
 
         </div>
       </div>
@@ -137,16 +138,19 @@
       </div>
 
       <div class="rental-matching__sort-options">
-        <button class="rental-matching__sort-button" type="button">由舊至新</button>
-        <button class="rental-matching__sort-button" type="button">由新至舊</button>
+        <button class="rental-matching__sort-button" type="button" [class.active]="filters.sortOrder === 'oldest'"
+          (click)="changeSortOrder('oldest')">由舊至新</button>
+
+        <button class="rental-matching__sort-button" type="button" [class.active]="filters.sortOrder === 'newest'"
+          (click)="changeSortOrder('newest')">由新至舊</button>
       </div>
 
 
       <!-- ========================= 以下選項只在【房屋出租】被選擇時顯示 ========================= -->
       <div class="rental-matching__room-filter-area">
 
-        <mat-slide-toggle class="rental-matching__smart-toggle" color="primary" [(ngModel)]="isSmartMatch"
-          (change)="onToggleChange()">
+        <mat-slide-toggle class="rental-matching__smart-toggle" color="primary" [(ngModel)]="filters.isSmartMatch"
+          (change)="applyFilters()"> <!-- 🟢 這裡改成 applyFilters() -->
           <span class="rental-matching__smart-toggle-text">依我的個人檔案自動配對<br class="rental-matching__line-break">(契合度 &gt;
             80%)</span>
         </mat-slide-toggle>
@@ -158,20 +162,25 @@
           </div>
 
           <div class="rental-matching__checkbox-row">
-            <input class="rental-matching__checkbox" type="checkbox" name="smoking" id="smoking">
+            <!-- 加入 (change) 綁定 -->
+            <input class="rental-matching__checkbox" type="checkbox" name="smoking" id="smoking"
+              (change)="toggleCheckbox('lifeStyle', '禁菸', $event)">
             <label class="rental-matching__checkbox-label" for="smoking">禁菸</label>
           </div>
 
           <div class="rental-matching__checkbox-row">
-            <input class="rental-matching__checkbox" type="checkbox" name="quiet" id="quiet">
+            <!-- 加入 (change) 綁定 -->
+            <input class="rental-matching__checkbox" type="checkbox" name="quiet" id="quiet"
+              (change)="toggleCheckbox('lifeStyle', '安靜', $event)">
             <label class="rental-matching__checkbox-label" for="quiet">安靜</label>
           </div>
 
           <div class="rental-matching__checkbox-row">
-            <input class="rental-matching__checkbox" type="checkbox" name="pets" id="pets">
+            <!-- 加入 (change) 綁定 -->
+            <input class="rental-matching__checkbox" type="checkbox" name="pets" id="pets"
+              (change)="toggleCheckbox('lifeStyle', '可養寵物', $event)">
             <label class="rental-matching__checkbox-label" for="pets">可養寵物</label>
           </div>
-
         </div>
 
 
@@ -208,17 +217,20 @@
 
                 <div class="rental-matching__advanced-options">
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" name="routine" id="routine_early">
+                    <input class="rental-matching__checkbox" type="checkbox" name="routine" id="routine_early"
+                      (change)="toggleCheckbox('routines', '早睡早起', $event)">
                     <label class="rental-matching__radio-label" for="routine_early">早睡早起</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" name="routine" id="routine_normal">
+                    <input class="rental-matching__checkbox" type="checkbox" name="routine" id="routine_normal"
+                      (change)="toggleCheckbox('routines', '正常作息', $event)">
                     <label class="rental-matching__radio-label" for="routine_normal">正常作息</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" name="routine" id="routine_night">
+                    <input class="rental-matching__checkbox" type="checkbox" name="routine" id="routine_night"
+                      (change)="toggleCheckbox('routines', '夜貓子', $event)">
                     <label class="rental-matching__radio-label" for="routine_night">夜貓子</label>
                   </div>
                 </div>
@@ -234,17 +246,20 @@
 
                 <div class="rental-matching__advanced-options">
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" name="showerRestriction" id="shower_none">
+                    <input class="rental-matching__checkbox" type="checkbox" name="showerRestriction" id="shower_none"
+                      (change)="toggleCheckbox('showerRestrictions', '無限制', $event)">
                     <label class="rental-matching__radio-label" for="shower_none">無限制</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" name="showerRestriction" id="shower_22">
+                    <input class="rental-matching__checkbox" type="checkbox" name="showerRestriction" id="shower_22"
+                      (change)="toggleCheckbox('showerRestrictions', '22:00後禁止', $event)">
                     <label class="rental-matching__radio-label" for="shower_22">22:00後禁止</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" name="showerRestriction" id="shower_23">
+                    <input class="rental-matching__checkbox" type="checkbox" name="showerRestriction" id="shower_23"
+                      (change)="toggleCheckbox('showerRestrictions', '23:00後禁止', $event)">
                     <label class="rental-matching__radio-label" for="shower_23">23:00後禁止</label>
                   </div>
                 </div>
@@ -260,18 +275,20 @@
 
                 <div class="rental-matching__advanced-options">
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" name="visitorPolicy" id="visitor_none">
+                    <input class="rental-matching__checkbox" type="checkbox" name="visitorPolicy" id="visitor_none"
+                      (change)="toggleCheckbox('visitorPolicies', '完全謝絕訪客', $event)">
                     <label class="rental-matching__radio-label" for="visitor_none">完全謝絕訪客</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" name="visitorPolicy" id="visitor_day">
+                    <input class="rental-matching__checkbox" type="checkbox" name="visitorPolicy" id="visitor_day"
+                      (change)="toggleCheckbox('visitorPolicies', '僅限白天拜訪', $event)">
                     <label class="rental-matching__radio-label" for="visitor_day">僅限白天拜訪</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" name="visitorPolicy"
-                      id="visitor_overnight">
+                    <input class="rental-matching__checkbox" type="checkbox" name="visitorPolicy" id="visitor_overnight"
+                      (change)="toggleCheckbox('visitorPolicies', '可帶異性或同性過夜', $event)">
                     <label class="rental-matching__radio-label" for="visitor_overnight">可帶異性或同性過夜</label>
                   </div>
                 </div>
@@ -287,17 +304,20 @@
 
                 <div class="rental-matching__advanced-options">
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" name="cooking" id="cooking_heavy">
+                    <input class="rental-matching__checkbox" type="checkbox" name="cooking" id="cooking_heavy"
+                      (change)="toggleCheckbox('cookingHabits', '可大火快炒', $event)">
                     <label class="rental-matching__radio-label" for="cooking_heavy">可大火快炒</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" name="cooking" id="cooking_light">
+                    <input class="rental-matching__checkbox" type="checkbox" name="cooking" id="cooking_light"
+                      (change)="toggleCheckbox('cookingHabits', '僅限輕食微波', $event)">
                     <label class="rental-matching__radio-label" for="cooking_light">僅限輕食微波</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" name="cooking" id="cooking_none">
+                    <input class="rental-matching__checkbox" type="checkbox" name="cooking" id="cooking_none"
+                      (change)="toggleCheckbox('cookingHabits', '禁開伙', $event)">
                     <label class="rental-matching__radio-label" for="cooking_none">禁開伙</label>
                   </div>
                 </div>
@@ -313,17 +333,20 @@
 
                 <div class="rental-matching__advanced-options">
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" name="fridge" id="fridge_layer">
+                    <input class="rental-matching__checkbox" type="checkbox" name="fridge" id="fridge_layer"
+                      (change)="toggleCheckbox('fridgeAllocations', '各自獨立分層', $event)">
                     <label class="rental-matching__radio-label" for="fridge_layer">各自獨立分層</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" name="fridge" id="fridge_label">
+                    <input class="rental-matching__checkbox" type="checkbox" name="fridge" id="fridge_label"
+                      (change)="toggleCheckbox('fridgeAllocations', '貼標籤即可', $event)">
                     <label class="rental-matching__radio-label" for="fridge_label">貼標籤即可</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" name="fridge" id="fridge_share">
+                    <input class="rental-matching__checkbox" type="checkbox" name="fridge" id="fridge_share"
+                      (change)="toggleCheckbox('fridgeAllocations', '共同分享', $event)">
                     <label class="rental-matching__radio-label" for="fridge_share">共同分享</label>
                   </div>
                 </div>
@@ -339,17 +362,20 @@
 
                 <div class="rental-matching__advanced-options">
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" name="interaction" id="interact_none">
+                    <input class="rental-matching__checkbox" type="checkbox" name="interaction" id="interact_none"
+                      (change)="toggleCheckbox('interactionFrequencies', '純租屋互不打擾', $event)">
                     <label class="rental-matching__radio-label" for="interact_none">純租屋互不打擾</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" name="interaction" id="interact_meal">
+                    <input class="rental-matching__checkbox" type="checkbox" name="interaction" id="interact_meal"
+                      (change)="toggleCheckbox('interactionFrequencies', '願意每週共餐聊天', $event)">
                     <label class="rental-matching__radio-label" for="interact_meal">願意每週共餐聊天</label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" name="interaction" id="interact_skill">
+                    <input class="rental-matching__checkbox" type="checkbox" name="interaction" id="interact_skill"
+                      (change)="toggleCheckbox('interactionFrequencies', '期待技能傳承交流', $event)">
                     <label class="rental-matching__radio-label" for="interact_skill">期待技能傳承交流</label>
                   </div>
                 </div>
@@ -407,18 +433,24 @@
 
     <div class="rental-matching__grid">
 
-      @for (item of displayedItems(); track item.displayType + '_' + item.id) {
+      @for (item of rentalItems(); track item.displayType + '_' + (item.id || item.Id)) {
 
       <div class="rental-item-card rental-matching__card">
         @if (item.displayType === 'room') {
         <img [src]="item.url || 'assets/default-house.jpg'" alt="{{ item.name }}"
           class="rental-item-image rental-matching__card-image">
         } @else {
-        <img src="assets/default-product.jpg" alt="{{ item.name }}"
+        <!-- <img src="assets/default-product.jpg" alt="{{ item.name }}"
+          class="rental-item-image rental-matching__card-image"> -->
+
+        <img [src]="item.url || 'assets/default-product.jpg'" alt="{{ item.name }}"
           class="rental-item-image rental-matching__card-image">
         }
 
         <div class="rental-matching__card-body">
+
+          <!-- <pre style="background: #333; color: #fff; padding: 10px; font-size: 12px;">{{ item | json }}</pre> -->
+
           <h2 class="rental-matching__card-title">{{ item.name }}</h2>
 
           @if (item.displayType === 'room') {
@@ -463,10 +495,12 @@
             }
           </div>
 
-          <button (click)="navigateToDetail(item.id, item.displayType)"
-            class="btn btn-primary rental-matching__detail-button">
+          <a [routerLink]="['/rental-matching-detail/', item.displayType, item.id]" target="_blank"
+            class="btn btn-primary rental-matching__detail-button"
+            style="text-align: center; display: block; text-decoration: none;">
             查看詳情
-          </button>
+          </a>
+
         </div>
       </div>
 

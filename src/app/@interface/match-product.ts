@@ -1,18 +1,5 @@
 export interface MatchProduct {
   productType: string;
-
-  // id: number;
-  // accountId?: number;
-  // // districtId?: number;
-  // name: string;
-  // // address: string;
-  // category: string;
-  // description: string;
-  // price: number;
-  // priceUnit: number;
-
-
-
   id: number;
   accountId: number;
   name: string;
@@ -27,4 +14,6 @@ export interface MatchProduct {
   requiredKnowledge?: string;
   imageUrl?: string;      // 預留圖片欄位
   address?: string;
+  usageRequirements?: string;
+  usageTerms?: string;
 }

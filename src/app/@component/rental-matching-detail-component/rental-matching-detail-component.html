@@ -193,17 +193,17 @@
 
       <div class="rental-detail-card rental-detail-tool-card">
         <h2 class="rental-detail-section-title">工具介紹</h2>
-        <p class="rental-detail-card-text">{{ detailData()?.description }}</p>
+        <p class="rental-detail-description">{{ detailData()?.description }}</p>
       </div>
 
       <div class="rental-detail-card rental-detail-tool-card">
-        <h2 class="rental-detail-section-title">使用門檻 / 條件</h2>
-        <!-- <p class="rental-detail-card-text">{{ detailData()?.description }}</p> -->
+        <h2 class="rental-detail-section-title">建議使用門檻 / 條件</h2>
+        <p class="rental-detail-description">{{ detailData()?.usageRequirements }}</p>
       </div>
 
       <div class="rental-detail-card rental-detail-tool-card">
         <h2 class="rental-detail-section-title">損壞賠償或使用須知</h2>
-        <!-- <p class="rental-detail-card-text">{{ detailData()?.description }}</p> -->
+        <p class="rental-detail-description">{{ detailData()?.usageTerms }}</p>
       </div>
 
       }

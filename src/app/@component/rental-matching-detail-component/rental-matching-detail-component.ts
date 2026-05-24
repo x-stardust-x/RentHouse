@@ -9,11 +9,12 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { register } from 'swiper/element/bundle'; // ✅ 保留元件註冊引入
 import { switchMap } from 'rxjs/operators';
 import { HouseFacilityService } from '../../@service/house-facility-service';
+import { RouterModule, Routes, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-rental-matching-detail-component',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule, RouterLink],
   templateUrl: './rental-matching-detail-component.html',
   styleUrl: './rental-matching-detail-component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA], // ✅ 這裡有開，<swiper-container> 就能完美運作

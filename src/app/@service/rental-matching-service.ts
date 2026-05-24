@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MatchProduct } from '../@interface/match-product';
+import { MatchFilter } from '../@interface/match-filter';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +21,16 @@ export class RentalMatchingService {
     //   this.rentalItemCount = data.rentalItemCount;
     // });
   }
+
+  searchRentals(filters: MatchFilter): Observable<any[]> {
+    // return this.http.post<any[]>(`${this.apiUrl}/RentalMatching/search`, filters);
+    return this.http.post<any[]>(`${this.apiUrl}/search`, filters);
+  }
+
+  // searchRentals(criteria: MatchFilter) {
+  //   // 假設您的後端 API 路徑是 /api/rentals/search
+  //   return this.http.post<MatchHouseDto[]>('/api/rentals/search', criteria);
+  // }
 
 
   // 1. 取得所有房屋資料

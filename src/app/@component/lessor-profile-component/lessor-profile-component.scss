@@ -1,0 +1,291 @@
+/* ==========================================================================
+   出租人公開主頁樣式 (Lessor Profile)
+   ========================================================================== */
+
+/* 1. 主容器 - 確保內容與全站對齊 */
+.profile-layout {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px 60px;
+  /* 底部留白 */
+  background-color: var(--color-bg-main);
+  min-height: 100vh;
+}
+
+/* 2. 滿版 Hero Banner (破版設計) */
+.hero-banner {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: -2.5rem;
+  /* 抵消公版 Padding */
+  margin-bottom: 40px;
+
+  height: 380px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+
+  /* 底部遮罩，確保頭像與文字清晰 */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(43, 39, 37, 0) 50%, rgba(43, 39, 37, 0.8) 100%);
+  }
+}
+
+.hero-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 20px 40px;
+  box-sizing: border-box;
+  z-index: 10;
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+
+  .avatar-img {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 4px solid var(--color-bg-card);
+    object-fit: cover;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .meta-info {
+    color: white;
+    margin-bottom: 5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+    .name-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      h1 {
+        margin: 0;
+        font-size: 2.25rem;
+      }
+    }
+
+    .titles {
+      font-size: 1.1rem;
+      opacity: 0.95;
+      margin: 8px 0 0;
+    }
+  }
+}
+
+/* 3. 狀態標籤 */
+.status-badge {
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  &.verified {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+  }
+
+  &.mentor {
+    background: var(--color-primary);
+    color: white;
+  }
+}
+
+/* 4. 主要網格佈局 (兩欄式) */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 40px;
+  align-items: start;
+}
+
+/* 5. 卡片與區塊通用樣式 */
+.info-section,
+.metrics-card {
+  background: var(--color-bg-card);
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  margin-bottom: 24px;
+}
+
+h2 {
+  color: var(--color-text-main);
+  font-size: 1.4rem;
+  margin-top: 0;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* 6. 數據統計區 */
+.metrics-card {
+  display: flex;
+  justify-content: space-around;
+
+  .metric {
+    text-align: center;
+
+    strong {
+      display: block;
+      font-size: 1.6rem;
+      color: var(--color-primary);
+    }
+
+    span {
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+    }
+  }
+}
+
+/* 7. 標籤區域 (習慣與興趣) */
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.habit-tag,
+.interest-tag {
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* 8. 房屋資源列表 */
+.resource-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.resource-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+  }
+
+  h3 {
+    padding: 12px 15px 0;
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .price {
+    padding: 5px 15px 15px;
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* 9. 評價區塊 */
+.review-card {
+  display: flex;
+  gap: 15px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--color-border);
+
+  .rev-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .rev-content {
+    h4 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .stars {
+      color: var(--color-primary);
+      font-size: 0.9rem;
+      margin: 5px 0;
+    }
+
+    .comment {
+      color: var(--color-text-muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+  }
+}
+
+/* 10. 右側 Sticky 側邊欄 */
+.sticky-box {
+  position: sticky;
+  top: 100px;
+  /* 避開 navbar 高度 */
+  background: var(--color-bg-card);
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  text-align: center;
+
+  button {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    margin-top: 15px;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-msg {
+    background: var(--color-primary);
+    color: white;
+  }
+
+  .btn-msg:hover {
+    background: var(--color-primary-hover);
+  }
+
+  .btn-call {
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+  }
+}
+
+/* 11. 手機響應式處理 */
+@media (max-width: 768px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-banner {
+    height: 250px;
+  }
+
+  .hero-container {
+    padding-bottom: 20px;
+  }
+}

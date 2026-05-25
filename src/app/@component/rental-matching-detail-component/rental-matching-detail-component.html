@@ -413,7 +413,7 @@
 
       <p class="rental-detail-provider-card__bio">{{ detailData()?.bio || '尚未提供個人介紹' }}</p>
 
-      <a class="rental-detail-outline-link" href="#">查看完整個人檔案</a>
+      <a class="rental-detail-outline-link" [routerLink]="['/lessor-profile', detailData()?.accountId]" target="_blank">查看完整個人檔案</a>
 
     </div>
 

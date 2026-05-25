@@ -53,6 +53,11 @@ export class RentalMatchingService {
     return this.http.get<any>(`${this.apiUrl}/RentProduct/${id}`); // 確保網址與後端對齊
   }
 
+  //
+  getLessorProfile(accountId: number): Observable<any> {
+    const userUrl = 'https://localhost:7215/api/User/';
+    return this.http.get<any>(userUrl + `public-profile/${accountId}`);
+  }
 
   // // 取得全部上架房屋
   // getRentals(): Observable<MatchHouseDto[]> {

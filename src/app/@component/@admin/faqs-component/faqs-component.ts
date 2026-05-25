@@ -21,7 +21,7 @@ export class FAQsComponent {
     categoryId: 0,
     question: '',
     answer: '',
-    sortorder: 0,
+    sortOrder: 0,
     status: 0
   };
 
@@ -44,7 +44,7 @@ export class FAQsComponent {
       categoryId: item.categoryId,
       question: item.question,
       answer: item.answer,
-      sortorder: item.sortorder,
+      sortOrder: item.sortOrder,
       status: item.status
     };
 
@@ -58,7 +58,7 @@ export class FAQsComponent {
       categoryId: 0,
       question: '',
       answer: '',
-      sortorder: 0,
+      sortOrder: 0,
       status: 0
     };
 

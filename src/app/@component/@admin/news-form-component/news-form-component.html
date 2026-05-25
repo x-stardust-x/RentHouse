@@ -1,139 +1,216 @@
-<section class="container py-4">
+<section class="container-fluid py-4 news-editor">
 
-  <div class="d-flex justify-content-between align-items-center mb-4">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-    <div>
-      @if (isEdit) {
-      <h2 class="mb-1">修改最新消息</h2>
-      <p class="text-muted mb-0">
-        編輯新聞內容與 SEO 資訊
-      </p>
-      } @else {
-      <h2 class="mb-1">新增最新消息</h2>
-      }
-    </div>
+    <div class="row g-4">
 
-    <button class="btn btn-outline-secondary" routerLink="/admin/news">
-      返回列表
-    </button>
+      <!-- 左側 -->
+      <div class="col-lg-8">
 
-  </div>
+        <!-- 基本資訊 -->
+        <div class="editor-card p-4 mb-4">
 
-  <div class="card shadow-sm border-0">
+          <label class="form-label small-title">文章標題</label>
 
-    <div class="card-body">
+          <input
+            type="text"
+            class="form-control custom-input title-input"
+            formControlName="title"
+            placeholder="請輸入文章標題"
+          >
 
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="row g-3 mt-1">
 
-        <div class="row g-3">
+            <!-- 分類 -->
+            <div class="col-md-6">
 
-          <!-- 圖片 -->
-          <div class="col-12">
+              <label class="form-label small-title">分類選擇</label>
 
-            <label class="form-label">封面圖片</label>
-
-            <input type="file" class="form-control" accept="image/*" (change)="onFileChange($event)">
-
-          </div>
-
-          <!-- 預覽 -->
-          @if (imagePreview()) {
-
-          <div class="col-12">
-
-            <div class="card border-0 shadow-sm overflow-hidden">
-
-              <img [src]="imagePreview()" class="img-fluid rounded" style="max-height: 150px; object-fit: cover;">
+              <select class="form-select custom-input" formControlName="category">
+                <option value="平台公告">平台公告</option>
+                <option value="共居導覽">共居導覽</option>
+                <option value="會員故事">會員故事</option>
+              </select>
 
             </div>
 
           </div>
 
-          }
-
-          <!-- 分類 -->
-          <div class="col-md-6">
-            <label class="form-label">分類</label>
-
-            <select class="form-select" formControlName="category">
-
-              <option value="平台公告">平台公告</option>
-              <option value="共居導覽">共居導覽</option>
-              <option value="會員故事">會員故事</option>
-
-            </select>
-          </div>
-
-          <!-- 狀態 -->
-          <div class="col-md-6">
-            <label class="form-label">狀態</label>
-
-            <select class="form-select" formControlName="status">
-
-              <option [value]="0">草稿</option>
-              <option [value]="1">已發布</option>
-
-            </select>
-          </div>
-
-          <!-- 標題 -->
-          <div class="col-12">
-            <label class="form-label">文章標題</label>
-
-            <input type="text" class="form-control" formControlName="title">
-          </div>
-
-          <!-- 前言 -->
-          <div class="col-12">
-            <label class="form-label">文章前言</label>
-
-            <textarea class="form-control" rows="3" formControlName="intro"></textarea>
-          </div>
-
-          <!-- 內文 -->
-          <div class="col-12">
-            <label class="form-label">文章內容</label>
-
-            <textarea class="form-control" rows="8" formControlName="content"></textarea>
-          </div>
-
-          <!-- SEO Title -->
-          <div class="col-12">
-            <label class="form-label">SEO 標題</label>
-
-            <input type="text" class="form-control" formControlName="seoTitle">
-          </div>
-
-          <!-- SEO Desc -->
-          <div class="col-12">
-            <label class="form-label">SEO 描述</label>
-
-            <textarea class="form-control" rows="3" formControlName="seoDesc"></textarea>
-          </div>
-
         </div>
 
-        <!-- 按鈕 -->
-        <div class="d-flex justify-content-end gap-2 mt-4">
+        <!-- 封面圖片 -->
+        <div class="editor-card p-4 mb-4">
 
-          <button type="button" class="btn btn-outline-secondary" routerLink="/admin/news">
-            取消
-          </button>
+          <label class="form-label small-title mb-3">封面圖片</label>
 
-          <button type="submit" class="btn btn-primary">
-            @if (isEdit) {
-            儲存修改
+          <label class="upload-box">
+
+            <input
+              type="file"
+              accept="image/*"
+              hidden
+              (change)="onFileChange($event)"
+            >
+
+            @if (imagePreview()) {
+
+            <img
+              [src]="imagePreview()"
+              class="preview-img"
+            >
+
             } @else {
-            新增消息
+
+            <div class="upload-content">
+              <i class="bi bi-cloud-arrow-up"></i>
+              <p class="mb-1">點擊或拖曳圖片至此上傳</p>
+              <small>建議尺寸 1200 x 630 px</small>
+            </div>
+
             }
-          </button>
+
+          </label>
 
         </div>
 
-      </form>
+        <!-- 文章前言 -->
+        <div class="editor-card p-4 mb-4">
+
+          <label class="form-label small-title">文章前言</label>
+
+          <textarea
+            rows="4"
+            class="form-control custom-textarea"
+            formControlName="intro"
+            placeholder="請輸入文章前言..."
+          ></textarea>
+
+        </div>
+
+        <!-- 文章內容 -->
+        <div class="editor-card p-4">
+
+          <label class="form-label small-title">文章內容</label>
+
+          <textarea
+            rows="12"
+            class="form-control custom-textarea"
+            formControlName="content"
+            placeholder="在此繼續撰寫您的精彩內容..."
+          ></textarea>
+
+        </div>
+
+      </div>
+
+      <!-- 右側 -->
+      <div class="col-lg-4">
+
+        <!-- 發佈 -->
+        <div class="editor-card p-4 mb-4">
+
+          <h5 class="side-title">發布動作</h5>
+
+          <div class="d-grid gap-3 mt-4">
+
+            <!-- <button
+              type="button"
+              class="btn btn-light custom-btn"
+            >
+              儲存草稿
+            </button> -->
+
+            <button
+              type="submit"
+              class="btn publish-btn"
+            >
+              @if (isEdit) {
+                儲存修改
+              } @else {
+                立即發布
+              }
+            </button>
+
+          </div>
+
+        </div>
+
+        <!-- 狀態 -->
+        <div class="editor-card p-4 mb-4">
+
+          <h5 class="side-title">文章狀態</h5>
+
+          <div class="mt-3">
+
+            <div class="form-check status-radio">
+              <input
+                class="form-check-input"
+                type="radio"
+                [value]="0"
+                formControlName="status"
+                id="draft"
+              >
+
+              <label class="form-check-label" for="draft">
+                草稿
+              </label>
+            </div>
+
+            <div class="form-check status-radio mt-3">
+              <input
+                class="form-check-input"
+                type="radio"
+                [value]="1"
+                formControlName="status"
+                id="publish"
+              >
+
+              <label class="form-check-label" for="publish">
+                已發布
+              </label>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- SEO -->
+        <div class="editor-card p-4">
+
+          <h5 class="side-title">搜尋引擎最佳化 (SEO)</h5>
+
+          <div class="mt-4">
+
+            <label class="form-label small-title">Meta 標題</label>
+
+            <input
+              type="text"
+              class="form-control custom-input"
+              formControlName="seoTitle"
+              placeholder="留空將自動使用文章標題"
+            >
+
+          </div>
+
+          <div class="mt-4">
+
+            <label class="form-label small-title">Meta 描述</label>
+
+            <textarea
+              rows="5"
+              class="form-control custom-textarea"
+              formControlName="seoDesc"
+              placeholder="為搜尋引擎提供一段簡短吸引人的文章摘要..."
+            ></textarea>
+
+          </div>
+
+        </div>
+
+      </div>
 
     </div>
 
-  </div>
+  </form>
 
 </section>

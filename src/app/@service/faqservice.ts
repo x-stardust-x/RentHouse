@@ -53,7 +53,6 @@ export class FAQService {
   getFAQCategories() {
     this.http.get<FAQ_C[]>(this.baseUrl + 'categories').subscribe(res => {
       this.faqCategories.set(res);
-      this.faqItems.set([]); // 每次切換分類都清空 FAQ 項目，避免顯示錯誤的資料
     })
   }
 

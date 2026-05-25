@@ -10,7 +10,7 @@ export interface FAQ_I {
   categoryId : number;
   question : string;
   answer : string;
-  sortorder : number;
+  sortOrder : number;
   status : number;
   viewCount : number;
   CreatedAt : Date;
@@ -21,6 +21,6 @@ export interface FAQ_IDto{
   categoryId : number;
   question : string;
   answer : string;
-  sortorder : number;
+  sortOrder : number;
   status : number;
 }

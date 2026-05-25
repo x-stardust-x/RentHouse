@@ -1,5 +1,5 @@
 <div class="member-list">
-
+  <h2>使用者管理</h2>
   @for(user of userservice.users(); track user.id){
 
     <div class="member-card">
@@ -19,7 +19,7 @@
       <div class="member-info">
 
         <div class="top-row">
-          <h5>{{ user.realName }}</h5>
+          <h5>{{ user.realName == null ? '暫無名子' : user.realName }}</h5>
 
           <span class="time">
             註冊 {{ user.createAt | date:'yyyy-MM-dd' }}

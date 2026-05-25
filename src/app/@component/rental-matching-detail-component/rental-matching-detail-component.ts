@@ -10,16 +10,21 @@ import { register } from 'swiper/element/bundle'; // ✅ 保留元件註冊引�
 import { switchMap } from 'rxjs/operators';
 import { HouseFacilityService } from '../../@service/house-facility-service';
 import { RouterModule, Routes, RouterLink } from '@angular/router';
+import { faLine } from '@fortawesome/free-brands-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 
 @Component({
   selector: 'app-rental-matching-detail-component',
   standalone: true,
-  imports: [CommonModule, RouterModule, RouterLink],
+  imports: [CommonModule, RouterModule, RouterLink, FontAwesomeModule],
   templateUrl: './rental-matching-detail-component.html',
   styleUrl: './rental-matching-detail-component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA], // ✅ 這裡有開，<swiper-container> 就能完美運作
+
 })
 export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
+  faLine = faLine;
 
   // 1. 定義圖示對應 (跟之前一樣)
   readonly HABIT_ICONS: { [key: string]: string } = {

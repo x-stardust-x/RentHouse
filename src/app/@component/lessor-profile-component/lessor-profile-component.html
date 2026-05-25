@@ -40,30 +40,29 @@
       <section class="info-section">
         <h2>生活習慣與偏好</h2>
         @if (profile.userHabit; as habit) {
-          <div class="tags-container">
+        <div class="tags-container">
 
-            @if (!habit.smoke) {
-            <span class="habit-tag">🚭 無菸環境</span>
-            }
+          @if (!habit.smoke) {
+          <span class="habit-tag">🚭 無菸環境</span>
+          }
 
-            @if (habit.sleepTime && +habit.sleepTime.split(':')[0] >= 21 && +habit.sleepTime.split(':')[0] <= 23) {
-            <span class="habit-tag">🌙 早睡早起</span>
+          @if (habit.sleepTime && +habit.sleepTime.split(':')[0] >= 21 && +habit.sleepTime.split(':')[0] <= 23) { <span
+            class="habit-tag">🌙 早睡早起</span>
             }
 
             @if (habit.pet) {
             <span class="habit-tag">🐾 寵物友善</span>
             }
 
-            @if (habit.noiseTolerance <= 2) {
-            <span class="habit-tag">🤫 寧靜空間</span>
-            }
+            @if (habit.noiseTolerance <= 2) { <span class="habit-tag">🤫 寧靜空間</span>
+              }
 
-            @for (interest of getInterestsArray(habit.interests); track interest) {
-            <span class="interest-tag"># {{ interest }}</span>
-            }
-          </div>
+              @for (interest of getInterestsArray(habit.interests); track interest) {
+              <span class="interest-tag"># {{ interest }}</span>
+              }
+        </div>
         } @else {
-          <p class="empty-msg">此會員尚未填寫生活習慣。</p>
+        <p class="empty-msg">此會員尚未填寫生活習慣。</p>
         }
       </section>
 
@@ -71,7 +70,7 @@
         <h2>目前提供的空間與資源</h2>
         <div class="resource-list">
           @for (house of profile.activeHouses; track house.id) {
-          <div class="resource-card" [routerLink]="['/rental-matching/detail', house.id]">
+          <div class="resource-card" [routerLink]="['/rental-matching-detail', house.displayType || 'room', house.id]">
             <img [src]="house.mainImageUrl || 'assets/default-house.jpg'">
             <h3>{{ house.name }}</h3>
             <p class="price">NT$ {{ house.rentPrice | number }} / 月</p>

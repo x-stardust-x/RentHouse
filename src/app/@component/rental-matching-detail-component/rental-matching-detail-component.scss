@@ -138,6 +138,7 @@
     border-color: #FFFFFF;
 
     .rental-hero__action-icon {
+
       /* 收藏按鈕移過去變紅色，分享變橘色 */
       &.favorites {
         color: #E05353;
@@ -239,7 +240,7 @@
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .rental-detail-section-title {
@@ -351,9 +352,17 @@
   color: #FFFFFF;
   flex-shrink: 0;
 
-  &--youth { background-color: #79948D; }
-  &--elder { background-color: var(--color-primary, #E66F43); }
-  &--partner { background-color: #A88D78; }
+  &--youth {
+    background-color: #79948D;
+  }
+
+  &--elder {
+    background-color: var(--color-primary, #E66F43);
+  }
+
+  &--partner {
+    background-color: #A88D78;
+  }
 }
 
 .review-card__meta {
@@ -380,9 +389,20 @@
   padding: 0.1rem 0.4rem;
   border-radius: 4px;
 
-  &--youth { background-color: #EBF2F0; color: #4A6B62; }
-  &--elder { background-color: #FDF1EC; color: var(--color-primary, #E66F43); }
-  &--partner { background-color: #F4EFEA; color: #7A5F49; }
+  &--youth {
+    background-color: #EBF2F0;
+    color: #4A6B62;
+  }
+
+  &--elder {
+    background-color: #FDF1EC;
+    color: var(--color-primary, #E66F43);
+  }
+
+  &--partner {
+    background-color: #F4EFEA;
+    color: #7A5F49;
+  }
 }
 
 .review-card__rating {
@@ -706,7 +726,7 @@
 }
 
 .rental-detail-button {
-  display: block;
+  display: flex;
   text-align: center;
   padding: 0.85rem;
   font-size: 1rem;
@@ -714,6 +734,21 @@
   border-radius: var(--radius-md);
   text-decoration: none;
   transition: all 0.2s ease;
+  align-items: center;
+  justify-content: center;
+
+  .material-symbols-outlined,
+  .ng-fa-icon {
+    /* 核心邏輯：強制 icon 使用該元素的文字顏色 */
+    color: currentColor;
+
+    /* 調整 icon 與文字的間距，這是細節設計師的標配 */
+    margin-right: 8px;
+
+    /* 確保 icon 不會因為字體大小變化而歪掉 */
+    vertical-align: middle;
+    font-size: 1.25rem;
+  }
 }
 
 .rental-detail-button--primary {

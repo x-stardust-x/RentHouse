@@ -70,6 +70,12 @@ export const routes: Routes = [
         loadComponent: () => import('./@component/rental-matching-detail-component/rental-matching-detail-component').then(c => c.RentalMatchingDetailComponent),
       },
 
+      // 出租人個人公開主頁
+      {
+        path: 'lessor-profile/:id',
+        loadComponent: () => import('./@component/lessor-profile-component/lessor-profile-component').then(c => c.LessorProfileComponent),
+      },
+
       // 租屋管理
       {
         path: 'rent',

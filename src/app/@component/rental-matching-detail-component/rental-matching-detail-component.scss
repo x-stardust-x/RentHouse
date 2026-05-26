@@ -1,42 +1,825 @@
-.star-rating-wrapper {
+@import 'swiper/css';
+
+/* ==========================================================================
+   1. 頂部滿版大圖輪播區 (Full-Bleed Hero Stage)
+   打破外層 1400px 限制，強行拉開至螢幕 100% 寬度
+   ========================================================================== */
+
+.rental-hero {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+
+  /* 往上推抵消公版 padding-top: 2.5rem，完美無縫卡在 Header 下方 */
+  margin-top: -2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.rental-hero__stage {
+  position: relative;
+  width: 100%;
+  height: 520px;
+  /* 黃金比例大圖高度 */
+  // overflow: hidden;
+  background-color: #2B2725;
+}
+
+/* 背景主圖與磨砂/漸層遮罩 */
+.rental-hero__background {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.rental-hero__main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.4s ease-in-out, transform 0.4s ease;
+
+  &.is-changing {
+    opacity: 0.6;
+    transform: scale(1.02);
+  }
+}
+
+/* 下重上輕的深色漸層，確保白色文字 100% 可讀 */
+.rental-hero__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom,
+      rgba(43, 39, 37, 0.1) 0%,
+      rgba(43, 39, 37, 0.3) 50%,
+      rgba(43, 39, 37, 0.8) 100%);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   2. Hero 區文字資訊與動作按鈕 (浮動於大圖上)
+   ========================================================================== */
+.rental-hero__info {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1400px;
+  /* 寬度對齊全站設計稿 */
+  padding: 0 2rem;
+  box-sizing: border-box;
+  z-index: 10;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.rental-hero__main-info {
+  color: #FFFFFF;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  flex: 1;
+  padding-right: 2rem;
+}
+
+.rental-hero__title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin: 0 0 0.75rem 0;
+  letter-spacing: 0.5px;
+  line-height: 1.3;
+}
+
+.rental-hero__location {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 1.2rem;
+  gap: 0.4rem;
 }
 
-.star-rating {
+.rental-hero__location-icon {
+  color: var(--color-primary);
+  /* 精緻的焦糖橘地標 */
+  font-size: 1.3rem !important;
+}
+
+.rental-hero__address {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+  opacity: 0.95;
+}
+
+/* 分享與收藏按鈕 (輕量化毛玻璃質感) */
+.rental-hero__actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.rental-hero__action-button {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--color-text-main);
+    border-color: #FFFFFF;
+
+    .rental-hero__action-icon {
+
+      /* 收藏按鈕移過去變紅色，分享變橘色 */
+      &.favorites {
+        color: #E05353;
+      }
+    }
+  }
+}
+
+.rental-hero__action-icon {
+  font-size: 1.15rem !important;
+}
+
+.rental-hero__action-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* ==========================================================================
+   3. 右下角 Swiper 縮圖輪播區 (浮動於大圖上)
+   ========================================================================== */
+.rental-hero__thumb-area {
+  position: absolute;
+  right: max(2rem, calc((100vw - 1400px) / 2 + 2rem));
+  /* 完美對齊右側邊界 */
+  top: 2.5rem;
+  z-index: 20;
+  width: 320px;
+  background: rgba(43, 39, 37, 0.4);
+  backdrop-filter: blur(12px);
+  padding: 0.75rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rental-hero__thumb-viewport {
+  width: 100%;
+}
+
+.rental-hero__thumb-slide {
+  width: 75px !important;
+  /* 固定縮圖寬度 */
+}
+
+.rental-hero__thumb-button {
+  background: none;
+  border: 2px solid transparent;
+  padding: 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  cursor: pointer;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: block;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &.is-active {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 12px rgba(230, 111, 67, 0.5);
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+.rental-hero__thumb-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ==========================================================================
+   4. 下方詳細資訊雙欄佈局 (Detail Main Layout)
+   ========================================================================== */
+.rental-detail-layout {
+  display: grid;
+  /* 💥 終極修正：將 1fr 改為 minmax(0, 1fr)，死死鎖住左側欄寬度，防止被輪播撐開 */
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 2.5rem;
+  align-items: start;
+  font-family: sans-serif;
+}
+
+/* 通用細緻卡片 */
+.rental-detail-card {
+  // background-color: var(--color-bg-card);
+  // border: 1px solid var(--color-border);
+  // border-radius: var(--radius-lg);
+  // padding: 2rem;
+  // margin-bottom: 2rem;
+  // box-shadow: 0 4px 20px rgba(43, 39, 37, 0.01);
+
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.rental-detail-section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin: 0 0 1.25rem 0;
   position: relative;
-  display: inline-flex;
-  // display: inline-block;
-  letter-spacing: 2px; // 讓星星之間有一點間距
-  font-family: Times; // 確保星號渲染一致
-  line-height: 1;
+  padding-left: 0.75rem;
 
-  .stars-empty {
-    color: #e0e0e0; // 灰色底星
-    display: flex;
-  }
-
-  .stars-filled {
+  /* 標題小左線襯托質感 */
+  &::before {
+    content: '';
     position: absolute;
-    top: 0;
     left: 0;
-    color: #ffca08; // 金色實星
-    display: flex;
-    width: 0;
-    white-space: nowrap;
-    overflow: hidden; // 👈 這是關鍵：超出寬度的部分會被切掉
-    transition: width 0.5s ease-out; // 增加一點動態效果
+    top: 4px;
+    bottom: 4px;
+    width: 4px;
+    background-color: var(--color-primary);
+    border-radius: 2px;
   }
 }
 
-// .rating-number {
-//   font-weight: bold;
-//   color: #333;
-// }
 
-// .review-count {
-//   color: #666;
-//   font-size: 0.9rem;
-// }
+
+/* ==========================================================================
+   5. 厚厝味：詳情頁評價區塊樣式 (雙重破防：解除 Grid 撐開 + 穿透 Angular 隔離)
+   ========================================================================== */
+
+.rental-detail-intro-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* 使用 ::ng-deep 確保樣式能順利套用到 Swiper 動態產生的 DOM 上 */
+:host ::ng-deep {
+  .rental-detail-reviews-list.swiper {
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+    overflow: hidden;
+    padding: 0.5rem 0.25rem 2rem 0.25rem;
+    box-sizing: border-box;
+  }
+
+  /* 確保每張評價卡片（Slide） */
+  .review-card.swiper-slide {
+    width: 380px !important;
+    flex-shrink: 0 !important;
+
+    /* 💥 新增：當進入手機版窄螢幕時，卡片寬度改為 100%，才不會把外層防線擠破 */
+    @media (max-width: 480px) {
+      width: 100% !important;
+    }
+  }
+
+  /* 客製化分頁小圓點顏色 */
+  .swiper-pagination-bullet-active {
+    background: var(--color-primary, #E66F43) !important;
+    width: 12px;
+    border-radius: 4px;
+  }
+}
+
+/* 評價單一卡片樣式維持 */
+.review-card {
+  width: 380px;
+  flex-shrink: 0;
+  position: relative;
+  transition-property: transform;
+
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border, #EAE4DE);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(43, 39, 37, 0.02);
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(43, 39, 37, 0.06);
+  }
+}
+
+/* --- 卡片內部細節樣式 --- */
+.review-card__header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.review-card__avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  flex-shrink: 0;
+
+  &--youth {
+    background-color: #79948D;
+  }
+
+  &--elder {
+    background-color: var(--color-primary, #E66F43);
+  }
+
+  &--partner {
+    background-color: #A88D78;
+  }
+}
+
+.review-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.review-card__user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.review-card__name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-main, #2B2725);
+}
+
+.review-card__badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+
+  &--youth {
+    background-color: #EBF2F0;
+    color: #4A6B62;
+  }
+
+  &--elder {
+    background-color: #FDF1EC;
+    color: var(--color-primary, #E66F43);
+  }
+
+  &--partner {
+    background-color: #F4EFEA;
+    color: #7A5F49;
+  }
+}
+
+.review-card__rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .stars {
+    color: #F5A623;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+  }
+}
+
+.review-card__date {
+  font-size: 0.8rem;
+  color: var(--color-text-muted, #8E8680);
+}
+
+.review-card__comment {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--color-text-main, #2B2725);
+  margin: 0;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 客製化 Swiper 的分頁小圓點顏色 */
+:host ::ng-deep .swiper-pagination-bullet-active {
+  background: var(--color-primary, #E66F43) !important;
+}
+
+/* ==========================================================================
+   6. 內文與其它細節樣式
+   ========================================================================== */
+
+/* 內文描述 */
+.rental-detail-description {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #4A4542;
+  white-space: pre-line;
+  /* 保留資料庫撈出來的換行 */
+}
+
+/* 特色膠囊標籤網格 (生活習慣、Wifi等) */
+.rental-detail-feature-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.rental-detail-feature-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  border: 1px solid rgba(230, 111, 67, 0.1);
+}
+
+.rental-detail-feature-pill__icon {
+  font-size: 1.2rem !important;
+}
+
+.rental-detail-feature-pill__text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* 地圖區塊 */
+.rental-detail-map-address {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  margin: 0 0 1rem 0;
+}
+
+.rental-detail-map-frame {
+  width: 100%;
+  height: 350px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+/* ==========================================================================
+   7. 右側側邊欄：出租人卡片 & 黏性預訂面板
+   ========================================================================== */
+.rental-detail-side-column {
+  position: sticky;
+  top: 96px;
+  /* 隨著頁面滾動時，卡片會優雅黏定在右側 */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 出租人/提供者名片 */
+.rental-detail-provider-card {
+  padding: 1.5rem;
+  margin-bottom: 0;
+  /* 覆蓋通用 margin */
+}
+
+.rental-detail-provider-card__header {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.rental-detail-provider-card__avatar-wrap {
+  position: relative;
+}
+
+.rental-detail-provider-card__avatar-frame {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--color-border);
+}
+
+.rental-detail-provider-card__avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 已驗證藍勾勾 */
+.rental-detail-provider-card__verified-badge {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #3A7D6F;
+  color: #FFFFFF;
+  padding: 0.1rem 0.4rem;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.rental-detail-provider-card__verified-icon {
+  font-size: 0.8rem !important;
+}
+
+.rental-detail-provider-card__verified-text {
+  font-size: 0.65rem;
+  font-weight: 700;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.rental-detail-provider-card__info {
+  flex: 1;
+}
+
+.rental-detail-provider-card__name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin: 0 0 0.25rem 0;
+}
+
+.rental-detail-provider-card__role {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin: 0 0 0.5rem 0;
+}
+
+/* 精緻滿星評分系統 */
+.rental-detail-rating-row {
+  display: inline-block;
+  margin-bottom: 0.25rem;
+}
+
+.rental-detail-star-rating-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.rental-detail-rating-score {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #FFB100;
+  margin: 0;
+}
+
+.rental-detail-star-rating {
+  position: relative;
+  display: inline-block;
+  color: #EAE4DE;
+}
+
+.rental-detail-stars {
+  display: flex;
+}
+
+.rental-detail-star-icon {
+  font-size: 1.1rem !important;
+  font-variant: initial;
+}
+
+.rental-detail-stars--filled {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  color: #FFB100;
+  white-space: nowrap;
+}
+
+.rental-detail-review-count {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.rental-detail-provider-card__bio {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #655E5A;
+  margin: 0 0 1rem 0;
+}
+
+.rental-detail-outline-link {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-decoration: none;
+  display: inline-block;
+  transition: color 0.2s;
+
+  &:hover {
+    color: var(--color-primary-hover);
+    text-decoration: underline;
+  }
+}
+
+/* 預訂交易面板卡片 */
+.rental-detail-booking-card {
+  padding: 1.75rem;
+  margin-bottom: 0;
+}
+
+.rental-detail-price {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: baseline;
+}
+
+.rental-detail-price__number {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  margin: 0 0.2rem;
+}
+
+.rental-detail-price__unit {
+  font-size: 0.9rem;
+}
+
+.rental-detail-included-fees {
+  font-size: 0.85rem;
+  color: #3A7D6F;
+  background-color: #EDF6F4;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  margin: 0 0 1.25rem 0;
+  font-weight: 600;
+}
+
+.rental-detail-booking-note {
+  font-size: 0.9rem;
+  color: var(--color-text-main);
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+}
+
+/* 下拉選單客製化 */
+.rental-detail-period-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-main);
+  color: var(--color-text-main);
+  font-size: 0.95rem;
+  outline: none;
+  cursor: pointer;
+  margin-bottom: 1.25rem;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: var(--color-primary);
+  }
+}
+
+/* 按鈕群組 */
+.rental-detail-links-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.rental-detail-button {
+  display: flex;
+  text-align: center;
+  padding: 0.85rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  align-items: center;
+  justify-content: center;
+
+  .material-symbols-outlined,
+  .ng-fa-icon {
+    /* 核心邏輯：強制 icon 使用該元素的文字顏色 */
+    color: currentColor;
+
+    /* 調整 icon 與文字的間距，這是細節設計師的標配 */
+    margin-right: 8px;
+
+    /* 確保 icon 不會因為字體大小變化而歪掉 */
+    vertical-align: middle;
+    font-size: 1.25rem;
+  }
+}
+
+.rental-detail-button--primary {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(230, 111, 67, 0.15);
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+    box-shadow: 0 6px 16px rgba(230, 111, 67, 0.25);
+  }
+}
+
+.rental-detail-button--secondary {
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-main);
+
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background-color: var(--color-primary-light);
+  }
+}
+
+.rental-detail-free-note {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  margin: 0;
+}
+
+/* ==========================================================================
+   8. 響應式斷點 (RWD)
+   ========================================================================== */
+@media (max-width: 992px) {
+  .rental-hero {
+    margin-top: -2.5rem;
+  }
+
+  .rental-hero__stage {
+    height: 380px;
+  }
+
+  .rental-hero__info {
+    bottom: 1.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 0 1.5rem;
+  }
+
+  .rental-hero__main-info {
+    padding-right: 0;
+  }
+
+  .rental-hero__title {
+    font-size: 1.65rem;
+  }
+
+  .rental-hero__thumb-area {
+    display: none;
+  }
+
+  .rental-detail-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+
+  .rental-detail-side-column {
+    position: relative;
+    top: 0;
+  }
+}

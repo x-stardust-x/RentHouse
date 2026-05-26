@@ -22,4 +22,5 @@ export interface CreateHouseDto {
   pet: boolean;
   smoke: boolean;
   interests: string;
+  advancedRules: string;
 }

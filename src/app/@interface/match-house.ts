@@ -29,6 +29,7 @@ export interface MatchHouseDto {
   pet?: boolean;
   // pet?: boolean | null;
   smoke?: boolean | null;
+  advancedRules?: string;
 
   //房屋圖片
   imageUrls: string[];

@@ -1,13 +1,15 @@
 @if (profileData(); as profile) {
 <div class="profile-layout">
 
-  <header class="hero-banner"
-    [style.backgroundImage]="'url(' + (profile.bannerUrl || 'assets/default-banner.jpg') + ')'">
+  <!-- <header class="hero-banner"
+    [style.backgroundImage]="'url(' + (profile.bannerUrl || 'assets/default-banner.jpg') + ')'" > -->
+  <header class="hero-banner" style="background-image: url('images/default_banner.jpg')">
     <div class="hero-container">
-      <img [src]="profile.avatarUrl || 'assets/default-avatar.png'" class="avatar-img" alt="頭像">
+      <img class="avatar-img" src="images/mr_chen.jpg" alt="提供者">
+      <!-- <img [src]="profile?.avatarUrl || '/images/mr_chen.jpg'" class="avatar-img" alt="頭像"> -->
       <div class="meta-info">
         <div class="name-badge-row">
-          <h1>{{ profile.username || profile.realName }}</h1>
+          <h1>{{ profile.realName }}</h1>
 
           @if (profile.isVerified) {
           <span class="status-badge verified">已認證</span>
@@ -39,31 +41,45 @@
 
       <section class="info-section">
         <h2>生活習慣與偏好</h2>
-        @if (profile.userHabit; as habit) {
+
         <div class="tags-container">
 
-          @if (!habit.smoke) {
+          @if (!profile.smoke) {
           <span class="habit-tag">🚭 無菸環境</span>
+          } @else {
+          <span class="habit-tag">🚬 有吸菸習慣</span>
           }
 
-          @if (habit.sleepTime && +habit.sleepTime.split(':')[0] >= 21 && +habit.sleepTime.split(':')[0] <= 23) { <span
-            class="habit-tag">🌙 早睡早起</span>
+          @if (profile.sleepTime && profile.sleepTime >= 21 && profile.sleepTime <= 23) { <span class="habit-tag">🌙
+            早睡早起</span>
             }
 
-            @if (habit.pet) {
+            @if (profile.pet) {
             <span class="habit-tag">🐾 寵物友善</span>
             }
 
-            @if (habit.noiseTolerance <= 2) { <span class="habit-tag">🤫 寧靜空間</span>
+            @if (profile.noiseTolerance <= 2) { <span class="habit-tag">🤫 寧靜空間</span>
               }
 
-              @for (interest of getInterestsArray(habit.interests); track interest) {
-              <span class="interest-tag"># {{ interest }}</span>
+              @if (profile.interests && getInterestsArray(profile.interests).length > 0) {
+              <div class="tags-container">
+
+                @for (interest of getInterestsArray(profile.interests); track interest) {
+                <span class="interest-tag">{{ interest }}</span>
+                }
+
+              </div>
+              } @else {
+              <p class="empty-msg">此會員尚未填寫興趣與偏好。</p>
               }
+
+              <!-- @if (profile.interests) {
+            @for (interest of getInterestsArray(profile.interests); track interest) {
+            <span class="interest-tag"># {{ interest }}</span>
+            }
+          } -->
         </div>
-        } @else {
-        <p class="empty-msg">此會員尚未填寫生活習慣。</p>
-        }
+
       </section>
 
       <section class="info-section">
@@ -104,8 +120,18 @@
       <div class="sticky-box">
         <h3>有興趣交流嗎？</h3>
         <p>發送訊息給主辦人，討論您的共居需求。</p>
-        <button class="btn-msg">✉ 傳送訊息</button>
-        <button class="btn-call">📅 預約線上初談</button>
+
+        <div class="links-group rental-detail-links-group">
+          <a class="rental-detail-button rental-detail-button--primary" href="#">
+            <span class="material-symbols-outlined rental-hero__location-icon">mobile_2</span>
+            <span>電話聯絡</span>
+          </a>
+          <a class="rental-detail-button rental-detail-button--secondary" href="#">
+            <fa-icon [icon]="faLine"></fa-icon>
+            <span>LINE線上談</span>
+          </a>
+        </div>
+
       </div>
     </div>
 

@@ -426,65 +426,53 @@
 
       @if (isRoom()) {
 
-      <p class="rental-detail-price">NT$<span class="rental-detail-price__number"> {{ detailData()?.rentPrice }}
-        </span><span class="rental-detail-price__unit">/月</span></p>
+      <p class="rental-detail-price">
+        NT$<span class="rental-detail-price__number"> {{ detailData()?.rentPrice }} </span>
+        <span class="rental-detail-price__unit">/月</span>
+      </p>
 
-      <!-- 如果資料庫條件符合含有水電 或 網路 或 管理費，顯示符合的條件 -->
+      @if (detailData()?.includeWifi || detailData()?.includeUtilities || detailData()?.includeManagementFee) {
+      <p class="rental-detail-included-fees">
+        包含
 
-      <!-- 照理說，這裡應該要能讓出租人自行新增設施與服務，
-       並且決定水電、網路、管理費有沒有包含在費用中
-       後端要新增這個功能 -->
-
-      <!-- @if -->
-
-      <!-- 需要改成類似switch方式來寫，以及解決頓號顯示 -->
-      <p class="rental-detail-included-fees">包含
-        <!-- 費用中包含 wifi -->
         @if (detailData()?.includeWifi) {
         <span class="rental-detail-included-fees__item">Wifi</span>
+        @if (detailData()?.includeUtilities || detailData()?.includeManagementFee) {
         <span class="rental-detail-included-fees__separator">、</span>
         }
+        }
+
         @if (detailData()?.includeUtilities) {
         <span class="rental-detail-included-fees__item">水電</span>
+        @if (detailData()?.includeManagementFee) {
         <span class="rental-detail-included-fees__separator">、</span>
         }
+        }
+
         @if (detailData()?.includeManagementFee) {
         <span class="rental-detail-included-fees__item">管理費</span>
         }
-
-        <!-- <p>包含水電、網路及管理費</p> -->
-
-
       </p>
-
-      <!-- ==================================== -->
-      <!-- ==================================== -->
-
-      <select class="rental-detail-period-select" name="rental-period" id="rental-period">
-        <!-- <option value="">選擇租期</option> -->
-        <option class="rental-detail-period-select__option" value="one-year">1年 (12個月)</option>
-        <option class="rental-detail-period-select__option" value="six-months">6個月</option>
-        <option class="rental-detail-period-select__option" value="one-year">3個月</option>
-        <option class="rental-detail-period-select__option" value="one-year">1個月</option>
-      </select>
-
+      } @else {
+      <p class="rental-detail-included-fees">費用不含網路、水電及管理費</p>
+      }
 
       <div class="links-group rental-detail-links-group">
-
         <a class="rental-detail-button rental-detail-button--primary" href="#">
           <span class="material-symbols-outlined rental-hero__location-icon">mobile_2</span>
-          <span>電話聯絡</span>
+          <span>電話預約看房</span>
         </a>
-        <a class="rental-detail-button rental-detail-button--secondary" href="#"><fa-icon [icon]="faLine"></fa-icon>LINE線上談</a>
-        <!-- <a class="rental-detail-button rental-detail-button--secondary" href="#">聯絡出租人</a> -->
+        <a class="rental-detail-button rental-detail-button--secondary" href="#">
+          <fa-icon [icon]="faLine"></fa-icon>
+          <span>LINE 洽詢房東</span>
+        </a>
       </div>
 
       } @else {
 
       <p class="rental-detail-price">
         NT$<span class="rental-detail-price__number"> {{ detailData()?.price ?? detailData()?.Price }} </span>
-        <span class="rental-detail-price__unit">/{{ detailData()?.priceUnit ?? detailData()?.PriceUnit ?? '次'
-          }}</span>
+        <span class="rental-detail-price__unit">/{{ detailData()?.priceUnit ?? detailData()?.PriceUnit ?? '次' }}</span>
       </p>
 
       @if (detailData()?.category === '工具共享' || detailData()?.Category === '工具共享') {
@@ -493,24 +481,37 @@
       }
 
       @if (detailData()?.category === '專業諮詢' || detailData()?.Category === '專業諮詢') {
-      <p class="rental-detail-booking-note">授課形式：{{ (detailData()?.isOnline ?? detailData()?.IsOnline) ? '線上諮詢' :
-        '實體面授'
+      <p class="rental-detail-booking-note">授課形式：{{ (detailData()?.isOnline ?? detailData()?.IsOnline) ? '線上諮詢' : '實體面授'
         }}</p>
       }
 
-
       <div class="links-group rental-detail-links-group">
+
         <a class="rental-detail-button rental-detail-button--primary" href="#">
-          {{ (detailData()?.category === '專業諮詢' || detailData()?.Category === '專業諮詢') ? '立即預約' : '立即借用' }}
+          <span class="material-symbols-outlined rental-hero__location-icon">mobile_2</span>
+          <span>
+            @if (detailData()?.category === '專業諮詢' || detailData()?.Category === '專業諮詢') {
+            電話聯絡導師
+            } @else {
+            電話詢問借用
+            }
+          </span>
         </a>
-        <a class="rental-detail-button rental-detail-button--secondary" href="#">聯絡提供者</a>
+
+        <a class="rental-detail-button rental-detail-button--secondary" href="#">
+          <fa-icon [icon]="faLine"></fa-icon>
+          <span>
+            @if (detailData()?.category === '專業諮詢' || detailData()?.Category === '專業諮詢') {
+            LINE 預約課程
+            } @else {
+            LINE 確認工具檔期
+            }
+          </span>
+        </a>
+
       </div>
 
-
-
       }
-
-
 
       <p class="rental-detail-free-note">目前不會向您收取任何費用</p>
 

@@ -3,15 +3,20 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { RentalMatchingService } from '../../@service/rental-matching-service';
 import { UserService } from '../../@service/user-service';
+import { faLine } from '@fortawesome/free-brands-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-lessor-profile-component',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FontAwesomeModule],
   templateUrl: './lessor-profile-component.html',
   styleUrl: './lessor-profile-component.scss',
 })
 export class LessorProfileComponent implements OnInit {
+
+  faLine = faLine;
+
   // private route = inject(ActivatedRoute);
   private rentalService = inject(RentalMatchingService);
 
@@ -45,11 +50,35 @@ export class LessorProfileComponent implements OnInit {
   }
 
   // 解析 JSON 興趣字串
-  getInterestsArray(interestsJson: string): string[] {
-    try {
-      return interestsJson ? JSON.parse(interestsJson) : [];
-    } catch (e) {
+  // getInterestsArray(interestsJson: string): string[] {
+  //   try {
+  //     return interestsJson ? JSON.parse(interestsJson) : [];
+  //   } catch (e) {
+  //     return [];
+  //   }
+  // }
+
+
+  getInterestsArray(interests: string | undefined): string[] {
+    if (!interests) {
       return [];
     }
+
+    try {
+      // 1. 如果資料庫存的是標準 JSON 陣列字串 (例如：'["音樂","電影"]')
+      const parsed = JSON.parse(interests);
+      if (Array.isArray(parsed)) {
+        return parsed;
+      }
+    } catch (e) {
+      // 2. 如果解析失敗，代表是普通字串，改用正規表達式同時相容「英文逗號 , 」與「中文逗號 ，」
+      return interests
+        .split(/[,，]/)                       // 同時支援中英文逗號切割
+        .map(item => item.trim())            // 去除前後空白
+        .filter(item => item !== '');        // 過濾掉空字串
+    }
+
+    // 備用防呆
+    return [interests];
   }
 }

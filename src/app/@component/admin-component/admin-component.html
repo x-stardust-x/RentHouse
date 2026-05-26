@@ -1,9 +1,10 @@
-<p>admin-component works!</p>
-<button class="btn btn-warning" routerLink="/">Back</button>
-<button class="btn btn-info" routerLink="news">News</button>
-<button class="btn btn-info" routerLink="logs">Logs</button>
-
-<button class="btn btn-danger" (click)="Logout()">登出</button>
-<button class="btn btn-danger" (click)="test()">test</button>
-<button class="btn btn-danger" (click)="test2()">Get IP Address</button>
+<h1>儀錶板</h1>
+<!-- <button class="btn btn-warning" routerLink="/">Back</button> -->
+<!-- <button class="btn btn-info" routerLink="news">News</button>
+<button class="btn btn-info" routerLink="logs">Logs</button> -->
+<div>
+  <button class="me-3 btn btn-info" (click)="test2()">Get IP Address</button>
+  <button class="me-3 btn btn-danger" (click)="test()">test</button>
+  <button class="me-3 btn btn-danger" (click)="Logout()">登出</button>
+</div>
 <router-outlet></router-outlet>

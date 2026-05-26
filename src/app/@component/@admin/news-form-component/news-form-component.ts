@@ -10,8 +10,9 @@ import { switchMap } from 'rxjs';
 @Component({
   selector: 'app-news-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './news-form-component.html',
+  styleUrl: './news-form-component.scss'
 })
 export class NewsFormComponent implements OnInit {
 
@@ -71,7 +72,7 @@ export class NewsFormComponent implements OnInit {
           userId: 1,
           action: this.isEdit
             ? `更新消息 id:${this.id}`
-            : '新增一筆新聞',
+            : '新增一筆消息',
           ipAddress: ip,
         };
 

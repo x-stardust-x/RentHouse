@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { AdminService } from '../../../@service/admin-service';
 import { FormsModule } from '@angular/forms';
 import { AdminDto } from '../../../@interface/admin';
+import { Authservice } from '../../../@service/authservice';
 
 @Component({
   selector: 'app-admins-component',
@@ -11,11 +12,12 @@ import { AdminDto } from '../../../@interface/admin';
 })
 export class AdminsComponent {
   public adminservice = inject(AdminService);
+  private authsev = inject(Authservice);
+
+  now_adminid: number | null = this.authsev.getAdminId() == null ? 1 : this.authsev.getAdminId(); // Test用
   constructor() {
     this.loadAdmin();
   }
-
-  admins: any[] = [];
 
   newAdmin : AdminDto = {
     username: '',

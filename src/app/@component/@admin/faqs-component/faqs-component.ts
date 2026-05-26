@@ -2,6 +2,9 @@ import { Component, effect, inject, signal } from '@angular/core';
 import { FAQService } from '../../../@service/faqservice';
 import { FormsModule } from '@angular/forms';
 import { FAQ_I, FAQ_IDto } from '../../../@interface/faq';
+import { switchMap } from 'rxjs';
+import { Authservice } from '../../../@service/authservice';
+import { LogService } from '../../../@service/log-service';
 
 declare var bootstrap: any;
 @Component({
@@ -12,6 +15,8 @@ declare var bootstrap: any;
 })
 export class FAQsComponent {
   faqService = inject(FAQService);
+  authsev = inject(Authservice);
+  logsev = inject(LogService);
 
   id = signal(0);
   editMode = signal(false);
@@ -74,27 +79,52 @@ export class FAQsComponent {
 
   saveFAQ() {
 
-    if (this.editMode()) {
+    const action$ = this.editMode()
+      ? this.faqService.updateFAQ(this.id(), this.form)
+      : this.faqService.createFAQ(this.form);
 
-      this.faqService
-        .updateFAQ(this.id(), this.form)
-        .subscribe(() => {
+    const actionText = this.editMode()
+      ? `修改 FAQ id:${this.id()}`
+      : `新增 FAQ`;
+
+    action$
+      .pipe(
+
+        switchMap(() => this.authsev.getClientIPAddress()),
+
+        switchMap(ip => {
+
+          const logData = {
+            userId: 1, // 改成實際登入者 ID
+            action: actionText,
+            ipAddress: ip,
+          };
+
+          return this.logsev.postLog(logData);
+        })
+
+      )
+      .subscribe({
+
+        next: () => {
+
+          console.log('Log posted successfully');
 
           this.closeModal();
 
-        });
+        },
 
-    } else {
+        error: err => {
 
-      this.faqService
-        .createFAQ(this.form)
-        .subscribe(() => {
+          console.error(err);
 
-          this.closeModal();
+          alert('操作失敗');
 
-        });
+        }
 
-    }
+      });
+
+
 
   }
   closeModal() {
@@ -129,13 +159,47 @@ export class FAQsComponent {
 
   deleteFAQ(id: number) {
 
-    if (confirm('確定刪除？')) {
-
-      this.faqService
-        .deleteFAQ(id)
-        .subscribe();
-
+    if (!confirm('確定刪除？')) {
+      return;
     }
+
+    this.faqService.deleteFAQ(id)
+      .pipe(
+
+        switchMap(() => this.authsev.getClientIPAddress()),
+
+        switchMap(ip => {
+
+          const logData = {
+            userId: 1, // 改成實際登入者 ID
+            action: `刪除 FAQ id:${id}`,
+            ipAddress: ip,
+          };
+
+          return this.logsev.postLog(logData);
+        })
+
+      )
+      .subscribe({
+
+        next: () => {
+
+          console.log('Log posted successfully');
+
+          // 重新整理 FAQ 列表
+          this.faqService.getAllFAQItems();
+
+        },
+
+        error: err => {
+
+          console.error(err);
+
+          alert('刪除失敗');
+
+        }
+
+      });
 
   }
 

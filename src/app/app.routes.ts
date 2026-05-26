@@ -40,6 +40,12 @@ export const routes: Routes = [
         canActivate: [loginGuard]
       },
 
+      // 關於我們
+      {
+        path: 'about-homiefun',
+        loadComponent: () => import('./@component/about-homiefun-component/about-homiefun-component').then(c => c.AboutHomiefunComponent),
+      },
+
       // 會員中心
       {
         path: 'member',

@@ -5,10 +5,11 @@ import { RouterLink } from "@angular/router";
 import { Authservice } from '../../../@service/authservice';
 import { LogService } from '../../../@service/log-service';
 import { switchMap } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-news-component',
-  imports: [DatePipe, NgClass, RouterLink],
+  imports: [DatePipe, NgClass, RouterLink, MatIconModule],
   templateUrl: './news-component.html',
   styleUrl: './news-component.scss',
 })

@@ -59,7 +59,7 @@ export class Authservice {
     return localStorage.getItem('token');
   }
 
-  getUserRole(): string | null {
+  getRole(): string | null {
     const token = this.getToken();
     if (!token) return null;
 
@@ -69,13 +69,23 @@ export class Authservice {
     return decoded.role || null
   }
 
-  getUserId(): string | null {
+  getUserId(): number | null {
     const token = this.getToken();
     if (!token) return null;
 
     const decoded = this.decodeToken(token);
 
-    return decoded.UserId || null
+
+    return decoded.UserId ? Number(decoded.UserId) : null;
+  }
+
+  getAdminId(): number | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    const decoded = this.decodeToken(token);
+
+    return decoded.AdminId ? Number(decoded.AdminId) : null;
   }
 
   test() {

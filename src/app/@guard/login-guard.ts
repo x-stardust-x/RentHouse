@@ -10,7 +10,7 @@ export const loginGuard: CanActivateFn = () => {
 
   // 🔥 已登入 → 導走
   if (auth.isLoggedIn()) {
-    const role = auth.getUserRole();
+    const role = auth.getRole();
     console.log(role);
 
     if (role === 'admin') {

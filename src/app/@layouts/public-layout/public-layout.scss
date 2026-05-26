@@ -1,51 +1,368 @@
+/* ==========================================================================
+   1. 頁面整體結構 (Sticky Footer 佈局)
+   ========================================================================== */
 .public-layout {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
-  background: #f8f6f1;
-  color: #1f2933;
+  /* 確保內容少時，Footer 依然貼在最底部 */
+  background-color: var(--color-bg-main);
+  overflow-x: clip;
 }
 
+/* ==========================================================================
+   2. 置頂導覽列 (Header)
+   ========================================================================== */
 .public-layout__header {
-  height: 76px;
-  padding: 0 48px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.95);
+  /* 帶有微透明的玻璃質感 */
+  backdrop-filter: blur(8px);
+  /* 磨砂玻璃效果 */
+  border-bottom: 1px solid var(--color-border);
+  padding: 0 2rem;
+  height: 70px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #ffffff;
-  border-bottom: 1px solid #e3ded3;
-  position: sticky;
-  top: 0;
-  z-index: 20;
+  box-shadow: 0 2px 10px rgba(43, 39, 37, 0.02);
 }
 
+/* 品牌 Logo */
 .public-layout__logo {
+  font-size: 1.4rem;
   font-weight: 800;
-  color: #1f5144;
+  color: var(--color-primary);
   text-decoration: none;
-  font-size: 1.25rem;
+  letter-spacing: 1.5px;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.03);
+  }
 }
 
+/* 導覽列容器 */
 .public-layout__nav {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 1.5rem;
+  height: 100%;
+}
+
+/* 單個導覽連結 */
+.nav-link {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  padding: 0.5rem 0.25rem;
+  position: relative;
+  transition: color 0.25s ease;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+
+  /* Angular 啟動狀態的樣式 */
+  &.is-active {
+    color: var(--color-primary);
+    font-weight: 700;
+
+    /* 精緻的底部小底線 */
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 2.5px;
+      background-color: var(--color-primary);
+      border-radius: 2px;
+    }
+  }
+}
+
+/* ==========================================================================
+   3. 字體大小工具組 (Font Tools Capsule)
+   ========================================================================== */
+.public-layout__font-tools {
+  display: flex;
+  align-items: center;
+  background-color: #F5F1EC;
+  /* 溫暖的淺灰底 */
+  padding: 0.25rem;
+  border-radius: var(--radius-md);
+  margin-left: 1rem;
+  border: 1px solid var(--color-border);
+}
+
+.public-layout__font-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  padding: 0 0.5rem;
+}
+
+.public-layout__font-button {
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+
+  /* 點選啟動時的暖焦糖色反白效果 */
+  &.is-active {
+    background-color: var(--color-primary);
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 6px rgba(230, 111, 67, 0.2);
+  }
+}
+
+/* ==========================================================================
+   4. 主內容區與頁尾 (Main & Footer)
+   ========================================================================== */
+.public-layout__content {
+  flex: 1;
+  padding: 2.5rem 2rem;
+  /* 給內容區預留優雅的留白 */
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   厚厝味前台公用 Footer 樣式表 (經典平鋪版)
+   ========================================================================== */
+.public-layout__footer {
+  background-color: #F9F6F3;
+  /* 溫暖的輕質暖沙色 */
+  border-top: 1px solid var(--color-border, #EAE4DE);
+  padding: 4rem 0 0 0;
+  font-family: sans-serif;
+  width: 100%;
+  box-sizing: border-box;
+
+  /* ⚡ 使用非常優雅、極淡的暖橘沙色（類似蜜桃燕麥色） */
+  // background-color: #FDF5EE;
+  // border-top: 1px solid var(--color-border, #EAE4DE);
+  // padding: 4rem 0 0 0;
+}
+
+/* 主容器：分為左側品牌、右側連結網格 */
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* 左右 1:1 對等對稱比例 */
+  gap: 4rem;
+  align-items: start;
+  box-sizing: border-box;
+}
+
+/* --- 左側品牌區 --- */
+.footer-brand-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.footer-logo {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-text-main, #2B2725);
+  letter-spacing: 1px;
+}
+
+.footer-slogan {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text-muted, #8E8680);
+  margin: 0;
+  max-width: 340px;
+}
+
+.footer-contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+
+  p {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.95rem;
+    color: var(--color-text-main, #2B2725);
+    margin: 0;
+
+    span {
+      font-size: 1.2rem !important;
+      color: var(--color-primary, #E66F43);
+      /* 招牌橘色小圖示 */
+    }
+  }
+}
+
+/* --- 右側平鋪連結網格 (核心修正) --- */
+.footer-links-flat-col {
+  width: 100%;
+}
+
+.footer-links-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  /* 自動平攤成乾淨的兩欄 */
+  gap: 1.25rem 2rem;
+  /* 上下行距加大，對長輩閱讀與點擊極度友善 */
 
   a {
-    color: #374151;
-    text-decoration: none;
+    font-size: 1.05rem;
+    /* 字體稍微放大，更清晰大方 */
     font-weight: 600;
-  }
+    color: var(--color-text-muted, #8E8680);
+    text-decoration: none;
+    transition: color 0.2s ease, padding-left 0.2s ease;
+    display: inline-block;
 
-  a:hover {
-    color: #2f6f5e;
+    &:hover {
+      color: var(--color-primary, #E66F43);
+      /* 懸停改為陶磚橘 */
+      padding-left: 4px;
+      /* 輕微右移微動效 */
+    }
   }
 }
 
-.public-layout__content {
-  min-height: calc(100vh - 76px);
+/* --- 最底部版權欄 --- */
+.footer-bottom {
+  border-top: 1px solid var(--color-border, #EAE4DE);
+  padding: 1.5rem 0;
+  background-color: #F4EFEA;
+  /* 底座稍微加深做出層次 */
 }
 
-.public-layout__footer {
-  padding: 32px 48px;
-  background: #1f5144;
-  color: #ffffff;
+.footer-bottom-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+
+  .copyright {
+    font-size: 0.85rem;
+    color: var(--color-text-muted, #8E8680);
+    margin: 0;
+  }
+}
+
+.footer-bottom-legal {
+  display: flex;
+  gap: 1.5rem;
+
+  a {
+    font-size: 0.85rem;
+    color: var(--color-text-muted, #8E8680);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--color-text-main, #2B2725);
+      text-decoration: underline;
+    }
+  }
+}
+
+
+
+
+/* 上半部維持原樣，只改最下半部 */
+.footer-bottom {
+  background-color: var(--color-primary, #E66F43); /* ⚡ 變成招牌橘底 */
+  padding: 1.5rem 0;
+}
+
+.footer-bottom-container {
+  .copyright {
+    color: #FFFFFF; /* ⚡ 文字改為白色 */
+  }
+}
+
+.footer-bottom-legal a {
+  color: #FFFFFF; /* ⚡ 連結改為白色 */
+  &:hover {
+    color: var(--color-text-main, #2B2725); /* 懸停時變深色 */
+  }
+}
+
+
+
+
+
+/* ==========================================================================
+   RWD 響應式斷點優化
+   ========================================================================== */
+@media (max-width: 768px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    /* 手機版轉為單欄 */
+    gap: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .footer-links-grid {
+    grid-template-columns: 1fr;
+    /* 行動裝置上連結改為直列單欄，更好用手指點擊 */
+    gap: 1rem;
+  }
+
+  .footer-bottom-container {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+}
+
+/* ==========================================================================
+   5. 響應式斷點 (RWD 導覽列優化)
+   ========================================================================== */
+@media (max-width: 992px) {
+  .public-layout__header {
+    padding: 0 1rem;
+    height: auto;
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .public-layout__nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .public-layout__font-tools {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
 }

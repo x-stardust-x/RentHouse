@@ -1,231 +1,229 @@
 import { Schema } from './../../../../node_modules/hono/dist/types/types.d';
 import { RentalMatchingService } from './../../@service/rental-matching-service';
-import { Component, OnInit, inject, signal, computed, CUSTOM_ELEMENTS_SCHEMA, effect } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, CUSTOM_ELEMENTS_SCHEMA, effect, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { MatchHouseDto } from '../../@interface/match-house';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { register } from 'swiper/element/bundle';
+import { register } from 'swiper/element/bundle'; // ✅ 保留元件註冊引入
 import { switchMap } from 'rxjs/operators';
+import { HouseFacilityService } from '../../@service/house-facility-service';
+import { RouterModule, Routes, RouterLink } from '@angular/router';
+import { faLine } from '@fortawesome/free-brands-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 @Component({
   selector: 'app-rental-matching-detail-component',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule, RouterLink, FontAwesomeModule],
   templateUrl: './rental-matching-detail-component.html',
   styleUrl: './rental-matching-detail-component.scss',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-})
-export class RentalMatchingDetailComponent implements OnInit {
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], // ✅ 這裡有開，<swiper-container> 就能完美運作
 
+})
+export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
+  faLine = faLine;
+
+  // 1. 定義圖示對應 (跟之前一樣)
+  readonly HABIT_ICONS: { [key: string]: string } = {
+    'routines': 'routine',
+    'showerRestrictions': 'do_not_disturb_on',
+    'visitorPolicies': 'groups',
+    'cookingHabits': 'chef_hat',
+    'fridgeAllocations': 'kitchen',
+    'interactionFrequencies': 'conversation'
+  };
+
+  // 2. 新增標籤名稱對應 (這是解決冒號問題的關鍵)
+  readonly HABIT_LABELS: { [key: string]: string } = {
+    'routines': '作息型態',
+    'showerRestrictions': '深夜限制',
+    'visitorPolicies': '訪客規範',
+    'cookingHabits': '廚房文化',
+    'fridgeAllocations': '冰箱分配',
+    'interactionFrequencies': '交流頻率'
+  };
+
+  // 2. 宣告屬性
+  parsedRules: any = {};
+  objectKeys = Object.keys; // 讓 HTML 可以用
 
 
   private rentalMatchingService = inject(RentalMatchingService);
   private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
   private sanitizer = inject(DomSanitizer);
+  private houseFacilityService = inject(HouseFacilityService);
 
   isRoom = computed(() => this.detailData()?.displayType === 'room');
   isProduct = computed(() => this.detailData()?.displayType === 'product');
   isSkill = computed(() => this.isProduct() && this.detailData()?.category === '專業諮詢');
   isTool = computed(() => this.isProduct() && this.detailData()?.category === '工具共享');
 
-
-
-  // isSkill(): boolean {
-  //   // return this.detailData()?.category === '技能' || this.detailData()?.category === '服務';
-
-  //   // const data = this.detailData();
-  //   // return data?.category === '技能';
-
-  //   // const cat = this.detailData()?.category;
-  //   // if (!cat) return false;
-  //   // return cat.includes('技能') || cat?.includes('諮詢') || cat?.includes('專業');
-
-
-  //   const data = this.detailData(); // 先存起來
-  //   if (!data || !data.category) return false; // 若資料為空，直接回傳 false
-  //   return data.category.includes('技能') || data?.includes('諮詢') || data?.includes('專業');
-  // }
-
-  // isTool(): boolean {
-  //   // return this.detailData()?.category === '工具' || this.detailData()?.category === '設備';
-
-  //   // const data = this.detailData();
-  //   // return data?.category === '工具';
-
-  //   // const cat = this.detailData()?.category;
-  //   // if (!cat) return false;
-  //   // return cat.includes('工具') || cat.includes('設備');
-
-  //   const data = this.detailData(); // 先存起來
-  //   if (!data || !data.category) return false; // 若資料為空，直接回傳 false
-  //   return data.category.includes('工具') || data?.includes('設備');
-  // }
-
-
-
-  // 新增：用來記錄當前詳情頁的種類 ('room' | 'product')
   itemType = signal<string | null>(null);
-
-  // 建立一個 Signal 或屬性存取資料
   detailData = signal<any>(null);
-
-  // 儲存當前點進來的類型 ('room' 或 'product')，供 HTML 分流判斷
   displayType = signal<string>('');
 
-  // 使用 computed 動態生成安全的 Google 地圖網址
   mapUrl = computed<SafeResourceUrl | null>(() => {
-
-    // 防呆：如果不是房間，或者沒有地址，就不生成地圖
-    // if (this.displayType() !== 'room') return null;
-
     const address = this.detailData()?.address;
     if (!address) return null;
-
-    // 將地址進行編碼，避免中文字或特殊符號在網址中壞掉
     const encodedAddress = encodeURIComponent(address);
-
-    // Google 官方提供免費嵌入網址格式
-    // const rawUrl = `https://www.google.com/maps/embed/v1/place?key=你的API_KEY&q=${encodedAddress}`;
     const rawUrl = `https://maps.google.com/maps?q=${encodedAddress}&output=embed&z=16`;
-
-    // 透過 sanitizer 轉換成安全網址
     return this.sanitizer.bypassSecurityTrustResourceUrl(rawUrl);
-
-  })
-
+  });
 
   constructor() {
+    // 💥 確保 Swiper 元件有在當前組件確實啟動註冊
+    register();
 
-    // 在 .ts 中監控 signal 的變化
-      effect(() => {
-        console.log('當前 detailData 的狀態:', this.detailData());
-        if (this.detailData() === null) {
-          console.warn('警告：detailData 被清空了！');
-          // 在這裡設定斷點 (Breakpoint)，看看是哪行程式碼導致它變回 null
-        }
-      });
-
+    effect(() => {
+      console.log('當前 detailData 的狀態:', this.detailData());
+      if (this.detailData() === null) {
+        console.warn('警告：detailData 被清空了！');
+      }
+    });
   }
 
 
-
-
-
-  ngOnInit(): void {
-  this.route.params.pipe(
-    switchMap(params => {
-      const type = params['type'];
-      const itemId = Number(params['id']);
-
-      if (isNaN(itemId)) return [];
-
-      this.displayType.set(type);
-
-      // ✅ 關鍵：在請求發出時，不要強制把 detailData 設為 null
-      // 讓舊資料留在畫面上，直到新資料回來才替換，這樣就不會看到「資料載入中」
-
-      return type === 'room'
-        ? this.rentalMatchingService.getRentalById(itemId)
-        : this.rentalMatchingService.getProductById(itemId);
-    })
-  ).subscribe({
-    next: (data: any) => {
-      this.detailData.set({ ...data, displayType: this.displayType() });
+  // ===================================================================
+  // 1. 移除 get facilities() 裡面的 console.log（避免觸發 NG0100 錯誤）
+  // ===================================================================
+  get facilities() {
+    const data = this.detailData();
+    if (!data || !data.facilities || !Array.isArray(data.facilities)) {
+      return [];
     }
-  });
-}
-
-
-
-
-
-
-  // ngOnInit(): void {
-  // // 使用 switchMap 自動處理路由參數變化
-  // this.route.params.pipe(
-  //   switchMap(params => {
-  //     const type = params['type'];
-  //     const itemId = Number(params['id']);
-
-  //     if (isNaN(itemId)) {
-  //       console.error('ID 不是有效的數字');
-  //       return []; // 回傳空陣列停止後續處理
-  //     }
-
-  //     this.displayType.set(type);
-
-  //     // 這裡回傳 API Observable，switchMap 會自動取消上一次未完成的請求
-  //     return type === 'room'
-  //       ? this.rentalMatchingService.getRentalById(itemId)
-  //       : this.rentalMatchingService.getProductById(itemId);
-  //   })
-  // ).subscribe({
-  //   next: (data: any) => {
-  //     // 只有當資料確實拿到時，才更新 Signal
-  //     this.detailData.set({ ...data, displayType: this.displayType() });
-  //   },
-  //   error: (err: any) => console.error('請求失敗：', err)
-  // });
-
-
-
-
-  // ngOnInit(): void {
-
-  //   // alert('有成功進入這個組件！');
-
-  //   this.route.params.subscribe(params => {
-
-  //     const type = params['type']; // 'room' 或 'product'
-  //     const itemId = Number(params['id']); // 轉成數字 ID
-
-  //     console.log('當前組件接收到的參數 ID 是:', itemId);
-  //     console.log('當前組件接收到的參數 Type 是:', params['type']);
-
-  //     if (isNaN(itemId)) {
-  //       console.error('錯誤：ID 不是有效的數字');
-  //       return;
-  //     }
-
-  //     this.displayType.set(type);
-
-  //     // 依據類別分流發送 API 請求給後端
-  //     if (type === 'room') {
-  //       // 房屋詳情 (沿用你原本的方法)
-  //       this.rentalMatchingService.getRentalById(itemId).subscribe({
-  //         next: (data: any) => {
-  //           console.log('房屋詳情成功抓到資料：', data);
-  //           this.detailData.set({ ...data, displayType: type });
-  //           // this.detailData.set(data);
-  //         },
-  //         error: (err: any) => console.error('房屋詳情抓取失敗：', err)
-  //       });
-  //     } else if (type === 'product') {
-  //       // 工具/技能詳情 (記得要去你的 Service 補上這個 getProductById 方法喔！)
-  //       this.rentalMatchingService.getProductById(itemId).subscribe({
-  //         next: (data: any) => {
-  //           console.log('工具/技能詳情成功抓到資料：', data);
-  //           this.detailData.set({ ...data, displayType: type });
-  //           // this.detailData.set(data);
-  //         },
-  //         error: (err: any) => console.error('工具/技能詳情抓取失敗：', err)
-  //       });
-  //     }
-
-
-
-
-
-
-  //   });
-  // }
-
+    return data.facilities.map((f: any) => ({
+      name: f.name || f.Name,
+      icon: f.iconClass || f.IconClass || f.icon || f.Icon || 'star'
+    }));
   }
 
+  // ===================================================================
+  // 2. 修正 ngOnInit 路由訂閱，徹底清除 ID 旁邊的「:1」
+  // ===================================================================
+  ngOnInit(): void {
+    this.route.params.pipe(
+      switchMap(params => {
+        const type = params['type'];
+        const rawId = params['id'];
+        const itemId = typeof rawId === 'string' && rawId.includes(':')
+          ? parseInt(rawId.split(':')[0], 10)
+          : parseInt(rawId, 10);
 
+        if (isNaN(itemId)) return [];
+        this.displayType.set(type);
 
+        return type === 'room'
+          ? this.rentalMatchingService.getRentalById(itemId)
+          : this.rentalMatchingService.getProductById(itemId);
+      })
+    ).subscribe({
+      next: (data: any) => {
+        console.log("🔥 API 原始回傳資料:", data);
+        // 1. 設定主資料
+        this.detailData.set({ ...data, displayType: this.displayType() });
+        const cleanHouseId = Number(data?.id || data?.Id);
 
+        // 2. 解析 JSON 生活習慣 (從拿到的 data 解析，確保順序正確)
+        if (data && data.advancedRules) {
+          try {
+            this.parsedRules = typeof data.advancedRules === 'string'
+              ? JSON.parse(data.advancedRules)
+              : data.advancedRules;
+            console.log('解析後的規則內容:', this.parsedRules);
+          } catch (e) {
+            console.error("JSON 解析失敗", e);
+          }
+        }
+
+        // 3. 取得設施資料 (確保 cleanHouseId 存在後再執行)
+        if (this.displayType() === 'room' && cleanHouseId) {
+          // ⚠️ 請檢查這裡的路徑，如果是 404，試試看改為 HouseFacilities (複數)
+          this.http.get<any[]>(`https://localhost:7215/api/HouseFacility/${cleanHouseId}`).subscribe({
+            next: (facilitiesList: any[]) => {
+              setTimeout(() => {
+                this.detailData.set({
+                  ...this.detailData(),
+                  facilities: facilitiesList
+                });
+              }, 0);
+            },
+            error: (err) => console.error('設施 API 失敗 (請確認後端路徑是否正確):', err)
+          });
+        }
+      }
+    });
+  }
+
+  selectedHeroImage = signal<string | null>(null);
+  selectedHeroIndex = signal(0);
+  heroImageChanging = signal(false);
+
+  heroImages(): { src: string; alt: string }[] {
+    return [
+      { src: this.detailData()?.url || 'images/house1.jpg', alt: '租賃物預覽圖 1' },
+      { src: this.detailData()?.url || 'images/house2.jpg', alt: '租賃物預覽圖 2' },
+      { src: this.detailData()?.url || 'images/house3.jpg', alt: '租賃物預覽圖 3' },
+      { src: this.detailData()?.url || 'images/house4.jpg', alt: '租賃物預覽圖 4' },
+    ];
+  }
+
+  currentHeroImage(): string {
+    return this.selectedHeroImage() || this.heroImages()[0]?.src || 'images/default_image_16-9.jpg';
+  }
+
+  selectHeroImage(imageSrc: string, index: number): void {
+    if (this.currentHeroImage() === imageSrc) return;
+    this.heroImageChanging.set(true);
+    this.selectedHeroImage.set(imageSrc);
+    this.selectedHeroIndex.set(index);
+    window.setTimeout(() => {
+      this.heroImageChanging.set(false);
+    }, 520);
+  }
+
+  ngAfterViewInit(): void {
+    const header = document.querySelector<HTMLElement>('.public-layout__header');
+    if (!header) return;
+
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+    const headerHideThreshold = 80;
+    const scrollDelta = 6;
+
+    const updateHeader = () => {
+      const currentScrollY = window.scrollY;
+      const scrollDifference = currentScrollY - lastScrollY;
+
+      if (currentScrollY > headerHideThreshold) {
+        header.classList.add('is-scrolled');
+      } else {
+        header.classList.remove('is-scrolled');
+        header.classList.remove('is-hidden');
+      }
+
+      if (currentScrollY > headerHideThreshold && scrollDifference > scrollDelta) {
+        header.classList.add('is-hidden');
+      }
+
+      if (scrollDifference < -scrollDelta) {
+        header.classList.remove('is-hidden');
+      }
+
+      lastScrollY = currentScrollY;
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateHeader);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+  }
+}

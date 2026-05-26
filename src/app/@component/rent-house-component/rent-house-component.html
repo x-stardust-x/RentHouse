@@ -1,167 +1,37 @@
 <div class="dashboard-container">
-  <h2> 房東專區：房屋上架申請</h2>
+
+  <div class="header-section text-center mb-4 mt-3">
+    <h2 class="fw-bold mb-3" style="color: #1e293b;">房東專區：發布上架申請</h2>
+
+    <div class="segment-toggle-wrapper" style="display: flex; justify-content: center;">
+      <div class="segment-toggle" style="display: inline-flex; background: #f1f5f9; border-radius: 30px; padding: 6px;">
+        <button class="btn border-0"
+                style="padding: 10px 24px; border-radius: 24px; font-weight: 700; transition: all 0.3s ease;"
+                [style.background]="currentTab() === 'rooms' ? 'white' : 'transparent'"
+                [style.color]="currentTab() === 'rooms' ? '#0f172a' : '#64748b'"
+                [style.box-shadow]="currentTab() === 'rooms' ? '0 4px 10px rgba(0,0,0,0.06)' : 'none'"
+                (click)="setTab('rooms')">
+          🏠 共居空間 (Rooms)
+        </button>
+        <button class="btn border-0"
+                style="padding: 10px 24px; border-radius: 24px; font-weight: 700; transition: all 0.3s ease;"
+                [style.background]="currentTab() === 'assets' ? 'white' : 'transparent'"
+                [style.color]="currentTab() === 'assets' ? '#0f172a' : '#64748b'"
+                [style.box-shadow]="currentTab() === 'assets' ? '0 4px 10px rgba(0,0,0,0.06)' : 'none'"
+                (click)="setTab('assets')">
+          🛠️ 資產 / 技能 (Assets & Skills)
+        </button>
+      </div>
+    </div>
+  </div>
 
   <div class="dashboard-layout">
-
-    <div class="form-section">
-      <h3>{{ isEditMode ? '修改草稿' : ' 新增房屋申請' }}</h3>
-
-      <div class="form-group">
-        <label>房屋名稱：</label>
-        <input type="text" [(ngModel)]="formData.name">
-      </div>
-
-      <div class="form-group mb-4">
-  <label class="fw-bold mb-2">房屋地址：</label>
-  <div class="row g-2">
-
-<app-location-select
-  [districtId]="formData.districtId ?? null"
-  (districtSelected)="onDistrictSelected($event)">
-</app-location-select>
-
-    <div class="col-md-6">
-      <input type="text" class="form-control" [(ngModel)]="formData.address" placeholder="請輸入路名、巷弄與門牌 (例如：九如一路100號)">
-    </div>
-
+    @if (currentTab() === 'rooms') {
+      <app-house-form></app-house-form>
+    }
+    @if (currentTab() === 'assets') {
+      <app-product-form></app-product-form>
+    }
   </div>
-</div>
 
-      <div class="form-group">
-        <label>租金 (元)：</label>
-        <input type="number" [(ngModel)]="formData.rentPrice">
-      </div>
-
-      <div class="form-group-textarea">
-        <label>房屋描述：</label>
-        <textarea [(ngModel)]="formData.description"></textarea>
-      </div>
-
-      <div class="details-block">
-        <h4>🏡 房屋詳細資訊</h4>
-        <div class="form-group">
-          <label>坪數 (坪)：</label>
-          <input type="number" [(ngModel)]="formData.areaSize" placeholder="例如: 8">
-        </div>
-        <div class="form-group">
-          <label>樓層資訊：</label>
-          <input type="text" [(ngModel)]="formData.floorInfo" placeholder="例如: 5F / 12F">
-        </div>
-       <div class="form-section mt-4 mb-4 p-4" style="background-color: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-          <h4 style="color: #1e293b; margin-bottom: 20px; font-weight: bold;">🛋️ 生活習慣與規定</h4>
-
-          <div class="row g-3">
-            <div class="col-md-3">
-              <label class="form-label fw-bold text-secondary">就寢時間</label>
-              <input type="time" class="form-control" [(ngModel)]="formData.sleepTime" name="sleepTime">
-            </div>
-
-            <div class="col-md-3">
-              <label class="form-label fw-bold text-secondary">起床時間</label>
-              <input type="time" class="form-control" [(ngModel)]="formData.wakeTime" name="wakeTime">
-            </div>
-
-            <div class="col-md-3">
-              <label class="form-label fw-bold text-secondary">潔癖程度 (1-5)</label>
-              <select class="form-select" [(ngModel)]="formData.cleanLevel" name="cleanLevel">
-                <option [ngValue]="1">1 - 隨意就好</option>
-                <option [ngValue]="2">2 - 偶爾打掃</option>
-                <option [ngValue]="3">3 - 乾淨一般</option>
-                <option [ngValue]="4">4 - 注重整潔</option>
-                <option [ngValue]="5">5 - 極度潔癖</option>
-              </select>
-            </div>
-
-            <div class="col-md-3">
-              <label class="form-label fw-bold text-secondary">噪音容忍度 (1-5)</label>
-              <select class="form-select" [(ngModel)]="formData.noiseTolerance" name="noiseTolerance">
-                <option [ngValue]="1">1 - 非常怕吵</option>
-                <option [ngValue]="2">2 - 稍微怕吵</option>
-                <option [ngValue]="3">3 - 一般音量</option>
-                <option [ngValue]="4">4 - 算耐吵</option>
-                <option [ngValue]="5">5 - 完全不怕吵</option>
-              </select>
-            </div>
-
-            <div class="col-md-6 mt-4">
-              <label class="form-label fw-bold text-secondary d-block">特殊規定</label>
-              <div class="form-check form-check-inline mt-2">
-                <input class="form-check-input" type="checkbox" id="petCheck" [(ngModel)]="formData.pet" name="pet">
-                <label class="form-check-label fw-bold text-dark" for="petCheck">🐾 允許養寵物</label>
-              </div>
-              <div class="form-check form-check-inline mt-2 ms-3">
-                <input class="form-check-input" type="checkbox" id="smokeCheck" [(ngModel)]="formData.smoke" name="smoke">
-                <label class="form-check-label fw-bold text-dark" for="smokeCheck">🚬 允許抽菸</label>
-              </div>
-            </div>
-
-            <div class="col-md-6 mt-4">
-              <label class="form-label fw-bold text-secondary">興趣標籤</label>
-              <input type="text" class="form-control" [(ngModel)]="formData.interests" name="interests" placeholder="例如：看電影、打電動、爬山...">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>房屋類型：</label>
-          <select [(ngModel)]="formData.houseType" class="form-select">
-            <option value="獨立套房">獨立套房</option>
-            <option value="分租套房">分租套房</option>
-            <option value="雅房">雅房</option>
-            <option value="整層住家">整層住家</option>
-          </select>
-        </div>
-      </div> <div class="mb-3 mt-4" style="padding: 15px; background: #fff; border: 1px dashed #cbd5e1; border-radius: 8px;">
-        <h4 style="font-size: 1rem; margin-top: 0; margin-bottom: 15px; color: #334155;">📷 房屋相簿與首圖設定</h4>
-        <label class="form-label fw-bold text-muted" style="font-size: 0.9rem;">請選擇照片 (可按住 Ctrl 複選)</label>
-
-        <input type="file" class="form-control mb-3" multiple (change)="onFilesSelected($event)" accept="image/*">
-
-        @if (pendingPhotos && pendingPhotos.length > 0) {
-          <div class="d-flex flex-wrap bg-light p-3 rounded border">
-            @for (photo of pendingPhotos; track $index) {
-              <div class="me-3 mb-3 text-center bg-white border p-2 rounded shadow-sm position-relative">
-                <button type="button"
-                        class="btn btn-danger position-absolute d-flex justify-content-center align-items-center"
-                        style="top: -10px; right: -10px; width: 24px; height: 24px; border-radius: 50%; padding: 0; font-size: 12px; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"
-                        (click)="removePendingPhoto($index)">✕</button>
-                <img [src]="photo.previewUrl" class="img-thumbnail mb-2" style="width: 120px; height: 120px; object-fit: cover;">
-                <div class="form-check d-flex justify-content-center align-items-center">
-                  <input class="form-check-input me-1" type="radio"
-                         name="coverRadioSelect_{{$index}}"
-                         [checked]="photo.isCover"
-                         (change)="setPendingCover($index)"
-                         style="cursor: pointer;">
-                  <label class="form-check-label fw-bold ms-1" [class.text-danger]="photo.isCover">
-                    {{ photo.isCover ? '⭐ 首圖' : '設為首圖' }}
-                  </label>
-                </div>
-              </div>
-            }
-          </div>
-        }
-      </div> <div class="included-items-block">
-        <h4>✨ 租金包含項目</h4>
-        <label class="checkbox-label">
-          <input type="checkbox" [(ngModel)]="formData.includeUtilities"> 包水電
-        </label>
-        <label class="checkbox-label">
-          <input type="checkbox" [(ngModel)]="formData.includeWifi"> 包網路
-        </label>
-        <label>
-          <input type="checkbox" [(ngModel)]="formData.includeManagememtFee"> 包管理費
-        </label>
-      </div>
-
-      <div class="form-actions mt-4">
-        <button class="btn btn-primary me-2" (click)="submitForm()">
-          {{ isEditMode ? '儲存修改' : '確認送出申請' }}
-        </button>
-        @if (isEditMode) {
-          <button class="btn btn-secondary" (click)="cancelEdit()">取消</button>
-        }
-      </div>
-    </div>
-
-  </div>
 </div>

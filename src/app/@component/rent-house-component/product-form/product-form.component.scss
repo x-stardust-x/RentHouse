@@ -1,0 +1,39 @@
+/* ============================
+   資產 / 技能 表單區塊樣式
+   ============================ */
+.form-section {
+  flex: 1;
+  border: 2px solid #ccc; /* 如果你想換顏色，可以在這裡改！例如改成 #28a745 */
+  padding: 20px;
+  border-radius: 8px;
+  min-width: 300px;
+  background-color: #ffffff;
+
+  .form-group {
+    margin-bottom: 10px;
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+    }
+  }
+
+  /* 下方的送出按鈕區域 */
+  .form-actions {
+    margin-top: 20px;
+    .btn-success {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+
+      &:hover {
+        background-color: #218838;
+      }
+    }
+  }
+}

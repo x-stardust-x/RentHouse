@@ -1,3 +1,148 @@
+/* ==========================================
+   🌟 頂部控制台 (標題、切換、篩選)
+   ========================================== */
+.admin-top-bar {
+  margin-bottom: 30px;
+}
+
+/* 上半部：標題與膠囊切換 */
+.admin-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  .header-titles {
+    h2 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #1e293b;
+      margin: 0 0 6px 0;
+    }
+    p {
+      font-size: 0.95rem;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
+    }
+  }
+
+  /* 膠囊切換底座 */
+  .segment-toggle {
+    display: flex;
+    background: #f1f5f9;
+    border-radius: 30px;
+    padding: 6px;
+
+    .segment-btn {
+      border: none;
+      background: transparent;
+      padding: 10px 24px;
+      border-radius: 24px;
+      font-weight: 700;
+      color: #64748b;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      /* 啟用的按鈕樣式 */
+      &.active {
+        background: white;
+        color: #0f172a;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+      }
+
+      &:hover:not(.active) {
+        color: #334155;
+      }
+    }
+  }
+}
+
+/* 下半部：篩選器與批次按鈕 */
+.admin-filter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  .filter-group {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  /* 客製化下拉選單容器 */
+  .custom-select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    /* 左側小圖示 */
+    .select-icon {
+      position: absolute;
+      left: 16px;
+      color: #475569;
+      font-size: 1.1rem;
+      pointer-events: none; /* 讓滑鼠點擊穿透到 select */
+    }
+
+    /* 原生 select 隱藏預設外觀 */
+    .modern-select {
+      appearance: none;
+      background: #e2e8f0;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 48px 12px 42px; /* 留出左右圖示的空間 */
+      font-size: 0.95rem;
+      color: #334155;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      transition: background 0.2s;
+
+      &:hover {
+        background: #cbd5e1;
+      }
+    }
+
+    /* 右側自訂下拉箭頭 (使用 Bootstrap Icon) */
+    &::after {
+      content: '\F282'; /* bi-chevron-down */
+      font-family: 'bootstrap-icons';
+      position: absolute;
+      right: 16px;
+      color: #64748b;
+      pointer-events: none;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+  }
+
+  /* 批次管理按鈕 */
+  .btn-batch {
+    background: #d1e7dd; /* 淡灰綠色 */
+    color: #0f5132;      /* 深綠色文字 */
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #c3ebd5;
+      transform: translateY(-2px);
+    }
+  }
+}
 .dashboard-container {
   max-width: 1000px;
   margin: 0 auto;
@@ -101,17 +246,17 @@
   }
 }
 
-// 🛋️ 生活習慣與規定 (精巧排版版) 
+// 🛋️ 生活習慣與規定 (精巧排版版)
 // 🌟 右側面板排版 (控制按鈕靠右)
 .right-action-panel {
   display: flex;
   flex-direction: column;
   align-items: flex-end; // 讓裡面的按鈕與卡片靠右對齊
-  
+
   .action-buttons {
     display: flex;
     gap: 12px;
-    
+
     button {
       padding: 10px 20px;
       border: none;
@@ -132,7 +277,7 @@
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   padding: 16px 20px;
-  
+
   .habit-title {
     color: #475569;
     font-weight: bold;
@@ -156,11 +301,262 @@
       &.full-width { grid-column: 1 / -1; }
 
       .label { color: #64748b; font-weight: 600; margin-right: 6px; font-size: 0.9rem; }
-      .value { 
+      .value {
         color: #0f172a; font-weight: 700; font-size: 0.95rem;
         &.score { color: #0ea5e9; }
         &.tags { color: #3b82f6; font-weight: normal; white-space: normal; } // 興趣標籤允許換行
       }
     }
+  }
+}/* 🌟 現代化網格容器 */
+.modern-house-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 24px;
+  padding: 10px 0;
+}
+
+/* 🌟 卡片本體 */
+.modern-card {
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #f1f5f9;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* 🖼️ 首圖與標籤區 */
+.card-cover-wrapper {
+  position: relative;
+  height: 200px;
+  width: 100%;
+  background-color: #f1f5f9;
+
+  .cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .no-cover-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #94a3b8;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .status-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  .badge-pending { background-color: rgba(220, 38, 38, 0.9); } /* 紅色-待審核 */
+  .badge-active { background-color: rgba(5, 150, 105, 0.9); }  /* 綠色-已上架 */
+  .badge-offline { background-color: rgba(100, 116, 139, 0.9); }
+}
+
+/* 📝 卡片內文區 */
+.card-body {
+  padding: 20px;
+  flex-grow: 1;
+
+  .house-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+  }
+
+  .house-location {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0 0 15px 0;
+  }
+
+  .desc-text {
+    font-size: 0.9rem;
+    color: #475569;
+    margin: 12px 0;
+    line-height: 1.5;
+  }
+
+  /* 限制描述只顯示兩行，多餘變... */
+  .text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* 💰 價格區塊 */
+  .price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+    padding: 10px 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+
+    .price-label { font-size: 0.9rem; color: #64748b; font-weight: 600;}
+    .price-box {
+      color: #0f172a;
+      .currency { font-size: 1.1rem; font-weight: 700; }
+      .amount { font-size: 1.4rem; font-weight: 800; margin: 0 2px; }
+      .unit { font-size: 0.85rem; color: #64748b; }
+    }
+  }
+
+  /* 🏷️ 標籤列 */
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+
+    .tag {
+      background: #f1f5f9;
+      color: #475569;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+  }
+
+  .info-label { font-size: 0.85rem; color: #64748b; font-weight: 600; }
+  .included-compact { font-size: 0.85rem; }
+
+  /* 🛋️ 生活公約微型收納區 */
+  .habit-compact-box {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+
+    .box-title { font-size: 0.85rem; font-weight: 700; color: #334155; margin-bottom: 8px; }
+
+    .habit-mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 12px;
+      font-size: 0.8rem;
+
+      .habit-item {
+        color: #475569;
+        span { color: #94a3b8; margin-right: 4px; }
+      }
+    }
+    .habit-interests { font-size: 0.8rem; color: #475569; span { color: #94a3b8; margin-right: 4px;} }
+  }
+
+  /* 📸 照片審核區 (橫向滑動) */
+  .admin-gallery-check {
+    .box-title { font-size: 0.85rem; font-weight: 700; color: #334155; margin-bottom: 8px; }
+
+    .gallery-scroll {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      padding-bottom: 8px;
+
+      /* 自訂捲軸樣式 */
+      &::-webkit-scrollbar { height: 6px; }
+      &::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+      .thumb-wrapper {
+        position: relative;
+        flex-shrink: 0;
+
+        img {
+          width: 65px;
+          height: 65px;
+          border-radius: 8px;
+          object-fit: cover;
+          border: 1px solid #e2e8f0;
+        }
+        .is-cover-img { border: 2px solid #3b82f6; }
+
+        .crown-badge {
+          position: absolute;
+          top: -6px;
+          right: -6px;
+          background: #fff;
+          border-radius: 50%;
+          padding: 2px;
+          font-size: 12px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+      }
+    }
+  }
+}
+
+/* 🔘 底部按鈕區 */
+.card-footer {
+  padding: 0 20px 20px 20px;
+  display: flex;
+  gap: 12px;
+  background: transparent;
+  border: none;
+
+  .btn-modern {
+    flex: 1;
+    border: none;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* 退回 (淡紅底) */
+  .btn-reject {
+    background-color: #fee2e2;
+    color: #dc2626;
+    &:hover { background-color: #fca5a5; }
+  }
+
+  /* 核准 (深綠底) */
+  .btn-approve {
+    background-color: #064e3b;
+    color: white;
+    &:hover { background-color: #065f46; }
+  }
+
+  .btn-full { width: 100%; }
+
+  /* 強制下架 */
+  .btn-warning {
+    background-color: #fef3c7;
+    color: #b45309;
+    &:hover { background-color: #fde68a; }
   }
 }

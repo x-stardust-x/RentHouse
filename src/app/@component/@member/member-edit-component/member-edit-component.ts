@@ -45,13 +45,13 @@ export class MemberEditComponent {
       rating: [0],
       reviewCount: [0],
 
-      // 🌟 地點相關欄位已經與新資料表格式完全對齊
+      // 地點相關欄位已經與新資料表格式完全對齊
       districtId: [0, Validators.required],
       cityName: [''],
       districtName: [''],
       zipCode: [''],
 
-      // 🌟 2. 核心修正：就寢與起床時間改用「空字串 ''」初始化
+      // 就寢與起床時間改用「空字串 ''」初始化
       // 這樣才能完美對接微軟最新的 TimeOnly ("00:00:00") 字串格式，防止 400 錯！
       sleepTime: [''],
       wakeTime: [''],

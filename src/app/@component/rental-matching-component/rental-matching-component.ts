@@ -80,26 +80,42 @@ export class RentalMatchingComponent implements OnInit {
     console.log('準備傳送給後端的條件:', this.filters);
 
     this.rentalMatchingService.searchRentals(this.filters).subscribe({
-      next: (data) => {
+      next: (data: any) => {
         console.log('【前端檢查】後端成功回傳資料：', data);
 
+        // 🛡️ 防呆裝甲：預防隊友突然改變結構，把陣列包在物件裡 (例如 { data: [...] })
+        let dataArray = Array.isArray(data) ? data : (data?.data || data?.items || []);
+
         // 幫後端回傳的資料自動補上 displayType，並自動解析正確的圖片路徑
-        const formattedData = data.map(item => {
-          // 透過判斷物件是否有 price/Price 屬性來區分是產品還是房屋
-          const isProduct = item.price !== undefined || item.Price !== undefined || item.priceUnit !== undefined;
+        const formattedData = dataArray.map((item: any) => {
+
+          // 🌟 無敵轉接頭：直接讀取隊友 API 吐出的 productType 欄位來精準分類
+          let type = 'room';
+          if (item.productType === 'House' || item.ProductType === 'House') {
+            type = 'room';
+          } else if (item.productType === 'Product' || item.ProductType === 'Product' || item.productType === 'Skill') {
+            type = 'product';
+          } else {
+            // 備用降級方案 (如果遇到舊版資料沒有 productType 欄位，再用舊的計價單位去猜)
+            const isProduct = item.price !== undefined || item.Price !== undefined || item.priceUnit !== undefined;
+            type = isProduct ? 'product' : 'room';
+          }
 
           return {
             ...item,
-            displayType: isProduct ? 'product' : 'room',
-            // 🟢 關鍵修正：調用你寫好的 getCoverUrl 方法，把解析出來的網址塞給 item.url，這樣 HTML 才能成功讀取圖片
+            displayType: type,
             url: this.getCoverUrl(item)
           };
         });
 
-        // 將資料寫入 Signal，右側畫面就會自動更新
+
         this.rentalItems.set(formattedData);
       },
-      error: (err) => console.error('搜尋失敗', err)
+      error: (err) => {
+        console.error('搜尋失敗，隊友的 API 似乎在鬧脾氣', err);
+
+        this.rentalItems.set([]);
+      }
     });
   }
 
@@ -158,27 +174,37 @@ export class RentalMatchingComponent implements OnInit {
   /**
    * 取得首圖 (保留原始邏輯)
    */
-  getCoverUrl(item: any): string | null {
-    if (item.coverUrl) return item.coverUrl;
-    if (item.CoverUrl) return item.CoverUrl;
+  getCoverUrl(item: any): string {
+    let finalUrl = '';
 
-    if (item.images && item.images.length > 0) {
+
+    if (item.coverUrl) finalUrl = item.coverUrl;
+    else if (item.CoverUrl) finalUrl = item.CoverUrl;
+    else if (item.images && item.images.length > 0) {
       const coverImg = item.images.find((img: any) => img.isCover === true || img.IsCover === true);
-      return coverImg ? coverImg.url || coverImg.Url : item.images[0].url || item.images[0].Url;
+      finalUrl = coverImg ? (coverImg.url || coverImg.Url) : (item.images[0].url || item.images[0].Url);
     }
-
-    if (item.Images && item.Images.length > 0) {
+    else if (item.Images && item.Images.length > 0) {
       const coverImg = item.Images.find((img: any) => img.isCover === true || img.IsCover === true);
-      return coverImg ? coverImg.url || coverImg.Url : item.Images[0].url || item.Images[0].Url;
+      finalUrl = coverImg ? (coverImg.url || coverImg.Url) : (item.Images[0].url || item.Images[0].Url);
+    }
+    else if (item.imageUrls && item.imageUrls.length > 0) finalUrl = item.imageUrls[0];
+    else if (item.ImageUrls && item.ImageUrls.length > 0) finalUrl = item.ImageUrls[0];
+    else if (item.url) finalUrl = item.url;
+    else if (item.Url) finalUrl = item.Url;
+
+
+    if (finalUrl) {
+
+      if (finalUrl.startsWith('/')) {
+        return `https://localhost:7215${finalUrl}`;
+      }
+
+      return finalUrl;
     }
 
-    if (item.imageUrls && item.imageUrls.length > 0) return item.imageUrls[0];
-    if (item.ImageUrls && item.ImageUrls.length > 0) return item.ImageUrls[0];
 
-    if (item.url) return item.url;
-    if (item.Url) return item.Url;
-
-    return null;
+    return 'https://via.placeholder.com/400x300/EFEFEF/999999?text=No+Image';
   }
 
   /**

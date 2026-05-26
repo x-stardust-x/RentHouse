@@ -1,0 +1,68 @@
+/* 🔍 放大鏡背景遮罩 */
+.custom-lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85); /* 黑色半透明背景 */
+  z-index: 9999; /* 確保它在最上層 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* 🔍 放大鏡內容區 */
+.custom-lightbox-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 🔍 放大後的圖片 */
+.lightbox-img {
+  max-width: 100%;
+  max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* 🔍 關閉按鈕 */
+.btn-close-lightbox {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.2);
+    color: #ff4d4d;
+  }
+}
+
+/* 讓圖片被摸到的時候有一點回饋感 */
+.card-img-top:hover {
+  opacity: 0.8;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 手機版微調關閉按鈕位置 */
+@media (max-width: 768px) {
+  .btn-close-lightbox {
+    top: -40px;
+    right: 0;
+  }
+}

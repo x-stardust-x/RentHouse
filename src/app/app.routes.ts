@@ -88,6 +88,15 @@ export const routes: Routes = [
         loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
       },
 
+      // 個人專區
+      // {}
+      {
+        path: 'user-center',
+        loadComponent: () => import('./@layouts/user-center-layout/user-center-layout').then(c => c.UserCenterLayout),
+        // canActivate : [authGuard],
+        // data: { roles: ['young', 'old'] },
+      },
+
       // 聯絡我們
       {
         path: 'contact', component: ContactComponent

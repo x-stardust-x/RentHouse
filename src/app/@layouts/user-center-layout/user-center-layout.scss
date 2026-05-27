@@ -1,0 +1,52 @@
+/* ==========================================================================
+   個人專區整體版面配置 (User Center Layout)
+   ========================================================================== */
+.user-center-layout {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  /* 🟢 鎖定視窗，防止整個網頁出現亂滾動的雙滾動條 */
+  box-sizing: border-box;
+
+  // 1. 左側側邊欄外殼容器
+  &__sidebar {
+    width: 280px;
+    min-width: 280px;
+    /* 確保寬度鎖定，不會被右側內容擠壓變形 */
+    height: 100%;
+  }
+
+  // 2. 右側主區塊（包覆了頂部導覽與下方 router-outlet 內容）
+  &__main {
+    flex: 1;
+    /* 自動填滿剩餘的右側寬度 */
+    display: flex;
+    flex-direction: column;
+    /* 讓頂部導覽與內容區上下垂直排列 */
+    height: 100%;
+    overflow: hidden;
+  }
+
+  // 3. 頂部導覽列外殼容器
+  &__topbar {
+    width: 100%;
+    /* 高度與內部樣式交由 app-user-center-topbar 元件內部撐開 */
+  }
+
+  // 4. 🟢 右下角核心：未來頁面元件（router-outlet）渲染的內容主體
+  &__content {
+    flex: 1;
+    /* 自動填滿頂部導覽剩餘下來的垂直空間 */
+    padding: 32px;
+    /* 為內頁的表單、卡片留出舒適的呼吸間距 */
+    background-color: var(--color-bg-main);
+    /* 使用全局奶油白 (#FDFBF9) 襯托層次 */
+    overflow-y: auto;
+    /* 🟢 當 router 內頁功能太長時，只有這個區域會單獨出現滾動條 */
+    box-sizing: border-box;
+
+    /* 貼心提示：如果未來想讓裡面的元件有流暢的動態進場效果，可在這裡預留 */
+    position: relative;
+  }
+}

@@ -1,9 +1,10 @@
 import { Component, AfterViewInit, ElementRef } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-about-homiefun',
   standalone: true,
-  imports: [],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './about-homiefun-component.html',
   styleUrl: './about-homiefun-component.scss' // 備註：若您的 Angular 版本低於 17，請將 styleUrl 改為 styleUrls: ['./about-homiefun.component.scss']
 })
@@ -18,7 +19,7 @@ export class AboutHomiefunComponent implements AfterViewInit {
     // 精準控制 IntersectionObserver 的觸發點，防止大滿版圖塊進場時突兀閃爍
     const observerOptions: IntersectionObserverInit = {
       root: null, // 以瀏覽器 Viewport 作為監聽主體
-      rootMargin: '-40px 0px', // 稍做內縮，讓使用者滾動到視覺焦點時優雅滑入
+      rootMargin: '-40px 0px', // 稍做內縮，讓使用者滾動到視覺焦點時優雅 滑入
       threshold: 0.1 // 元素面積出現 10% 即啟動緩動
     };
 

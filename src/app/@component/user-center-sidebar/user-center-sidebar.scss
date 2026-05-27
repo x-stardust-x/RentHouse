@@ -3,18 +3,30 @@
    ========================================================================== */
 .user-sidebar {
   /* 🟢 核心修正：鎖定寬度與垂直滿版高度，防止往右擠壓撐滿螢幕 */
-  width: 280px;
-  min-width: 280px;
+  width: 260px;
+  min-width: 260px;
   height: 100vh;
   box-sizing: border-box;
 
-  padding: 24px 18px;
+  padding: 24px 12px;
   background-color: var(--color-bg-card);
   /* 容器純白基底 */
   border-right: 1px solid var(--color-border);
   /* 溫潤細線條邊框 */
   display: flex;
   flex-direction: column;
+
+  // &__top-wrapper {
+  //   position: sticky;
+  //   top: 0; // 如果全站有固定 Navbar，請改成與上方相同的設定（如 80px）
+  //   z-index: 100; // 層級設高，確保選單滾上來時會鑽到它後面
+
+  //   background-color: var(--color-bg-card); // 🔴 必須設定不透明背景色，文字才不會重疊破版
+
+  //   // 以下可依你原本的視覺微調
+  //   // padding: 1.5rem 1rem;
+  //   border-bottom: 1px solid var(--color-border);
+  // }
 
   // 1. 頂部品牌區
   &__brand {
@@ -103,7 +115,7 @@
     margin: 0;
     display: grid;
     gap: 4px;
-    overflow-y: auto;
+    // overflow-y: auto;
     /* 若選單過長允許內部滾動 */
 
     // 項目大分類標題 (如：租屋空間管理)

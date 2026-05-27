@@ -1,20 +1,21 @@
 <nav class="user-sidebar">
-
-  <div class="user-sidebar__brand">
-    <div class="user-sidebar__logo">R</div>
-    <div>
-      <h2>RentHouse</h2>
-      <p>個人會員專區</p>
+  <div class="user-sidebar__top-wrapper">
+    <div class="user-sidebar__brand">
+      <div class="user-sidebar__logo">R</div>
+      <div>
+        <h2>RentHouse</h2>
+        <p>個人會員專區</p>
+      </div>
     </div>
-  </div>
 
-  <div class="user-sidebar__role-toggle">
-    <button type="button" [class.is-active]="currentRole() === 'lessor'" (click)="switchRole('lessor')">
-      我是出租人
-    </button>
-    <button type="button" [class.is-active]="currentRole() === 'lessee'" (click)="switchRole('lessee')">
-      我是承租人
-    </button>
+    <div class="user-sidebar__role-toggle">
+      <button type="button" [class.is-active]="currentRole() === 'lessor'" (click)="switchRole('lessor')">
+        我是出租人
+      </button>
+      <button type="button" [class.is-active]="currentRole() === 'lessee'" (click)="switchRole('lessee')">
+        我是承租人
+      </button>
+    </div>
   </div>
 
   <ul class="user-sidebar__menu">
@@ -38,7 +39,7 @@
 
     <li class="user-sidebar__section-title">租屋空間管理</li>
     <li>
-      <a class="user-sidebar__link">
+      <a routerLink="/user-center/rent" class="user-sidebar__link" routerLinkActive="is-active">
         <span class="material-symbols-outlined">add_box</span>
         <span>發布新房源</span>
       </a>
@@ -57,11 +58,17 @@
     </li>
 
 
-    <li class="user-sidebar__section-title">工具與技能共享</li>
+    <li class="user-sidebar__section-title">工具 / 技能共享</li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">add_box</span>
+        <span>發布新工具 / 技能</span>
+      </a>
+    </li>
     <li>
       <a class="user-sidebar__link">
         <span class="material-symbols-outlined">construction</span>
-        <span>共享項目管理</span>
+        <span>共享工具 / 技能管理</span>
       </a>
     </li>
     <li>

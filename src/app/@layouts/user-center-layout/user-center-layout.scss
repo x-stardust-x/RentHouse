@@ -1,52 +1,57 @@
-/* ==========================================================================
-   個人專區整體版面配置 (User Center Layout)
-   ========================================================================== */
+// ===================================================
+// 🚀 個人專區外層大佈局：頂部局部固定（Sticky）完美版
+// ===================================================
+
+// 💡 變數設定：如果最上方還有一個全站大導覽列（厚厝味Navbar）是固定的，請填寫它的高度（例如 80px）
+// 如果該導覽列會隨網頁一起滾走、或是這就是最頂端，這裡請直接設為 0px
+$global-navbar-height: 70px;
+
 .user-center-layout {
   display: flex;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  /* 🟢 鎖定視窗，防止整個網頁出現亂滾動的雙滾動條 */
-  box-sizing: border-box;
+  width: 100%;
+  min-height: 100vh;          // 保底撐滿螢幕
+  background-color: var(--color-bg-main);
+  overflow: visible;          // 徹底拔除外殼滾動條
 
-  // 1. 左側側邊欄外殼容器
+  // --- 左側側邊欄外殼 ---
   &__sidebar {
-    width: 280px;
-    min-width: 280px;
-    /* 確保寬度鎖定，不會被右側內容擠壓變形 */
-    height: 100%;
+    width: 260px;             // 依你原本的側邊欄寬度調整
+    flex-shrink: 0;
+    background-color: var(--color-bg-card);
+    border-right: 1px solid var(--color-border);
+
+    // 🚀 關鍵：讓側邊欄高度自然延伸（跟右側內容一樣長），內部的 sticky 才能正常運作
+    height: auto;
+    overflow: visible;
   }
 
-  // 2. 右側主區塊（包覆了頂部導覽與下方 router-outlet 內容）
+  // --- 右側主內容外殼 ---
   &__main {
     flex: 1;
-    /* 自動填滿剩餘的右側寬度 */
     display: flex;
     flex-direction: column;
-    /* 讓頂部導覽與內容區上下垂直排列 */
-    height: 100%;
-    overflow: hidden;
+    min-width: 0;
+    height: auto;
+    overflow: visible;
   }
 
-  // 3. 頂部導覽列外殼容器
+  // --- 🎯 右側頂部控制列 (紅圈 2 固定處) ---
   &__topbar {
+    position: sticky;
+    top: $global-navbar-height; // 黏在螢幕最頂端
+    z-index: 99;                // 確保層級夠高，能壓住往上滾動的表單內容
+
     width: 100%;
-    /* 高度與內部樣式交由 app-user-center-topbar 元件內部撐開 */
+    background-color: #ffffff;  // 🔴 必須是不透明實色背景！
+    border-bottom: 1px solid var(--color-border);
   }
 
-  // 4. 🟢 右下角核心：未來頁面元件（router-outlet）渲染的內容主體
+  // --- 下方房產/技能表單內容區 ---
   &__content {
     flex: 1;
-    /* 自動填滿頂部導覽剩餘下來的垂直空間 */
-    padding: 32px;
-    /* 為內頁的表單、卡片留出舒適的呼吸間距 */
-    background-color: var(--color-bg-main);
-    /* 使用全局奶油白 (#FDFBF9) 襯托層次 */
-    overflow-y: auto;
-    /* 🟢 當 router 內頁功能太長時，只有這個區域會單獨出現滾動條 */
-    box-sizing: border-box;
-
-    /* 貼心提示：如果未來想讓裡面的元件有流暢的動態進場效果，可在這裡預留 */
-    position: relative;
+    padding: 2rem;
+    height: auto;
+    overflow: visible;          // 絕不產生第二條滾動條
+    background-color: transparent;
   }
 }

@@ -89,12 +89,21 @@ export const routes: Routes = [
       },
 
       // 個人專區
-      // {}
       {
         path: 'user-center',
         loadComponent: () => import('./@layouts/user-center-layout/user-center-layout').then(c => c.UserCenterLayout),
         // canActivate : [authGuard],
-        // data: { roles: ['young', 'old'] },
+        data: { roles: ['young', 'old'] },
+        // 發布新房源
+        children: [
+
+          // { path: '', redirectTo: 'rent', pathMatch: 'full' },
+
+          {
+            path: 'rent',
+            loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent),
+          },
+        ],
       },
 
       // 聯絡我們

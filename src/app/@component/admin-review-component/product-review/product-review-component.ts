@@ -18,20 +18,24 @@ export class ProductReviewComponent implements OnInit {
   // 🌟 2. 原始資料庫 (保險箱)
   rawProducts = signal<any[]>([]);
 
-  // 🌟 3. Computed 核心魔法：根據下拉選單自動過濾
+  // 🌟 3. Computed 核心魔法：根據下拉選單自動過濾 (✅ 已升級為 Status 數字判斷)
   filteredProducts = computed(() => {
     let result = this.rawProducts();
     const status = this.currentStatus();
 
     if (status === 'pending') {
-      // 待審核 (IsOnline 為 false)
-      result = result.filter(p => p.isOnline === false);
+      // 待審核 (Status 為 0)
+      result = result.filter(p => p.status === 0);
     } else if (status === 'active') {
-      // 已上架 (IsOnline 為 true)
-      result = result.filter(p => p.isOnline === true);
+      // 已上架 (Status 為 1)
+      result = result.filter(p => p.status === 1);
     }
     return result;
   });
+
+  // 🌟 4. 圖片放大的變數 (✅ 已經乖乖收進 Class 裡面了)
+  showImageModal: boolean = false;
+  fullImageUrl: string = '';       // 存放要放大的圖片網址
 
   constructor(private houseService: HouseService) {}
 
@@ -53,7 +57,7 @@ export class ProductReviewComponent implements OnInit {
       this.houseService.approveProduct(id).subscribe({
         next: () => {
           alert('核准成功！已發布至前台探索大廳。');
-          this.loadAllProducts(); // 重新載入，該筆資料會消失
+          this.loadAllProducts(); // 重新載入，該筆資料會跑到「已上架」
         },
         error: (err) => console.error('核准失敗', err)
       });
@@ -63,48 +67,42 @@ export class ProductReviewComponent implements OnInit {
   // 退回資產
   rejectProduct(id: number) {
     if (confirm('確定要退回並刪除這筆申請嗎？')) {
-      // 🌟 關鍵修正：把 takeDownProduct 換成 deleteProduct
       this.houseService.deleteProduct(id).subscribe({
         next: () => {
           alert('已退回申請並銷毀資料！');
-
           this.loadAllProducts();
         },
         error: (err) => console.error('退回失敗', err)
       });
     }
-
   }
+
+  // 強制下架 / 徹底刪除
   takeDownProduct(product: any) {
-    if (confirm('確定要將這項資產強制下架，並移出列表嗎？')) {
-      // 💡 這裡呼叫我們寫在 houseService 裡的 API，比較整潔
+    if (confirm('確定要將這項資產/技能徹底刪除嗎？此動作無法復原！')) {
+      // ✅ 修正 houseService 錯字
       this.houseService.takeDownProduct(product.id).subscribe({
         next: (res: any) => {
-          alert('資產已成功下架！');
+          alert('資產/技能已成功刪除！');
 
-          // 🌟 核心魔法：下架時，直接更新原始資料庫的 Signal 陣列，把它過濾掉！
-          // ⚠️ 注意：請確認你存放所有資產的變數名稱是不是 rawProducts
-          // (如果是 products，請把下面的 rawProducts 改成 products)
+          // 核心魔法：過濾掉被刪除的 id，讓它從畫面上瞬間消失
           this.rawProducts.set(this.rawProducts().filter((p: any) => p.id !== product.id));
         },
         error: (err: any) => {
           console.error(err);
-          alert('下架失敗！');
+          alert('刪除失敗，請檢查系統連線！');
         }
       });
-}
-}
-showImageModal: boolean = false;
-fullImageUrl: string = '';       // 存放要放大的圖片網址
+    }
+  }
 
-  // 打開放大鏡
+  // 打開放大鏡 (✅ 已經乖乖收進 Class 裡面了)
   openFullImage(url: string) {
-    // 🌟 記得補上後端網址前綴！
     this.fullImageUrl = 'https://localhost:7215' + url;
     this.showImageModal = true;
   }
 
-  // 關閉放大鏡
+  // 關閉放大鏡 (✅ 已經乖乖收進 Class 裡面了)
   closeFullImage() {
     this.showImageModal = false;
     this.fullImageUrl = '';

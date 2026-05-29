@@ -3,134 +3,121 @@ import { authGuard } from './@guard/auth-guard';
 import { loginGuard } from './@guard/login-guard';
 import { ContactComponent } from './@component/contact-component/contact';
 import { AdminReviewComponent } from './@component/admin-review-component/admin-review-component';
-
 import { PublicLayout } from './@layouts/public-layout/public-layout';
 import { AdminLayout } from './@layouts/admin-layout/admin-layout';
 
-
 export const routes: Routes = [
-
-
   {
-
+    // ==========================================
     // 前端公版
+    // ==========================================
     path: '',
     component: PublicLayout,
     children: [
-
-      // 首頁
       {
         path: 'home',
-        // redirectTo: 'home',
         loadComponent: () => import('./@component/home-component/home-component').then(c => c.HomeComponent),
         pathMatch: 'full'
       },
-
-      // 登入
       {
         path: 'login',
         loadComponent: () => import('./@component/login-component/login-component').then(c => c.LoginComponent),
-        // canActivate : [loginGuard]
       },
-
-      // 註冊
       {
         path: 'register',
         loadComponent: () => import('./@component/register-component/register-component').then(c => c.RegisterComponent),
         canActivate: [loginGuard]
       },
-
-      // 會員中心
       {
         path: 'member',
-        // loadComponent: () => import('./@component/member-component/member-component').then(c => c.MemberComponent),
-        // canActivate : [authGuard],
         data: { roles: ['young', 'old'] },
-        children: [{
-          path: 'dashboard',
-          loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
-        }, {
-          path: 'info',
-          loadComponent: () => import('./@component/@member/member-info-component/member-info-component').then(c => c.MemberInfoComponent),
-        }, {
-          path: 'edit',
-          loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
-        }],
+        children: [
+          {
+            path: 'dashboard',
+            loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
+          },
+          {
+            path: 'info',
+            loadComponent: () => import('./@component/@member/member-info-component/member-info-component').then(c => c.MemberInfoComponent),
+          },
+          {
+            path: 'edit',
+            loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
+          }
+        ],
       },
-
-      // 租賃物媒合 列表頁
       {
         path: 'rental-matching-component',
         loadComponent: () => import('./@component/rental-matching-component/rental-matching-component').then(c => c.RentalMatchingComponent),
       },
-
-      // 租賃物媒合 詳情頁
       {
         path: 'rental-matching-detail/:type/:id',
         loadComponent: () => import('./@component/rental-matching-detail-component/rental-matching-detail-component').then(c => c.RentalMatchingDetailComponent),
       },
-
-      // 出租人個人公開主頁
       {
         path: 'lessor-profile/:id',
         loadComponent: () => import('./@component/lessor-profile-component/lessor-profile-component').then(c => c.LessorProfileComponent),
       },
-
-      // 租屋管理
       {
         path: 'rent',
         loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
       },
-
-      // 聯絡我們
       {
-        path: 'contact', component: ContactComponent
+        path: 'contact',
+        component: ContactComponent
       },
-
     ]
   },
 
-
-
-
-  // 後端管理公版
   {
+    // ==========================================
+    // 後端管理公版 (攤平所有路由，解決 admin/admin 問題)
+    // ==========================================
     path: 'admin',
     component: AdminLayout,
     children: [
+      // 🌟 1. 預設一進來 /admin，就自動導向 admin-review
+      { path: '', redirectTo: 'admin-review', pathMatch: 'full' },
 
-      // 管理員
-      {
-        path: 'admin',
-        loadComponent: () => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
-        // canActivate : [authGuard],
-        data: { roles: ['admin'] },
-        children: [{
-          path: 'news',
-          loadComponent: () => import('./@component/@admin/news-component/news-component').then(c => c.NewsComponent),
-        },
-        {
-          path: 'news/create',
-          loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
-        }, {
-          path: 'news/edit/:id',
-          loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
-        }, {
-          path: 'logs',
-          loadComponent: () => import('./@component/@admin/logs-component/logs-component').then(c => c.LogsComponent),
-        }],
-      },
-
-
-
-      // 租賃物管理
+      // 🌟 2. 租賃物管理
       {
         path: 'admin-review',
         component: AdminReviewComponent,
       },
 
+      // 🌟 3. 新增的「聯絡訊息管理」
+      {
+        path: 'contact-messages',
+        loadComponent: () => import('./@component/admin-contact/admin-contact').then(c => c.AdminContactComponent)
+      },
+
+      // 🌟 4. 原本的 dashboard (把原本會造成重複的 'admin' 改名成 'dashboard')
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
+        data: { roles: ['admin'] },
+      },
+
+      // 🌟 5. 新聞與 Logs 管理 (直接與 admin-review 放在同一層)
+      {
+        path: 'news',
+        loadComponent: () => import('./@component/@admin/news-component/news-component').then(c => c.NewsComponent),
+      },
+      {
+        path: 'news/create',
+        loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
+      },
+      {
+        path: 'news/edit/:id',
+        loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
+      },
+      {
+        path: 'logs',
+        loadComponent: () => import('./@component/@admin/logs-component/logs-component').then(c => c.LogsComponent),
+      }
     ]
   },
+
 
 
 

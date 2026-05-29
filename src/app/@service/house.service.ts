@@ -93,9 +93,9 @@ export class HouseService {
   }
 
   // 5. 強制下架資產 (變成待審核)
-  takeDownProduct(id: number) {
-    return this.http.put(`https://localhost:7215/api/RentProduct/TakeDown/${id}`, {});
-  }
+ takeDownProduct(id: number) {
+  return this.http.delete(`https://localhost:7215/api/RentProduct/TakeDown/${id}`);
+}
 
   // 6. 刪除資產 (退回申請時使用)
   deleteProduct(id: number) {

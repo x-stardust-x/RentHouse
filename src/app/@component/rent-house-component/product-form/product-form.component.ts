@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HouseService } from '../../../@service/house.service'; // 🌟 修正路徑
-
+import { ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'app-product-form',
   standalone: true,
@@ -27,7 +27,7 @@ export class ProductFormComponent {
     address: ''
   };
 
-  constructor(private houseService: HouseService) {}
+  constructor(private houseService: HouseService, private cdr: ChangeDetectorRef) {}
 
   onProductFilesSelected(event: any) {
     const files = event.target.files;
@@ -41,6 +41,7 @@ export class ProductFormComponent {
             previewUrl: e.target.result,
             isCover: this.productPendingPhotos.length === 0
           });
+          this.cdr.detectChanges();
         };
         reader.readAsDataURL(file);
       }

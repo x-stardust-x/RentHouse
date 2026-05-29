@@ -4,7 +4,7 @@ import { HouseService } from '../../../@service/house.service'; // 🌟 修正�
 import { CreateHouseDto } from '../../../@interface/house';
 import { District } from '../../../@interface/location';
 import { LocationSelectComponent } from '../../location-select-component/location-select-component';
-
+import { ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'app-house-form',
   standalone: true,
@@ -43,7 +43,7 @@ export class HouseFormComponent implements OnInit {
     advancedRules: ''
   };
 
-  constructor(private houseService: HouseService) {}
+  constructor(private houseService: HouseService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.loadHouses();
@@ -71,7 +71,9 @@ export class HouseFormComponent implements OnInit {
             file: file,
             previewUrl: e.target.result,
             isCover: this.pendingPhotos.length === 0
+
           });
+          this.cdr.detectChanges();
         };
         reader.readAsDataURL(file);
       }

@@ -1,0 +1,122 @@
+<div class="p-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">📥 來自前台的聯絡訊息</h2>
+
+    <div>
+      <button class="btn btn-outline-primary me-2" (click)="toggleBatchMode()">
+        {{ isBatchMode ? '取消批次管理' : '批次管理' }}
+      </button>
+
+      @if (isBatchMode) {
+        <button class="btn"
+                [ngClass]="selectedIds.length > 0 ? 'btn-danger' : 'btn-outline-secondary'"
+                (click)="batchDelete()">
+          <i class="icon-trash"></i> 批次刪除 (已選 {{ selectedIds.length }} 筆)
+        </button>
+      }
+    </div>
+  </div>
+
+  <table class="table table-bordered table-striped table-hover">
+    <thead class="table-dark">
+      <tr>
+        @if (isBatchMode) {
+          <th style="width: 50px; text-align: center;">
+            <input type="checkbox" class="form-check-input"
+                   (change)="toggleAll($event)"
+                   [checked]="selectedIds.length === messages().length && messages().length > 0">
+          </th>
+        }
+        <th>時間</th>
+        <th>姓名</th>
+        <th>主旨</th>
+        <th>內容</th>
+        <th>狀態</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (msg of messages(); track msg.id) {
+        <tr>
+          @if (isBatchMode) {
+            <td style="text-align: center;">
+              <input type="checkbox" class="form-check-input"
+                     [checked]="isSelected(msg.id)"
+                     (change)="toggleSelection(msg.id, $event)">
+            </td>
+          }
+
+          <td>{{ msg.createAt | date:'MM/dd HH:mm' }}</td>
+          <td>{{ msg.contactName }}</td>
+          <td>{{ msg.subject }}</td>
+
+          <td>
+            @if(msg.content.length > 15) {
+              {{ msg.content | slice:0:15 }}...
+            } @else {
+              {{ msg.content }}
+            }
+          </td>
+
+          <td>
+             @if(msg.status === 0) {
+               <span class="badge bg-warning text-dark">未處理</span>
+             } @else {
+               <span class="badge bg-success">已處理</span>
+             }
+          </td>
+
+          <td>
+            <button class="btn btn-sm btn-info text-white me-2"
+                    data-bs-toggle="modal"
+                    data-bs-target="#messageModal"
+                    (click)="openModal(msg)">
+              查看
+            </button>
+
+            <button class="btn btn-sm btn-danger text-white"
+                    (click)="deleteMessage(msg.id)">
+              刪除
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="messageModalLabel">
+          來自 {{ selectedMsg?.contactName }} 的訊息
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <p><strong>🕒 時間：</strong>{{ selectedMsg?.createAt | date:'yyyy/MM/dd HH:mm' }}</p>
+        <p><strong>📧 Email：</strong>{{ selectedMsg?.email }}</p>
+        <p><strong>📝 主旨：</strong>{{ selectedMsg?.subject }}</p>
+        <p style="white-space: pre-wrap;">{{ selectedMsg?.content }}</p>
+
+        <hr>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold text-primary">✍️ 回覆給客人：</label>
+          <textarea class="form-control" rows="4" placeholder="請輸入您的回覆內容..." [(ngModel)]="replyText"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" (click)="sendReply()" data-bs-dismiss="modal">
+          <i class="icon-envelope"></i> 發送回信
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

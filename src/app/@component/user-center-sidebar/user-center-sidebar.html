@@ -1,0 +1,185 @@
+<nav class="user-sidebar">
+  <div class="user-sidebar__top-wrapper">
+    <div class="user-sidebar__brand">
+      <div class="user-sidebar__logo">R</div>
+      <div>
+        <h2>RentHouse</h2>
+        <p>個人會員專區</p>
+      </div>
+    </div>
+
+    <div class="user-sidebar__role-toggle">
+      <button type="button" [class.is-active]="currentRole() === 'lessor'" (click)="switchRole('lessor')">
+        我是出租人
+      </button>
+      <button type="button" [class.is-active]="currentRole() === 'lessee'" (click)="switchRole('lessee')">
+        我是承租人
+      </button>
+    </div>
+  </div>
+
+  <ul class="user-sidebar__menu">
+
+    @if (currentRole() === 'lessor') {
+
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>營運主控台</span>
+      </a>
+    </li>
+
+    <li class="user-sidebar__section-title">租客名單</li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">group</span>
+        <span>當前租客名單</span>
+      </a>
+    </li>
+
+    <li class="user-sidebar__section-title">租屋空間管理</li>
+    <li>
+      <a routerLink="/user-center/rent" class="user-sidebar__link" routerLinkActive="is-active">
+        <span class="material-symbols-outlined">add_box</span>
+        <span>發布新房源</span>
+      </a>
+    </li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">home_work</span>
+        <span>房源管理</span>
+      </a>
+    </li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">fact_check</span>
+        <span>看房預約審核</span>
+      </a>
+    </li>
+
+
+    <li class="user-sidebar__section-title">工具 / 技能共享</li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">add_box</span>
+        <span>發布新工具 / 技能</span>
+      </a>
+    </li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">construction</span>
+        <span>共享工具 / 技能管理</span>
+      </a>
+    </li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">assignment_turned_in</span>
+        <span>預約與借用審核</span>
+      </a>
+    </li>
+
+
+    <!-- <li class="user-sidebar__section-title">財務與服務</li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">payments</span>
+        <span>應收租金與帳務</span>
+      </a>
+    </li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">build_circle</span>
+        <span>租客報修處理</span>
+      </a>
+    </li> -->
+
+    }
+
+    @else {
+
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>總覽主控台</span>
+      </a>
+    </li>
+
+    <li class="user-sidebar__section-title">看房申請</li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">pending_actions</span>
+        <span>看房申請追蹤</span>
+      </a>
+    </li>
+
+    <!-- <li class="user-sidebar__section-title">租屋生活</li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">description</span>
+        <span>我的當前租約</span>
+      </a>
+    </li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">handyman</span>
+        <span>設備報修申請</span>
+      </a>
+    </li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">receipt_long</span>
+        <span>付租歷史紀錄</span>
+      </a>
+    </li> -->
+
+    <li class="user-sidebar__section-title">共享互動</li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">schedule</span>
+        <span>工具與技能預約紀錄</span>
+      </a>
+    </li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">insights</span>
+        <span>智慧配對設定</span>
+      </a>
+    </li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">favorite</span>
+        <span>我的收藏清單</span>
+      </a>
+    </li>
+
+    }
+
+    <hr class="user-sidebar__divider">
+
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">interests</span>
+        <span>個人偏好設定</span>
+      </a>
+    </li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">verified_user</span>
+        <span>身分實名認證</span>
+      </a>
+    </li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">shield_person</span>
+        <span>聯絡資訊授權設定</span>
+      </a>
+    </li>
+    <li>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">manage_accounts</span>
+        <span>帳號與安全設定</span>
+      </a>
+    </li>
+
+  </ul>
+</nav>

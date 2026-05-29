@@ -1,4 +1,46 @@
-<div class="dashboard-container">
+<div class="rental-dashboard">
+
+  <header class="rental-dashboard__header">
+    <h2 class="rental-dashboard__title">
+      <span class="material-symbols-outlined">dashboard_customize</span>
+      房東專區：發布上架申請
+    </h2>
+
+    <div class="rental-dashboard__toggle-wrapper">
+      <div class="rental-dashboard__toggle-group">
+
+        <button type="button" class="rental-dashboard__toggle-btn" [class.is-active]="currentTab() === 'rooms'"
+          (click)="setTab('rooms')">
+          <span class="rental-dashboard__toggle-icon">🏠</span>
+          <span class="rental-dashboard__toggle-text">共居空間 (Rooms)</span>
+        </button>
+
+        <button type="button" class="rental-dashboard__toggle-btn" [class.is-active]="currentTab() === 'assets'"
+          (click)="setTab('assets')">
+          <span class="rental-dashboard__toggle-icon">🛠️</span>
+          <span class="rental-dashboard__toggle-text">資產 / 技能 (Assets & Skills)</span>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <main class="rental-dashboard__content">
+    @if (currentTab() === 'rooms') {
+    <app-house-form></app-house-form>
+    }
+    @if (currentTab() === 'assets') {
+    <app-product-form></app-product-form>
+    }
+  </main>
+
+</div>
+
+
+
+
+
+<!-- <div class="dashboard-container">
 
   <div class="header-section text-center mb-4 mt-3">
     <h2 class="fw-bold mb-3" style="color: #1e293b;">房東專區：發布上架申請</h2>
@@ -34,4 +76,4 @@
     }
   </div>
 
-</div>
+</div> -->

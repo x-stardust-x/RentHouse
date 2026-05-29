@@ -8,6 +8,7 @@
   /* 確保內容少時，Footer 依然貼在最底部 */
   background-color: var(--color-bg-main);
   overflow-x: clip;
+  overflow-y: visible !important;
 }
 
 /* ==========================================================================
@@ -135,12 +136,12 @@
    ========================================================================== */
 .public-layout__content {
   flex: 1;
-  padding: 2.5rem 2rem;
-  /* 給內容區預留優雅的留白 */
-  max-width: 1400px;
+  // padding: 2.5rem 2rem;
+  // max-width: 1400px;
   width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
+  overflow-y: visible !important;
 }
 
 /* ==========================================================================

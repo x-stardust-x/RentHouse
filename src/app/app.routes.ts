@@ -94,15 +94,23 @@ export const routes: Routes = [
         loadComponent: () => import('./@layouts/user-center-layout/user-center-layout').then(c => c.UserCenterLayout),
         // canActivate : [authGuard],
         data: { roles: ['young', 'old'] },
-        // 發布新房源
         children: [
-
           // { path: '', redirectTo: 'rent', pathMatch: 'full' },
-
+          // 發布新房源
           {
             path: 'rent',
             loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent),
           },
+          // 看房預約審核
+          {
+            path: 'house-viewing-approval',
+            loadComponent: () => import('./@component/house-viewing-approval-component/house-viewing-approval-component').then(c => c.HouseViewingApprovalComponent),
+          },
+          // 工具借用 / 技能預約審核
+          {
+            path: 'product-booking-approval-component',
+            loadComponent: () => import('./@component/product-booking-approval-component/product-booking-approval-component').then(c => c.ProductBookingApprovalComponent),
+          }
         ],
       },
 

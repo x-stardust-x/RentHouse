@@ -1,0 +1,402 @@
+/* 外層容器 */
+.review-page-container {
+  margin: 0 auto;
+  font-family: inherit;
+}
+
+/* 頁面標題 */
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--color-text-main, #2B2725);
+  margin: 0 0 0.5rem 0;
+}
+
+.page-subtitle {
+  font-size: 0.95rem;
+  color: var(--color-text-muted, #8E8680);
+  margin: 0;
+}
+
+/* 頁籤區塊 */
+.tabs-container {
+  display: flex;
+  gap: 2rem;
+  border-bottom: 1px solid var(--color-border, #EAE4DE);
+  margin-bottom: 2rem;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text-muted, #8E8680);
+  padding: 0.75rem 0;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.tab-button:hover {
+  color: var(--color-text-main, #2B2725);
+}
+
+.tab-button.is-active {
+  color: var(--color-primary, #E66F43);
+  font-weight: 600;
+}
+
+.tab-button.is-active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--color-primary, #E66F43);
+  border-radius: 3px 3px 0 0;
+}
+
+/* 預約列表清單 */
+.reservation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 單一預約卡片 */
+.reservation-card {
+  background-color: #FFFFFF;
+  border: 1px solid #EAE4DE;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(43, 39, 37, 0.03);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.reservation-card:hover {
+  box-shadow: 0 10px 25px rgba(43, 39, 37, 0.08);
+}
+
+/* 卡片頭部 */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f5f0ec;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.status-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+}
+
+.status-pending {
+  background-color: #FFF2EE;
+  color: #CE5B30;
+}
+
+/* 類型分類標籤 */
+.type-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.badge-tool {
+  background-color: #EBF7EE;
+  color: #2E7D32;
+}
+
+.badge-skill {
+  background-color: #F3E5F5;
+  color: #6A1B9A;
+}
+
+.item-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #8C533E;
+  /* 對齊設計稿的咖啡橘字體 */
+}
+
+.order-number {
+  font-size: 0.85rem;
+  color: #A09A96;
+}
+
+/* 卡片主體 (網格雙欄) */
+.card-body {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 2rem;
+  padding: 1.5rem;
+}
+
+/* 左欄：申請人 */
+.applicant-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.applicant-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #eee;
+}
+
+.applicant-name {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.15rem;
+  color: #2B2725;
+}
+
+.profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.profile-pill {
+  background-color: #EBF1FA;
+  /* 淺藍底色對齊設計稿 */
+  color: #55728C;
+  /* 灰藍字體 */
+  font-size: 0.75rem;
+  padding: 0.2rem 0.75rem;
+  border-radius: 30px;
+  font-weight: 500;
+}
+
+/* 共享規格細節灰框 */
+.contact-info-box {
+  background-color: #F8F9FA;
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  color: #4A4A4A;
+}
+
+.text-highlight {
+  color: #D35400;
+
+  .icon-price {
+    color: #E67E22;
+  }
+}
+
+.text-alert {
+  color: #C0392B;
+  background-color: #FDEDEC;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.info-icon {
+  font-size: 1.1rem;
+  color: #888;
+}
+
+.text-muted {
+  color: #8E8680;
+}
+
+/* 右欄：看房細節 */
+.section-label {
+  font-size: 0.85rem;
+  color: #8E8680;
+  margin: 0 0 0.5rem 0;
+}
+
+.viewing-time-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid #EAE4DE;
+  border-radius: 30px;
+  padding: 0.75rem 1.25rem;
+  color: #9D5B3A;
+  /* 深焦糖字體 */
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 1.25rem;
+  background-color: #FAFAF9;
+}
+
+.time-icon {
+  color: #C08D73;
+}
+
+/* 引言框 */
+.message-quote-box {
+  background-color: #F4F7FB;
+  /* 淺藍灰底色 */
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+  min-height: 100px;
+}
+
+.quote-icon-bg {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  font-size: 4rem;
+  color: #E2EAF4;
+  /* 浮水印般的超大引號 */
+  z-index: 0;
+  transform: rotate(180deg);
+}
+
+.message-text {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #55606E;
+  /* 藍灰字體 */
+}
+
+/* 卡片底部 (操作區) */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid #f5f0ec;
+  background-color: #FFFFFF;
+}
+
+.match-score-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: #FFF2EE;
+  color: #A65C32;
+  /* 深焦糖色 */
+  padding: 0.4rem 0.85rem;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.sparkle-icon {
+  font-size: 1rem;
+}
+
+/* 底部按鈕群 */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.action-btn {
+  padding: 0.6rem 1.25rem;
+  border-radius: 30px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* 婉拒 (純文字) */
+.btn-text {
+  background: transparent;
+  border: none;
+  color: #8E8680;
+}
+
+.btn-text:hover {
+  color: #2B2725;
+  background-color: #f8f9fa;
+}
+
+/* 提議改期 (空心框) */
+.btn-outline {
+  background: transparent;
+  border: 1px solid #A65C32;
+  color: #A65C32;
+}
+
+.btn-outline:hover {
+  background: #FFF9F5;
+}
+
+/* 接受預約 (實心咖啡橘) */
+.btn-fill {
+  background-color: #B25D2B;
+  /* 完美還原設計稿中的深橘/棕色 */
+  border: 1px solid #B25D2B;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.btn-fill:hover {
+  background-color: #924B21;
+}
+
+/* 查無資料 */
+.empty-state {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: #8E8680;
+  background-color: #FFFFFF;
+  border-radius: 16px;
+  border: 1px dashed #EAE4DE;
+}
+
+/* 響應式：手機版時切換為單欄排列 */
+@media (max-width: 768px) {
+  .card-body {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .card-footer {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .action-buttons {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

@@ -5,7 +5,7 @@
   /* 🟢 核心修正：鎖定寬度與垂直滿版高度，防止往右擠壓撐滿螢幕 */
   width: 260px;
   min-width: 260px;
-  height: 100vh;
+  // height: 100vh;
   box-sizing: border-box;
 
   padding: 24px 12px;

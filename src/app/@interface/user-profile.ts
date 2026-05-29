@@ -20,8 +20,8 @@ export interface UserProfile {
   districtName: string;
   zipCode: string;
 
-  sleepTime: number;
-  wakeTime: number;
+  sleepTime: string;
+  wakeTime: string;
 
   cleanLevel: number;
   noiseTolerance: number;

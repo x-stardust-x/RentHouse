@@ -92,6 +92,7 @@ export class MemberEditComponent {
 
         districtId: profile.districtId,
 
+
         sleepTime: profile.sleepTime,
         wakeTime: profile.wakeTime,
 
@@ -121,7 +122,19 @@ export class MemberEditComponent {
   }
 
   onSubmit() {
+    if (this.userProfileForm.value.sleepTime?.length === 5) {
+      this.userProfileForm.patchValue({
+        sleepTime: this.userProfileForm.value.sleepTime + ':00'
+      });
+    }
+
+    if (this.userProfileForm.value.wakeTime?.length === 5) {
+      this.userProfileForm.patchValue({
+        wakeTime: this.userProfileForm.value.wakeTime + ':00'
+      });
+    }
     var form: UserProfile = this.userProfileForm.getRawValue();
+
     this.usersev.updateProfile(form);
   }
 

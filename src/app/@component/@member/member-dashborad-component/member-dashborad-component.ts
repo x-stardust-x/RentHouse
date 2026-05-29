@@ -32,9 +32,9 @@ export class MemberDashboradComponent {
     if (!profile) return tags;
 
     // 早睡
-    if (profile.sleepTime <= 23) {
-      tags.push('早睡早起');
-    }
+    // if (profile.sleepTime <= 23) {
+    //   tags.push('早睡早起');
+    // }
 
     // 愛乾淨
     if (profile.cleanLevel >= 4) {

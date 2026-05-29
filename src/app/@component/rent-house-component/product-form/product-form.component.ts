@@ -13,7 +13,7 @@ export class ProductFormComponent {
   productPendingPhotos: { file: File, previewUrl: string, isCover: boolean }[] = [];
 
   productFormData: any = {
-    accountId: 1,
+    accountId: 101,
     name: '',
     category: '工具',
     description: '',

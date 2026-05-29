@@ -1,0 +1,94 @@
+.table-wrapper {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  overflow: hidden;
+}
+
+/* 標題 */
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+  }
+}
+
+/* 表格 */
+.custom-table {
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* 表頭 */
+th.mat-header-cell {
+  background: #f5f7fb;
+  font-weight: 600;
+  color: #333;
+}
+
+/* hover效果 */
+tr.mat-row:hover {
+  background: #f1f5ff;
+  transition: 0.2s;
+}
+
+/* cell padding */
+td.mat-cell, th.mat-header-cell {
+  padding: 12px 16px;
+}
+
+/* badge */
+.badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  display: inline-block;
+}
+
+.badge.user {
+  background: #e8f0fe;
+  color: #1a73e8;
+}
+
+.badge.action {
+  background: #e6ffed;
+  color: #1b7f3a;
+}
+
+/* IP */
+.ip {
+  background: #f4f4f4;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+/* paginator */
+.paginator {
+  margin-top: 10px;
+}
+
+.table-filter {
+  margin: 10px 0 16px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.date-filter {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.date-filter mat-form-field {
+  width: 200px;
+}

@@ -13,7 +13,15 @@ export class UserService {
   profile = signal<UserProfile | null>(null);
   private readonly baseUrl = 'https://localhost:7215/api/User/'
 
-  loadProfile(userId: number) {
+  public users = signal<any[]>([]);
+
+  loadAllUsers(){
+    this.http.get<any>(this.baseUrl).subscribe((res) => {
+      this.users.set(res);
+    });
+  }
+
+  loadProfile(userId : number){
     this.http.get<UserProfile>(this.baseUrl + `profile/${userId}`).subscribe((res) => {
       this.profile.set(res)
     });
@@ -28,6 +36,9 @@ export class UserService {
     });
   }
 
+  updateUserStatus(userId: number) {
+    return this.http.put(`https://localhost:7215/status/${userId}`, null);
+  }
   getLessorProfile(accountId: number): Observable<any> {
     return this.http.get<any>(this.baseUrl + `public-profile/${accountId}`);
   }

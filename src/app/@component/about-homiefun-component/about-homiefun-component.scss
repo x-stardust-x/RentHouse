@@ -1,0 +1,650 @@
+/* ==========================================================================
+   【關於厚厝味】全新架構優化版
+   ========================================================================== */
+
+:host {
+  --color-primary: #E66F43;
+  --color-primary-light: #FFF2EE;
+  --color-text-main: #222222;
+  --color-text-muted: #666666;
+  --color-bg-main: #FCFBF9;
+  --color-bg-card: #ffffff;
+  --color-border: #EBEBEB;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+}
+
+.jp-dynamic-container {
+  background-color: var(--color-bg-main);
+  color: var(--color-text-main);
+  font-family: 'Helvetica Neue', Arial, 'Noto Sans TC', sans-serif;
+  letter-spacing: 0.04em;
+  width: 100%;
+  position: relative;
+  box-sizing: border-box;
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+// 置中定寬維持器
+.section-inner-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+// 捲動淡入動態
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================
+   1. Hero Section (重新設計圖片排版)
+   ========================================= */
+.hero-section {
+  display: flex;
+  min-height: calc(100vh - 80px);
+  width: 100%;
+  background-color: var(--color-bg-main);
+  overflow: hidden;
+
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
+
+  .hero-left-wrapper {
+    flex: 1.1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 6rem 4rem 6rem 2rem;
+    position: relative;
+
+    @media (max-width: 992px) {
+      justify-content: flex-start;
+      padding: 4rem 2rem;
+    }
+
+    .vertical-ghost-text {
+      position: absolute;
+      left: 2rem;
+      top: 15%;
+      writing-mode: vertical-rl;
+      font-size: 5rem;
+      font-weight: 900;
+      color: rgba(230, 111, 67, 0.04);
+      letter-spacing: 0.1em;
+      pointer-events: none;
+
+      @media (max-width: 1200px) {
+        display: none;
+      }
+    }
+
+    .hero-text-content {
+      width: 100%;
+      max-width: 540px;
+
+      .jp-brand-tag {
+        font-size: 0.85rem;
+        color: var(--color-primary);
+        font-weight: 700;
+        border: 1px solid var(--color-primary);
+        padding: 4px 12px;
+        border-radius: var(--radius-sm);
+        display: inline-block;
+        margin-bottom: 2rem;
+      }
+
+      .hero-main-title {
+        font-size: 4rem;
+        font-weight: 300;
+        line-height: 1.15;
+        margin: 0 0 2rem 0;
+
+        .plus-sign {
+          color: var(--color-primary);
+          font-weight: 400;
+          margin: 0 0.5rem;
+        }
+
+        @media (max-width: 576px) {
+          font-size: 2.8rem;
+        }
+      }
+
+      .hero-slogan {
+        font-size: 1.6rem;
+        font-weight: 600;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+
+        @media (max-width: 576px) {
+          font-size: 1.3rem;
+        }
+      }
+
+      .hero-desc {
+        font-size: 1rem;
+        color: var(--color-text-muted);
+        line-height: 1.7;
+        margin-bottom: 3.5rem;
+      }
+    }
+  }
+
+  .hero-full-bleed-visual {
+    flex: 0.9;
+    // background-color: var(--color-primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem;
+    position: relative;
+
+    @media (max-width: 992px) {
+      padding: 4rem 2rem;
+      min-height: 450px; // 給予手機版適當的圖片高度
+    }
+
+    .illustration-overlay-text {
+      position: absolute;
+      left: 2rem;
+      bottom: 2rem;
+      writing-mode: vertical-rl;
+      font-size: 1.1rem;
+      letter-spacing: 0.4em;
+      color: var(--color-primary);
+      font-weight: 500;
+      z-index: 2;
+    }
+
+    .line-art-bg {
+      // 核心修改區塊：確保影像完美融合
+      width: 100%;
+      max-width: 500px;
+      aspect-ratio: 1 / 1; // 強制為正方形比例，避免圖片被擠壓
+
+      background-image: url('/images/about_hero.jpg');
+      // background-image: url('/images/line-art-bg.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+
+      border-radius: 40% 60% 60% 40% / 50% 50% 60% 50%;
+      box-shadow: 0 25px 50px rgba(230, 111, 67, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.6); // 增加一點白邊提升質感
+
+      // 有機變形與浮動動畫
+      animation: morph-blob 8s ease-in-out infinite alternate;
+      position: relative;
+      z-index: 1;
+    }
+  }
+}
+
+// 增添高級感的 Blob 形狀流動動畫
+@keyframes morph-blob {
+  0% {
+    border-radius: 40% 60% 60% 40% / 50% 50% 60% 50%;
+    transform: translateY(0);
+  }
+
+  100% {
+    border-radius: 60% 40% 40% 60% / 60% 60% 40% 40%;
+    transform: translateY(-15px);
+  }
+}
+
+.btn-jp-arrow {
+  background: none;
+  border: none;
+  color: var(--color-text-main);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0;
+  letter-spacing: 0.1em;
+  transition: color 0.3s ease;
+
+  &::after {
+    content: '';
+    width: 50px;
+    height: 1px;
+    background-color: var(--color-text-main);
+    transition: width 0.3s ease, background-color 0.3s ease;
+  }
+
+  &:hover {
+    color: var(--color-primary);
+
+    &::after {
+      width: 80px;
+      background-color: var(--color-primary);
+    }
+  }
+}
+
+/* =========================================
+   2. Philosophy Section
+   ========================================= */
+.philosophy-section {
+  padding: 4rem 0;
+
+  .cream-bg-block {
+    background-color: #F6F2EE;
+    padding: 6rem 0;
+    width: 100%;
+  }
+
+  .philosophy-grid {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+
+    @media (max-width: 992px) {
+      flex-direction: column;
+      gap: 3rem;
+    }
+  }
+
+  .philosophy-image-popout {
+    flex: 1;
+    min-height: 420px;
+    background-color: #ffffff;
+    border: 1px solid var(--color-border);
+    margin-top: -10rem;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.03);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    border-radius: var(--radius-md);
+
+    @media (max-width: 992px) {
+      margin-top: 0;
+      min-height: 280px;
+      width: 100%;
+    }
+
+    .popout-inner {
+      color: var(--color-text-muted);
+      font-size: 0.9rem;
+    }
+  }
+
+  .philosophy-text-card {
+    flex: 1;
+
+    .concept-en-tag {
+      font-size: 0.8rem;
+      color: var(--color-primary);
+      font-weight: 700;
+      display: block;
+      margin-bottom: 1rem;
+      letter-spacing: 0.15em;
+    }
+
+    h3 {
+      font-size: 2.4rem;
+      font-weight: 500;
+      line-height: 1.35;
+      margin: 0 0 2rem 0;
+    }
+
+    .lead-bold {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    .body-muted {
+      font-size: 0.95rem;
+      color: var(--color-text-muted);
+      text-align: justify;
+      line-height: 1.7;
+    }
+  }
+}
+
+/* =========================================
+   3. Features Dynamic Section
+   ========================================= */
+.features-dynamic-section {
+  padding: 4rem 0 0 0;
+
+  .section-header {
+    margin-bottom: 4rem;
+
+    .section-en-sub {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      display: block;
+      letter-spacing: 0.1em;
+    }
+
+    .section-main-title {
+      font-size: 2.4rem;
+      margin-top: 0.4rem;
+      font-weight: 500;
+    }
+  }
+
+  .features-fluid-rows {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .fluid-row-item {
+      display: flex;
+      min-height: 480px;
+      width: 100%;
+      border-top: 1px solid var(--color-border);
+
+      @media (max-width: 992px) {
+        flex-direction: column !important;
+      }
+
+      .row-visual-zone {
+        flex: 1.1;
+        background-color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem;
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+        text-align: center;
+
+        @media (max-width: 992px) {
+          min-height: 260px;
+        }
+      }
+
+      .row-text-zone {
+        flex: 0.9;
+        background-color: var(--color-bg-main);
+        display: flex;
+        align-items: center;
+        padding: 4rem 6%;
+
+        @media (max-width: 992px) {
+          padding: 4rem 2rem;
+        }
+
+        .text-limit-wrapper {
+          max-width: 460px;
+          width: 100%;
+        }
+
+        .row-num {
+          font-size: 3.5rem;
+          font-weight: 300;
+          color: rgba(230, 111, 67, 0.12);
+          font-family: 'Georgia', serif;
+          line-height: 1;
+          margin-bottom: 1rem;
+          display: block;
+        }
+
+        h3 {
+          font-size: 1.8rem;
+          font-weight: 500;
+          margin: 0 0 1.5rem 0;
+
+          .plus-accent {
+            color: var(--color-primary);
+          }
+        }
+
+        p {
+          font-size: 0.95rem;
+          color: var(--color-text-muted);
+          line-height: 1.7;
+          margin: 0 0 2rem 0;
+        }
+
+        .dynamic-capsules {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.6rem;
+
+          .cap-tag {
+            background-color: #ffffff;
+            border: 1px solid var(--color-border);
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            color: var(--color-text-main);
+            font-weight: 500;
+          }
+        }
+      }
+
+      &:nth-child(even) {
+        flex-direction: row-reverse;
+      }
+
+      &.highlight-dark-row {
+        background-color: #1F1C1B;
+        border-top: none;
+
+        .row-text-zone {
+          background-color: #1F1C1B;
+
+          .row-badge {
+            color: var(--color-primary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            display: block;
+            margin-bottom: 0.5rem;
+          }
+        }
+
+        .row-visual-zone {
+          background-color: #151312;
+
+          .color-white-drawing {
+            color: rgba(255, 255, 255, 0.35);
+          }
+        }
+
+        .text-white {
+          color: #ffffff;
+        }
+
+        .text-light-muted {
+          color: rgba(255, 255, 255, 0.6);
+        }
+
+        .jp-editorial-card {
+          background-color: #ffffff;
+          border-left: 4px solid var(--color-primary);
+          padding: 1.5rem;
+          border-radius: var(--radius-md);
+          margin-top: 2rem;
+          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+
+          .card-mini-tag {
+            font-size: 0.7rem;
+            color: var(--color-primary);
+            font-weight: 800;
+            display: block;
+            margin-bottom: 0.4rem;
+          }
+
+          h4 {
+            margin: 0 0 0.4rem 0;
+            font-size: 1.1rem;
+            color: var(--color-text-main);
+            font-weight: 600;
+          }
+
+          p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            line-height: 1.5;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* =========================================
+   4. Step Workflow Section
+   ========================================= */
+.workflow-dynamic-section {
+  padding: 6rem 0;
+  background-color: #ffffff;
+
+  .center-align {
+    text-align: center;
+    margin-bottom: 5rem;
+  }
+
+  .staggered-workflow-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+
+    .stagger-card {
+      background-color: var(--color-bg-main);
+      padding: 3.5rem 2rem 2.5rem 2rem;
+      border-radius: var(--radius-lg);
+      position: relative;
+      border: 1px solid var(--color-border);
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: translateY(-5px);
+      }
+
+      .huge-number {
+        position: absolute;
+        top: -2.2rem;
+        left: 2rem;
+        font-size: 3.8rem;
+        font-weight: 900;
+        color: var(--color-primary);
+        font-family: 'Impact', Arial, sans-serif;
+        opacity: 0.12;
+      }
+
+      h4 {
+        font-size: 1.2rem;
+        margin: 0 0 1rem 0;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--color-text-muted);
+        line-height: 1.6;
+      }
+    }
+
+    @media (min-width: 993px) {
+
+      .card-y-2,
+      .card-y-4 {
+        margin-top: 40px;
+      }
+    }
+  }
+}
+
+/* =========================================
+   5. Bottom Full CTA
+   ========================================= */
+.bottom-full-cta {
+  width: 100%;
+  padding: 8rem 2rem;
+  background: radial-gradient(circle at center, #FFF5F2 0%, #FAF7F4 100%);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .cta-inner-content {
+    max-width: 720px;
+    width: 100%;
+
+    h2 {
+      font-size: 2.4rem;
+      font-weight: 500;
+      line-height: 1.4;
+      margin: 0 0 1.5rem 0;
+    }
+
+    p {
+      color: var(--color-text-muted);
+      font-size: 1.1rem;
+      margin: 0 0 3.5rem 0;
+    }
+
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+
+      @media (max-width: 576px) {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+  }
+}
+
+.btn-giant {
+  padding: 16px 38px;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  letter-spacing: 0.05em;
+
+  &.primary {
+    background-color: var(--color-text-main);
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+
+    &:hover {
+      background-color: var(--color-primary);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(230, 111, 67, 0.2);
+    }
+  }
+
+  &.secondary {
+    background-color: #ffffff;
+    color: var(--color-text-main);
+    border: 1px solid var(--color-border);
+
+    &:hover {
+      border-color: var(--color-text-main);
+      transform: translateY(-3px);
+    }
+  }
+}

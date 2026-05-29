@@ -12,16 +12,16 @@ import { HouseFacilityService } from '../../@service/house-facility-service';
 import { RouterModule, Routes, RouterLink } from '@angular/router';
 import { faLine } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
   selector: 'app-rental-matching-detail-component',
   standalone: true,
-  imports: [CommonModule, RouterModule, RouterLink, FontAwesomeModule],
+  imports: [CommonModule, RouterModule, RouterLink, FontAwesomeModule, FormsModule],
   templateUrl: './rental-matching-detail-component.html',
   styleUrl: './rental-matching-detail-component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA], // ✅ 這裡有開，<swiper-container> 就能完美運作
-
 })
 export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   faLine = faLine;
@@ -57,13 +57,13 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   private sanitizer = inject(DomSanitizer);
   private houseFacilityService = inject(HouseFacilityService);
 
-  isRoom = computed(() => this.detailData()?.displayType === 'room');
-  isProduct = computed(() => this.detailData()?.displayType === 'product');
-  isSkill = computed(() => this.isProduct() && this.detailData()?.category === '專業諮詢');
-  isTool = computed(() => this.isProduct() && this.detailData()?.category === '工具共享');
+  // isRoom = computed(() => this.detailData()?.displayType === 'room');
+  // isProduct = computed(() => this.detailData()?.displayType === 'product');
+  // isSkill = computed(() => this.isProduct() && this.detailData()?.category === '專業諮詢');
+  // isTool = computed(() => this.isProduct() && this.detailData()?.category === '工具共享');
 
   itemType = signal<string | null>(null);
-  detailData = signal<any>(null);
+  // detailData = signal<any>(null);
   displayType = signal<string>('');
 
   mapUrl = computed<SafeResourceUrl | null>(() => {
@@ -226,4 +226,160 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
   }
+
+  // 線上預約彈窗
+  // 元件基礎狀態與原有的 Signal 保持不變...
+  isContactModalOpen = signal(false);
+  detailData = signal<any>({ name: '溫莎牛頓專業水彩 24 色套組', price: 150, priceUnit: '日', realName: '王大明', address: '高雄市前鎮區成功二路' });
+  isRoom = signal(false); // 測試時可手動切換開關
+  isSkill = signal(false);
+  isTool = signal(true);
+
+  // ==================== 🏢 房屋預約增強欄位 ====================
+  roomDate = signal(''); // 看房日期
+  roomTimeSlots = signal([
+    { label: '上午 (09:00 - 12:00)', checked: false },
+    { label: '下午 (14:00 - 18:00)', checked: false },
+    { label: '晚上 (18:00 - 21:00)', checked: false }
+  ]);
+  roomMoveInTime = signal('一週內'); // 預計搬入時間
+  roomProfiles = signal([
+    { label: '單人入住', icon: 'person', checked: false },
+    { label: '無寵物', icon: 'pets', checked: false },
+    { label: '不抽菸', icon: 'smoke_free', checked: false },
+    { label: '學生', icon: 'school', checked: false },
+    { label: '上班族', icon: 'work', checked: false },
+    { label: '生活單純', icon: 'spa', checked: false }
+  ]);
+  roomIntro = signal('');
+
+  // ==================== 🎓 技能諮詢原有欄位 ====================
+  skillFormat = signal('');
+  skillDate = signal('');
+  skillNeeds = signal('');
+  skillToolChecked = signal(false);
+
+  // ==================== 🧰 工具借用增強欄位 ====================
+  toolStartDate = signal('');
+  toolEndDate = signal('');
+  toolDeliveryMethod = signal('面交'); // 取件方式：'面交' 或 '物流'
+  toolPurpose = signal('');
+  toolTermsChecked = signal(false);
+
+  // 動態計算天數 (對應設計稿上的「總共 X 天」)
+  calculateToolDays = computed(() => {
+    if (!this.toolStartDate() || !this.toolEndDate()) return 0;
+    const start = new Date(this.toolStartDate());
+    const end = new Date(this.toolEndDate());
+    const diffTime = end.getTime() - start.getTime();
+    if (diffTime < 0) return 0;
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // 包含首尾天數
+  });
+
+  // 輔助方法：點擊切換多選狀態
+  toggleSlot(index: number) {
+    const current = this.roomTimeSlots();
+    current[index].checked = !current[index].checked;
+    this.roomTimeSlots.set([...current]);
+  }
+
+  toggleProfile(index: number) {
+    const current = this.roomProfiles();
+    current[index].checked = !current[index].checked;
+    this.roomProfiles.set([...current]);
+  }
+
+  // openContactModal() { this.isContactModalOpen.set(true); }
+  openContactModal(event: Event) {
+    event.preventDefault(); // 防止 a 連結預設跳頁行為
+    this.isContactModalOpen.set(true);
+  }
+  closeContactModal() { this.isContactModalOpen.set(false); }
+  submitContactMessage() { this.closeContactModal(); }
+
+
+
+
+  // // --- 彈窗顯示狀態 ---
+  // isContactModalOpen = signal(false);
+
+  // // --- 1. 房屋預約彈窗表單欄位 ---
+  // roomTimeSlots = signal<{ label: string; checked: boolean }[]>([
+  //   { label: '平日白天', checked: false },
+  //   { label: '平日晚上', checked: false },
+  //   { label: '週末假日', checked: false }
+  // ]);
+  // roomIntro = signal('');
+
+  // // --- 2. 技能諮詢彈窗表單欄位 ---
+  // skillFormat = signal(''); // 線上或實體
+  // skillDate = signal('');
+  // skillNeeds = signal('');
+  // skillToolChecked = signal(false);
+
+  // // --- 3. 工具借用彈窗表單欄位 ---
+  // toolStartDate = signal('');
+  // toolEndDate = signal('');
+  // toolPurpose = signal('');
+  // toolTermsChecked = signal(false);
+
+
+  // // --- 彈窗核心邏輯方法 ---
+  // openContactModal(event: Event) {
+  //   event.preventDefault();
+  //   this.isContactModalOpen.set(true);
+  // }
+
+  // closeContactModal() {
+  //   this.isContactModalOpen.set(false);
+  //   this.resetForm(); // 關閉時自動重設表單
+  // }
+
+  // // 點擊確認送出
+  // submitContactMessage() {
+  //   // 封裝準備送給後端 API 的資料物件
+  //   const postData = {
+  //     category: this.detailData()?.category || this.detailData()?.Category,
+  //     targetId: this.detailData()?.accountId,
+  //     projectId: this.detailData()?.id,
+
+  //     // 根據不同類別撈取對應 Signal 的值
+  //     roomData: this.isRoom() ? {
+  //       preferredTimes: this.roomTimeSlots().filter(t => t.checked).map(t => t.label),
+  //       intro: this.roomIntro()
+  //     } : null,
+
+  //     skillData: this.isSkill() ? {
+  //       format: this.skillFormat(),
+  //       date: this.skillDate(),
+  //       needs: this.skillNeeds()
+  //     } : null,
+
+  //     toolData: this.isTool() ? {
+  //       startDate: this.toolStartDate(),
+  //       endDate: this.toolEndDate(),
+  //       purpose: this.toolPurpose()
+  //     } : null
+  //   };
+
+  //   console.log('準備送出至後端 Controller 的 DTO 資料：', postData);
+
+  //   // TODO: 這裡接你的後端 Service API 發送 POST 請求
+  //   alert('訊息已成功發送給提供者！快去訊息匣看看吧。');
+  //   this.closeContactModal();
+  // }
+
+  // // 重置表單狀態
+  // private resetForm() {
+  //   this.roomTimeSlots.update(slots => slots.map(s => ({ ...s, checked: false })));
+  //   this.roomIntro.set('');
+  //   this.skillFormat.set('');
+  //   this.skillDate.set('');
+  //   this.skillNeeds.set('');
+  //   this.skillToolChecked.set(false);
+  //   this.toolStartDate.set('');
+  //   this.toolEndDate.set('');
+  //   this.toolPurpose.set('');
+  //   this.toolTermsChecked.set(false);
+  // }
 }

@@ -1,0 +1,192 @@
+/* ==========================================================================
+   整合版個人專區側邊導覽列 (User Center Sidebar) - 完整修正版
+   ========================================================================== */
+.user-sidebar {
+  /* 🟢 核心修正：鎖定寬度與垂直滿版高度，防止往右擠壓撐滿螢幕 */
+  width: 260px;
+  min-width: 260px;
+  // height: 100vh;
+  box-sizing: border-box;
+
+  padding: 24px 12px;
+  background-color: var(--color-bg-card);
+  /* 容器純白基底 */
+  border-right: 1px solid var(--color-border);
+  /* 溫潤細線條邊框 */
+  display: flex;
+  flex-direction: column;
+
+  // &__top-wrapper {
+  //   position: sticky;
+  //   top: 0; // 如果全站有固定 Navbar，請改成與上方相同的設定（如 80px）
+  //   z-index: 100; // 層級設高，確保選單滾上來時會鑽到它後面
+
+  //   background-color: var(--color-bg-card); // 🔴 必須設定不透明背景色，文字才不會重疊破版
+
+  //   // 以下可依你原本的視覺微調
+  //   // padding: 1.5rem 1rem;
+  //   border-bottom: 1px solid var(--color-border);
+  // }
+
+  // 1. 頂部品牌區
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding: 0 6px;
+
+    h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: var(--color-text-main);
+      /* 深炭焦黑 */
+      font-weight: 700;
+    }
+
+    p {
+      margin: 4px 0 0;
+      color: var(--color-text-muted);
+      /* 煙燻暖灰 */
+      font-size: 0.815rem;
+    }
+  }
+
+  // 2. 品牌 Logo 區
+  &__logo {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    /* 12px 圓角 */
+    display: grid;
+    place-items: center;
+    background: var(--color-primary);
+    /* 主打色：溫暖焦糖橘 */
+    color: #ffffff;
+    /* 亮色文字 */
+    font-size: 1.25rem;
+    font-weight: 800;
+  }
+
+  // 3. 身分切換頁籤 (Lessor / Lessee Tab Switcher)
+  &__role-toggle {
+    display: flex;
+    background-color: var(--color-bg-main);
+    /* 全局奶油白底層 */
+    padding: 4px;
+    border-radius: var(--radius-md);
+    margin-bottom: 24px;
+    border: 1px solid var(--color-border);
+
+    button {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      background: transparent;
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: calc(var(--radius-md) - 4px);
+      /* 內層微調圓角 */
+      cursor: pointer;
+      transition: all 0.25s ease;
+
+      // 當前選中的身分狀態
+      &.is-active {
+        background-color: var(--color-bg-card);
+        /* 浮起純白效果 */
+        color: var(--color-primary);
+        /* 文字變為主色焦糖橘 */
+        font-weight: 700;
+        box-shadow: 0 2px 6px rgba(230, 111, 67, 0.08);
+        /* 微微的焦糖橘陰影 */
+      }
+
+      &:hover:not(.is-active) {
+        color: var(--color-text-main);
+      }
+    }
+  }
+
+  // 4. 導覽選單清單
+  &__menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 4px;
+    // overflow-y: auto;
+    /* 若選單過長允許內部滾動 */
+
+    // 項目大分類標題 (如：租屋空間管理)
+    .user-sidebar__section-title {
+      padding: 16px 14px 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      letter-spacing: 0.5px;
+    }
+  }
+
+  // 5. 導覽超連結項目樣式
+  &__link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    /* 統一 12px 圓角 */
+    color: var(--color-text-main);
+    text-decoration: none;
+    font-size: 0.935rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    .material-symbols-outlined {
+      font-size: 22px;
+      color: var(--color-text-muted);
+      /* 圖示預設低調灰 */
+      transition: color 0.2s ease;
+    }
+
+    // 預留未來啟動（可點擊）時的 Hover 與 Active 狀態
+    &:hover:not(.is-disabled),
+    &.is-active:not(.is-disabled) {
+      background-color: var(--color-primary-light);
+      /* 淺焦糖底色 */
+      color: var(--color-primary);
+      /* 焦糖橘文字 */
+      font-weight: 600;
+
+      .material-symbols-outlined {
+        color: var(--color-primary);
+        /* 圖示同步高亮 */
+      }
+    }
+
+    // 6. 控制目前「還不能點擊」的虛擬禁用狀態
+    &.is-disabled {
+      opacity: 0.45;
+      /* 半透明淡出 */
+      pointer-events: none;
+      /* 徹底拔除滑鼠點擊與事件 */
+      cursor: not-allowed;
+      /* 游標呈現禁用圖示 */
+      user-select: none;
+      /* 防止文字被選取 */
+
+      // 確保裡面的圖示也跟著淡出
+      .material-symbols-outlined {
+        color: var(--color-text-muted);
+      }
+    }
+  }
+
+  // 7. 共用區塊分隔線
+  &__divider {
+    border: 0;
+    border-top: 1px solid var(--color-border);
+    margin: 16px 14px;
+  }
+}

@@ -1,115 +1,134 @@
-<section class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
+<section class="news-list container py-4">
 
-    <h2 class="mb-0">最新消息</h2>
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <button class="btn btn-primary" routerLink="/admin/news/create">
+    <div>
+      <h2 class="page-title mb-1">最新消息管理</h2>
+      <p class="text-muted mb-0">
+        管理所有最新消息內容
+      </p>
+    </div>
+
+    <button class="btn add-btn" routerLink="/admin/news/create">
       + 新增新聞
     </button>
 
   </div>
+
+  <!-- List -->
   @if (newsev.newsData().length > 0) {
 
-  <div class="row g-4">
-    @for (item of newsev.newsData(); track $index) {
+  <div class="d-flex flex-column gap-4">
 
-    <div class="col-12">
-      <div class="card shadow-sm border-0">
+    @for (item of newsev.newsData(); track item.id) {
 
-        <div class="card-body">
+    <div class="news-card">
 
-          <!-- Header -->
-          <div class="d-flex justify-content-between align-items-start flex-wrap mb-3">
+      <div class="row g-0 align-items-center">
 
-            <div>
-              <span class="badge bg-primary mb-2">
-                {{ item.category }}
-              </span>
+        <!-- 圖片 -->
+        <div class="col-lg-2 col-md-3">
 
-              <h3 class="card-title mb-2">
-                {{ item.title }}
-              </h3>
+          <div class="news-image-wrapper">
+
+            @if (item.cover) {
+
+            <img [src]="item.cover" class="news-image">
+
+            } @else {
+
+            <div class="no-image">
+              <i class="bi bi-image"></i>
             </div>
 
-            <div class="d-flex gap-2">
+            }
 
-              <!-- 狀態 -->
-              <span class="badge m-auto" [ngClass]="item.status === 1 ? 'bg-success' : 'bg-secondary'">
-                {{ item.status === 1 ? '已發布' : '草稿' }}
-              </span>
-
-              <!-- 編輯按鈕 -->
-              <button class="btn btn-sm btn-outline-warning" [routerLink]="['/admin/news/edit', item.id]">
-                編輯
-              </button>
-
-              <!-- 刪除 -->
-              <button class="btn btn-sm btn-outline-danger" (click)="deleteNews(item.id)">
-                刪除
-              </button>
-
-            </div>
-
-          </div>
-
-          <!-- Meta -->
-          <div class="text-muted small mb-3 d-flex flex-wrap gap-3">
-            <span>編號：{{ item.id }}</span>
-            <span>
-              發布日期：
-              {{ item.createdAt | date:'yyyy/MM/dd HH:mm' }}
-            </span>
-            <span>
-              編輯日期：
-              {{ item.updatedAt | date:'yyyy/MM/dd HH:mm' }}
-            </span>
-          </div>
-
-          @if (item.cover) {
-
-          <div class="mb-3 overflow-hidden rounded">
-
-            <img [src]="item.cover" class="img-fluid w-100" style="
-                height: 250px;
-                object-fit: cover;
-              ">
-
-          </div>
-
-          }
-          <!-- Intro -->
-          <p class="card-text fw-semibold">
-            {{ item.intro }}
-          </p>
-
-          <!-- Content -->
-          <div class="card-text mb-4">
-            {{ item.content }}
-          </div>
-
-          <!-- Footer -->
-          <div class="border-top pt-3 d-flex flex-column gap-1 text-muted small">
-            <small>
-              SEO 標題：{{ item.seoTitle }}
-            </small>
-
-            <small>
-              SEO 描述：{{ item.seoDesc }}
-            </small>
           </div>
 
         </div>
+
+        <!-- 內容 -->
+        <div class="col-lg-10 col-md-9">
+
+          <div class="news-content">
+
+            <!-- 上方資訊 -->
+            <div class="mb-3">
+
+              <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+
+                <span class="category-badge">
+                  {{ item.category }}
+                </span>
+
+                <span class="news-date">
+                  創建 {{ item.createdAt | date:'yyyy-MM-dd' }}
+                </span>
+                <span class="news-date">
+                  更新 {{ item.updatedAt| date:'yyyy-MM-dd' }}
+                </span>
+
+              </div>
+
+              <h4 class="news-title">
+                {{ item.title }}
+              </h4>
+
+              <p class="news-intro">
+                {{ item.intro }}
+              </p>
+
+            </div>
+
+            <!-- 下方操作列 -->
+            <div class="news-footer">
+
+              <!-- 狀態 -->
+              <span class="status-badge" [ngClass]="item.status === 1 ? 'published' : 'draft'">
+                {{ item.status === 1 ? '已發布' : '草稿' }}
+              </span>
+
+              <div class="d-flex gap-2">
+
+                <!-- 編輯 -->
+                <button class="icon-btn edit-btn" [routerLink]="['/admin/news/edit', item.id]">
+                 <span class="material-symbols-outlined">edit</span>
+                </button>
+
+                <!-- 刪除 -->
+                <button class="icon-btn delete-btn" (click)="deleteNews(item.id)">
+                  <span class="material-symbols-outlined">delete</span>
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
+
     </div>
 
     }
+
   </div>
 
   } @else {
 
-  <div class="alert alert-secondary">
-    目前沒有新聞資料。
+  <div class="empty-box">
+
+    <i class="bi bi-newspaper"></i>
+
+    <h4>目前沒有新聞資料</h4>
+
+    <p>點擊右上角按鈕新增第一篇新聞</p>
+
   </div>
 
   }
+
 </section>

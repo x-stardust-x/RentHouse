@@ -1,49 +1,169 @@
-/* 最外層容器 */
-.dashboard-container {
-  padding: 20px;
-  font-family: sans-serif;
-  max-width: 900px;
-  margin: auto;
+// ==========================================
+// Rental Dashboard Outer Layout Styles
+// ==========================================
+.rental-dashboard {
+  font-family: 'PingFang TC', 'Heiti TC', 'Microsoft JhengHei', sans-serif;
+  max-width: 1120px; // 🚀 同步放寬至 1120px，完美包容內層的雙欄佈局
+  margin: 0 auto;
+  padding: 2rem 1rem; // 增加上下留白，提升 SaaS 管理後台的呼吸感
 
-  .dashboard-layout {
+  // --- 頂部頁頭配置 ---
+  &__header {
     display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 3rem; // 加大與下方表單的間距
   }
-}
 
-/* 膠囊切換底座 (確保切換按鈕美觀) */
-.segment-toggle-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--color-text-main);
+    margin-bottom: 1.75rem;
+    letter-spacing: -0.02em;
 
-.segment-toggle {
-  display: inline-flex;
-  background: #f1f5f9;
-  border-radius: 30px;
-  padding: 6px;
+    // 讓標題旁的 icon 帶入主色，呼應整體風格
+    .material-symbols-outlined {
+      color: var(--color-primary);
+      font-size: 2rem;
+    }
+  }
 
-  .segment-btn {
+  // --- 膠囊切換按鈕座 (Segment Toggle) ---
+  &__toggle-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__toggle-group {
+    display: inline-flex;
+    background-color: var(--color-bg-main); // 改用稍帶灰/奶油底的系統背景色，讓白色的選取態更跳脫
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    padding: 6px;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.03); // 加深一點點內陰影，立體感更好
+  }
+
+  &__toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     border: none;
     background: transparent;
-    padding: 10px 24px;
-    border-radius: 24px;
-    font-weight: 700;
-    color: #64748b;
+    padding: 10px 32px; // 稍微加寬左右 padding，讓點擊範圍更大氣
+    border-radius: var(--radius-pill);
     font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: var(--transition-base);
+    -webkit-tap-highlight-color: transparent;
 
-    &.active {
-      background: white;
-      color: #0f172a;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    // 滑鼠懸停於未選取項目
+    &:hover:not(.is-active) {
+      color: var(--color-primary);
     }
-    &:hover:not(.active) {
-      color: #334155;
+
+    // 當前選取狀態 (Active State)
+    &.is-active {
+      background-color: var(--color-bg-card); // 純白浮起卡片
+      color: var(--color-primary); // 選取時文字轉為主色，視覺更明確
+      box-shadow: var(--shadow-base); // 溫暖不帶死黑的深咖啡調微陰影
+
+      // 激活時可讓 icon 微微放大增加趣味性
+      .rental-dashboard__toggle-icon {
+        transform: scale(1.15);
+      }
     }
   }
+
+  &__toggle-icon {
+    display: inline-block;
+    transition: var(--transition-base);
+  }
+
+  &__toggle-text {
+    letter-spacing: 0.02em;
+  }
+
+  // --- 內容佈局容器 ---
+  &__content {
+    display: grid;
+    gap: 2rem;
+    animation: fadeInContent 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; // 改用更滑順的進場貝茲曲線
+  }
 }
+
+// ==========================================
+// Subtle Animation (切換標籤時內容優雅淡入)
+// ==========================================
+@keyframes fadeInContent {
+  from {
+    opacity: 0;
+    transform: translateY(12px); // 進場位移稍微加大，增加動態質感
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+
+
+// /* 最外層容器 */
+// .dashboard-container {
+//   padding: 20px;
+//   font-family: sans-serif;
+//   max-width: 900px;
+//   margin: auto;
+
+//   .dashboard-layout {
+//     display: flex;
+//     gap: 20px;
+//     flex-wrap: wrap;
+//   }
+// }
+
+// /* 膠囊切換底座 (確保切換按鈕美觀) */
+// .segment-toggle-wrapper {
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   width: 100%;
+// }
+
+// .segment-toggle {
+//   display: inline-flex;
+//   background: #f1f5f9;
+//   border-radius: 30px;
+//   padding: 6px;
+
+//   .segment-btn {
+//     border: none;
+//     background: transparent;
+//     padding: 10px 24px;
+//     border-radius: 24px;
+//     font-weight: 700;
+//     color: #64748b;
+//     font-size: 0.95rem;
+//     cursor: pointer;
+//     transition: all 0.3s ease;
+
+//     &.active {
+//       background: white;
+//       color: #0f172a;
+//       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+//     }
+//     &:hover:not(.active) {
+//       color: #334155;
+//     }
+//   }
+// }

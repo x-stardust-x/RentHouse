@@ -15,7 +15,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   }
 
   // 2️⃣ 取得角色
-  const role = auth.getUserRole();
+  const role = auth.getRole();
 
   // 3️⃣ 取得路由允許的角色（可能沒設定）
   const allowedRoles = route.data?.['roles'] as string[] | undefined;

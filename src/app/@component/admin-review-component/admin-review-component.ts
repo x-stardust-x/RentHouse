@@ -1,7 +1,9 @@
-import { Component, signal, computed, OnInit } from '@angular/core';
+import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { HouseService } from '../../@service/house.service';
 import { HttpClient } from '@angular/common/http';
 import { ProductReviewComponent } from './product-review/product-review-component';
+import { Authservice } from '../../@service/authservice';
+import { LogService } from '../../@service/log-service';
 @Component({
   selector: 'app-admin-review-component',
   templateUrl: './admin-review-component.html',
@@ -10,6 +12,10 @@ import { ProductReviewComponent } from './product-review/product-review-componen
   imports: [ProductReviewComponent]
 })
 export class AdminReviewComponent implements OnInit {
+
+  private readonly authsev = inject(Authservice);
+  private readonly logsev = inject(LogService);
+  ipAddress = signal<string>('');
 
   // 1. 原始資料庫：儲存後端撈回來的「所有真實資料」，絕不被篩選器破壞
   rawHouses = signal<any[]>([]);
@@ -49,6 +55,10 @@ export class AdminReviewComponent implements OnInit {
     this.checkAdminRole();
     if (this.isAdmin()) {
       this.loadPendingHouses();
+
+      this.authsev.getClientIPAddress().subscribe((ip) => {
+        this.ipAddress.set(ip);
+      });
     }
   }
 
@@ -85,6 +95,11 @@ export class AdminReviewComponent implements OnInit {
     this.http.put(`https://localhost:7215/api/RentHouse/Approve/${house.id}`, {}).subscribe({
       next: (res: any) => {
         alert('房屋已核准上架！');
+        this.logsev.postLog({
+          userId: 1,
+          action: `房屋核准上架: ${house.name} (ID: ${house.id})`,
+          ipAddress: this.ipAddress()
+        }).subscribe();
         window.location.reload();
       },
       error: (err: any) => {
@@ -101,6 +116,11 @@ export class AdminReviewComponent implements OnInit {
         next: (res: any) => {
           alert('房屋已成功下架！');
           // 🌟 5. 下架時，更新原始資料庫
+          this.logsev.postLog({
+            userId: 1,
+            action: `房屋強制下架: ${house.name} (ID: ${house.id})`,
+            ipAddress: this.ipAddress()
+          }).subscribe();
           this.rawHouses.set(this.rawHouses().filter((h: any) => h.id !== house.id));
         },
         error: (err: any) => {
@@ -118,6 +138,11 @@ export class AdminReviewComponent implements OnInit {
       this.houseService.deleteHouse(id).subscribe({
         next: () => {
           alert('🗑️ 申請已退回並銷毀！');
+          this.logsev.postLog({
+            userId: 1,
+            action: `房屋退回並銷毀: ID: ${id}`,
+            ipAddress: this.ipAddress()
+          }).subscribe();
           this.loadPendingHouses();
         },
         error: (err) => console.error('退回失敗', err)

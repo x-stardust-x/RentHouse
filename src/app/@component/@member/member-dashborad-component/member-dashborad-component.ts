@@ -3,6 +3,7 @@ import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { UserService } from '../../../@service/user-service';
 import { LocationService } from '../../../@service/location-service';
+import { Authservice } from '../../../@service/authservice';
 
 @Component({
   selector: 'app-member-dashborad-component',
@@ -11,9 +12,10 @@ import { LocationService } from '../../../@service/location-service';
   styleUrl: './member-dashborad-component.scss',
 })
 export class MemberDashboradComponent {
+  private readonly authsev = inject(Authservice);
   public usersev = inject(UserService);
   public locsev = inject(LocationService);
-  userId = 1;
+  userId = this.authsev.getUserId();
 
   profile = this.usersev.profile;
 

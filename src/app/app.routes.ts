@@ -103,6 +103,10 @@ export const routes: Routes = [
             path: 'rent',
             loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent),
           },
+          {
+            path: 'edit',
+            loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
+          },
         ],
       },
 

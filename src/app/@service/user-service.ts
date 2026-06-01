@@ -21,7 +21,7 @@ export class UserService {
     });
   }
 
-  loadProfile(userId : number){
+  loadProfile(userId : number | null) {
     this.http.get<UserProfile>(this.baseUrl + `profile/${userId}`).subscribe((res) => {
       this.profile.set(res)
     });
@@ -32,7 +32,7 @@ export class UserService {
       console.log(res);
       alert("更新完成")
 
-      this.router.navigate(['../']);
+      this.router.navigate(['/member/dashboard']);
     });
   }
 

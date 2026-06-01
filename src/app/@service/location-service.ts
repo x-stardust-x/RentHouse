@@ -23,7 +23,7 @@ export class LocationService {
   }
 
   // 2. 取得特定使用者位置
-  getUserLocation(userId: number) {
+  getUserLocation(userId: number | null) {
     this.http.get<any>(this.baseUrl + `user-location/${userId}`)
       .subscribe(res => {
         this.usercity.set(res);

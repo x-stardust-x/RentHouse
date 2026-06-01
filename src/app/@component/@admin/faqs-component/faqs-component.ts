@@ -95,7 +95,7 @@ export class FAQsComponent {
         switchMap(ip => {
 
           const logData = {
-            userId: 1, // 改成實際登入者 ID
+            userId: this.authsev.getAdminId() ?? 0, // 改成實際登入者 ID
             action: actionText,
             ipAddress: ip,
           };
@@ -171,7 +171,7 @@ export class FAQsComponent {
         switchMap(ip => {
 
           const logData = {
-            userId: 1, // 改成實際登入者 ID
+            userId: this.authsev.getAdminId() ?? 0, // 改成實際登入者 ID
             action: `刪除 FAQ id:${id}`,
             ipAddress: ip,
           };

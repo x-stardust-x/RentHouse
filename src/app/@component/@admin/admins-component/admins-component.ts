@@ -14,7 +14,7 @@ export class AdminsComponent {
   public adminservice = inject(AdminService);
   private authsev = inject(Authservice);
 
-  now_adminid: number | null = this.authsev.getAdminId() == null ? 1 : this.authsev.getAdminId(); // Test用
+  now_adminid: number = this.authsev.getAdminId() ?? 0;
   constructor() {
     this.loadAdmin();
   }

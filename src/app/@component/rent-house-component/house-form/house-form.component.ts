@@ -1,6 +1,7 @@
-import { Component, signal, OnInit, inject } from '@angular/core';
+import { Component, signal, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HouseService } from '../../../@service/house.service'; // 🌟 修正路徑
+import { ActivatedRoute } from '@angular/router'; // 🌟 1. 引入網址掃描器
+import { HouseService } from '../../../@service/house.service';
 import { CreateHouseDto } from '../../../@interface/house';
 import { District } from '../../../@interface/location';
 import { LocationSelectComponent } from '../../location-select-component/location-select-component';
@@ -11,7 +12,7 @@ import { Authservice } from '../../../@service/authservice';
   standalone: true,
   imports: [FormsModule, LocationSelectComponent],
   templateUrl: './house-form.component.html',
-  styleUrl: './house-form.component.scss' // 房屋專屬 SCSS 剪到這
+  styleUrl: './house-form.component.scss'
 })
 export class HouseFormComponent implements OnInit {
   private readonly authsev = inject(Authservice);
@@ -20,6 +21,9 @@ export class HouseFormComponent implements OnInit {
   isEditMode = false;
   editingId = 0;
   pendingPhotos: { file: File, previewUrl: string, isCover: boolean }[] = [];
+
+  // 🌟 2. 新增：存放從資料庫撈回來的舊照片陣列
+  existingPhotos: any[] = [];
 
   formData: CreateHouseDto = {
     accountId: this.authsev.getAccountId() ?? 1,
@@ -46,10 +50,83 @@ export class HouseFormComponent implements OnInit {
     advancedRules: ''
   };
 
-  constructor(private houseService: HouseService) { }
+  constructor(
+    private houseService: HouseService,
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute // 🌟 3. 把網址掃描器注入進來
+  ) {}
 
   ngOnInit() {
     this.loadHouses();
+
+    // 🌟 4. 一進畫面就掃描網址，看看有沒有帶 editId 過來
+    this.route.queryParams.subscribe(params => {
+      if (params['editId']) {
+        this.isEditMode = true; // 開啟編輯模式
+        this.editingId = Number(params['editId']); // 記下要編輯的 ID
+        this.loadHouseDataForEdit(this.editingId); // 啟動自動填表機！
+      }
+    });
+  }
+
+  // 🌟 5. 專門用來抓舊資料，並塞進表單的函式
+  loadHouseDataForEdit(id: number) {
+    this.houseService.getHouseById(id).subscribe({
+      next: (data: any) => {
+        console.log('準備編輯的房屋資料：', data);
+
+        // 把後端傳回來的資料，一個一個塞回 formData 裡面
+        this.formData = {
+          accountId: data.accountId || 1,
+          districtId: data.districtId,
+          name: data.name || '',
+          address: data.address || '',
+          description: data.description || '',
+          rentPrice: data.rentPrice || 0,
+          includeUtilities: data.includeUtilities || false,
+          includeWifi: data.includeWifi || false,
+          includeManagememtFee: data.includeManagementFee || false,
+          areaSize: data.areaSize || null,
+          leaseTerm: data.leaseTerm || 12,
+          floorInfo: data.floorInfo || '',
+          houseType: data.houseType || '獨立套房',
+          status: data.status || 0,
+
+          sleepTime: data.sleepTime ? data.sleepTime.substring(0, 5) : '23:30',
+          wakeTime: data.wakeTime ? data.wakeTime.substring(0, 5) : '07:00',
+          cleanLevel: data.cleanLevel || 3,
+          noiseTolerance: data.noiseTolerance || 3,
+          pet: data.pet || false,
+          smoke: data.smoke || false,
+          interests: data.interests || '',
+          advancedRules: data.advancedRules || ''
+        };
+
+        // 🌟 6. 新增：捕捉這間房子的舊照片 (相容後端回傳格式，可能是 images 或 houseImages)
+        this.existingPhotos = data.images || data.houseImages || [];
+
+        this.cdr.detectChanges(); // 提醒畫面更新
+      },
+      error: (err) => console.error('撈取編輯資料失敗', err)
+    });
+  }
+
+  // 🌟 7. 新增：點擊叉叉刪除資料庫舊照片的功能
+  deleteExistingPhoto(photoId: number, index: number) {
+    if (confirm('確定要刪除這張照片嗎？這將直接從伺服器移除喔！')) {
+      // 呼叫 Service 刪除照片紀錄 (請確保 houseService 裡面有 deleteImageRecord 或是對應的方法名)
+      this.houseService.deleteImageRecord(photoId).subscribe({
+        next: () => {
+          this.existingPhotos.splice(index, 1); // 從畫面上移除該照片
+          this.cdr.detectChanges();
+          alert('🗑️ 照片已成功刪除！');
+        },
+        error: (err) => {
+          console.error('刪除照片失敗', err);
+          alert('刪除照片失敗，請稍後再試');
+        }
+      });
+    }
   }
 
   loadHouses() {
@@ -75,6 +152,7 @@ export class HouseFormComponent implements OnInit {
             previewUrl: e.target.result,
             isCover: this.pendingPhotos.length === 0
           });
+          this.cdr.detectChanges();
         };
         reader.readAsDataURL(file);
       }
@@ -92,15 +170,32 @@ export class HouseFormComponent implements OnInit {
     if (this.formData.wakeTime?.length === 5) this.formData.wakeTime += ':00';
     console.log('送出表單', this.formData, '待上傳照片數量:', this.pendingPhotos.length);
     if (this.isEditMode) {
+      // 🌟 編輯模式
       this.houseService.updateHouse(this.editingId, this.formData).subscribe({
         next: () => {
-          alert('✏️ 修改成功！');
-          this.cancelEdit();
-          this.loadHouses();
+          // 檢查有沒有選擇「新」照片要上傳
+          if (this.pendingPhotos.length > 0) {
+            let completedUploads = 0;
+            this.pendingPhotos.forEach(photo => {
+              this.uploadAndBindPhoto(this.editingId, photo.file, photo.isCover, () => {
+                completedUploads++;
+                if (completedUploads === this.pendingPhotos.length) {
+                  alert('✏️ 修改成功！(包含新圖片已上傳)');
+                  this.resetForm();
+                  window.location.reload();
+                }
+              });
+            });
+          } else {
+            alert('✏️ 修改成功！');
+            this.resetForm();
+            window.location.reload();
+          }
         },
         error: (err) => console.error('修改失敗', err)
       });
     } else {
+      // 🌟 新增模式
       this.houseService.createHouse(this.formData).subscribe({
         next: (res: any) => {
           const newHouseId = res?.id || res?.HouseId || res?.houseId;
@@ -152,6 +247,7 @@ export class HouseFormComponent implements OnInit {
       advancedRules: ''
     };
     this.pendingPhotos = [];
+    this.existingPhotos = []; // 🌟 新增：重設表單時，一併清空舊照片紀錄
   }
 
   removePendingPhoto(index: number) {

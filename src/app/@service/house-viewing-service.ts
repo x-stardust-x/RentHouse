@@ -20,4 +20,14 @@ export class HouseViewingService {
   getLessorApprovals(lessorId: number): Observable<ViewingOrderResponse[]> {
     return this.http.get<ViewingOrderResponse[]>(`${this.apiUrl}/lessor/${lessorId}/approvals`);
   }
+
+  getReservationsByLessor(lessorId: number) {
+    return this.http.get<ViewingOrderResponse[]>(
+      `${this.apiUrl}/lessor/${lessorId}/approvals`
+    );
+  }
+
+  getApplicationsByLessee(lesseeId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/lessee/${lesseeId}/applications`);
+  }
 }

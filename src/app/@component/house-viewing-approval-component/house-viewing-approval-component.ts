@@ -42,42 +42,46 @@ export class HouseViewingApprovalComponent implements OnInit {
   activeTab = signal<'pending' | 'confirmed' | 'rejected'>('pending');
 
   // 模擬後端回傳的預約資料 (未來這裡會由 ngOnInit 呼叫 API 覆寫)
-  reservations = signal<Reservation[]>([
-    {
-      id: '1',
-      orderNumber: 'B-20261024-001',
-      status: 'pending',
-      roomName: '陽光雅房 A室 (高雄軟體園區附近)', // 稍微調整了一下地點作為範例
-      applicant: {
-        name: '林依晨',
-        avatar: 'images/mr_chen.jpg',
-        profiles: ['單人', '無寵', '不菸'],
-        moveInDate: '2026/11/01',
-        phone: '0912***678',
-        lineId: 'yichen***'
-      },
-      viewingDateTime: '2026/10/24 (六) 14:00 - 14:30',
-      message: '您好！作息正常不菸不酒，平常喜歡安靜看書或煮點簡單的料理。非常喜歡您提供的共居空間氛圍，希望能有機會現場看看環境！',
-      matchScore: 95
-    },
-    {
-      id: '2',
-      orderNumber: 'B-20261025-002',
-      status: 'pending',
-      roomName: '獨立套房 B室 (高雄軟體園區附近)',
-      applicant: {
-        name: '張宇軒',
-        avatar: 'images/mr_chen.jpg',
-        profiles: ['單人', '無寵', '不菸'],
-        moveInDate: '2026/11/15',
-        phone: '0988***321',
-        lineId: 'yuxuan***'
-      },
-      viewingDateTime: '2026/10/25 (日) 10:00 - 10:30',
-      message: '目前在科技業上班，生活規律，週末偶爾會去寫生或騎車。個性隨和好相處，會主動維持公共區域整潔。希望能找個舒適安靜的地方長租。',
-      matchScore: 78
-    }
-  ]);
+
+  reservations = signal<Reservation[]>([]);
+
+
+  // reservations = signal<Reservation[]>([
+  //   {
+  //     id: '1',
+  //     orderNumber: 'B-20261024-001',
+  //     status: 'pending',
+  //     roomName: '陽光雅房 A室 (高雄軟體園區附近)', // 稍微調整了一下地點作為範例
+  //     applicant: {
+  //       name: '林依晨',
+  //       avatar: 'images/mr_chen.jpg',
+  //       profiles: ['單人', '無寵', '不菸'],
+  //       moveInDate: '2026/11/01',
+  //       phone: '0912***678',
+  //       lineId: 'yichen***'
+  //     },
+  //     viewingDateTime: '2026/10/24 (六) 14:00 - 14:30',
+  //     message: '您好！作息正常不菸不酒，平常喜歡安靜看書或煮點簡單的料理。非常喜歡您提供的共居空間氛圍，希望能有機會現場看看環境！',
+  //     matchScore: 95
+  //   },
+  //   {
+  //     id: '2',
+  //     orderNumber: 'B-20261025-002',
+  //     status: 'pending',
+  //     roomName: '獨立套房 B室 (高雄軟體園區附近)',
+  //     applicant: {
+  //       name: '張宇軒',
+  //       avatar: 'images/mr_chen.jpg',
+  //       profiles: ['單人', '無寵', '不菸'],
+  //       moveInDate: '2026/11/15',
+  //       phone: '0988***321',
+  //       lineId: 'yuxuan***'
+  //     },
+  //     viewingDateTime: '2026/10/25 (日) 10:00 - 10:30',
+  //     message: '目前在科技業上班，生活規律，週末偶爾會去寫生或騎車。個性隨和好相處，會主動維持公共區域整潔。希望能找個舒適安靜的地方長租。',
+  //     matchScore: 78
+  //   }
+  // ]);
 
   // ===================================================================
   // 動態計算屬性 (Computed)
@@ -100,16 +104,45 @@ export class HouseViewingApprovalComponent implements OnInit {
   // ===================================================================
   ngOnInit(): void {
     // 這裡預留給取得資料庫真實訂單的邏輯
-    // this.fetchReservations();
+    this.fetchReservations();
   }
 
   private fetchReservations() {
-    // 範例：從資料庫拉取房東的預約單
-    // this.viewingService.getReservationsByLessor().subscribe({
-    //   next: (data) => this.reservations.set(data),
-    //   error: (err) => console.error('無法取得預約資料', err)
-    // });
+    // 測試階段：請改成 House_Viewing_Order 最新資料那筆的 LessorId
+    const lessorUserId = 4;
+
+    this.viewingService.getReservationsByLessor(lessorUserId).subscribe({
+
+      next: (data) => {
+        console.log('看房預約審核 API 回傳：', data);
+        this.reservations.set(data as unknown as Reservation[]);
+      },
+
+      // next: (data) => {
+      //   console.log('看房預約審核 API 回傳：', data);
+      //   this.reservations.set(data);
+      // },
+      error: (err) => {
+        console.error('無法取得預約資料：', err);
+
+        const backendMessage =
+          err.error?.details ||
+          err.error?.message ||
+          err.message ||
+          '未知錯誤';
+
+        alert(`無法取得看房預約審核資料：${backendMessage}`);
+      }
+    });
   }
+
+  // private fetchReservations() {
+  //   // 範例：從資料庫拉取房東的預約單
+  //   // this.viewingService.getReservationsByLessor().subscribe({
+  //   //   next: (data) => this.reservations.set(data),
+  //   //   error: (err) => console.error('無法取得預約資料', err)
+  //   // });
+  // }
 
   // ===================================================================
   // 互動邏輯方法

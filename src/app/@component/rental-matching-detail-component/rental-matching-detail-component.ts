@@ -14,7 +14,6 @@ import { RentalMatchingService } from '../../@service/rental-matching-service';
 import { HouseFacilityService } from '../../@service/house-facility-service';
 import { HouseViewingService } from '../../@service/house-viewing-service';
 import { MatchHouseDto } from '../../@interface/match-house';
-import { Schema } from '../../../../node_modules/hono/dist/types/types.d';
 
 @Component({
   selector: 'app-rental-matching-detail-component',
@@ -22,10 +21,11 @@ import { Schema } from '../../../../node_modules/hono/dist/types/types.d';
   imports: [CommonModule, RouterModule, RouterLink, FontAwesomeModule, FormsModule],
   templateUrl: './rental-matching-detail-component.html',
   styleUrl: './rental-matching-detail-component.scss',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA], // ✅ 允許 <swiper-container>
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
 
+  currentCleanId = signal<number>(0);
   // ===================================================================
   // 注入 Services
   // ===================================================================
@@ -176,12 +176,29 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
     this.route.params.pipe(
       switchMap(params => {
         const type = params['type'];
-        const rawId = params['id'];
-        const itemId = typeof rawId === 'string' && rawId.includes(':')
-          ? parseInt(rawId.split(':')[0], 10)
-          : parseInt(rawId, 10);
 
-        if (isNaN(itemId)) return [];
+        const rawId = params['id'];
+        // 直接拔掉可能的冒號，再轉成數字
+        const cleanIdString = typeof rawId === 'string' ? rawId.replace(':', '') : rawId;
+        const itemId = Number(cleanIdString);
+
+        console.log('📌 網址上的 rawId 是:', rawId);
+        console.log('📌 轉換後的 itemId 是:', itemId);
+
+        if (isNaN(itemId) || itemId === 0) {
+          console.warn('⚠️ 無效的房屋 ID:', rawId);
+          return []; // 或者使用 import { EMPTY } from 'rxjs'; return EMPTY;
+        }
+
+        this.currentCleanId.set(itemId);
+
+        // const rawId = params['id'];
+        // const itemId = typeof rawId === 'string' && rawId.includes(':')
+        //   ? parseInt(rawId.split(':')[0], 10)
+        //   : parseInt(rawId, 10);
+
+        // if (isNaN(itemId)) return [];
+        // this.currentCleanId.set(itemId);
         this.displayType.set(type);
 
         return type === 'room'
@@ -285,18 +302,29 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
     // 【情境一：送出房屋預約 (打 API 到後端)】
     if (this.isRoom()) {
 
-      // 組合字串，將日期與選中的時段合併，方便後端直接存成字串或辨識 (視你的 DTO 設計而定)
       const selectedTimes = this.roomTimeSlots().filter(t => t.checked).map(t => t.label).join(', ');
 
+      // 動態取得當前網址上的 id，確保絕對不會抓到預設的 0 或 1
+      const currentHouseId = Number(this.route.snapshot.paramMap.get('id')) || this.detailData()?.id || this.detailData()?.Id;
+
+      if (!this.roomDate()) {
+        alert('請選擇看房日期！');
+        return;
+      }
+
       const requestData = {
-        houseId: this.detailData()?.id || this.detailData()?.Id || 1, // 取得當前房間 ID
-        lesseeId: 99, // 承租人(當前登入者) ID，暫用寫死假資料
-        lessorId: this.detailData()?.accountId || this.detailData()?.AccountId || 2, // 取得房東 ID
-        // 注意: 若後端 API 嚴格要求 DateTime 格式，需將以下兩行轉為 new Date().toISOString()
+        // houseId: currentHouseId,
+        houseId: this.currentCleanId(),
+        // 房客(當前登入者)：測試階段先保留 4。未來有 Auth 服務後，改為 this.authService.currentUser()?.id
+        lesseeId: 4,
+
+        // 房東：優先抓取後端回傳的 lessorId 真實 Id，若後端 API 還沒改好，則先用 3 墊檔避免報錯
+        lessorId: this.detailData()?.lessorId || 4,
+
         viewingTime: new Date(this.roomDate() || new Date()).toISOString(),
-        expectedMoveIn: new Date().toISOString(), // 這裡暫時用當下時間，因為原本前端為中文字串'一週內'
+        expectedMoveIn: new Date().toISOString(),
         message: `期望時段: ${selectedTimes} | 留言: ${this.roomIntro()}`,
-        matchScore: 85 // 預設契合度
+        matchScore: this.detailData()?.matchScore || 85
       };
 
       console.log('準備發送的房屋預約請求:', requestData);

@@ -84,10 +84,20 @@ export const routes: Routes = [
         // canActivate : [authGuard],
         data: { roles: ['young', 'old'] },
         children: [
+          {
+            path: 'dashboard',
+            loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
+          },
+          // { path: '', redirectTo: 'rent', pathMatch: 'full' },
+
           { path: '', redirectTo: 'rent', pathMatch: 'full' },
           {
             path: 'rent',
             loadComponent: () => import('./@component/rent-house-component/house-form/house-form.component').then(c => c.HouseFormComponent),
+          },
+          {
+            path: 'edit',
+            loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
           },
           {
             path: 'product',

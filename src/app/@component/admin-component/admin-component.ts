@@ -5,7 +5,7 @@ import { RouterLink, RouterOutlet } from "@angular/router";
 
 @Component({
   selector: 'app-admin-component',
-  imports: [RouterLink, RouterOutlet],
+  imports: [ RouterOutlet],
   templateUrl: './admin-component.html',
   styleUrl: './admin-component.scss',
 })

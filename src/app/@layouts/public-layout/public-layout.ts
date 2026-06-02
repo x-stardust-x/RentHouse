@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AfterViewInit, ElementRef, OnDestroy, Renderer2, ViewChild } from '@angular/core';
+import { Authservice } from '../../@service/authservice';
 
 
 type AppFontSize = 'small' | 'medium' | 'large';
@@ -19,6 +20,8 @@ export class PublicLayout implements OnInit, AfterViewInit, OnDestroy {
   private lastScrollY = 0;
   private ticking = false;
   private removeScrollListener?: () => void;
+
+  public readonly authsev = inject(Authservice);
 
   private readonly headerHideThreshold = 50;
   private readonly scrollDelta = 6;
@@ -101,5 +104,9 @@ export class PublicLayout implements OnInit, AfterViewInit, OnDestroy {
 
   private applyFontSize(size: AppFontSize): void {
     document.documentElement.setAttribute('data-font-size', size);
+  }
+
+  logout(): void {
+    this.authsev.logout();
   }
 }

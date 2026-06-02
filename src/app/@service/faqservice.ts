@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { FAQ_C, FAQ_I, FAQ_IDto } from '../@interface/faq';
+import { FAQ_C, FAQ_CDto, FAQ_I, FAQ_IDto } from '../@interface/faq';
 import { tap } from 'rxjs';
 
 @Injectable({
@@ -62,6 +62,16 @@ export class FAQService {
     });
   }
 
+  createFAQCategory(dto : FAQ_CDto) {
+
+    return this.http.post<FAQ_C>(this.baseUrl + 'categories', dto)
+      .pipe(
+        tap(res => {
+          this.faqCategories.update(categories => [...categories, res]);
+        })
+      );
+  }
+
   createFAQ(dto: FAQ_IDto) {
 
     return this.http.post<FAQ_I>(this.baseUrl + 'FAQ_Items', dto)
@@ -78,6 +88,21 @@ export class FAQService {
 
   }
 
+  updateFAQCategory(id: number, dto: FAQ_CDto) {
+    return this.http.put<FAQ_C>(
+      this.baseUrl + `categories/${id}`,
+      dto
+    ).pipe(
+      tap(updated => {
+        this.faqCategories.update(categories =>
+          categories.map(x =>
+            x.id === id ? updated : x
+          )
+        );
+      })
+    );
+  }
+
   updateFAQ(id: number, dto: FAQ_IDto) {
 
     return this.http.put<FAQ_I>(
@@ -90,6 +115,22 @@ export class FAQService {
           items.map(x =>
             x.id === id ? updated : x
           )
+        );
+
+      })
+    );
+
+  }
+
+  deleteFAQCategory(id: number) {
+
+    return this.http.delete(
+      this.baseUrl + `categories/${id}`
+    ).pipe(
+      tap(() => {
+
+        this.faqCategories.update(categories =>
+          categories.filter(x => x.id !== id)
         );
 
       })

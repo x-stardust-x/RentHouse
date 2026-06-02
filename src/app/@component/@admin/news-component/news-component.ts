@@ -31,6 +31,8 @@ export class NewsComponent {
 
     if (!confirm('確定要刪除嗎？')) return;
 
+    const newsTitle = this.newsev.newsData().find(n => n.id === id)?.title ?? id;
+
     this.newsev.delete(id).pipe(
 
       switchMap(() => this.authsev.getClientIPAddress()),
@@ -38,8 +40,8 @@ export class NewsComponent {
       switchMap(ip => {
 
         const logData = {
-          userId: 1, // 這裡應該替換成實際的使用者 ID
-          action: `刪除消息 id:${id}`,
+          userId: this.authsev.getAdminId() ?? 0, // 這裡應該替換成實際的使用者 ID
+          action: `刪除消息: ${newsTitle}`,
           ipAddress: ip,
         };
 

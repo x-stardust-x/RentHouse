@@ -21,7 +21,7 @@ export class UserService {
     });
   }
 
-  loadProfile(userId : number){
+  loadProfile(userId : number | null) {
     this.http.get<UserProfile>(this.baseUrl + `profile/${userId}`).subscribe((res) => {
       this.profile.set(res)
     });
@@ -32,13 +32,18 @@ export class UserService {
       console.log(res);
       alert("更新完成")
 
-      this.router.navigate(['../']);
+      this.router.navigate(['/member/dashboard']);
     });
   }
 
   updateUserStatus(userId: number) {
-    return this.http.put(`https://localhost:7215/status/${userId}`, null);
+    return this.http.put(this.baseUrl + `status/${userId}`, null);
   }
+
+  deleteUser(userId: number) {
+    return this.http.put(this.baseUrl + `delete/${userId}`,null);
+  }
+
   getLessorProfile(accountId: number): Observable<any> {
     return this.http.get<any>(this.baseUrl + `public-profile/${accountId}`);
   }

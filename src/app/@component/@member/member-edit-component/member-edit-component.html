@@ -1,115 +1,295 @@
-<form [formGroup]="userProfileForm" (ngSubmit)="onSubmit()" class="container mt-4">
+<form
+  [formGroup]="userProfileForm"
+  (ngSubmit)="onSubmit()"
+  class="profile-page">
 
-  <h3 class="mb-4">會員資料編輯</h3>
+  <h2 class="mb-4 fw-bold">會員資料編輯</h2>
 
-  <div class="row">
+  <div class="profile-layout">
 
-    <!-- 基本資料 -->
+    <!-- 左側 -->
+    <div>
 
-          <!-- 圖片 -->
-          <div class="col-12">
+      <!-- 基本資料 -->
+      <div class="profile-card">
 
-            <label class="form-label">頭像</label>
+        <div class="section-title">
+          <i class="bi bi-person-circle"></i>
+          基本資料
+        </div>
 
-            <input type="file" class="form-control" accept="image/*" (change)="onFileChange($event)">
+        <div class="avatar-wrapper mb-4">
 
+          <img
+            [src]="imagePreview() || '/assets/default-avatar.png'"
+            class="avatar">
+
+          <input
+            type="file"
+            accept="image/*"
+            class="form-control custom-file mt-3"
+            (change)="onFileChange($event)">
+
+        </div>
+
+        <div class="row">
+
+          <div class="col-md-6 mb-3">
+            <label>真實姓名</label>
+            <input
+              type="text"
+              class="custom-input"
+              formControlName="realName">
           </div>
 
-          <!-- 預覽 -->
-          @if (imagePreview()) {
+          <div class="col-md-6 mb-3">
+            <label>英文名字</label>
+            <input
+              type="text"
+              class="custom-input"
+              formControlName="englishName">
+          </div>
 
-          <div class="col-12 my-2">
+          <div class="col-12 mb-3">
+            <label>電話</label>
+            <input
+              type="text"
+              class="custom-input"
+              placeholder="請輸入手機 09xxxxxxxx"
+              formControlName="phone"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              (input)="onNumberInput($event)">
+          </div>
+           <!-- 錯誤提示 -->
+           @if (userProfileForm.get('phone')?.touched && userProfileForm.get('phone')?.invalid) {
+            <div class="text-danger">
 
-            <div class="card border-0 shadow-sm overflow-hidden">
+              @if (userProfileForm.get('phone')?.errors?.['required']) {
+                <small>電話必填</small>
+              }
 
-              <img [src]="imagePreview()" class="img-thumbnail rounded" style="max-height: 150px; max-width: 150px; object-fit: cover;">
+              @if (userProfileForm.get('phone')?.errors?.['pattern']) {
+                <small>格式錯誤（需 09 開頭 10 碼）</small>
+              }
 
             </div>
+          }
 
+
+        </div>
+
+      </div>
+
+      <!-- 生活作息 -->
+      <div class="profile-card">
+
+        <div class="section-title">
+          <i class="bi bi-clock"></i>
+          生活作息
+        </div>
+
+        <div class="mb-4">
+
+          <label>睡眠時間</label>
+
+          <input
+            type="time"
+            class="custom-input"
+            formControlName="sleepTime">
+        </div>
+
+        <div>
+
+          <label>起床時間</label>
+
+          <input
+            type="time"
+            class="custom-input"
+            formControlName="wakeTime">
+
+        </div>
+
+      </div>
+
+      <!-- 環境偏好 -->
+      <div class="profile-card">
+
+        <div class="section-title">
+          <i class="bi bi-house-heart"></i>
+          環境偏好
+        </div>
+
+        <div class="mb-4">
+
+          <label>
+            整潔程度
+            <span class="slider-value float-end">
+              {{ userProfileForm.value.cleanLevel }}
+            </span>
+          </label>
+
+          <input
+            type="range"
+            min="1"
+            max="5"
+            [value]="userProfileForm.value.cleanLevel"
+            class="form-range"
+            formControlName="cleanLevel">
+
+        </div>
+
+        <div>
+
+          <label>
+            噪音容忍度
+            <span class="slider-value float-end">
+              {{ userProfileForm.value.noiseTolerance }}
+            </span>
+          </label>
+
+          <input
+            type="range"
+            min="1"
+            max="5"
+            [value]="userProfileForm.value.noiseTolerance"
+            class="form-range"
+            formControlName="noiseTolerance">
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- 右側 -->
+    <div>
+
+      <!-- 生活習慣 -->
+      <div class="profile-card">
+
+        <div class="section-title">
+          <i class="bi bi-heart"></i>
+          生活習慣
+        </div>
+
+        <div class="switch-box">
+
+          <div>
+            <strong>是否接受寵物</strong>
+            <small>可以養寵物</small>
           </div>
 
-          }
-    <div class="col-md-6 mb-3">
-      <label class="form-label">真實姓名</label>
-      <input type="text" class="form-control" formControlName="realName">
+          <div class="form-check form-switch">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              formControlName="pet">
+          </div>
+
+        </div>
+
+        <div class="switch-box">
+
+          <div>
+            <strong>是否接受吸菸</strong>
+            <small>接受吸菸習慣</small>
+          </div>
+
+          <div class="form-check form-switch">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              formControlName="smoke">
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- 地址 -->
+      <div class="profile-card">
+
+        <div class="section-title">
+          <i class="bi bi-geo-alt"></i>
+          地址資訊
+        </div>
+
+        <div class="mb-3">
+
+          <label>地址</label>
+
+          <input
+            type="text"
+            class="custom-input"
+            formControlName="address">
+
+        </div>
+
+        <app-location-select
+          [districtId]="userProfileForm.value.districtId"
+          (districtSelected)="onDistrictSelected($event)">
+        </app-location-select>
+
+      </div>
+
+      <!-- 興趣與自介 -->
+      <div class="profile-card">
+
+        <div class="section-title">
+          <i class="bi bi-stars"></i>
+          興趣與自我介紹
+        </div>
+
+        <div class="mb-3">
+
+          <label>興趣</label>
+
+          <input
+            type="text"
+            class="custom-input"
+            formControlName="interests"
+            placeholder="例如：閱讀、電影、健身">
+
+        </div>
+
+        <div>
+
+          <label>自我介紹</label>
+
+          <textarea
+            rows="5"
+            class="custom-textarea"
+            formControlName="bio">
+          </textarea>
+
+        </div>
+
+      </div>
+
+      <!-- 按鈕 -->
+      <div class="text-end">
+         <button
+          type="button"
+          class="btn-back me-4"
+          routerLink="../dashboard"
+          >
+          返回
+
+        </button>
+        <button
+          type="submit"
+          class="btn-save"
+          [disabled]="!userProfileForm.valid">
+
+          儲存修改
+
+        </button>
+
+      </div>
+
     </div>
-
-    <div class="col-md-6 mb-3">
-      <label class="form-label">英文名字</label>
-      <input type="text" class="form-control" formControlName="englishName">
-    </div>
-
-    <div class="col-md-6 mb-3">
-      <label class="form-label">電話</label>
-      <input type="text" class="form-control" formControlName="phone">
-    </div>
-
-    <div class="col-12 mb-3">
-      <label class="form-label">地址</label>
-      <input type="text" class="form-control" formControlName="address">
-    </div>
-
-    <div class="col-12 mb-3">
-      <label class="form-label">自我介紹</label>
-      <textarea class="form-control" rows="3" formControlName="bio"></textarea>
-    </div>
-
-    <div class="row g-2">
-
-    <!-- City -->
-
-    <app-location-select
-      [districtId]="userProfileForm.value.districtId"
-      (districtSelected)="onDistrictSelected($event)">
-    </app-location-select>
 
   </div>
-
-    <!-- 作息 -->
-    <div class="col-md-6 mb-3">
-      <label class="form-label">睡覺時間</label>
-      <input type="number" class="form-control" formControlName="sleepTime">
-    </div>
-
-    <div class="col-md-6 mb-3">
-      <label class="form-label">起床時間</label>
-      <input type="number" class="form-control" formControlName="wakeTime">
-    </div>
-
-
-    <!-- 個性 -->
-    <div class="col-md-6 mb-3">
-      <label class="form-label">清潔程度 (1-5)</label>
-      <input type="number" class="form-control" formControlName="cleanLevel" max="5" min="1">
-    </div>
-
-    <div class="col-md-6 mb-3">
-      <label class="form-label">噪音容忍度 (1-5)</label>
-      <input type="number" class="form-control" formControlName="noiseTolerance" max="5" min="1">
-    </div>
-
-    <!-- 開關 -->
-    <div class="col-md-6 form-check mb-2">
-      <input class="form-check-input" type="checkbox" formControlName="pet">
-      <label class="form-check-label">可養寵物</label>
-    </div>
-
-    <div class="col-md-6 form-check mb-2">
-      <input class="form-check-input" type="checkbox" formControlName="smoke">
-      <label class="form-check-label">可吸菸</label>
-    </div>
-
-    <!-- 興趣 -->
-    <div class="col-12 mb-3">
-      <label class="form-label">興趣</label>
-      <input type="text" class="form-control" formControlName="interests">
-    </div>
-
-  </div>
-
-  <!-- 按鈕 -->
-  <button type="submit" class="btn btn-primary" [disabled]="!userProfileForm.valid">
-    儲存修改
-  </button>
 
 </form>

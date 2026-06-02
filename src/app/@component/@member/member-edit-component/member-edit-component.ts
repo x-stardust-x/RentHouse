@@ -1,26 +1,30 @@
 import { Component, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { UserService } from '../../../@service/user-service';
 import { LocationService } from '../../../@service/location-service';
 import { UserProfile } from '../../../@interface/user-profile';
 import { LocationSelectComponent } from "../../location-select-component/location-select-component";
 import { District } from '../../../@interface/location';
 import { NewsService } from '../../../@service/news-service';
+import { Authservice } from '../../../@service/authservice';
+import { A11yModule } from "@angular/cdk/a11y";
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-member-edit-component',
-  imports: [CommonModule, ReactiveFormsModule, LocationSelectComponent],
+  imports: [CommonModule, ReactiveFormsModule, LocationSelectComponent, A11yModule,RouterLink],
   templateUrl: './member-edit-component.html',
   styleUrl: './member-edit-component.scss',
 })
 export class MemberEditComponent {
   private readonly fb = inject(FormBuilder);
   public readonly usersev = inject(UserService);
+  public readonly authsev = inject(Authservice);
   public readonly locsev = inject(LocationService);
   public readonly newsService = inject(NewsService);
   userProfileForm!: FormGroup;
-  userId = 1;
+  userId = this.authsev.getUserId();
   imagePreview = signal<string>('');
 
 
@@ -36,7 +40,11 @@ export class MemberEditComponent {
 
       avatar: [''],
 
-      phone: [''],
+      phone: ['',[
+        Validators.required,
+        Validators.pattern(/^09\d{8}$/),
+        Validators.pattern(/^\d+$/) // 台灣手機：09開頭 + 8碼
+      ]],
 
       address: [''],
 
@@ -56,8 +64,8 @@ export class MemberEditComponent {
       sleepTime: [''],
       wakeTime: [''],
 
-      cleanLevel: [0],
-      noiseTolerance: [0],
+      cleanLevel: [1],
+      noiseTolerance: [1],
 
       pet: [false],
       smoke: [false],
@@ -92,6 +100,7 @@ export class MemberEditComponent {
 
         districtId: profile.districtId,
 
+
         sleepTime: profile.sleepTime,
         wakeTime: profile.wakeTime,
 
@@ -121,7 +130,19 @@ export class MemberEditComponent {
   }
 
   onSubmit() {
+    if (this.userProfileForm.value.sleepTime?.length === 5) {
+      this.userProfileForm.patchValue({
+        sleepTime: this.userProfileForm.value.sleepTime + ':00'
+      });
+    }
+
+    if (this.userProfileForm.value.wakeTime?.length === 5) {
+      this.userProfileForm.patchValue({
+        wakeTime: this.userProfileForm.value.wakeTime + ':00'
+      });
+    }
     var form: UserProfile = this.userProfileForm.getRawValue();
+
     this.usersev.updateProfile(form);
   }
 
@@ -160,6 +181,12 @@ export class MemberEditComponent {
         });
 
       });
+  }
+  onNumberInput(event: Event) {
+    const input = event.target as HTMLInputElement;
 
+    input.value = input.value.replace(/\D/g, ''); // 去掉非數字
+
+    this.userProfileForm.get('phone')?.setValue(input.value);
   }
 }

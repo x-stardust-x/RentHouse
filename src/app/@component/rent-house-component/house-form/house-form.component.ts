@@ -1,10 +1,11 @@
-import { Component, signal, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, signal, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router'; // 🌟 1. 引入網址掃描器
 import { HouseService } from '../../../@service/house.service';
 import { CreateHouseDto } from '../../../@interface/house';
 import { District } from '../../../@interface/location';
 import { LocationSelectComponent } from '../../location-select-component/location-select-component';
+import { Authservice } from '../../../@service/authservice';
 
 @Component({
   selector: 'app-house-form',
@@ -14,6 +15,8 @@ import { LocationSelectComponent } from '../../location-select-component/locatio
   styleUrl: './house-form.component.scss'
 })
 export class HouseFormComponent implements OnInit {
+  private readonly authsev = inject(Authservice);
+
   houses = signal<any[]>([]);
   isEditMode = false;
   editingId = 0;
@@ -23,7 +26,7 @@ export class HouseFormComponent implements OnInit {
   existingPhotos: any[] = [];
 
   formData: CreateHouseDto = {
-    accountId: 1,
+    accountId: this.authsev.getAccountId() ?? 1,
     districtId: undefined,
     name: '測試豪華套房',
     address: '',
@@ -165,7 +168,7 @@ export class HouseFormComponent implements OnInit {
   submitForm() {
     if (this.formData.sleepTime?.length === 5) this.formData.sleepTime += ':00';
     if (this.formData.wakeTime?.length === 5) this.formData.wakeTime += ':00';
-
+    console.log('送出表單', this.formData, '待上傳照片數量:', this.pendingPhotos.length);
     if (this.isEditMode) {
       // 🌟 編輯模式
       this.houseService.updateHouse(this.editingId, this.formData).subscribe({
@@ -237,7 +240,7 @@ export class HouseFormComponent implements OnInit {
 
   resetForm() {
     this.formData = {
-      accountId: 1, districtId: undefined, name: '', address: '', description: '',
+      accountId: this.authsev.getAccountId() ?? 1, districtId: undefined, name: '', address: '', description: '',
       rentPrice: 0, includeUtilities: false, includeWifi: false, includeManagememtFee: false,
       areaSize: null, leaseTerm: 12, floorInfo: '', houseType: '獨立套房', status: 0,
       sleepTime: '23:30', wakeTime: '07:00', cleanLevel: 3, noiseTolerance: 3, pet: false, smoke: false, interests: '',

@@ -7,6 +7,8 @@
     <div>
       <h2>RentHouse</h2>
       <p>後台管理</p>
+      <p>管理員名子:{{adminData()?.username}}</p>
+      <p>管理員ID:{{adminData()?.id}}</p>
     </div>
   </div>
 
@@ -70,4 +72,11 @@
 
   </ul>
 
-</nav>
+    <div class="admin-sidebar__footer">
+      <button class="btn btn-outline-secondary w-100" (click)="logout()">
+        <span class="material-symbols-outlined">logout</span>
+        <span>登出</span>
+      </button>
+    </div>
+
+  </nav>

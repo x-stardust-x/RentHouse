@@ -1,7 +1,7 @@
 import { Component, effect, inject, signal } from '@angular/core';
 import { FAQService } from '../../../@service/faqservice';
 import { FormsModule } from '@angular/forms';
-import { FAQ_I, FAQ_IDto } from '../../../@interface/faq';
+import { FAQ_I, FAQ_IDto, FAQ_C, FAQ_CDto } from '../../../@interface/faq';
 import { switchMap } from 'rxjs';
 import { Authservice } from '../../../@service/authservice';
 import { LogService } from '../../../@service/log-service';
@@ -20,14 +20,24 @@ export class FAQsComponent {
 
   id = signal(0);
   editMode = signal(false);
+  categoryEditMode = signal(false);
+  categoryId = signal(0);
+  showCategoryActions = signal(false);
 
-  // 表單
+  // FAQ 表單
   form: FAQ_IDto = {
     categoryId: 0,
     question: '',
     answer: '',
     sortOrder: 0,
     status: 0
+  };
+
+  // 分類表單
+  categoryForm: FAQ_CDto = {
+    name: '',
+    sortOrder: 0,
+    isActive: true
   };
 
   openAddModal() {
@@ -69,6 +79,127 @@ export class FAQsComponent {
 
   }
 
+  resetCategoryForm() {
+
+    this.categoryForm = {
+      name: '',
+      sortOrder: 0,
+      isActive: true
+    };
+
+  }
+
+  openAddCategoryModal() {
+
+    this.categoryEditMode.set(false);
+    this.resetCategoryForm();
+    this.openCategoryModal();
+
+  }
+
+  toggleCategoryActions(value?: boolean) {
+    if (typeof value === 'boolean') {
+      this.showCategoryActions.set(value);
+      return;
+    }
+    this.showCategoryActions.update(v => !v);
+  }
+
+  openEditCategoryModal(category: FAQ_C) {
+
+    this.categoryEditMode.set(true);
+    this.categoryId.set(category.id);
+    this.categoryForm = {
+      name: category.name,
+      sortOrder: category.sortOrder,
+      isActive: category.isActive
+    };
+    this.openCategoryModal();
+
+  }
+
+  openCategoryModal() {
+    const modal = new bootstrap.Modal(
+      document.getElementById('categoryModal')
+    );
+    modal.show();
+  }
+
+  closeCategoryModal() {
+    const modalElement = document.getElementById('categoryModal');
+    const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+    modalInstance.hide();
+  }
+
+  saveCategoryFAQ() {
+
+    const action$ = this.categoryEditMode()
+      ? this.faqService.updateFAQCategory(this.categoryId(), this.categoryForm)
+      : this.faqService.createFAQCategory(this.categoryForm);
+
+    const actionText = this.categoryEditMode()
+      ? `修改分類: ${this.categoryForm.name}`
+      : `新增分類: ${this.categoryForm.name}`;
+
+    action$
+      .pipe(
+        switchMap(() => this.authsev.getClientIPAddress()),
+        switchMap(ip => {
+          const logData = {
+            userId: this.authsev.getAdminId() ?? 0,
+            action: actionText,
+            ipAddress: ip,
+          };
+          return this.logsev.postLog(logData);
+        })
+      )
+      .subscribe({
+        next: () => {
+          console.log('Log posted successfully');
+          this.closeCategoryModal();
+        },
+        error: (err: any) => {
+          console.error(err);
+          alert('操作失敗');
+        }
+      });
+
+  }
+
+  deleteFAQCategory(id: number) {
+
+    const categoryName = this.faqService.faqCategories().find(c => c.id === id)?.name ?? id;
+
+    if (!confirm('確定刪除此分類？')) {
+      return;
+    }
+
+    this.faqService.deleteFAQCategory(id)
+      .pipe(
+        switchMap(() => this.authsev.getClientIPAddress()),
+        switchMap(ip => {
+          const logData = {
+            userId: this.authsev.getAdminId() ?? 0,
+            action: `刪除分類: ${categoryName}`,
+            ipAddress: ip,
+          };
+          return this.logsev.postLog(logData);
+        })
+      )
+      .subscribe({
+        next: () => {
+          console.log('Log posted successfully');
+          this.faqService.selectedCategoryId.set(0);
+          this.faqService.getFAQCategories();
+        },
+        error: (err: any) => {
+          console.error(err);
+          alert('刪除失敗');
+        }
+      });
+
+  }
+
   openModal() {
     const modal = new bootstrap.Modal(
       document.getElementById('faqModal')
@@ -84,8 +215,8 @@ export class FAQsComponent {
       : this.faqService.createFAQ(this.form);
 
     const actionText = this.editMode()
-      ? `修改 FAQ id:${this.id()}`
-      : `新增 FAQ`;
+      ? `修改 FAQ: ${this.form.question}`
+      : `新增 FAQ: ${this.form.question}`;
 
     action$
       .pipe(
@@ -95,7 +226,7 @@ export class FAQsComponent {
         switchMap(ip => {
 
           const logData = {
-            userId: 1, // 改成實際登入者 ID
+            userId: this.authsev.getAdminId() ?? 0, // 改成實際登入者 ID
             action: actionText,
             ipAddress: ip,
           };
@@ -114,7 +245,7 @@ export class FAQsComponent {
 
         },
 
-        error: err => {
+        error: (err: any) => {
 
           console.error(err);
 
@@ -170,9 +301,10 @@ export class FAQsComponent {
 
         switchMap(ip => {
 
+          const faqTitle = this.faqService.faqItems().find(x => x.id === id)?.question ?? id;
           const logData = {
-            userId: 1, // 改成實際登入者 ID
-            action: `刪除 FAQ id:${id}`,
+            userId: this.authsev.getAdminId() ?? 0, // 改成實際登入者 ID
+            action: `刪除 FAQ: ${faqTitle}`,
             ipAddress: ip,
           };
 
@@ -191,7 +323,7 @@ export class FAQsComponent {
 
         },
 
-        error: err => {
+        error: (err: any) => {
 
           console.error(err);
 

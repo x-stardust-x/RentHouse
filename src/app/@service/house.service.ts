@@ -102,4 +102,44 @@ export class HouseService {
     return this.http.delete(`https://localhost:7215/api/RentProduct/${id}`);
   }
 
+  getHouseById(id: number) {
+
+    return this.http.get<any>(`https://localhost:7215/api/RentHouse/${id}`);
+  }
+
+ getMyHouses() {
+  return this.http.get<any[]>('https://localhost:7215/api/RentHouse/GetMyHouses');
+}
+deleteImageRecord(imageId: number) {
+
+    return this.http.delete(`https://localhost:7215/api/RentHouse/Image/${imageId}`);
+  }
+  // 7. 取得「特定會員」的所有技能 (個人管理列表用)
+  // 💡 注意：你需要確認 C# 有這支 API，例如 [HttpGet("User/{accountId}")]
+  getProductsByAccountId(accountId: number) {
+    return this.http.get<any[]>(`https://localhost:7215/api/RentProduct/User/${accountId}`);
+  }
+
+  // 8. 取得「單一」技能詳細資料 (編輯表單、自動填入用)
+  getProductById(id: number) {
+    return this.http.get<any>(`https://localhost:7215/api/RentProduct/${id}`);
+  }
+
+  // 9. 修改技能資料 (儲存編輯用)
+  updateProduct(id: number, data: any) {
+    return this.http.put(`https://localhost:7215/api/RentProduct/${id}`, data);
+  }
+
+  // 10. 刪除單一技能照片紀錄 (編輯時點叉叉用)
+  deleteProductImageRecord(imageId: number) {
+    return this.http.delete(`https://localhost:7215/api/RentProduct/Image/${imageId}`);
+  }
+
+  // 11. 上傳實體照片檔案 (如果你沒有跟房屋共用 Upload API 的話)
+  uploadProductImage(file: File) {
+    const formData = new FormData();
+    formData.append('files', file);
+    return this.http.post('https://localhost:7215/api/RentProduct/Upload', formData);
+  }
+
 }

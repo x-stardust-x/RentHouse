@@ -9,7 +9,7 @@ import { AdminLayout } from './@layouts/admin-layout/admin-layout';
 export const routes: Routes = [
   {
     // ==========================================
-    // 前端公版
+    // 🌐 前端公版 (Public Layout)
     // ==========================================
     path: '',
     component: PublicLayout,
@@ -28,14 +28,34 @@ export const routes: Routes = [
         loadComponent: () => import('./@component/register-component/register-component').then(c => c.RegisterComponent),
         canActivate: [loginGuard]
       },
-
-      // 關於我們
       {
         path: 'about-homiefun',
         loadComponent: () => import('./@component/about-homiefun-component/about-homiefun-component').then(c => c.AboutHomiefunComponent),
       },
+      {
+        path: 'contact',
+        component: ContactComponent
+      },
 
-      // 會員中心
+      // --- 租賃媒合相關 ---
+      {
+        path: 'rental-matching-component',
+        loadComponent: () => import('./@component/rental-matching-component/rental-matching-component').then(c => c.RentalMatchingComponent),
+      },
+      {
+        path: 'rental-matching-detail/:type/:id',
+        loadComponent: () => import('./@component/rental-matching-detail-component/rental-matching-detail-component').then(c => c.RentalMatchingDetailComponent),
+      },
+      {
+        path: 'lessor-profile/:id',
+        loadComponent: () => import('./@component/lessor-profile-component/lessor-profile-component').then(c => c.LessorProfileComponent),
+      },
+      {
+        path: 'rent',
+        loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
+      },
+
+      // --- 會員中心 ---
       {
         path: 'member',
         data: { roles: ['young', 'old'] },
@@ -54,66 +74,52 @@ export const routes: Routes = [
           }
         ],
       },
-      {
-        path: 'rental-matching-component',
-        loadComponent: () => import('./@component/rental-matching-component/rental-matching-component').then(c => c.RentalMatchingComponent),
-      },
-      {
-        path: 'rental-matching-detail/:type/:id',
-        loadComponent: () => import('./@component/rental-matching-detail-component/rental-matching-detail-component').then(c => c.RentalMatchingDetailComponent),
-      },
-      {
-        path: 'lessor-profile/:id',
-        loadComponent: () => import('./@component/lessor-profile-component/lessor-profile-component').then(c => c.LessorProfileComponent),
-      },
-      {
-        path: 'rent',
-        loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
-      },
 
-      // 個人專區
+      // ==========================================
+      // 🏠 個人專區 (User Center Layout)
+      // ==========================================
       {
         path: 'user-center',
         loadComponent: () => import('./@layouts/user-center-layout/user-center-layout').then(c => c.UserCenterLayout),
         // canActivate : [authGuard],
         data: { roles: ['young', 'old'] },
-        // 發布新房源
         children: [
-
-          // { path: '', redirectTo: 'rent', pathMatch: 'full' },
-
+          { path: '', redirectTo: 'rent', pathMatch: 'full' },
           {
             path: 'rent',
-            loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent),
+            loadComponent: () => import('./@component/rent-house-component/house-form/house-form.component').then(c => c.HouseFormComponent),
           },
+          {
+            path: 'product',
+            loadComponent: () => import('./@component/rent-house-component/product-form/product-form.component').then(c => c.ProductFormComponent),
+          },
+          {
+            path: 'houses',
+            loadComponent: () => import('./@component/house-management/house-management').then(c => c.HouseManagementComponent),
+          },
+          {
+            path: 'products-list',
+            loadComponent: () => import('./@component/product-management/product-management').then(c => c.ProductManagementComponent),
+          }
         ],
-      },
-
-      // 聯絡我們
-      {
-        path: 'contact',
-        component: ContactComponent
       },
     ]
   },
 
   {
     // ==========================================
-    // 後端管理公版 (攤平所有路由，解決 admin/admin 問題)
+    // ⚙️ 後端管理公版 (Admin Layout)
     // ==========================================
     path: 'admin',
     component: AdminLayout,
     // canActivate : [authGuard],
     data: { roles: ['admin'] },
     children: [
-      // 🌟 1. 預設一進來 /admin，就自動導向 admin-review
       { path: '', redirectTo: 'admin-review', pathMatch: 'full' },
-
-      // 🌟 2. 租賃物管理
-      // 管理員
       {
         path: 'dashboard',
         loadComponent: () => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
+        data: { roles: ['admin'] },
       },
       {
         path: 'news',
@@ -122,10 +128,12 @@ export const routes: Routes = [
       {
         path: 'news/create',
         loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
-      }, {
+      },
+      {
         path: 'news/edit/:id',
         loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
-      }, {
+      },
+      {
         path: 'logs',
         loadComponent: () => import('./@component/@admin/logs-component/logs-component').then(c => c.LogsComponent),
       },
@@ -141,49 +149,23 @@ export const routes: Routes = [
         path: 'admins',
         loadComponent: () => import('./@component/@admin/admins-component/admins-component').then(c => c.AdminsComponent),
       },
-
-      // 租賃物管理
       {
         path: 'admin-review',
         component: AdminReviewComponent,
       },
-
-      // 🌟 3. 新增的「聯絡訊息管理」
       {
         path: 'contact-messages',
         loadComponent: () => import('./@component/admin-contact/admin-contact').then(c => c.AdminContactComponent)
-      },
-
-      // 🌟 4. 原本的 dashboard (把原本會造成重複的 'admin' 改名成 'dashboard')
-      {
-        path: 'dashboard',
-        loadComponent: () => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
-        data: { roles: ['admin'] },
-      },
-
-      // 🌟 5. 新聞與 Logs 管理 (直接與 admin-review 放在同一層)
-      {
-        path: 'news',
-        loadComponent: () => import('./@component/@admin/news-component/news-component').then(c => c.NewsComponent),
-      },
-      {
-        path: 'news/create',
-        loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
-      },
-      {
-        path: 'news/edit/:id',
-        loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
-      },
-      {
-        path: 'logs',
-        loadComponent: () => import('./@component/@admin/logs-component/logs-component').then(c => c.LogsComponent),
       }
     ]
   },
 
-
-
-
+  {
+    // 🪤 捕捉所有未知的網址，導回首頁
+    path: '**',
+    redirectTo: 'home'
+  }
+];
 
 
 
@@ -262,12 +244,7 @@ export const routes: Routes = [
   // },
 
 
-  {
-    path: '**',
-    // loadComponent :() => import('./@component/login-component/login-component').then(c => c.LoginComponent),
-    redirectTo: 'home'
-  },
-];
+
 
 
 

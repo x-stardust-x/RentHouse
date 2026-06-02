@@ -17,6 +17,12 @@ export interface FAQ_I {
   UpdatedAt : Date;
 }
 
+export interface FAQ_CDto {
+  name : string;
+  sortOrder : number;
+  isActive : boolean;
+}
+
 export interface FAQ_IDto{
   categoryId : number;
   question : string;

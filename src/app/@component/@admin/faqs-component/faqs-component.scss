@@ -1,0 +1,43 @@
+/* Styles for compact and consistent category action buttons */
+.category-group {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.category-name-btn {
+	white-space: nowrap;
+}
+
+.category-actions .category-action-btn {
+	width: 34px;
+	height: 34px;
+	padding: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.9rem;
+	line-height: 1;
+	border-radius: 6px;
+}
+
+.category-action-btn svg {
+	width: 16px;
+	height: 16px;
+}
+
+.category-actions .category-action-btn + .category-action-btn {
+	margin-left: 0.25rem;
+}
+
+/* Ensure small buttons don't break layout on wrap */
+.category-group { flex-shrink: 0; }
+
+/* When actions are hidden remove the spacing so name buttons align left */
+.category-group.no-actions { gap: 0; }
+
+.category-action-btn .material-symbols-outlined {
+	font-size: 18px;
+	line-height: 1;
+}
+

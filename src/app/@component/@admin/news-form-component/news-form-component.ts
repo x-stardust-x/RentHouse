@@ -68,11 +68,12 @@ export class NewsFormComponent implements OnInit {
 
       switchMap(ip => {
 
+        const title = this.form.get('title')?.value ?? '未命名消息';
         const log = {
           userId: this.authservice.getAdminId() ?? 0,
           action: this.isEdit
-            ? `更新消息 id:${this.id}`
-            : '新增一筆消息',
+            ? `更新消息: ${title}`
+            : `新增消息: ${title}`,
           ipAddress: ip,
         };
 

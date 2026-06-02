@@ -20,4 +20,8 @@ export class AdminSidebar {
       this.adminData.set(admin);
     });
   }
+
+  logout() {
+    this.authsev.logout();
+  }
 }

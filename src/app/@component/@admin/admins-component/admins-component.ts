@@ -3,6 +3,8 @@ import { AdminService } from '../../../@service/admin-service';
 import { FormsModule } from '@angular/forms';
 import { AdminDto } from '../../../@interface/admin';
 import { Authservice } from '../../../@service/authservice';
+import { LogService } from '../../../@service/log-service';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-admins-component',
@@ -12,7 +14,8 @@ import { Authservice } from '../../../@service/authservice';
 })
 export class AdminsComponent {
   public adminservice = inject(AdminService);
-  private authsev = inject(Authservice);
+  public authsev = inject(Authservice);
+  private logsev = inject(LogService);
 
   now_adminid: number = this.authsev.getAdminId() ?? 0;
   constructor() {
@@ -30,8 +33,19 @@ export class AdminsComponent {
   createAdmin() {
     console.log('create admin:', this.newAdmin);
 
-    // 呼叫 API
-    this.adminservice.createAdmin(this.newAdmin).subscribe({
+    const actionText = `新增管理員: ${this.newAdmin.username}`;
+
+    this.adminservice.createAdmin(this.newAdmin).pipe(
+      switchMap(() => this.authsev.getClientIPAddress()),
+      switchMap(ip => {
+        const logData = {
+          userId: this.authsev.getAdminId() ?? 0,
+          action: actionText,
+          ipAddress: ip,
+        };
+        return this.logsev.postLog(logData);
+      })
+    ).subscribe({
       next: (res) => {
         alert("管理員已新增");
         this.loadAdmin();
@@ -57,8 +71,20 @@ export class AdminsComponent {
 
   }
   resetPwd(adminId: number) {
+    const adminName = this.adminservice.admins().find(a => a.id === adminId)?.username ?? adminId;
     if (confirm("確定要重置密碼嗎？")) {
-      this.adminservice.resetpwd(adminId).subscribe({
+      const actionText = `重置管理員密碼: ${adminName}`;
+      this.adminservice.resetpwd(adminId).pipe(
+        switchMap(() => this.authsev.getClientIPAddress()),
+        switchMap(ip => {
+          const logData = {
+            userId: this.authsev.getAdminId() ?? 0,
+            action: actionText,
+            ipAddress: ip,
+          };
+          return this.logsev.postLog(logData);
+        })
+      ).subscribe({
         next: (res) => {
           alert("密碼已重置為預設密碼0000");
         },
@@ -70,8 +96,20 @@ export class AdminsComponent {
     }
   }
   deleteAdmin(adminId: number) {
+    const adminName = this.adminservice.admins().find(a => a.id === adminId)?.username ?? adminId;
     if (confirm("確定要刪除該管理員嗎？")) {
-      this.adminservice.deleteAdmin(adminId).subscribe({
+      const actionText = `刪除管理員: ${adminName}`;
+      this.adminservice.deleteAdmin(adminId).pipe(
+        switchMap(() => this.authsev.getClientIPAddress()),
+        switchMap(ip => {
+          const logData = {
+            userId: this.authsev.getAdminId() ?? 0,
+            action: actionText,
+            ipAddress: ip,
+          };
+          return this.logsev.postLog(logData);
+        })
+      ).subscribe({
         next: (res) => {
           alert("管理員已刪除");
           this.loadAdmin();

@@ -37,8 +37,13 @@ export class UserService {
   }
 
   updateUserStatus(userId: number) {
-    return this.http.put(`https://localhost:7215/status/${userId}`, null);
+    return this.http.put(this.baseUrl + `status/${userId}`, null);
   }
+
+  deleteUser(userId: number) {
+    return this.http.put(this.baseUrl + `delete/${userId}`,null);
+  }
+
   getLessorProfile(accountId: number): Observable<any> {
     return this.http.get<any>(this.baseUrl + `public-profile/${accountId}`);
   }

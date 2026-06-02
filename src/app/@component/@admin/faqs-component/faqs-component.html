@@ -21,6 +21,7 @@
     <button class="btn category-name-btn" [class.btn-primary]="faqService.selectedCategoryId() === category.id"
       [class.btn-outline-primary]="faqService.selectedCategoryId() !== category.id" (click)="changeCategory(category.id)">
 
+      <span class="status-dot" [class.status-dot-active]="category.isActive" [class.status-dot-inactive]="!category.isActive"></span>
       {{ category.name }}
 
       <span class="badge bg-light text-dark ms-1">

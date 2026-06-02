@@ -22,7 +22,7 @@ export class FAQsComponent {
   editMode = signal(false);
   categoryEditMode = signal(false);
   categoryId = signal(0);
-  showCategoryActions = signal(true);
+  showCategoryActions = signal(false);
 
   // FAQ 表單
   form: FAQ_IDto = {

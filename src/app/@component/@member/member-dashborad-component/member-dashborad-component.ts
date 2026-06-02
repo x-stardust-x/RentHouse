@@ -3,6 +3,7 @@ import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { UserService } from '../../../@service/user-service';
 import { LocationService } from '../../../@service/location-service';
+import { Authservice } from '../../../@service/authservice';
 
 @Component({
   selector: 'app-member-dashborad-component',
@@ -11,9 +12,10 @@ import { LocationService } from '../../../@service/location-service';
   styleUrl: './member-dashborad-component.scss',
 })
 export class MemberDashboradComponent {
+  private readonly authsev = inject(Authservice);
   public usersev = inject(UserService);
   public locsev = inject(LocationService);
-  userId = 1;
+  userId = this.authsev.getUserId();
 
   profile = this.usersev.profile;
 
@@ -32,9 +34,9 @@ export class MemberDashboradComponent {
     if (!profile) return tags;
 
     // 早睡
-    if (profile.sleepTime <= 23) {
-      tags.push('早睡早起');
-    }
+    // if (profile.sleepTime <= 23) {
+    //   tags.push('早睡早起');
+    // }
 
     // 愛乾淨
     if (profile.cleanLevel >= 4) {

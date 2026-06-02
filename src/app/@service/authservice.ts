@@ -69,6 +69,17 @@ export class Authservice {
     return decoded.role || null
   }
 
+  getAccountId(): number | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    const decoded = this.decodeToken(token);
+
+    return decoded.AccountId ? Number(decoded.AccountId) : null;
+  }
+
+
+
   getUserId(): number | null {
     const token = this.getToken();
     if (!token) return null;

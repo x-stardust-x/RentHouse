@@ -1,7 +1,10 @@
-import { Component, signal, computed, OnInit } from '@angular/core';
+import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { HouseService } from '../../@service/house.service';
 import { HttpClient } from '@angular/common/http';
 import { ProductReviewComponent } from './product-review/product-review-component';
+import { Authservice } from '../../@service/authservice';
+import { LogService } from '../../@service/log-service';
+import { jwtDecode } from 'jwt-decode';
 @Component({
   selector: 'app-admin-review-component',
   templateUrl: './admin-review-component.html',
@@ -11,14 +14,19 @@ import { ProductReviewComponent } from './product-review/product-review-componen
 })
 export class AdminReviewComponent implements OnInit {
 
+  private readonly authsev = inject(Authservice);
+  private readonly logsev = inject(LogService);
+  ipAddress = signal<string>('');
+
   // 1. 原始資料庫：儲存後端撈回來的「所有真實資料」，絕不被篩選器破壞
+
   rawHouses = signal<any[]>([]);
 
-  //  篩選器訊號：紀錄目前選中的 Tab 與 下拉選單狀態
+
   currentTab = signal<string>('rooms');
   currentStatus = signal<string>('all');
 
-  //  核心魔法：根據條件「自動過濾」畫面資料！
+
   pendingHouses = computed(() => {
 
     if (this.currentTab() !== 'rooms') {
@@ -26,15 +34,15 @@ export class AdminReviewComponent implements OnInit {
     }
 
     // --- 以下是原本的狀態過濾邏輯 ---
-    let result = this.rawHouses(); // 拿出保險箱的所有資料
+    let result = this.rawHouses();
 
-    // 依據下拉選單過濾狀態
+
     const status = this.currentStatus();
     if (status === 'pending') {
-      // 只留待審核狀態 (0:剛建立未審 或 2:被退回暫存)
+
       result = result.filter(h => h.status === 0 || h.status === 2);
     } else if (status === 'active') {
-      // 只留已上架狀態 (1)
+
       result = result.filter(h => h.status === 1);
     }
 
@@ -49,13 +57,46 @@ export class AdminReviewComponent implements OnInit {
     this.checkAdminRole();
     if (this.isAdmin()) {
       this.loadPendingHouses();
+
+      this.authsev.getClientIPAddress().subscribe((ip) => {
+        this.ipAddress.set(ip);
+      });
     }
   }
 
-  checkAdminRole() {
-    const currentRole = localStorage.getItem('userRole');
-    this.isAdmin.set(currentRole === 'Admin');
+ checkAdminRole() {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    this.isAdmin.set(false);
+    return;
   }
+
+  try {
+    const decoded: any = jwtDecode(token);
+
+    // 🌟 鎖定那個超長的 Claim 名稱
+    const roleKey = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
+    const role = decoded[roleKey];
+
+    console.log('精準對接中');
+    console.log('抓到的角色是:', role);
+
+    // 比對角色並設定權限
+    this.isAdmin.set(role?.toLowerCase() === 'admin');
+
+  } catch (error) {
+    console.error('Token 解碼失敗', error);
+    this.isAdmin.set(false);
+  }
+}
+// 新增一個變數，用來記住現在要放大的圖片網址
+  selectedImageUrl: string = '';
+
+  //  點擊縮圖時觸發的方法
+  openImageModal(imageUrl: string) {
+    this.selectedImageUrl = imageUrl;
+  }
+
 
   getCoverUrl(house: any): string | null {
     if (house.coverUrl) return house.coverUrl;
@@ -85,6 +126,11 @@ export class AdminReviewComponent implements OnInit {
     this.http.put(`https://localhost:7215/api/RentHouse/Approve/${house.id}`, {}).subscribe({
       next: (res: any) => {
         alert('房屋已核准上架！');
+        this.logsev.postLog({
+          userId: 1,
+          action: `房屋核准上架: ${house.name} (ID: ${house.id})`,
+          ipAddress: this.ipAddress()
+        }).subscribe();
         window.location.reload();
       },
       error: (err: any) => {
@@ -101,6 +147,11 @@ export class AdminReviewComponent implements OnInit {
         next: (res: any) => {
           alert('房屋已成功下架！');
           // 🌟 5. 下架時，更新原始資料庫
+          this.logsev.postLog({
+            userId: 1,
+            action: `房屋強制下架: ${house.name} (ID: ${house.id})`,
+            ipAddress: this.ipAddress()
+          }).subscribe();
           this.rawHouses.set(this.rawHouses().filter((h: any) => h.id !== house.id));
         },
         error: (err: any) => {
@@ -118,6 +169,11 @@ export class AdminReviewComponent implements OnInit {
       this.houseService.deleteHouse(id).subscribe({
         next: () => {
           alert('🗑️ 申請已退回並銷毀！');
+          this.logsev.postLog({
+            userId: 1,
+            action: `房屋退回並銷毀: ID: ${id}`,
+            ipAddress: this.ipAddress()
+          }).subscribe();
           this.loadPendingHouses();
         },
         error: (err) => console.error('退回失敗', err)

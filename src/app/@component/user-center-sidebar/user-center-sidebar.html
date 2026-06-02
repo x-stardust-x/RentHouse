@@ -45,10 +45,10 @@
       </a>
     </li>
     <li>
-      <a class="user-sidebar__link">
-        <span class="material-symbols-outlined">home_work</span>
-        <span>房源管理</span>
-      </a>
+      <a routerLink="/user-center/houses" class="user-sidebar__link" routerLinkActive="is-active">
+  <span class="material-symbols-outlined">home_work</span>
+  <span>房源管理</span>
+</a>
     </li>
     <li>
       <a routerLink="/user-center/house-viewing-approval" class="user-sidebar__link" routerLinkActive="is-active">
@@ -60,17 +60,17 @@
 
     <li class="user-sidebar__section-title">工具 / 技能共享</li>
     <li>
-      <a class="user-sidebar__link">
-        <span class="material-symbols-outlined">add_box</span>
-        <span>發布新工具 / 技能</span>
-      </a>
+      <a routerLink="/user-center/product" class="user-sidebar__link" routerLinkActive="is-active">
+  <span class="material-symbols-outlined">add_box</span>
+  <span>發布新工具 / 技能</span>
+</a>
     </li>
     <li>
-      <a class="user-sidebar__link">
-        <span class="material-symbols-outlined">construction</span>
-        <span>共享工具 / 技能管理</span>
-      </a>
-    </li>
+  <a routerLink="/user-center/products-list" class="user-sidebar__link" routerLinkActive="is-active">
+    <span class="material-symbols-outlined">build</span>
+    <span>共享工具 / 技能管理</span>
+  </a>
+</li>
     <li>
       <a routerLink="/user-center/product-booking-approval-component" class="user-sidebar__link">
         <span class="material-symbols-outlined">assignment_turned_in</span>
@@ -157,9 +157,9 @@
     <hr class="user-sidebar__divider">
 
     <li>
-      <a class="user-sidebar__link">
+      <a class="user-sidebar__link" routerLink="edit" routerLinkActive="is-active">
         <span class="material-symbols-outlined">interests</span>
-        <span>個人偏好設定</span>
+        <span>個人資料設定</span>
       </a>
     </li>
     <li>

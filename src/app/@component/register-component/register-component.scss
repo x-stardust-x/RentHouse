@@ -1,0 +1,224 @@
+/* =================================
+   頁面背景
+================================= */
+
+.login-page {
+  min-height: 100vh;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f5f6fa 0%,
+      #eef2f7 100%
+    );
+}
+
+/* =================================
+   左側品牌
+================================= */
+
+.brand-panel {
+
+  padding-right: 60px;
+
+  h1 {
+    font-size: 4rem;
+    font-weight: 800;
+    color: #e98b2a;
+  }
+
+  h3 {
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  p {
+    color: #666;
+    line-height: 1.8;
+  }
+}
+
+.feature-list {
+
+  margin-top: 40px;
+
+  display: grid;
+
+  gap: 15px;
+
+  font-size: 1.1rem;
+
+  font-weight: 600;
+}
+
+/* =================================
+   登入卡片
+================================= */
+
+.login-card {
+
+  background: white;
+
+  padding: 40px;
+
+  border-radius: 28px;
+
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* =================================
+   身分切換
+================================= */
+
+.user-type {
+
+  display: flex;
+
+  background: #f7f7f7;
+
+  padding: 6px;
+
+  border-radius: 16px;
+}
+
+.type-btn {
+
+  flex: 1;
+
+  border: none;
+
+  background: transparent;
+
+  padding: 12px;
+
+  border-radius: 12px;
+
+  transition: .3s;
+}
+
+.type-btn.active {
+
+  background: #e98b2a;
+
+  color: white;
+
+  font-weight: 600;
+}
+
+/* =================================
+   輸入框
+================================= */
+
+.custom-input {
+
+  width: 100%;
+
+  padding: 14px 18px;
+
+  border-radius: 16px;
+
+  border: 1px solid #e6d4c6;
+
+  transition: .3s;
+
+  &:focus {
+
+    outline: none;
+
+    border-color: #e98b2a;
+
+    box-shadow:
+      0 0 0 4px rgba(233, 139, 42, .15);
+  }
+}
+
+/* =================================
+   按鈕
+================================= */
+
+.btn-primary-custom {
+
+  border: none;
+
+  border-radius: 16px;
+
+  padding: 14px;
+
+  background: #e98b2a;
+
+  color: white;
+
+  font-weight: 600;
+
+  transition: .3s;
+
+  &:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+      0 10px 20px rgba(233, 139, 42, .25);
+  }
+}
+
+.btn-secondary-custom {
+
+  border: 1px solid #ddd;
+
+  border-radius: 16px;
+
+  padding: 14px 24px;
+
+  background: white;
+}
+
+/* =================================
+   註冊連結
+================================= */
+
+.register-link {
+
+  color: #e98b2a;
+
+  text-decoration: none;
+
+  font-weight: 600;
+}
+
+.required {
+  color: #dc3545;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+/* =================================
+   手機版
+================================= */
+
+@media (max-width: 991px) {
+
+  .login-card {
+    padding: 30px;
+  }
+
+}
+
+/* 日期元件 */
+
+.custom-date-field {
+  width: 100%;
+}
+
+::ng-deep .custom-date-field .mat-mdc-text-field-wrapper {
+
+  border-radius: 16px !important;
+
+  background: white;
+
+  border: 1px solid #e6d4c6;
+}
+
+::ng-deep .custom-date-field .mdc-notched-outline {
+  display: none;
+}

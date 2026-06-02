@@ -20,13 +20,13 @@
 
         <a class="nav-link" routerLink="" routerLinkActive="">安全保障</a>
 
-        <a class="nav-link" routerLink="member/dashboard" routerLinkActive="is-active">會員中心</a>
+        <!-- <a class="nav-link" routerLink="member/dashboard" routerLinkActive="is-active">會員中心</a> -->
 
         <a class="nav-link" routerLink="/rental-matching-component" routerLinkActive="is-active">租賃物媒合</a>
 
         <!-- <a class="nav-link" routerLink="/rent" routerLinkActive="is-active">租屋管理</a> -->
 
-        <a class="nav-link" routerLink="/user-center" routerLinkActive="is-active">個人專區</a>
+        <a class="nav-link" routerLink="/user-center/dashboard" routerLinkActive="is-active">個人專區</a>
 
         <a class="nav-link" routerLink="/contact" routerLinkActive="is-active">聯絡我們</a>
 
@@ -50,7 +50,9 @@
             大
           </button>
         </div>
-
+        @if (authsev.isLoggedIn()) {
+          <button type="button" class="btn btn-danger" (click)="logout()">登出</button>
+        }
       </nav>
 
 

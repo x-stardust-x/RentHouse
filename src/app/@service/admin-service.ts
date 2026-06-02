@@ -15,6 +15,9 @@ export class AdminService {
       this.admins.set(res);
     });
   }
+  getAdminById(adminId : number){
+    return this.http.get<Admin>(this.baseUrl + `${adminId}`);
+  }
   createAdmin(dto : AdminDto){
     return this.http.post<AdminDto>(this.baseUrl, dto);
   }

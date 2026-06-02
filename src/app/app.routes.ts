@@ -3,92 +3,81 @@ import { authGuard } from './@guard/auth-guard';
 import { loginGuard } from './@guard/login-guard';
 import { ContactComponent } from './@component/contact-component/contact';
 import { AdminReviewComponent } from './@component/admin-review-component/admin-review-component';
-
 import { PublicLayout } from './@layouts/public-layout/public-layout';
 import { AdminLayout } from './@layouts/admin-layout/admin-layout';
 
-
 export const routes: Routes = [
-
-
   {
-
-    // 前端公版
+    // ==========================================
+    // 🌐 前端公版 (Public Layout)
+    // ==========================================
     path: '',
     component: PublicLayout,
     children: [
-
-      // 首頁
       {
         path: 'home',
-        // redirectTo: 'home',
         loadComponent: () => import('./@component/home-component/home-component').then(c => c.HomeComponent),
         pathMatch: 'full'
       },
-
-      // 登入
       {
         path: 'login',
         loadComponent: () => import('./@component/login-component/login-component').then(c => c.LoginComponent),
-        // canActivate : [loginGuard]
       },
-
-      // 註冊
       {
         path: 'register',
         loadComponent: () => import('./@component/register-component/register-component').then(c => c.RegisterComponent),
         canActivate: [loginGuard]
       },
-
-      // 關於我們
       {
         path: 'about-homiefun',
         loadComponent: () => import('./@component/about-homiefun-component/about-homiefun-component').then(c => c.AboutHomiefunComponent),
       },
-
-      // 會員中心
       {
-        path: 'member',
-        // loadComponent: () => import('./@component/member-component/member-component').then(c => c.MemberComponent),
-        // canActivate : [authGuard],
-        data: { roles: ['young', 'old'] },
-        children: [{
-          path: 'dashboard',
-          loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
-        }, {
-          path: 'info',
-          loadComponent: () => import('./@component/@member/member-info-component/member-info-component').then(c => c.MemberInfoComponent),
-        }, {
-          path: 'edit',
-          loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
-        }],
+        path: 'contact',
+        component: ContactComponent
       },
 
-      // 租賃物媒合 列表頁
+      // --- 租賃媒合相關 ---
       {
         path: 'rental-matching-component',
         loadComponent: () => import('./@component/rental-matching-component/rental-matching-component').then(c => c.RentalMatchingComponent),
       },
-
-      // 租賃物媒合 詳情頁
       {
         path: 'rental-matching-detail/:type/:id',
         loadComponent: () => import('./@component/rental-matching-detail-component/rental-matching-detail-component').then(c => c.RentalMatchingDetailComponent),
       },
-
-      // 出租人個人公開主頁
       {
         path: 'lessor-profile/:id',
         loadComponent: () => import('./@component/lessor-profile-component/lessor-profile-component').then(c => c.LessorProfileComponent),
       },
-
-      // 租屋管理
       {
         path: 'rent',
         loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
       },
 
-      // 個人專區
+      // --- 會員中心 ---
+      {
+        path: 'member',
+        data: { roles: ['young', 'old'] },
+        children: [
+          {
+            path: 'dashboard',
+            loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
+          },
+          {
+            path: 'info',
+            loadComponent: () => import('./@component/@member/member-info-component/member-info-component').then(c => c.MemberInfoComponent),
+          },
+          {
+            path: 'edit',
+            loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
+          }
+        ],
+      },
+
+      // ==========================================
+      // 🏠 個人專區 (User Center Layout)
+      // ==========================================
       {
         path: 'user-center',
         loadComponent: () => import('./@layouts/user-center-layout/user-center-layout').then(c => c.UserCenterLayout),
@@ -98,8 +87,15 @@ export const routes: Routes = [
           // { path: '', redirectTo: 'rent', pathMatch: 'full' },
           // 發布新房源
           {
+            path: 'dashboard',
+            loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
+          },
+          // { path: '', redirectTo: 'rent', pathMatch: 'full' },
+
+          { path: '', redirectTo: 'rent', pathMatch: 'full' },
+          {
             path: 'rent',
-            loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent),
+            loadComponent: () => import('./@component/rent-house-component/house-form/house-form.component').then(c => c.HouseFormComponent),
           },
           // 看房預約審核
           {
@@ -110,33 +106,42 @@ export const routes: Routes = [
           {
             path: 'product-booking-approval-component',
             loadComponent: () => import('./@component/product-booking-approval-component/product-booking-approval-component').then(c => c.ProductBookingApprovalComponent),
+          },
+            {
+            path: 'edit',
+            loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
+          },
+          {
+            path: 'product',
+            loadComponent: () => import('./@component/rent-house-component/product-form/product-form.component').then(c => c.ProductFormComponent),
+          },
+          {
+            path: 'houses',
+            loadComponent: () => import('./@component/house-management/house-management').then(c => c.HouseManagementComponent),
+          },
+          {
+            path: 'products-list',
+            loadComponent: () => import('./@component/product-management/product-management').then(c => c.ProductManagementComponent),
           }
         ],
       },
-
-      // 聯絡我們
-      {
-        path: 'contact', component: ContactComponent
-      },
-
     ]
   },
 
-
-
-
-  // 後端管理公版
   {
+    // ==========================================
+    // ⚙️ 後端管理公版 (Admin Layout)
+    // ==========================================
     path: 'admin',
     component: AdminLayout,
     // canActivate : [authGuard],
     data: { roles: ['admin'] },
     children: [
-
-      // 管理員
+      { path: '', redirectTo: 'admin-review', pathMatch: 'full' },
       {
         path: 'dashboard',
         loadComponent: () => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
+        data: { roles: ['admin'] },
       },
       {
         path: 'news',
@@ -145,10 +150,12 @@ export const routes: Routes = [
       {
         path: 'news/create',
         loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
-      }, {
+      },
+      {
         path: 'news/edit/:id',
         loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
-      }, {
+      },
+      {
         path: 'logs',
         loadComponent: () => import('./@component/@admin/logs-component/logs-component').then(c => c.LogsComponent),
       },
@@ -164,21 +171,102 @@ export const routes: Routes = [
         path: 'admins',
         loadComponent: () => import('./@component/@admin/admins-component/admins-component').then(c => c.AdminsComponent),
       },
-
-      // 租賃物管理
       {
         path: 'admin-review',
         component: AdminReviewComponent,
       },
-
+      {
+        path: 'contact-messages',
+        loadComponent: () => import('./@component/admin-contact/admin-contact').then(c => c.AdminContactComponent)
+      }
     ]
   },
+
   {
+    // 🪤 捕捉所有未知的網址，導回首頁
     path: '**',
-    // loadComponent :() => import('./@component/login-component/login-component').then(c => c.LoginComponent),
     redirectTo: 'home'
-  },
+  }
 ];
+
+
+
+
+
+  // {
+  //   path: 'home',
+  //   // redirectTo: 'home',
+  //   loadComponent: () => import('./@component/home-component/home-component').then(c => c.HomeComponent),
+  //   pathMatch: 'full'
+  // },
+  // {
+  //   path: 'login',
+  //   loadComponent: () => import('./@component/login-component/login-component').then(c => c.LoginComponent),
+  //   // canActivate : [loginGuard]
+  // },
+  // {
+  //   path: 'member',
+  //   // loadComponent: () => import('./@component/member-component/member-component').then(c => c.MemberComponent),
+  //   // canActivate : [authGuard],
+  //   data: { roles: ['young', 'old'] },
+  //   children: [{
+  //     path: 'dashboard',
+  //     loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
+  //   }, {
+  //     path: 'info',
+  //     loadComponent: () => import('./@component/@member/member-info-component/member-info-component').then(c => c.MemberInfoComponent),
+  //   }, {
+  //     path: 'edit',
+  //     loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
+  //   }],
+  // },
+  // {
+  //   path: 'admin',
+  //   loadComponent: () => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
+  //   // canActivate : [authGuard],
+  //   data: { roles: ['admin'] },
+  //   children: [{
+  //     path: 'news',
+  //     loadComponent: () => import('./@component/@admin/news-component/news-component').then(c => c.NewsComponent),
+  //   },
+  //   {
+  //     path: 'news/create',
+  //     loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
+  //   }, {
+  //     path: 'news/edit/:id',
+  //     loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
+  //   }, {
+  //     path: 'logs',
+  //     loadComponent: () => import('./@component/@admin/logs-component/logs-component').then(c => c.LogsComponent),
+  //   }],
+  // },
+  // {
+  //   path: 'register',
+  //   loadComponent: () => import('./@component/register-component/register-component').then(c => c.RegisterComponent),
+  //   canActivate: [loginGuard]
+  // },
+  // {
+  //   path: 'rental-matching-component',
+  //   loadComponent: () => import('./@component/rental-matching-component/rental-matching-component').then(c => c.RentalMatchingComponent),
+  // },
+  // {
+  //   path: 'rental-matching-detail/:type/:id',
+  //   loadComponent: () => import('./@component/rental-matching-detail-component/rental-matching-detail-component').then(c => c.RentalMatchingDetailComponent),
+  // },
+  // {
+  //   path: 'admin-review',
+  //   component: AdminReviewComponent,
+  // },
+  // {
+  //   path: 'rent',
+  //   loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
+  // },
+  // {
+  //   path: 'contact', component: ContactComponent
+  // },
+
+
+
 
 
 

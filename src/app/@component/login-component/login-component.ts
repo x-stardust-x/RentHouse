@@ -36,7 +36,7 @@ export class LoginComponent {
           this.router.navigate(['/admin']);
         }
         else{
-          this.router.navigate(['/member/dashboard']);
+          this.router.navigate(['/user-center/dashboard']);
         }
       },
       error: (err) =>{

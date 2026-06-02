@@ -96,7 +96,10 @@ export const routes: Routes = [
         data: { roles: ['young', 'old'] },
         // 發布新房源
         children: [
-
+          {
+            path: 'dashboard',
+            loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
+          },
           // { path: '', redirectTo: 'rent', pathMatch: 'full' },
 
           {

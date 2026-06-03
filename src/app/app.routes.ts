@@ -22,12 +22,12 @@ export const routes: Routes = [
       {
         path: 'login',
         loadComponent: () => import('./@component/login-component/login-component').then(c => c.LoginComponent),
-        // canActivate: [loginGuard]
+        canActivate: [loginGuard]
       },
       {
         path: 'register',
         loadComponent: () => import('./@component/register-component/register-component').then(c => c.RegisterComponent),
-        // canActivate: [loginGuard]
+        canActivate: [loginGuard]
       },
       {
         path: 'about-homiefun',
@@ -123,6 +123,14 @@ export const routes: Routes = [
           {
             path: 'products-list',
             loadComponent: () => import('./@component/product-management/product-management').then(c => c.ProductManagementComponent),
+          },
+          {
+            path: 'contact-permission',
+            loadComponent: () => import('./@component/@member/contact-permissin/contact-permissin').then(c => c.ContactPermissin),
+          },
+          {
+            path: 'account-setting',
+            loadComponent: () => import('./@component/@member/account-setting/account-setting').then(c => c.AccountSetting),
           }
         ],
       },
@@ -135,7 +143,7 @@ export const routes: Routes = [
     // ==========================================
     path: 'admin',
     component: AdminLayout,
-    // canActivate : [authGuard],
+    canActivate : [authGuard],
     data: { roles: ['admin'] },
     children: [
       { path: '', redirectTo: 'admin-review', pathMatch: 'full' },

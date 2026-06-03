@@ -1,0 +1,109 @@
+<div class="page">
+
+  <!-- 返回 + 標題 -->
+  <div class="header">
+    <h1>帳號與安全設定</h1>
+    <p class="sub">管理您的個人資料與帳號安全層級</p>
+  </div>
+
+  <!-- 帳號資訊 -->
+  <section class="card">
+    <div class="card-title">
+      <mat-icon>account_circle</mat-icon>
+      帳號資訊
+    </div>
+
+    <div class="row">
+      <div class="col-9">
+        <div class="label">登入信箱</div>
+        <div class="value">{{ data().email }}</div>
+      </div>
+      <button class="col-2 btn">變更信箱</button>
+    </div>
+
+    <div class="row">
+      <div class="col-9">
+        <div class="label">綁定手機</div>
+        <div class="value">{{ data().phone }}</div>
+      </div>
+      <button class="col-2 btn">變更號碼</button>
+    </div>
+
+    <div class="row">
+      <div class="col-9">
+        <div class="label">密碼</div>
+        <div class="value muted">上次修改：2 個月前</div>
+      </div>
+      <button class="col-2 btn primary">修改密碼</button>
+    </div>
+  </section>
+
+  <!-- 安全驗證 -->
+  <!-- <section class="card">
+    <div class="card-title">
+      <mat-icon>security</mat-icon>
+      安全驗證
+    </div>
+
+    <div class="row">
+      <div>
+        <div class="label">
+          雙重驗證 (2FA)
+          <span class="tag">推薦</span>
+        </div>
+        <div class="value muted">
+          登入時需輸入手機驗證碼，提高安全性
+        </div>
+      </div>
+
+      <label class="switch">
+        <input type="checkbox" checked />
+        <span></span>
+      </label>
+    </div>
+
+    <div class="login-log-title">近期登入紀錄</div>
+
+    <div class="login-item">
+      <mat-icon>laptop</mat-icon>
+      <div>
+        <div>MacBook Pro · Chrome</div>
+        <div class="muted">台北市，目前作用中</div>
+      </div>
+      <span class="status online">在線</span>
+    </div>
+
+    <div class="login-item">
+      <mat-icon>phone_iphone</mat-icon>
+      <div>
+        <div>iPhone 13 · Safari</div>
+        <div class="muted">台北市，2 小時前</div>
+      </div>
+    </div>
+  </section> -->
+
+  <!-- 危險操作 -->
+  <section class="danger">
+    <div class="card-title danger-title">
+      <mat-icon>warning</mat-icon>
+      危險操作區
+    </div>
+
+    <!-- <div class="row">
+      <div>
+        <div class="label">登出所有裝置</div>
+        <div class="value muted">強制所有已登入裝置登出</div>
+      </div>
+      <button class="btn warn">登出所有裝置</button>
+    </div> -->
+
+    <div class="row">
+      <div class="col-9">
+        <div class="label">註銷帳號</div>
+        <div class="value muted">此操作無法復原</div>
+      </div>
+      <button class="col-2 btn danger-btn">註銷帳號</button>
+    </div>
+  </section>
+
+</div>

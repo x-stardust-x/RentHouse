@@ -1,0 +1,173 @@
+.page {
+  max-width: 900px;
+  margin: auto;
+  padding: 30px;
+  font-family: Arial, sans-serif;
+  background: #f7f8fb;
+}
+
+/* Header */
+.header {
+  margin-bottom: 20px;
+
+  h1 {
+    margin: 10px 0 5px;
+  }
+
+  .sub {
+    color: #777;
+    font-size: 14px;
+  }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #444;
+    font-size: 14px;
+  }
+}
+
+/* Card */
+.card, .danger {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+/* rows */
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid #eee;
+
+  &:first-of-type {
+    border-top: none;
+  }
+}
+
+.label {
+  font-size: 14px;
+  color: #333;
+}
+
+.value {
+  font-size: 13px;
+  color: #555;
+}
+
+.muted {
+  color: #888;
+}
+
+/* buttons */
+.btn {
+  border: 1px solid #ddd;
+  background: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: #a56a2a;
+  color: white;
+  border: none;
+}
+
+.btn.warn {
+  border: 1px solid #f59e0b;
+  color: #f59e0b;
+}
+
+.btn.danger-btn {
+  border: 1px solid #ef4444;
+  color: #ef4444;
+}
+
+/* tag */
+.tag {
+  font-size: 11px;
+  background: orange;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 6px;
+}
+
+/* switch */
+.switch {
+  position: relative;
+  width: 42px;
+  height: 22px;
+
+  input {
+    display: none;
+  }
+
+  span {
+    position: absolute;
+    cursor: pointer;
+    background: #ccc;
+    border-radius: 20px;
+    width: 100%;
+    height: 100%;
+    transition: 0.3s;
+  }
+
+  span::before {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: 0.3s;
+  }
+
+  input:checked + span {
+    background: #a56a2a;
+  }
+
+  input:checked + span::before {
+    transform: translateX(20px);
+  }
+}
+
+/* login list */
+.login-log-title {
+  margin-top: 15px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.login-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-top: 1px solid #eee;
+
+  .status {
+    margin-left: auto;
+    font-size: 12px;
+    color: green;
+  }
+}

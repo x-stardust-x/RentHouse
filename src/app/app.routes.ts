@@ -22,11 +22,11 @@ export const routes: Routes = [
       {
         path: 'login',
         loadComponent: () => import('./@component/login-component/login-component').then(c => c.LoginComponent),
+        canActivate: [loginGuard]
       },
       {
         path: 'register',
         loadComponent: () => import('./@component/register-component/register-component').then(c => c.RegisterComponent),
-        canActivate: [loginGuard]
       },
       {
         path: 'about-homiefun',
@@ -81,7 +81,7 @@ export const routes: Routes = [
       {
         path: 'user-center',
         loadComponent: () => import('./@layouts/user-center-layout/user-center-layout').then(c => c.UserCenterLayout),
-        // canActivate : [authGuard],
+        canActivate : [authGuard],
         data: { roles: ['young', 'old'] },
         children: [
           // { path: '', redirectTo: 'rent', pathMatch: 'full' },
@@ -107,7 +107,7 @@ export const routes: Routes = [
             path: 'product-booking-approval-component',
             loadComponent: () => import('./@component/product-booking-approval-component/product-booking-approval-component').then(c => c.ProductBookingApprovalComponent),
           },
-            {
+          {
             path: 'edit',
             loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
           },
@@ -134,8 +134,8 @@ export const routes: Routes = [
     // ==========================================
     path: 'admin',
     component: AdminLayout,
-    // canActivate : [authGuard],
-    data: { roles: ['admin'] },
+    canActivate : [authGuard],
+    // data: { roles: ['admin'] },
     children: [
       { path: '', redirectTo: 'admin-review', pathMatch: 'full' },
       {
@@ -173,7 +173,8 @@ export const routes: Routes = [
       },
       {
         path: 'admin-review',
-        component: AdminReviewComponent,
+        loadComponent: () => import('./@component/admin-review-component/admin-review-component').then(c => c.AdminReviewComponent),
+        // component: AdminReviewComponent,
       },
       {
         path: 'contact-messages',
@@ -193,77 +194,77 @@ export const routes: Routes = [
 
 
 
-  // {
-  //   path: 'home',
-  //   // redirectTo: 'home',
-  //   loadComponent: () => import('./@component/home-component/home-component').then(c => c.HomeComponent),
-  //   pathMatch: 'full'
-  // },
-  // {
-  //   path: 'login',
-  //   loadComponent: () => import('./@component/login-component/login-component').then(c => c.LoginComponent),
-  //   // canActivate : [loginGuard]
-  // },
-  // {
-  //   path: 'member',
-  //   // loadComponent: () => import('./@component/member-component/member-component').then(c => c.MemberComponent),
-  //   // canActivate : [authGuard],
-  //   data: { roles: ['young', 'old'] },
-  //   children: [{
-  //     path: 'dashboard',
-  //     loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
-  //   }, {
-  //     path: 'info',
-  //     loadComponent: () => import('./@component/@member/member-info-component/member-info-component').then(c => c.MemberInfoComponent),
-  //   }, {
-  //     path: 'edit',
-  //     loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
-  //   }],
-  // },
-  // {
-  //   path: 'admin',
-  //   loadComponent: () => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
-  //   // canActivate : [authGuard],
-  //   data: { roles: ['admin'] },
-  //   children: [{
-  //     path: 'news',
-  //     loadComponent: () => import('./@component/@admin/news-component/news-component').then(c => c.NewsComponent),
-  //   },
-  //   {
-  //     path: 'news/create',
-  //     loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
-  //   }, {
-  //     path: 'news/edit/:id',
-  //     loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
-  //   }, {
-  //     path: 'logs',
-  //     loadComponent: () => import('./@component/@admin/logs-component/logs-component').then(c => c.LogsComponent),
-  //   }],
-  // },
-  // {
-  //   path: 'register',
-  //   loadComponent: () => import('./@component/register-component/register-component').then(c => c.RegisterComponent),
-  //   canActivate: [loginGuard]
-  // },
-  // {
-  //   path: 'rental-matching-component',
-  //   loadComponent: () => import('./@component/rental-matching-component/rental-matching-component').then(c => c.RentalMatchingComponent),
-  // },
-  // {
-  //   path: 'rental-matching-detail/:type/:id',
-  //   loadComponent: () => import('./@component/rental-matching-detail-component/rental-matching-detail-component').then(c => c.RentalMatchingDetailComponent),
-  // },
-  // {
-  //   path: 'admin-review',
-  //   component: AdminReviewComponent,
-  // },
-  // {
-  //   path: 'rent',
-  //   loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
-  // },
-  // {
-  //   path: 'contact', component: ContactComponent
-  // },
+// {
+//   path: 'home',
+//   // redirectTo: 'home',
+//   loadComponent: () => import('./@component/home-component/home-component').then(c => c.HomeComponent),
+//   pathMatch: 'full'
+// },
+// {
+//   path: 'login',
+//   loadComponent: () => import('./@component/login-component/login-component').then(c => c.LoginComponent),
+//   // canActivate : [loginGuard]
+// },
+// {
+//   path: 'member',
+//   // loadComponent: () => import('./@component/member-component/member-component').then(c => c.MemberComponent),
+//   // canActivate : [authGuard],
+//   data: { roles: ['young', 'old'] },
+//   children: [{
+//     path: 'dashboard',
+//     loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
+//   }, {
+//     path: 'info',
+//     loadComponent: () => import('./@component/@member/member-info-component/member-info-component').then(c => c.MemberInfoComponent),
+//   }, {
+//     path: 'edit',
+//     loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
+//   }],
+// },
+// {
+//   path: 'admin',
+//   loadComponent: () => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
+//   // canActivate : [authGuard],
+//   data: { roles: ['admin'] },
+//   children: [{
+//     path: 'news',
+//     loadComponent: () => import('./@component/@admin/news-component/news-component').then(c => c.NewsComponent),
+//   },
+//   {
+//     path: 'news/create',
+//     loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
+//   }, {
+//     path: 'news/edit/:id',
+//     loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
+//   }, {
+//     path: 'logs',
+//     loadComponent: () => import('./@component/@admin/logs-component/logs-component').then(c => c.LogsComponent),
+//   }],
+// },
+// {
+//   path: 'register',
+//   loadComponent: () => import('./@component/register-component/register-component').then(c => c.RegisterComponent),
+//   canActivate: [loginGuard]
+// },
+// {
+//   path: 'rental-matching-component',
+//   loadComponent: () => import('./@component/rental-matching-component/rental-matching-component').then(c => c.RentalMatchingComponent),
+// },
+// {
+//   path: 'rental-matching-detail/:type/:id',
+//   loadComponent: () => import('./@component/rental-matching-detail-component/rental-matching-detail-component').then(c => c.RentalMatchingDetailComponent),
+// },
+// {
+//   path: 'admin-review',
+//   component: AdminReviewComponent,
+// },
+// {
+//   path: 'rent',
+//   loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
+// },
+// {
+//   path: 'contact', component: ContactComponent
+// },
 
 
 

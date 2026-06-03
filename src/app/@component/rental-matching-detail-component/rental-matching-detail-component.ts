@@ -77,7 +77,8 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
     const address = this.detailData()?.address;
     if (!address) return null;
     const encodedAddress = encodeURIComponent(address);
-    const rawUrl = `http://googleusercontent.com/maps.google.com/maps?q=${encodedAddress}&output=embed&z=16`;
+    const rawUrl = `https://maps.google.com/maps?q=${encodedAddress}&hl=zh-TW&output=embed&z=16`;
+    // const rawUrl = `http://googleusercontent.com/maps.google.com/maps?q=${encodedAddress}&output=embed&z=16`;
     return this.sanitizer.bypassSecurityTrustResourceUrl(rawUrl);
   });
 

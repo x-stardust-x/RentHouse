@@ -8,12 +8,6 @@
 
       <nav class="public-layout__nav" aria-label="前台主要導覽">
 
-        <a class="nav-link" routerLink="/admin" routerLinkActive="is-active">管理員</a>
-
-        <a class="nav-link" routerLink="login" routerLinkActive="is-active">登入</a>
-
-        <br>
-
         <a class="nav-link" routerLink="home" routerLinkActive="is-active">首頁</a>
 
         <a class="nav-link" routerLink="/about-homiefun" routerLinkActive="is-active">關於厚厝味</a>
@@ -29,8 +23,6 @@
         <a class="nav-link" routerLink="/user-center/dashboard" routerLinkActive="is-active">個人專區</a>
 
         <a class="nav-link" routerLink="/contact" routerLinkActive="is-active">聯絡我們</a>
-
-
 
         <div class="public-layout__font-tools" aria-label="字體大小設定">
           <span class="public-layout__font-label">字體</span>
@@ -49,9 +41,17 @@
             (click)="setFontSize('large')">
             大
           </button>
+
         </div>
+
+        <br>
+
+        <a class="nav-link" routerLink="login" routerLinkActive="is-active">登入</a>
+
+        <a class="nav-link" routerLink="/admin" routerLinkActive="is-active">管理員</a>
+
         @if (authsev.isLoggedIn()) {
-          <button type="button" class="btn btn-danger" (click)="logout()">登出</button>
+        <button type="button" class="btn btn-danger" (click)="logout()">登出</button>
         }
       </nav>
 

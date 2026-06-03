@@ -22,6 +22,7 @@ export const routes: Routes = [
       {
         path: 'login',
         loadComponent: () => import('./@component/login-component/login-component').then(c => c.LoginComponent),
+        canActivate: [loginGuard]
       },
       {
         path: 'register',
@@ -56,24 +57,24 @@ export const routes: Routes = [
       },
 
       // --- 會員中心 ---
-      {
-        path: 'member',
-        data: { roles: ['young', 'old'] },
-        children: [
-          {
-            path: 'dashboard',
-            loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
-          },
-          {
-            path: 'info',
-            loadComponent: () => import('./@component/@member/member-info-component/member-info-component').then(c => c.MemberInfoComponent),
-          },
-          {
-            path: 'edit',
-            loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
-          }
-        ],
-      },
+      // {
+      //   path: 'member',
+      //   data: { roles: ['young', 'old'] },
+      //   children: [
+      //     {
+      //       path: 'dashboard',
+      //       loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
+      //     },
+      //     {
+      //       path: 'info',
+      //       loadComponent: () => import('./@component/@member/member-info-component/member-info-component').then(c => c.MemberInfoComponent),
+      //     },
+      //     {
+      //       path: 'edit',
+      //       loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
+      //     }
+      //   ],
+      // },
 
       // ==========================================
       // 🏠 個人專區 (User Center Layout)
@@ -81,7 +82,7 @@ export const routes: Routes = [
       {
         path: 'user-center',
         loadComponent: () => import('./@layouts/user-center-layout/user-center-layout').then(c => c.UserCenterLayout),
-        // canActivate : [authGuard],
+        canActivate : [authGuard],
         data: { roles: ['young', 'old'] },
         children: [
           // { path: '', redirectTo: 'rent', pathMatch: 'full' },
@@ -122,6 +123,14 @@ export const routes: Routes = [
           {
             path: 'products-list',
             loadComponent: () => import('./@component/product-management/product-management').then(c => c.ProductManagementComponent),
+          },
+          {
+            path: 'contact-permission',
+            loadComponent: () => import('./@component/@member/contact-permissin/contact-permissin').then(c => c.ContactPermissin),
+          },
+          {
+            path: 'account-setting',
+            loadComponent: () => import('./@component/@member/account-setting/account-setting').then(c => c.AccountSetting),
           }
         ],
       },
@@ -134,7 +143,7 @@ export const routes: Routes = [
     // ==========================================
     path: 'admin',
     component: AdminLayout,
-    // canActivate : [authGuard],
+    canActivate : [authGuard],
     data: { roles: ['admin'] },
     children: [
       { path: '', redirectTo: 'admin-review', pathMatch: 'full' },

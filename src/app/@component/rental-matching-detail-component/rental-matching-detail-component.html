@@ -287,7 +287,10 @@
         <h2 class="rental-detail-section-title">交收位置</h2>
         }
 
-        <p class="rental-detail-map-address">{{ detailData()?.address }}</p>
+        <p class="rental-detail-map-address">
+          {{ detailData()?.address || detailData()?.Address || '尚未提供地址' }}
+        </p>
+        <!-- <p class="rental-detail-map-address">{{ detailData()?.address }}</p> -->
 
 
         <iframe class="rental-detail-map-frame" [src]="mapUrl()" width="600" height="450" allowfullscreen=""

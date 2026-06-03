@@ -74,8 +74,16 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   isTool = computed(() => this.isProduct() && this.detailData()?.category === '工具共享');
 
   mapUrl = computed<SafeResourceUrl | null>(() => {
+
     const address = this.detailData()?.address;
+    // const address =
+    //   this.detailData()?.address ??
+    //   this.detailData()?.Address ??
+    //   '';
+
+    // if (!address || !address.trim()) return null;
     if (!address) return null;
+
     const encodedAddress = encodeURIComponent(address);
     const rawUrl = `https://maps.google.com/maps?q=${encodedAddress}&hl=zh-TW&output=embed&z=16`;
     // const rawUrl = `http://googleusercontent.com/maps.google.com/maps?q=${encodedAddress}&output=embed&z=16`;

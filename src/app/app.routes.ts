@@ -22,11 +22,12 @@ export const routes: Routes = [
       {
         path: 'login',
         loadComponent: () => import('./@component/login-component/login-component').then(c => c.LoginComponent),
+        // canActivate: [loginGuard]
       },
       {
         path: 'register',
         loadComponent: () => import('./@component/register-component/register-component').then(c => c.RegisterComponent),
-        canActivate: [loginGuard]
+        // canActivate: [loginGuard]
       },
       {
         path: 'about-homiefun',
@@ -56,24 +57,24 @@ export const routes: Routes = [
       },
 
       // --- 會員中心 ---
-      {
-        path: 'member',
-        data: { roles: ['young', 'old'] },
-        children: [
-          {
-            path: 'dashboard',
-            loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
-          },
-          {
-            path: 'info',
-            loadComponent: () => import('./@component/@member/member-info-component/member-info-component').then(c => c.MemberInfoComponent),
-          },
-          {
-            path: 'edit',
-            loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
-          }
-        ],
-      },
+      // {
+      //   path: 'member',
+      //   data: { roles: ['young', 'old'] },
+      //   children: [
+      //     {
+      //       path: 'dashboard',
+      //       loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
+      //     },
+      //     {
+      //       path: 'info',
+      //       loadComponent: () => import('./@component/@member/member-info-component/member-info-component').then(c => c.MemberInfoComponent),
+      //     },
+      //     {
+      //       path: 'edit',
+      //       loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
+      //     }
+      //   ],
+      // },
 
       // ==========================================
       // 🏠 個人專區 (User Center Layout)
@@ -81,7 +82,7 @@ export const routes: Routes = [
       {
         path: 'user-center',
         loadComponent: () => import('./@layouts/user-center-layout/user-center-layout').then(c => c.UserCenterLayout),
-        // canActivate : [authGuard],
+        canActivate : [authGuard],
         data: { roles: ['young', 'old'] },
         children: [
           // { path: '', redirectTo: 'rent', pathMatch: 'full' },

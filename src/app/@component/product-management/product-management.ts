@@ -14,7 +14,7 @@ import { HouseService } from '../../@service/house.service';
 export class ProductManagementComponent implements OnInit {
 
   products = signal<any[]>([]);
-  accountId: number = 1; // 準備一個變數裝會員 ID
+  accountId: number = 101; // 準備一個變數裝會員 ID
 
   constructor(
     private router: Router,

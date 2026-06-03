@@ -1,0 +1,198 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f8f5f1;
+}
+
+.page-title {
+  font-size: 42px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.page-subtitle {
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+/* =====================
+   提示區
+===================== */
+
+.notice-box {
+  background: #eef3fb;
+  border: 1px solid #d88a3a;
+  border-radius: 28px;
+  padding: 1.75rem;
+}
+
+.notice-icon {
+
+  mat-icon {
+    color: #a05a00;
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* =====================
+   卡片
+===================== */
+
+.info-card,
+.line-card {
+  background: white;
+  border-radius: 32px;
+  padding: 1.75rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, .05);
+}
+
+.card-header-custom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.info-header {
+  display: flex;
+  gap: 1rem;
+
+  h3 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.4rem;
+  }
+
+  span {
+    color: #8b8b8b;
+  }
+}
+
+.circle-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+
+  background: #eef3ff;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  flex-shrink: 0;
+
+  mat-icon {
+    color: #b86d14;
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.description {
+  margin-top: 1.5rem;
+  line-height: 1.8;
+  color: #555;
+}
+
+.tip-box {
+  margin-top: 1rem;
+
+  border: 1px solid #ead3c1;
+  border-radius: 12px;
+
+  padding: 12px 16px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #666;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #7a7a7a;
+  }
+}
+
+/* =====================
+   LINE
+===================== */
+
+.line-setting {
+  border: 1px solid #e5cdb8;
+  border-radius: 20px;
+
+  padding: 1rem;
+
+  background: #fafcff;
+
+  label {
+    font-weight: 600;
+    margin-bottom: .75rem;
+    display: block;
+  }
+
+  small {
+    color: #888;
+  }
+}
+
+.btn-update {
+  border: 1px solid #d9d9d9;
+  border-radius: 10px;
+  background: white;
+
+  padding: .5rem 1rem;
+}
+
+/* =====================
+   Footer
+===================== */
+
+.footer-action {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+
+  border-top: 1px solid #e5d2c4;
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.btn-cancel {
+  background: transparent;
+
+  border: 1px solid #b86d14;
+
+  color: #b86d14;
+
+  border-radius: 999px;
+
+  padding: .75rem 1.75rem;
+}
+
+.btn-save {
+  background: #b86d14;
+  color: white;
+
+  border: none;
+
+  border-radius: 999px;
+
+  padding: .75rem 1.75rem;
+
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}

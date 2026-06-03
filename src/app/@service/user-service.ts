@@ -48,4 +48,8 @@ export class UserService {
     return this.http.get<any>(this.baseUrl + `public-profile/${accountId}`);
   }
 
+  getAccountSettings(userId: number | null) {
+    return this.http.get(this.baseUrl + `account-setting/${userId}`);
+  }
+
 }

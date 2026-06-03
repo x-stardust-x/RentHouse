@@ -26,7 +26,7 @@ export class HouseFormComponent implements OnInit {
   existingPhotos: any[] = [];
 
   formData: CreateHouseDto = {
-    accountId: this.authsev.getAccountId() ?? 1,
+    accountId: this.authsev.getAccountId() ?? 0,
     districtId: undefined,
     name: '測試豪華套房',
     address: '',
@@ -57,6 +57,7 @@ export class HouseFormComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+
     this.loadHouses();
 
     // 🌟 4. 一進畫面就掃描網址，看看有沒有帶 editId 過來
@@ -166,6 +167,12 @@ export class HouseFormComponent implements OnInit {
   }
 
   submitForm() {
+
+    if (this.formData.accountId === 0) {
+      alert('【您尚未登入或登入已過期，請先登入後再發布房屋！');
+      // this.router.navigate(['/login']); // 實務上可以把它踢回登入頁
+      return;
+    }
     if (this.formData.sleepTime?.length === 5) this.formData.sleepTime += ':00';
     if (this.formData.wakeTime?.length === 5) this.formData.wakeTime += ':00';
     console.log('送出表單', this.formData, '待上傳照片數量:', this.pendingPhotos.length);

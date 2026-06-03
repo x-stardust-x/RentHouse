@@ -107,9 +107,7 @@ export class HouseService {
     return this.http.get<any>(`https://localhost:7215/api/RentHouse/${id}`);
   }
 
- getMyHouses() {
-  return this.http.get<any[]>('https://localhost:7215/api/RentHouse/GetMyHouses');
-}
+
 deleteImageRecord(imageId: number) {
 
     return this.http.delete(`https://localhost:7215/api/RentHouse/Image/${imageId}`);
@@ -140,6 +138,9 @@ deleteImageRecord(imageId: number) {
     const formData = new FormData();
     formData.append('files', file);
     return this.http.post('https://localhost:7215/api/RentProduct/Upload', formData);
+  }
+  getMyHouses(accountId: number) {
+    return this.http.get<any[]>(`https://localhost:7215/api/RentHouse/GetMyHouses/${accountId}`);
   }
 
 }

@@ -84,6 +84,8 @@ export const routes: Routes = [
         // canActivate : [authGuard],
         data: { roles: ['young', 'old'] },
         children: [
+          // { path: '', redirectTo: 'rent', pathMatch: 'full' },
+          // 發布新房源
           {
             path: 'dashboard',
             loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
@@ -95,7 +97,17 @@ export const routes: Routes = [
             path: 'rent',
             loadComponent: () => import('./@component/rent-house-component/house-form/house-form.component').then(c => c.HouseFormComponent),
           },
+          // 看房預約審核
           {
+            path: 'house-viewing-approval',
+            loadComponent: () => import('./@component/house-viewing-approval-component/house-viewing-approval-component').then(c => c.HouseViewingApprovalComponent),
+          },
+          // 工具借用 / 技能預約審核
+          {
+            path: 'product-booking-approval-component',
+            loadComponent: () => import('./@component/product-booking-approval-component/product-booking-approval-component').then(c => c.ProductBookingApprovalComponent),
+          },
+            {
             path: 'edit',
             loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
           },

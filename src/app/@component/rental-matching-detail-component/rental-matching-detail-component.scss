@@ -832,681 +832,542 @@
 
 
 
-
 // 填寫預約資料彈窗
 
-/* --- 1. 滿版背景遮罩與毛玻璃 --- */
+/* 毛玻璃半透明遮罩 */
 .contact-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  animation: fadeInModal 0.2s ease-out;
+  padding: 1rem;
 }
 
-/* --- 1. 彈窗基底外觀微調 (加大弧度至 24px 符合新設計圖) --- */
 .contact-modal-container {
-  background-color: #ffffff;
-  width: 90%;
-  max-width: 540px;
-  border-radius: 24px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
+  background-color: var(--color-bg-card, #ffffff);
+  border-radius: var(--radius-lg, 16px);
+  box-shadow: var(--shadow-hover, 0 10px 25px rgba(0, 0, 0, 0.1));
+  width: 100%;
+  max-width: 600px;
+  max-height: 75vh;
   display: flex;
   flex-direction: column;
-  animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: modalFadeIn 0.3s ease-out forwards;
 }
 
 .contact-modal-header {
-  padding: 1.5rem 1.75rem;
-  border-bottom: 1px solid #edf2f7;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 1.5rem 1.5rem 1rem 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+  position: relative;
 }
 
 .contact-modal-title {
+  margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
-  color: #2d3748;
-  margin: 0;
+  color: #333;
+}
+
+.contact-modal-close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+}
+
+.contact-modal-close-btn:hover {
+  background-color: #f4f6f8;
+  color: #333;
 }
 
 .contact-modal-body {
-  padding: 1.75rem;
-  max-height: 75vh;
+  padding: 1.5rem;
   overflow-y: auto;
 }
 
-/* --- 2. 新增：精緻區塊小標頭與圖示排版 --- */
-.spec-section-title {
+.contact-modal-footer {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #2d3748;
-  margin: 1.5rem 0 0.75rem 0;
-}
-
-.spec-section-title:first-of-type {
-  margin-top: 0;
-}
-
-.spec-icon {
-  font-size: 1.25rem;
-  color: #718096;
-}
-
-.title-secondary-hint {
-  font-size: 0.8rem;
-  color: #a0aec0;
-  font-weight: 400;
-  margin-left: 0.25rem;
-}
-
-/* 輔助標籤 */
-.spec-form-sublabel {
-  font-size: 0.85rem;
-  color: #718096;
-  margin-bottom: 0.35rem;
-  display: block;
-}
-
-.spec-input-hint-text {
-  font-size: 0.85rem;
-  color: #718096;
-  margin: -0.25rem 0 0.5rem 0;
-}
-
-/* --- 3. 🏢 房屋版：日期時段、搬入時間、微檔案排版 --- */
-.room-datetime-grid {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.room-datetime-grid>.contact-form-group:first-child {
-  width: 40%;
-}
-
-.room-datetime-grid>.contact-form-group:last-child {
-  width: 60%;
-}
-
-/* 時間與多選 Chip 群組 */
-.spec-chip-group,
-.room-profile-tags {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.spec-chip-btn,
-.profile-tag-btn {
-  padding: 0.5rem 1rem;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  color: #4a5568;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.spec-chip-btn:hover,
-.profile-tag-btn:hover {
-  background-color: #f7fafc;
-}
-
-/* 三個水平並排的大選擇方塊 (預計搬入時間) */
-.room-movein-row {
-  display: flex;
+  justify-content: center;
   gap: 1rem;
+  padding: 1rem 1.5rem 1.5rem 1.5rem;
 }
 
-.movein-block-btn {
-  flex: 1;
-  padding: 0.85rem;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  color: #4a5568;
+.modal-btn {
+  padding: 0.6rem 2rem;
+  border-radius: 30px;
+  font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: center;
+  transition: all 0.2s;
+  border: none;
 }
 
-.movein-block-btn:hover {
-  background-color: #f8fafc;
+/* --- 共用新樣式 --- */
+.modal-hidden-input {
+  display: none;
 }
 
-/* 房客微檔案圖示 */
-.tag-inner-icon {
-  font-size: 1.1rem;
-  color: #4a5568;
+.modal-divider {
+  border: none;
+  border-top: 1px solid #ebedf0;
+  margin: 1.5rem 0;
 }
 
-/* --- 4. 🧰 工具版：頂部灰色小卡與日期範圍、物流大卡片 --- */
-.spec-tool-top-badge {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: #edf2f7;
-  padding: 0.6rem 1.2rem;
-  border-radius: 30px;
-  margin-bottom: 1.25rem;
-  width: max-content;
-  max-width: 100%;
-}
-
-.badge-icon {
-  color: #4a5568;
-  font-size: 1.15rem;
-}
-
-.badge-text {
-  font-size: 0.85rem;
-  color: #4a5568;
-}
-
-/* 借用期間欄位排列 */
-.tool-duration-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.tool-duration-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex: 1;
-}
-
-.duration-arrow {
-  color: #a0aec0;
-  font-size: 1rem;
-}
-
-/* 總共 X 天金色小徽章 */
-.duration-days-pill {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  background-color: #fef3c7;
-  color: #d97706;
-  padding: 0.35rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-.clock-icon {
-  font-size: 0.95rem;
-}
-
-/* 取件方式：並排雙選擇卡片 */
-.tool-delivery-grid {
-  display: flex;
-  gap: 1rem;
-}
-
-.delivery-select-card {
-  flex: 1;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  background-color: #ffffff;
-  transition: all 0.22s ease;
-}
-
-.card-left-content {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.card-main-icon {
-  font-size: 1.75rem;
-  color: #4a5568;
-}
-
-.card-text-wrapper {
+.form-spacing-large {
   display: flex;
   flex-direction: column;
 }
 
-.card-main-title {
-  font-size: 0.95rem;
+.section-title-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
   font-weight: 600;
-  color: #2d3748;
-  margin: 0;
+  color: #333;
+  margin-bottom: 0.75rem;
 }
 
-.card-sub-title {
+.label-hint {
   font-size: 0.8rem;
-  color: #718096;
-  margin: 0.15rem 0 0 0;
+  color: #888;
+  font-weight: normal;
 }
 
-.card-check-icon {
-  font-size: 1.35rem;
+.textarea-hint {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0 0 0.5rem 0;
 }
 
-/* --- 5. 輸入框基礎外觀優化 (改用大弧度圓角) --- */
-.contact-form-input,
-.contact-form-textarea {
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  background-color: #f8fafc;
-  padding: 0.85rem;
-  transition: all 0.2s ease;
+.icon-orange {
+  color: #ed7b31;
 }
 
-.contact-form-input:focus,
-.contact-form-textarea:focus {
-  background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(255, 90, 95, 0.12);
+.icon-brown {
+  color: #8d6e63;
 }
 
-/* --- 6. 底部精緻大膠囊型按鈕 --- */
-.contact-modal-footer {
-  padding: 1.25rem 1.75rem;
-  border-top: 1px solid #edf2f7;
-  background-color: #ffffff;
+/* --- 統一：提供者資訊 UI --- */
+.contact-provider-summary {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px dashed #e0e0e0;
 }
 
-.spec-modal-btn {
-  padding: 0.75rem 1.75rem;
-  border-radius: 30px;
-  /* 全膠囊圓角 */
-  font-size: 0.95rem;
+.contact-provider-summary__avatar {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #eee;
+}
+
+.contact-provider-summary__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.contact-provider-summary__name {
+  margin: 0;
   font-weight: 600;
-  cursor: pointer;
-  border: none;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.provider-role-badge {
+  font-size: 0.75rem;
+  background-color: #f4f6f8;
+  color: #666;
+  padding: 0.15rem 0.5rem;
+  border-radius: 12px;
+  font-weight: normal;
+}
+
+.contact-provider-summary__item-name {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.badge-divider {
+  margin: 0 0.5rem;
+  color: #ccc;
+}
+
+.highlight-text {
+  color: #d84315;
+}
+
+
+/* --- 統一：須知與美化版勾選框 (淺紅色背景) --- */
+.notice-box {
+  background: #fff5f5;
+  /* 淺紅色背景 */
+  border: 1px solid #ffcaca;
+  /* 淺紅色邊框 */
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1.5rem;
   transition: all 0.2s ease;
 }
 
-.spec-btn-cancel {
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
-  color: #64748b;
+.notice-box:hover {
+  background: #fff0f0;
 }
 
-.spec-btn-cancel:hover {
-  background-color: #f8fafc;
-  color: #334155;
+.notice-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
 }
 
-.spec-btn-submit {
+.notice-text {
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.4;
+  margin-top: 0.1rem;
+}
+
+/* 純 CSS 自訂 Checkbox */
+.custom-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  min-width: 1.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid #ff8fa3;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.custom-checkbox:hover {
+  border-color: #ff5a5f;
+}
+
+.custom-checkbox:checked {
   background-color: #ff5a5f;
-  /* 核心主題橘紅色不變 */
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(255, 90, 95, 0.2);
+  border-color: #ff5a5f;
 }
 
-.spec-btn-submit:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(255, 90, 95, 0.3);
+/* 打勾符號 (使用 ::after 偽元素畫出來) */
+.custom-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
 }
 
-.spec-btn-submit:disabled {
-  background-color: #cbd5e1;
-  color: #94a3b8;
-  box-shadow: none;
+
+/* 橘色系按鈕樣式 */
+.modal-btn--outline {
+  background: white;
+  border: 1px solid #ed7b31;
+  color: #ed7b31;
+}
+
+.modal-btn--outline:hover {
+  background: #fff5f0;
+}
+
+.modal-btn--submit-orange {
+  background: #ed7b31;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.modal-btn--submit-orange:hover {
+  background: #db6c24;
+}
+
+.modal-btn--submit-orange:disabled {
+  background: #f8c2a3;
   cursor: not-allowed;
 }
 
-/* 狀態激活覆蓋樣式 (依專案現有高亮色動態套用，以下僅供結構演示) */
-.spec-chip-btn.is-active,
-.profile-tag-btn.is-active {
-  background-color: #fff5f5;
-  border-color: #feb2b2;
-  color: #c53030;
+.btn-send-icon {
+  font-size: 1.1rem;
+}
+
+/* 表單共用元素 */
+.contact-form-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: inherit;
+  resize: vertical;
+  outline: none;
+}
+
+.contact-form-textarea:focus {
+  border-color: #ed7b31;
+}
+
+/* --- 房屋專屬 UI --- */
+.form-row-2col {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.form-col {
+  flex: 1;
+}
+
+.sub-label {
+  display: block;
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.date-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #f4f6f8;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+}
+
+.date-icon {
+  color: #555;
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.date-no-bg {
+  border: none;
+  background: transparent;
+  outline: none;
+  flex: 1;
+  width: 100%;
+}
+
+.time-slot-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.time-slot-pill {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #555;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.2s;
+}
+
+.time-slot-pill.is-active {
+  border-color: #ed7b31;
+  color: #ed7b31;
+  background: #fff5f0;
+}
+
+.move-in-group {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.move-in-btn {
+  flex: 1;
+  text-align: center;
+  padding: 0.75rem 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #555;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: 0.2s;
+}
+
+.move-in-btn.is-active {
+  border-color: #ed7b31;
+  color: #ed7b31;
+  background: #fff5f0;
+  font-weight: 500;
+}
+
+.tenant-profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.profile-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  background: #f4f6f8;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #444;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.profile-tag .tag-icon {
+  font-size: 1.1rem;
+}
+
+.profile-tag.is-active {
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+/* --- 工具專屬 UI --- */
+.date-range-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+.date-input-pill {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 30px;
+  padding: 0.6rem 1.25rem;
+  outline: none;
+  color: #333;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.date-input-pill:focus {
+  border-color: #8d6e63;
+}
+
+.arrow-icon {
+  color: #aaa;
+  font-size: 1.2rem;
+}
+
+.duration-text {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.3rem;
+  color: #ed7b31;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+.duration-icon {
+  font-size: 1rem;
+}
+
+.delivery-methods {
+  display: flex;
+  gap: 1rem;
+}
+
+.delivery-card {
+  flex: 1;
+  position: relative;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: 0.2s;
+  background: #fafafa;
+}
+
+.delivery-card.is-active {
+  border-color: #8d6e63;
+  background: #fffaf7;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   font-weight: 600;
+  color: #333;
+  margin-bottom: 0.4rem;
 }
 
-.spec-chip-btn.is-active .tag-inner-icon,
-.profile-tag-btn.is-active .tag-inner-icon {
-  color: #c53030;
+.card-icon {
+  font-size: 1.2rem;
+  color: #8d6e63;
 }
 
-.movein-block-btn.is-active {
-  border-color: #ff5a5f;
-  color: #ff5a5f;
-  background-color: #fff5f5;
+.card-desc {
+  font-size: 0.85rem;
+  color: #777;
+  margin-left: 1.6rem;
 }
 
-.delivery-select-card.is-active {
-  border-color: #ff5a5f;
-  background-color: #fff5f5;
+.check-mark {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: #8d6e63;
+  font-size: 1.3rem;
 }
 
-.delivery-select-card.is-active .card-main-icon,
-.delivery-select-card.is-active .card-main-title,
-.delivery-select-card.is-active .card-check-icon {
-  color: #ff5a5f;
+.bg-gray {
+  background: #f8f9fa;
+  border: 1px solid #eee;
 }
 
+/* 彈窗進場動畫 */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
 
-// /* --- 1. 滿版背景遮罩與毛玻璃 --- */
-// .contact-modal-overlay {
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   width: 100vw;
-//   height: 100vh;
-//   background-color: rgba(0, 0, 0, 0.45);
-//   backdrop-filter: blur(5px);
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   z-index: 9999;
-//   animation: fadeInModal 0.2s ease-out;
-// }
-
-// /* --- 2. 彈窗主體卡片 --- */
-// .contact-modal-container {
-//   background-color: #ffffff;
-//   width: 90%;
-//   max-width: 500px;
-//   border-radius: 16px;
-//   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
-//   overflow: hidden;
-//   display: flex;
-//   flex-direction: column;
-//   animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-// }
-
-// /* --- 3. 標頭與基礎佈局 --- */
-// .contact-modal-header {
-//   padding: 1.25rem 1.5rem;
-//   border-bottom: 1px solid #f0f0f0;
-//   display: flex;
-//   justify-content: space-between;
-//   align-items: center;
-// }
-
-// .contact-modal-title {
-//   font-size: 1.15rem;
-//   font-weight: 600;
-//   color: #2c3e50;
-//   margin: 0;
-// }
-
-// .contact-modal-close-btn {
-//   background: none;
-//   border: none;
-//   color: #aaa;
-//   cursor: pointer;
-//   display: flex;
-//   align-items: center;
-// }
-
-// .contact-modal-close-btn:hover {
-//   color: #333;
-// }
-
-// .contact-modal-body {
-//   padding: 1.5rem;
-//   max-height: 70vh;
-//   overflow-y: auto;
-// }
-
-// /* --- 4. 頂部提供者摘要資訊 --- */
-// .contact-provider-summary {
-//   display: flex;
-//   align-items: center;
-//   gap: 1rem;
-//   background-color: #f8f9fa;
-//   padding: 0.75rem 1rem;
-//   border-radius: 12px;
-//   margin-bottom: 1.25rem;
-//   border: 1px solid #eef0f2;
-// }
-
-// .contact-provider-summary__avatar {
-//   width: 44px;
-//   height: 44px;
-//   border-radius: 50%;
-//   object-fit: cover;
-// }
-
-// .contact-provider-summary__name {
-//   font-weight: 600;
-//   color: #333;
-//   margin: 0 0 0.2rem 0;
-//   font-size: 0.95rem;
-// }
-
-// .contact-provider-summary__item-name {
-//   font-size: 0.85rem;
-//   color: #666;
-//   margin: 0;
-// }
-
-// /* --- 5. 表單基本元件 --- */
-// .contact-form-group {
-//   display: flex;
-//   flex-direction: column;
-//   gap: 0.4rem;
-// }
-
-// .contact-form-label {
-//   font-size: 0.9rem;
-//   color: #4a5568;
-//   font-weight: 500;
-// }
-
-// .contact-form-textarea,
-// .contact-form-input {
-//   width: 100%;
-//   padding: 0.75rem;
-//   border: 1px solid #cbd5e1;
-//   border-radius: 8px;
-//   font-size: 0.95rem;
-//   outline: none;
-//   box-sizing: border-box;
-//   font-family: inherit;
-// }
-
-// .contact-form-textarea:focus,
-// .contact-form-input:focus {
-//   border-color: #ff5a5f;
-// }
-
-// /* --- 6. 房屋專用：複選標籤樣式 --- */
-// .modal-checkbox-tags {
-//   display: flex;
-//   gap: 0.5rem;
-//   flex-wrap: wrap;
-// }
-
-// .modal-hidden-checkbox {
-//   display: none;
-// }
-
-// .modal-tag-label {
-//   padding: 0.5rem 1rem;
-//   background-color: #f1f5f9;
-//   border: 1px solid #e2e8f0;
-//   border-radius: 20px;
-//   font-size: 0.85rem;
-//   cursor: pointer;
-//   user-select: none;
-//   transition: all 0.2s;
-//   color: #64748b;
-// }
-
-// .modal-tag-label.is-active {
-//   background-color: #fff1f2;
-//   border-color: #ff5a5f;
-//   color: #ff5a5f;
-//   font-weight: 500;
-// }
-
-// /* 系統建議小框 */
-// .modal-system-hint {
-//   display: flex;
-//   gap: 0.5rem;
-//   background-color: #f0fdf4;
-//   border: 1px solid #bbf7d0;
-//   padding: 0.75rem;
-//   border-radius: 8px;
-//   margin-top: 1rem;
-// }
-
-// .modal-system-hint .hint-icon {
-//   color: #16a34a;
-//   font-size: 1.2rem;
-// }
-
-// .modal-system-hint .hint-text {
-//   color: #166534;
-//   font-size: 0.85rem;
-//   margin: 0;
-// }
-
-// /* --- 7. 工具專用：押金規格與面交區 --- */
-// .modal-tool-meta-grid {
-//   display: flex;
-//   gap: 1rem;
-// }
-
-// .meta-box {
-//   flex: 1;
-//   background-color: #f8fafc;
-//   border: 1px solid #e2e8f0;
-//   padding: 0.6rem;
-//   border-radius: 8px;
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-// }
-
-// .meta-title {
-//   font-size: 0.75rem;
-//   color: #64748b;
-// }
-
-// .meta-value {
-//   font-size: 1rem;
-//   font-weight: 600;
-//   color: #334155;
-//   margin-top: 0.2rem;
-// }
-
-// .modal-address-badge {
-//   display: flex;
-//   align-items: center;
-//   gap: 0.25rem;
-//   color: #64748b;
-//   font-size: 0.85rem;
-//   margin-top: 0.75rem;
-// }
-
-// /* --- 8. 防呆強制勾選區塊 (技能與工具) --- */
-// .modal-defense-checkbox {
-//   background-color: #fff1f2;
-//   border: 1px solid #ffe4e6;
-//   padding: 0.75rem;
-//   border-radius: 8px;
-// }
-
-// .defense-label {
-//   display: flex;
-//   gap: 0.5rem;
-//   cursor: pointer;
-//   align-items: flex-start;
-// }
-
-// .defense-text {
-//   font-size: 0.85rem;
-//   color: #9f1239;
-//   line-height: 1.4;
-// }
-
-// /* --- 9. 底部按鈕與狀態控制 --- */
-// .contact-modal-footer {
-//   padding: 1rem 1.5rem;
-//   background-color: #f8f9fa;
-//   border-top: 1px solid #f0f0f0;
-//   display: flex;
-//   justify-content: flex-end;
-//   gap: 0.75rem;
-// }
-
-// .modal-btn {
-//   padding: 0.6rem 1.2rem;
-//   border-radius: 8px;
-//   font-size: 0.95rem;
-//   font-weight: 500;
-//   cursor: pointer;
-//   border: none;
-// }
-
-// .modal-btn--cancel {
-//   background-color: #e2e8f0;
-//   color: #475569;
-// }
-
-// .modal-btn--cancel:hover {
-//   background-color: #cbd5e1;
-// }
-
-// .modal-btn--submit {
-//   background-color: #ff5a5f;
-//   color: white;
-//   transition: opacity 0.2s;
-// }
-
-// .modal-btn--submit:hover:not(:disabled) {
-//   background-color: #e04f54;
-// }
-
-// .modal-btn--submit:disabled {
-//   background-color: #cbd5e1;
-//   color: #94a3b8;
-//   cursor: not-allowed;
-// }
-
-// /* 動畫效果 */
-// @keyframes fadeInModal {
-//   from {
-//     opacity: 0;
-//   }
-
-//   to {
-//     opacity: 1;
-//   }
-// }
-
-// @keyframes slideUpModal {
-//   from {
-//     transform: translateY(20px);
-//     opacity: 0;
-//   }
-
-//   to {
-//     transform: translateY(0);
-//     opacity: 1;
-//   }
-// }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

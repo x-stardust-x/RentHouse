@@ -1,0 +1,118 @@
+<div class="review-page-container">
+
+  <div class="page-header">
+    <h2 class="page-title">工具借用 / 技能預約審核</h2>
+    <p class="page-subtitle">管理您的工具出租與技能共享預約，精準審核每筆共享申請訂單。</p>
+  </div>
+
+  <div class="tabs-container">
+    @for (tab of tabs; track tab.id) {
+    <button class="tab-button" [class.is-active]="activeTab() === tab.id" (click)="selectTab(tab.id)">
+      {{ tab.label }} ({{ tab.count }})
+    </button>
+    }
+  </div>
+
+  <div class="reservation-list">
+    @for (item of filteredReservations(); track item.id) {
+    <div class="reservation-card">
+
+      <div class="card-header">
+        <div class="header-left">
+          <span class="status-badge status-pending">待審核</span>
+          <span class="type-badge" [ngClass]="item.type === 'tool' ? 'badge-tool' : 'badge-skill'">
+            {{ item.type === 'tool' ? '工具借用' : '技能學習' }}
+          </span>
+          <span class="item-name">{{ item.itemName }}</span>
+        </div>
+        <div class="header-right">
+          <span class="order-number">預約單號: {{ item.orderNumber }}</span>
+        </div>
+      </div>
+
+      <div class="card-body">
+
+        <div class="applicant-section">
+          <div class="applicant-header">
+            <img class="applicant-avatar" [src]="item.applicant.avatar" alt="Avatar">
+            <div class="applicant-info">
+              <h4 class="applicant-name">{{ item.applicant.name }}</h4>
+              <div class="profile-tags">
+                @for (profile of item.applicant.profiles; track profile) {
+                <span class="profile-pill">{{ profile }}</span>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-info-box">
+            <div class="info-row text-highlight">
+              <span class="material-symbols-outlined info-icon icon-price">payments</span>
+              <span><strong>預估費用：</strong>{{ item.priceInfo }}</span>
+            </div>
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">
+                {{ item.type === 'tool' ? 'local_shipping' : 'video_camera_front' }}
+              </span>
+              <span>
+                <strong>{{ item.type === 'tool' ? '取件方式：' : '授課形式：' }}</strong>
+                {{ item.applicant.method }}
+              </span>
+            </div>
+            @if (item.applicant.extraNote) {
+            <div class="info-row text-alert">
+              <span class="material-symbols-outlined info-icon">error</span>
+              <span><strong>注意事項：</strong>{{ item.applicant.extraNote }}</span>
+            </div>
+            }
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">phone_iphone</span>
+              <span>聯絡電話: {{ item.applicant.phone }} <small class="text-muted">(核准後顯示)</small></span>
+            </div>
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">chat</span>
+              <span>Line ID: {{ item.applicant.lineId }} <small class="text-muted">(核准後顯示)</small></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="viewing-section">
+          <p class="section-label">{{ item.type === 'tool' ? '期望借用期間' : '期望預約日期與時段' }}</p>
+          <div class="viewing-time-box">
+            <span class="material-symbols-outlined time-icon">date_range</span>
+            <span class="time-text">{{ item.bookingPeriod }}</span>
+          </div>
+
+          <p class="section-label">{{ item.type === 'tool' ? '借用目的與用途' : '學習背景與需求說明' }}</p>
+          <div class="message-quote-box">
+            <span class="material-symbols-outlined quote-icon-bg">format_quote</span>
+            <p class="message-text">{{ item.message }}</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <div class="match-score-badge">
+          <span class="material-symbols-outlined sparkle-icon">auto_awesome</span>
+          <span>契合度 {{ item.matchScore }}%</span>
+        </div>
+
+        <div class="action-buttons">
+          <button class="action-btn btn-text" (click)="decline(item.id)">婉拒</button>
+          <button class="action-btn btn-outline" (click)="proposeReschedule(item.id)">提議改期</button>
+          <button class="action-btn btn-fill" (click)="accept(item.id)">接受預約</button>
+        </div>
+      </div>
+
+    </div>
+    }
+
+    @if (filteredReservations().length === 0) {
+    <div class="empty-state">
+      <p>目前沒有{{ activeTab() === 'pending' ? '待審核' : (activeTab() === 'confirmed' ? '已確認' : '已婉拒') }}的預約紀錄。</p>
+    </div>
+    }
+  </div>
+
+</div>

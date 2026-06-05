@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, computed, CUSTOM_ELEMENTS_SCHEMA, effect, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute, RouterModule, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
@@ -8,6 +8,9 @@ import { switchMap } from 'rxjs/operators';
 import { register } from 'swiper/element/bundle';
 import { faLine } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { Authservice } from '../../@service/authservice';
+import { LesseeProfileTag } from '../../@interface/lessee-profile-tag';
+import { AvailableViewingSlot } from '../../@interface/available-viewing-slot';
 
 // Services & Interfaces
 import { RentalMatchingService } from '../../@service/rental-matching-service';
@@ -31,6 +34,8 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   // ===================================================================
   private rentalMatchingService = inject(RentalMatchingService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private authService = inject(Authservice);
   private http = inject(HttpClient);
   private sanitizer = inject(DomSanitizer);
   private houseFacilityService = inject(HouseFacilityService);
@@ -74,19 +79,18 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   isTool = computed(() => this.isProduct() && this.detailData()?.category === '工具共享');
 
   mapUrl = computed<SafeResourceUrl | null>(() => {
+    const data = this.detailData();
 
-    const address = this.detailData()?.address;
-    // const address =
-    //   this.detailData()?.address ??
-    //   this.detailData()?.Address ??
-    //   '';
+    const address =
+      data?.address ??
+      data?.Address ??
+      '';
 
-    // if (!address || !address.trim()) return null;
-    if (!address) return null;
+    if (!address || !address.trim()) return null;
 
-    const encodedAddress = encodeURIComponent(address);
+    const encodedAddress = encodeURIComponent(address.trim());
     const rawUrl = `https://maps.google.com/maps?q=${encodedAddress}&hl=zh-TW&output=embed&z=16`;
-    // const rawUrl = `http://googleusercontent.com/maps.google.com/maps?q=${encodedAddress}&output=embed&z=16`;
+
     return this.sanitizer.bypassSecurityTrustResourceUrl(rawUrl);
   });
 
@@ -167,6 +171,10 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   toolDelivery = signal('面交自取');
   toolPurpose = signal('');
   toolNoticeChecked = signal(false);
+
+  lesseeProfileTags = signal<LesseeProfileTag[]>([]);
+  availableViewingSlots = signal<AvailableViewingSlot[]>([]);
+  selectedViewingSlotIds = signal<number[]>([]);
 
   // ===================================================================
   // Constructor & 生命週期
@@ -299,7 +307,54 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
 
   openContactModal(event?: Event) {
     if (event) event.preventDefault();
+
+    if (!this.authService.isLoggedIn()) {
+      const returnUrl = this.router.url;
+
+      alert('請先登入後再進行預約。');
+
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl }
+      });
+
+      return;
+    }
+
+    if (this.isRoom()) {
+      this.loadLesseeProfileTags();
+      this.loadAvailableViewingSlots();
+    }
+
     this.isContactModalOpen.set(true);
+  }
+
+  isViewingSlotSelected(slotId: number | string | null | undefined): boolean {
+    const id = Number(slotId);
+
+    if (!Number.isFinite(id)) {
+      return false;
+    }
+
+    return this.selectedViewingSlotIds().includes(id);
+  }
+
+  toggleViewingSlot(slotId: number | string | null | undefined): void {
+    const id = Number(slotId);
+
+    if (!Number.isFinite(id)) {
+      console.warn('無效的時段 ID：', slotId);
+      return;
+    }
+
+    this.selectedViewingSlotIds.update(current => {
+      if (current.includes(id)) {
+        return current.filter(currentId => currentId !== id);
+      }
+
+      return [...current, id];
+    });
+
+    console.log('目前選取的看房時段 IDs：', this.selectedViewingSlotIds());
   }
 
   closeContactModal() {
@@ -310,44 +365,102 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   submitContactMessage() {
     // 【情境一：送出房屋預約 (打 API 到後端)】
     if (this.isRoom()) {
+      if (!this.authService.isLoggedIn()) {
+        alert('請先登入後再進行預約。');
 
-      const selectedTimes = this.roomTimeSlots().filter(t => t.checked).map(t => t.label).join(', ');
+        this.router.navigate(['/login'], {
+          queryParams: { returnUrl: this.router.url }
+        });
 
-      // 動態取得當前網址上的 id，確保絕對不會抓到預設的 0 或 1
-      const currentHouseId = Number(this.route.snapshot.paramMap.get('id')) || this.detailData()?.id || this.detailData()?.Id;
+        return;
+      }
+
+      const hasAvailableSlots = this.availableViewingSlots().length > 0;
+
+      const selectedSlots = this.availableViewingSlots()
+        .filter(s => this.selectedViewingSlotIds().includes(Number(s.id)));
+
+      let selectedTimes: string[] = [];
+      let finalViewingTime = '';
 
       if (!this.roomDate()) {
         alert('請選擇看房日期！');
         return;
       }
 
+      if (hasAvailableSlots) {
+        if (selectedSlots.length === 0) {
+          alert('請至少選擇一個出租人開放的看房時段！');
+          return;
+        }
+
+        selectedTimes = selectedSlots.map(slot => slot.label);
+
+        // 目前資料表 ViewingTime / ViewingSlotId 只能存單一代表值
+        // 所以先用第一個選擇的時段作為代表時間
+        const firstSelectedSlot = selectedSlots[0];
+        finalViewingTime = `${this.roomDate()}T${firstSelectedSlot.startTime}:00`;
+      } else {
+        selectedTimes = this.roomTimeSlots()
+          .filter(t => t.checked)
+          .map(t => t.label);
+
+        if (selectedTimes.length === 0) {
+          alert('請至少選擇一個偏好看房時段！');
+          return;
+        }
+
+        finalViewingTime = new Date(this.roomDate()).toISOString();
+      }
+
+      const selectedLesseeProfileTags = this.lesseeProfileTags()
+        .filter(p => p.checked && p.label !== '+ 更多偏好')
+        .map(p => ({
+          label: p.label,
+          source: p.source
+        }));
+
       const requestData = {
-        // houseId: currentHouseId,
         houseId: this.currentCleanId(),
-        // 房客(當前登入者)：測試階段先保留 4。未來有 Auth 服務後，改為 this.authService.currentUser()?.id
-        lesseeId: 4,
 
-        // 房東：優先抓取後端回傳的 lessorId 真實 Id，若後端 API 還沒改好，則先用 3 墊檔避免報錯
-        lessorId: this.detailData()?.lessorId || 4,
+        // 目前後端欄位仍是單一 ViewingSlotId，所以先存第一個選到的時段 ID
+        viewingSlotId: selectedSlots.length > 0 ? selectedSlots[0].id : null,
 
-        viewingTime: new Date(this.roomDate() || new Date()).toISOString(),
+        // 目前後端欄位仍是單一 ViewingTime，所以先存第一個選到的時段開始時間
+        viewingTime: finalViewingTime,
+
         expectedMoveIn: new Date().toISOString(),
-        message: `期望時段: ${selectedTimes} | 留言: ${this.roomIntro()}`,
+        expectedMoveInText: this.roomMoveInTime(),
+
+        // 這裡會存所有複選時段
+        preferredTimeSlots: selectedTimes,
+
+        lesseeProfileTags: selectedLesseeProfileTags,
+        message: this.roomIntro(),
         matchScore: this.detailData()?.matchScore || 85
       };
 
       console.log('準備發送的房屋預約請求:', requestData);
 
       this.viewingService.submitApplication(requestData).subscribe({
-        next: (res) => {
+        next: () => {
           alert('預約成功！請至個人專區查看追蹤。');
           this.closeContactModal();
         },
         error: (err) => {
           console.error(err);
-          alert('預約失敗，請確認後端伺服器是否正常開啟並稍微再試');
+
+          const backendMessage =
+            err.error?.details ||
+            err.error?.message ||
+            err.message ||
+            '請確認後端伺服器是否正常開啟並稍後再試';
+
+          alert(`預約失敗：${backendMessage}`);
         }
       });
+
+      return;
     }
     // 【情境二：送出技能與工具申請 (保留舊有邏輯)】
     else {
@@ -393,7 +506,148 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
     this.toolDelivery.set('面交自取');
     this.toolPurpose.set('');
     this.toolNoticeChecked.set(false);
+
+    this.selectedViewingSlotIds.set([]);
+    this.availableViewingSlots.set([]);
+    this.lesseeProfileTags.set([]);
   }
+
+  private loadLesseeProfileTags() {
+    this.viewingService.getMyLesseeProfileTags().subscribe({
+      next: (tags) => {
+        this.lesseeProfileTags.set([
+          ...tags.map(t => ({
+            ...t,
+            checked: false,
+            isEditing: false
+          })),
+          {
+            label: '+ 更多偏好',
+            source: 'custom',
+            icon: 'add',
+            checked: false,
+            isEditing: false
+          }
+        ]);
+      },
+      error: (err) => {
+        console.error('取得承租人偏好失敗', err);
+      }
+    });
+  }
+
+  private loadAvailableViewingSlots() {
+    const houseId = this.currentCleanId();
+
+    this.viewingService.getAvailableSlotsByHouse(houseId).subscribe({
+      next: (slots: any[]) => {
+        console.log('可預約時段 API 回傳：', slots);
+
+        const normalizedSlots = (slots || [])
+          .map(slot => {
+            const id = Number(slot.id ?? slot.Id);
+            const startTime = slot.startTime ?? slot.StartTime ?? '';
+            const endTime = slot.endTime ?? slot.EndTime ?? '';
+
+            return {
+              id,
+              houseId: slot.houseId ?? slot.HouseId,
+              lessorId: slot.lessorId ?? slot.LessorId,
+              availableDate: slot.availableDate ?? slot.AvailableDate ?? null,
+              startTime,
+              endTime,
+              label: slot.label ?? slot.Label ?? `${startTime} - ${endTime}`
+            };
+          })
+          .filter(slot => Number.isFinite(slot.id));
+
+        this.availableViewingSlots.set(normalizedSlots);
+
+        console.log('整理後的可預約時段：', normalizedSlots);
+      },
+      error: (err) => {
+        console.error('取得可預約時段失敗', err);
+      }
+    });
+  }
+
+  handleLesseeProfileTagClick(index: number) {
+    const tags = [...this.lesseeProfileTags()];
+    const target = tags[index];
+
+    if (!target) return;
+
+    if (target.label === '+ 更多偏好') {
+      tags[index] = {
+        label: '',
+        source: 'custom',
+        icon: 'edit',
+        checked: false,
+        isEditing: true
+      };
+
+      tags.push({
+        label: '+ 更多偏好',
+        source: 'custom',
+        icon: 'add',
+        checked: false,
+        isEditing: false
+      });
+
+      this.lesseeProfileTags.set(tags);
+      return;
+    }
+
+    target.checked = !target.checked;
+    this.lesseeProfileTags.set(tags);
+  }
+
+  finishCustomLesseeTag(index: number) {
+    const tags = [...this.lesseeProfileTags()];
+    const target = tags[index];
+
+    if (!target) return;
+
+    const value = target.label.trim();
+
+    if (!value) {
+      tags.splice(index, 1);
+      this.lesseeProfileTags.set(tags);
+      return;
+    }
+
+    tags[index] = {
+      ...target,
+      label: value,
+      source: 'custom',
+      icon: 'sell',
+      checked: true,
+      isEditing: false
+    };
+
+    const hasAddMore = tags.some(t => t.label === '+ 更多偏好');
+
+    if (!hasAddMore) {
+      tags.push({
+        label: '+ 更多偏好',
+        source: 'custom',
+        icon: 'add',
+        checked: false,
+        isEditing: false
+      });
+    }
+
+    this.lesseeProfileTags.set(tags);
+  }
+
+  toggleFallbackRoomTimeSlot(index: number): void {
+    this.roomTimeSlots.update(slots =>
+      slots.map((slot, i) =>
+        i === index ? { ...slot, checked: !slot.checked } : slot
+      )
+    );
+  }
+
 }
 
 

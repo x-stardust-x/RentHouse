@@ -3,6 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CreateViewingOrderRequest } from '../@interface/create-viewing-order-request';
 import { ViewingOrderResponse } from '../@interface/viewing-order-response';
+import { AvailableViewingSlot } from '../@interface/available-viewing-slot';
+import { LesseeProfileTag } from '../@interface/lessee-profile-tag';
+
+export interface UpsertViewingSlotRequest {
+  // availableDate: string;
+  startTime: string;
+  endTime: string;
+  isEnabled: boolean;
+}
+
 
 @Injectable({
   providedIn: 'root',
@@ -11,14 +21,69 @@ export class HouseViewingService {
   private http = inject(HttpClient);
   private apiUrl = 'https://localhost:7215/api/HouseViewing'; // 替換為你的 C# API 網址
 
+
+  getMyLesseeProfileTags() {
+    return this.http.get<LesseeProfileTag[]>(
+      `${this.apiUrl}/my-lessee-profile-tags`
+    );
+  }
+
+  getAvailableSlotsByHouse(houseId: number) {
+    return this.http.get<AvailableViewingSlot[]>(
+      `${this.apiUrl}/house/${houseId}/available-slots`
+    );
+  }
+
+
+  replaceAvailableSlotsByHouse(houseId: number, data: UpsertViewingSlotRequest[]) {
+    const token = localStorage.getItem('token');
+
+    return this.http.put(
+      `${this.apiUrl}/house/${houseId}/available-slots`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+  }
+
+  // replaceAvailableSlotsByHouse(houseId: number, data: UpsertViewingSlotRequest[]) {
+  //   return this.http.put(
+  //     `${this.apiUrl}/house/${houseId}/available-slots`,
+  //     data
+  //   );
+  // }
+
+
   // 送出預約
-  submitApplication(data: CreateViewingOrderRequest): Observable<any> {
-    return this.http.post(`${this.apiUrl}/apply`, data);
+  submitApplication(data: CreateViewingOrderRequest) {
+    const token = localStorage.getItem('token');
+
+    return this.http.post(`${this.apiUrl}/apply`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
   }
 
   // 取得出租人的審核列表
   getLessorApprovals(lessorId: number): Observable<ViewingOrderResponse[]> {
     return this.http.get<ViewingOrderResponse[]>(`${this.apiUrl}/lessor/${lessorId}/approvals`);
+  }
+
+  getMyApprovals(): Observable<ViewingOrderResponse[]> {
+    const token = localStorage.getItem('token');
+
+    return this.http.get<ViewingOrderResponse[]>(
+      `${this.apiUrl}/my-approvals`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
   }
 
   getReservationsByLessor(lessorId: number) {
@@ -30,4 +95,6 @@ export class HouseViewingService {
   getApplicationsByLessee(lesseeId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/lessee/${lesseeId}/applications`);
   }
+
+
 }

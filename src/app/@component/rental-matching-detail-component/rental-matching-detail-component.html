@@ -657,29 +657,44 @@
       <div class="modal-dynamic-section form-spacing-large">
         <div class="contact-form-group">
           <label class="section-title-label">
-            <span class="material-symbols-outlined icon-orange">calendar_today</span> 期望看房日期與時段
+            <span class="material-symbols-outlined icon-orange">calendar_today</span>
+            選擇看房日期與時段
           </label>
-          <div class="form-row-2col">
-            <div class="form-col">
-              <span class="sub-label">選擇日期</span>
-              <div class="date-input-wrapper">
-                <span class="material-symbols-outlined date-icon">event</span>
-                <input type="date" class="contact-form-input date-no-bg" [ngModel]="roomDate()"
-                  (ngModelChange)="roomDate.set($event)">
-              </div>
-            </div>
-            <div class="form-col">
-              <span class="sub-label">偏好時段 (可複選)</span>
-              <div class="time-slot-group">
-                @for (slot of roomTimeSlots(); track slot.label) {
-                <label class="time-slot-pill" [class.is-active]="slot.checked">
-                  <input type="checkbox" [(ngModel)]="slot.checked" class="modal-hidden-input">
-                  {{ slot.label }}
-                </label>
-                }
-              </div>
+
+          <div class="form-col">
+            <span class="sub-label">選擇日期</span>
+            <div class="date-input-wrapper">
+              <span class="material-symbols-outlined date-icon">event</span>
+              <input type="date" class="contact-form-input date-no-bg" [ngModel]="roomDate()"
+                (ngModelChange)="roomDate.set($event)">
             </div>
           </div>
+
+          @if (availableViewingSlots().length > 0) {
+          <span class="sub-label">選擇出租人開放時段（可複選）</span>
+
+          <div class="time-slot-group">
+            @for (slot of roomTimeSlots(); track slot.label; let i = $index) {
+            <button type="button" class="time-slot-pill" [class.is-active]="slot.checked"
+              (click)="toggleFallbackRoomTimeSlot(i)">
+              {{ slot.label }}
+            </button>
+            }
+          </div>
+          } @else {
+          <p class="textarea-hint">
+            出租人尚未設定固定看房時段，請選擇偏好時段。
+          </p>
+
+          <div class="time-slot-group">
+            @for (slot of availableViewingSlots(); track slot.id) {
+            <button type="button" class="time-slot-pill" [class.is-active]="isViewingSlotSelected(slot.id)"
+              (click)="toggleViewingSlot(slot.id)">
+              {{ slot.label }}
+            </button>
+            }
+          </div>
+          }
         </div>
 
         <hr class="modal-divider">
@@ -703,16 +718,32 @@
 
         <div class="contact-form-group">
           <label class="section-title-label">
-            <span class="material-symbols-outlined icon-orange">person_search</span> 房客微檔案
-            <span class="label-hint">(點擊標籤快速分享您的狀態)</span>
+            <span class="material-symbols-outlined icon-orange">person_search</span>
+            承租人微檔案
+            <span class="label-hint">(可選擇想分享給出租人的狀態)</span>
           </label>
+
           <div class="tenant-profile-tags">
-            @for (profile of tenantProfiles(); track profile.label) {
-            <label class="profile-tag" [class.is-active]="profile.checked">
-              <input type="checkbox" [(ngModel)]="profile.checked" class="modal-hidden-input">
-              <span class="material-symbols-outlined tag-icon">{{ profile.icon }}</span>
+            @for (profile of lesseeProfileTags(); track $index; let i = $index) {
+
+            @if (profile.isEditing) {
+            <input type="text" class="profile-tag profile-tag-input" placeholder="輸入更多偏好" [ngModel]="profile.label"
+              (ngModelChange)="profile.label = $event" (blur)="finishCustomLesseeTag(i)"
+              (keydown.enter)="finishCustomLesseeTag(i)">
+            } @else {
+            <label class="profile-tag" [class.is-active]="profile.checked" (click)="handleLesseeProfileTagClick(i)">
+
+              <input type="checkbox" [ngModel]="profile.checked" class="modal-hidden-input"
+                (click)="$event.preventDefault()">
+
+              <span class="material-symbols-outlined tag-icon">
+                {{ profile.icon || 'sell' }}
+              </span>
+
               {{ profile.label }}
             </label>
+            }
+
             }
           </div>
         </div>
@@ -731,7 +762,7 @@
       </div>
       }
 
-      <!-- ================= 工具專屬內容 ================= -->
+      <!-- ================= 工具專屬內容偏好時段 ================= -->
       @if (isTool()) {
       <div class="modal-dynamic-section form-spacing-large">
         <div class="contact-form-group">

@@ -19,7 +19,11 @@
 
       <div class="card-header">
         <div class="header-left">
-          <span class="status-badge status-pending">待審核</span>
+          <span class="status-badge" [class.status-pending]="item.status === 'pending'"
+            [class.status-confirmed]="item.status === 'confirmed'" [class.status-rejected]="item.status === 'rejected'"
+            [class.status-rescheduled]="item.status === 'rescheduled'">
+            {{ getStatusLabel(item.status) }}
+          </span>
           <span class="room-name">{{ item.roomName }}</span>
         </div>
         <div class="header-right">
@@ -69,6 +73,19 @@
             <span class="material-symbols-outlined quote-icon-bg">format_quote</span>
             <p class="message-text">{{ item.message }}</p>
           </div>
+
+          @if (item.rescheduleInfo) {
+          <div class="message-quote-box reschedule-box">
+            <span class="material-symbols-outlined quote-icon-bg">event_repeat</span>
+            <p class="message-text">
+              <strong>出租人提議改期：</strong>
+              {{ item.rescheduleInfo.proposedViewingDateTime }}
+              <br>
+              <strong>改期訊息：</strong>
+              {{ item.rescheduleInfo.message }}
+            </p>
+          </div>
+          }
         </div>
 
       </div>
@@ -80,9 +97,17 @@
         </div>
 
         <div class="action-buttons">
-          <button class="action-btn btn-text" (click)="decline(item.id)">婉拒</button>
-          <button class="action-btn btn-outline" (click)="proposeReschedule(item.id)">提議改期</button>
-          <button class="action-btn btn-fill" (click)="accept(item.id)">接受預約</button>
+          @if (item.status === 'pending') {
+          <button class="action-btn btn-text" (click)="decline(item)">婉拒</button>
+          <button class="action-btn btn-outline" (click)="proposeReschedule(item)">提議改期</button>
+          <button class="action-btn btn-fill" (click)="accept(item)">接受預約</button>
+          } @else if (item.status === 'rescheduled') {
+          <span class="text-muted">已提出改期，等待承租人回覆</span>
+          } @else if (item.status === 'confirmed') {
+          <span class="text-muted">此預約已確認</span>
+          } @else if (item.status === 'rejected') {
+          <span class="text-muted">此預約已婉拒</span>
+          }
         </div>
       </div>
 
@@ -91,9 +116,61 @@
 
     @if (filteredReservations().length === 0) {
     <div class="empty-state">
-      <p>目前沒有{{ activeTab() === 'pending' ? '待審核' : (activeTab() === 'confirmed' ? '已確認' : '已婉拒') }}的預約紀錄。</p>
+      <p>{{ getEmptyStateText() }}</p>
     </div>
     }
   </div>
 
+  @if (isRescheduleModalOpen()) {
+  <div class="reschedule-modal-overlay" (click)="closeRescheduleModal()">
+    <div class="reschedule-modal" (click)="$event.stopPropagation()">
+
+      <div class="reschedule-modal__header">
+        <h3>提議改期</h3>
+        <button type="button" class="reschedule-modal__close" (click)="closeRescheduleModal()">
+          ×
+        </button>
+      </div>
+
+      <div class="reschedule-modal__body">
+        <p class="reschedule-modal__order">
+          預約單號：<strong>{{ selectedReservation()?.orderNumber }}</strong>
+        </p>
+
+        <p class="reschedule-modal__original">
+          原期望時間：{{ selectedReservation()?.viewingDateTime }}
+        </p>
+
+        <div class="form-group">
+          <label>改期日期</label>
+          <input type="date" [ngModel]="rescheduleDate()" (ngModelChange)="rescheduleDate.set($event)">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>開始時間</label>
+            <input type="time" [ngModel]="rescheduleStartTime()" (ngModelChange)="rescheduleStartTime.set($event)">
+          </div>
+
+          <div class="form-group">
+            <label>結束時間</label>
+            <input type="time" [ngModel]="rescheduleEndTime()" (ngModelChange)="rescheduleEndTime.set($event)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>給承租人的訊息</label>
+          <textarea rows="4" [ngModel]="rescheduleMessage()" (ngModelChange)="rescheduleMessage.set($event)"
+            placeholder="例如：您好，原本時段我臨時有事，想改約這個時間，請問方便嗎？"></textarea>
+        </div>
+      </div>
+
+      <div class="reschedule-modal__footer">
+        <button type="button" class="action-btn btn-text" (click)="closeRescheduleModal()">取消</button>
+        <button type="button" class="action-btn btn-fill" (click)="confirmReschedule()">確認改期</button>
+      </div>
+
+    </div>
+  </div>
+  }
 </div>

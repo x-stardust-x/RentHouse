@@ -347,6 +347,251 @@
   border: 1px dashed var(--color-border, #EAE4DE);
 }
 
+
+
+
+
+/* =========================================================
+   提議改期 Modal
+   ========================================================= */
+
+.reschedule-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(20, 18, 16, 0.58);
+  backdrop-filter: blur(6px);
+}
+
+.reschedule-modal {
+  width: min(34rem, 100%);
+  max-height: min(90vh, 48rem);
+  overflow: auto;
+  border-radius: 1.5rem;
+  background: #fffaf5;
+  box-shadow:
+    0 1.5rem 4rem rgba(70, 38, 18, 0.24),
+    0 0 0 1px rgba(138, 82, 43, 0.12);
+  animation: rescheduleModalIn 0.22s ease-out;
+}
+
+@keyframes rescheduleModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.reschedule-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(138, 82, 43, 0.14);
+}
+
+.reschedule-modal__header h3 {
+  margin: 0;
+  color: #2b211b;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.reschedule-modal__close {
+  display: grid;
+  place-items: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border: 0;
+  border-radius: 999px;
+  color: #8a4a24;
+  background: rgba(138, 82, 43, 0.1);
+  font-size: 1.65rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.reschedule-modal__close:hover {
+  background: rgba(138, 82, 43, 0.18);
+  transform: rotate(90deg);
+}
+
+.reschedule-modal__body {
+  padding: 1.5rem;
+}
+
+.reschedule-modal__order,
+.reschedule-modal__original {
+  margin: 0 0 0.75rem;
+  padding: 0.8rem 1rem;
+  border-radius: 1rem;
+  color: #5c4a3f;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(138, 82, 43, 0.12);
+  font-size: 0.95rem;
+}
+
+.reschedule-modal__order strong {
+  color: #9a4b18;
+  font-weight: 800;
+}
+
+.reschedule-modal .form-group {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 1rem;
+}
+
+.reschedule-modal .form-group label {
+  color: #3b2d25;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.reschedule-modal .form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.reschedule-modal input,
+.reschedule-modal textarea {
+  width: 100%;
+  border: 1px solid rgba(138, 82, 43, 0.22);
+  border-radius: 0.9rem;
+  padding: 0.85rem 1rem;
+  color: #2b211b;
+  background: #fff;
+  font: inherit;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.reschedule-modal textarea {
+  resize: vertical;
+  min-height: 7rem;
+  line-height: 1.7;
+}
+
+.reschedule-modal input:focus,
+.reschedule-modal textarea:focus {
+  border-color: #b75b22;
+  box-shadow: 0 0 0 4px rgba(183, 91, 34, 0.14);
+  background: #fffefd;
+}
+
+.reschedule-modal input::placeholder,
+.reschedule-modal textarea::placeholder {
+  color: #a9998e;
+}
+
+.reschedule-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem 1.5rem;
+  border-top: 1px solid rgba(138, 82, 43, 0.12);
+  background: rgba(255, 246, 238, 0.7);
+}
+
+.reschedule-modal__footer .action-btn {
+  min-width: 7.5rem;
+}
+
+/* 若原本 action-btn 沒有完整樣式，可補這段 */
+.reschedule-modal .btn-text {
+  border: 1px solid rgba(138, 82, 43, 0.28);
+  color: #8a4a24;
+  background: transparent;
+}
+
+.reschedule-modal .btn-text:hover {
+  background: rgba(138, 82, 43, 0.08);
+}
+
+.reschedule-modal .btn-fill {
+  border: 1px solid #9a4b18;
+  color: #fff;
+  background: linear-gradient(135deg, #b75b22, #8f3f13);
+  box-shadow: 0 0.6rem 1.2rem rgba(143, 63, 19, 0.22);
+}
+
+.reschedule-modal .btn-fill:hover {
+  filter: brightness(1.04);
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   改期狀態顯示
+   ========================================================= */
+
+.status-rescheduled {
+  color: #8057c2;
+  background: rgba(128, 87, 194, 0.12);
+}
+
+.reschedule-box {
+  border: 1px solid rgba(128, 87, 194, 0.18);
+  background: rgba(128, 87, 194, 0.08);
+}
+
+.reschedule-box .quote-icon-bg {
+  color: rgba(128, 87, 194, 0.28);
+}
+
+/* =========================================================
+   RWD
+   ========================================================= */
+
+@media (max-width: 640px) {
+  .reschedule-modal-overlay {
+    align-items: end;
+    padding: 0;
+  }
+
+  .reschedule-modal {
+    width: 100%;
+    max-height: 88vh;
+    border-radius: 1.25rem 1.25rem 0 0;
+  }
+
+  .reschedule-modal__header,
+  .reschedule-modal__body,
+  .reschedule-modal__footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .reschedule-modal .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .reschedule-modal__footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .reschedule-modal__footer .action-btn {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
 /* 響應式：手機版時切換為單欄排列 */
 @media (max-width: 768px) {
   .card-body {

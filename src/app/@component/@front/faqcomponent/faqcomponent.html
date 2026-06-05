@@ -1,0 +1,103 @@
+<div class="container faq-page">
+  <!-- Hero -->
+
+  <section class="faq-hero">
+    <h1>你有什麼問題嗎？</h1>
+
+    <p>我們整理了銀髮房東與青年租客最常詢問的問題， 希望能為您提供幫助。</p>
+
+    <div class="search-box">
+      <i class="bi bi-search"></i>
+
+      <input
+        type="text"
+        placeholder="搜尋關鍵字，例如：合約、安全"
+        [ngModel]="keyword()"
+        (ngModelChange)="keyword.set($event)"
+      />
+    </div>
+  </section>
+
+  <!-- Content -->
+
+  <section class="faq-content">
+    <!-- 左側分類 -->
+
+    <!-- Sidebar -->
+    <div class="faq-sidebar">
+      <button
+        class="category-btn"
+        [class.active]="selectedCategory() === 0"
+        (click)="changeCategory(0)"
+      >
+        <span class="left">
+          <i class="bi bi-grid"></i>
+          全部問題
+        </span>
+        <span class="count">{{ activeCount() }}</span>
+      </button>
+
+      @for (category of categories(); track category.id) {
+        <button
+          class="category-btn"
+          [class.active]="selectedCategory() === category.id"
+          (click)="changeCategory(category.id)"
+        >
+          <span class="left">
+            <i class="bi bi-folder2-open"></i>
+            {{ category.name }}
+          </span>
+
+          <span class="count">
+            {{ categoryCountMap().get(category.id) ?? 0}}
+          </span>
+        </button>
+      }
+    </div>
+
+    <!-- FAQ -->
+
+    <div class="faq-main">
+      <h2>常見問題</h2>
+
+      <div class="accordion" id="faqAccordion">
+        @for (item of faqList(); track item.id) {
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                [attr.data-bs-target]="'#faq' + item.id"
+              >
+                {{ item.question }}
+              </button>
+            </h2>
+
+            <div
+              class="accordion-collapse collapse"
+              [id]="'faq' + item.id"
+              data-bs-parent="#faqAccordion"
+            >
+              <div class="accordion-body">
+                {{ item.answer }}
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom CTA -->
+
+  <section class="faq-contact">
+    <div>
+      <h3>找不到您需要的答案嗎？</h3>
+
+      <p>我們的客服團隊隨時準備為您解答任何問題。</p>
+    </div>
+
+    <button class="contact-btn" routerLink="../contact">聯絡客服</button>
+  </section>
+</div>

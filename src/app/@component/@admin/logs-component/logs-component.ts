@@ -78,6 +78,7 @@ export class LogsComponent {
   loadData() {
     this.logsev.getLogs().subscribe(res => {
       this.dataSource.data = res;
+      console.log(res);
     });
   }
 

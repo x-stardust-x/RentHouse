@@ -37,6 +37,14 @@ export const routes: Routes = [
         path: 'contact',
         component: ContactComponent
       },
+      {
+        path: 'faq',
+        loadComponent: () => import('./@component/@front/faqcomponent/faqcomponent').then(c => c.FAQComponent),
+      },
+      {
+        path: 'news',
+loadComponent: () => import('./@component/@front/faqcomponent/faqcomponent').then(c => c.FAQComponent),
+      },
 
       // --- 租賃媒合相關 ---
       {

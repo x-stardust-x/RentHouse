@@ -37,7 +37,7 @@ export class LogsComponent {
     });
   }
 
-  displayedColumns: string[] = ['id', 'userId', 'action', 'ipAddress', 'createdAt'];
+  displayedColumns: string[] = ['id', 'name', 'action', 'ipAddress', 'createdAt'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -55,7 +55,7 @@ export class LogsComponent {
       // 🔍 keyword search
       const text = (
         data.id +
-        data.userId +
+        data.name +
         data.action +
         data.ipAddress
       ).toLowerCase();

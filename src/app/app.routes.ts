@@ -83,7 +83,7 @@ export const routes: Routes = [
         path: 'user-center',
         loadComponent: () => import('./@layouts/user-center-layout/user-center-layout').then(c => c.UserCenterLayout),
         canActivate : [authGuard],
-        data: { roles: ['young', 'old'] },
+        data: { roles: ['user'] },
         children: [
           // { path: '', redirectTo: 'rent', pathMatch: 'full' },
           // 發布新房源
@@ -144,7 +144,7 @@ export const routes: Routes = [
     path: 'admin',
     component: AdminLayout,
     canActivate : [authGuard],
-    data: { roles: ['admin'] },
+    data: { roles: ['admin', 'super'] },
     children: [
       { path: '', redirectTo: 'admin-review', pathMatch: 'full' },
       {

@@ -19,6 +19,7 @@ export class RegisterComponent {
   private readonly router = inject(Router);
   maxDate = new Date();
   message = signal("");
+  iden = signal('');
   registerForm = this.fb.nonNullable.group({
     username: ["",[Validators.required]],
     pwd: ['',
@@ -32,13 +33,8 @@ export class RegisterComponent {
       ]],
     birthday:[this.maxDate,Validators.required],
     age:[0,Validators.required],
-    identity: [0,[Validators.required]], // 預設
     address: ''
   });
-  identityOptions = [
-    { label: '年輕', value: 0 },
-    { label: '老人', value: 1 }
-  ];
 
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
@@ -59,7 +55,7 @@ export class RegisterComponent {
     if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
       age--;
     }
-
+    this.iden.set(age < 65 ? '青年' : '長者');
     this.registerForm.patchValue({
       age: age
       });
@@ -80,7 +76,6 @@ export class RegisterComponent {
         email : formValue.email,
         birthday : formValue.birthday,
         age : formValue.age,
-        identity: formValue.identity
       },
       user: {
         address: formValue.address

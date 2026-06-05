@@ -31,6 +31,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   }
 
   // 5️⃣ 沒權限
+  alert("權限不足");
   console.log("權限不足", { role, allowedRoles });
 
   // 👉 建議不要導回 login，應該導去「無權限頁」

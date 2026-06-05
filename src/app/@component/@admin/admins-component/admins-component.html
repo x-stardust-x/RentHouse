@@ -21,6 +21,7 @@
 
           <thead class="table-dark">
             <tr>
+              <th>權限</th>
               <th>名子</th>
               <th>信箱</th>
               <th>電話</th>
@@ -33,19 +34,34 @@
             @for (admin of adminservice.admins(); track admin.id) {
             <tr>
 
+              <td>
+                <span
+                  class="badge rounded-pill py-2"
+                  [class.text-bg-warning]="admin.isSuper"
+                  [class.text-bg-info]="!admin.isSuper"
+                >
+                  {{ admin.isSuper ? '超級管理員' : '一般管理員' }}
+                </span>
+              </td>
               <td>{{ admin.username }}</td>
               <td>{{ admin.email }}</td>
               <td>{{ admin.phone }}</td>
 
               <td class="text-end">
                 @if(admin.id != now_adminid){
-                <button class="btn btn-warning btn-sm me-2" (click)="resetPwd(admin.id)">
-                  重製密碼
-                </button>
-
-                <button class="btn btn-danger btn-sm" (click)="deleteAdmin(admin.id)">
-                  刪除
-                </button>
+                  @if(isSuper() === true){
+                  <button class="btn btn-sm me-2" [class.btn-primary]="!admin.isSuper" [class.btn-secondary]="admin.isSuper" (click)="SuperChange(admin.id)">
+                    {{admin.isSuper ? '取消超級管理員' : '變為超級管理員'}}
+                  </button>
+                  }
+                  <button class="btn btn-warning btn-sm me-2" (click)="resetPwd(admin.id)">
+                    重製密碼
+                  </button>
+                  @if(isSuper() === true){
+                    <button class="btn btn-danger btn-sm" (click)="deleteAdmin(admin.id)">
+                      刪除
+                    </button>
+                  }
                 }
               </td>
 

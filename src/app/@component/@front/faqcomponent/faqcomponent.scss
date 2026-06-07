@@ -1,233 +1,266 @@
-:root {
-  --primary: #cf6a2c;
-  --primary-light: #ffe8d6;
-  --text: #4a4a4a;
+.faq-container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 80px 20px;
 }
 
-/* =========================
-   Page Layout
-========================= */
-.faq-page {
-  background : #0000000a;
-  padding: 40px 20px;
-}
+/* ======================
+   Header
+====================== */
 
-/* =========================
-   Hero（採用新版風格）
-========================= */
-.faq-hero {
-  background: linear-gradient(135deg, #fff3e6, #ffe8d6);
-  border-radius: 20px;
-  padding: 60px 30px;
+.faq-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 50px;
 
   h1 {
     font-size: 42px;
     font-weight: 700;
-    color: var(--primary);
-  }
-
-  p {
-    color: #666;
-    margin-top: 12px;
+    color: #333;
+    margin-bottom: 40px;
   }
 }
 
-/* =========================
-   Search Box（保留舊版）
-========================= */
-.search-box {
-  max-width: 500px;
-  margin: 30px auto 0;
+/* ======================
+   Tabs
+====================== */
+
+.category-tabs {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  gap: 10px;
+
+  border-bottom: 1px solid #ececec;
+  padding-bottom: 15px;
+
+
+}
+
+.tab-btn {
+  border: none;
+  background: transparent;
+
+  padding: 12px 20px;
+
+  color: #777;
+  font-size: 15px;
+  font-weight: 500;
+
   position: relative;
 
-  i {
-    position: absolute;
-    left: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #999;
-  }
+  transition: .25s;
 
-  input {
-    width: 100%;
-    border: none;
-    border-radius: 50px;
-    padding: 14px 20px 14px 50px;
-    background: white;
-    outline: none;
-  }
-}
-
-/* =========================
-   Layout Grid
-========================= */
-.faq-content {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 24px;
-}
-
-/* =========================
-   Sidebar（新版整合 icon + count）
-========================= */
-.faq-sidebar {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.category-btn {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-
-  border: none;
-  border-radius: 12px;
-  padding: 14px 16px;
-
-  background: #fafafa;
-  cursor: pointer;
-  transition: 0.25s;
-
-  .left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    i {
-      color: var(--primary);
-      font-size: 18px;
-    }
-  }
+  gap: 8px;
 
   .count {
-    background: #eee;
-    color: #666;
-    padding: 2px 10px;
+    background: #f5f5f5;
+    color: #888;
+
     border-radius: 20px;
+
+    padding: 2px 8px;
+
     font-size: 12px;
   }
 
   &:hover {
-    background: var(--primary-light);
+    color: #b86a1f;
   }
 
   &.active {
-    background: #d85f22;
-    color: white;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-  }
 
-  /* 🔶 旋轉方塊箭頭 */
-  &.active::before {
-    content: "";
-    position: absolute;
-    left: -6px;
-    /* 往外突出一點，像箭頭指向左邊 */
-    top: 50%;
-    transform: translateY(-50%) rotate(45deg);
+    color: #b86a1f;
 
-    width: 12px;
-    height: 12px;
+    &::after {
 
-    background: #ffb36b;
-    /* 🔥 比主色亮，會更顯眼 */
-    border-radius: 3px;
+      content: "";
 
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      position: absolute;
+
+      left: 0;
+      bottom: -16px;
+
+      width: 100%;
+      height: 3px;
+
+      background: #b86a1f;
+      border-radius: 10px;
+    }
   }
 }
 
-/* =========================
-   Main Content
-========================= */
-.faq-main {
-  h2 {
-    margin-bottom: 20px;
-    color: var(--primary);
-    font-weight: 700;
-  }
+/* ======================
+   Accordion
+====================== */
+
+.faq-accordion {
+  margin-top: 40px;
+  background: #faf8f6;
+
+  padding: 20px;
+
+  border-radius: 20px;
 }
 
-/* =========================
-   Accordion（整合新版）
-========================= */
 .accordion-item {
-  border: none;
-  margin-bottom: 12px;
+  border: 1px solid #ebe6e1;
   border-radius: 12px !important;
   overflow: hidden;
+  margin-bottom: 12px;
+
+  background: white;
+
+  transition: all .25s ease;
 }
 
 .accordion-button {
-  background: #f8f8f8;
-  font-weight: 600;
 
-  &:not(.collapsed) {
-    background: var(--primary-light);
-    color: var(--primary);
-    box-shadow: none;
+  background: #fffdfb;
+
+  padding: 22px 24px;
+
+  font-size: 16px;
+  font-weight: 500;
+
+  color: #333;
+
+  box-shadow: none;
+
+  &:hover {
+    background: #fff7f0;
   }
 
   &:focus {
     box-shadow: none;
   }
+
+  &:not(.collapsed) {
+
+    background: #fff4ea;
+
+    color: #b86a1f;
+
+    border-bottom: 1px solid #f0dfcf;
+  }
 }
 
 .accordion-body {
-  line-height: 1.8;
-  color: #555;
+  background: #fffaf6;
+
+  padding: 20px 24px;
+
+  color: #666;
+
+  line-height: 1.9;
+
+  font-size: 15px;
 }
 
-/* =========================
-   CTA Contact（新版覆蓋舊版）
-========================= */
-.faq-contact {
-  margin-top: 50px;
-  background: linear-gradient(135deg, #cf6a2c, #ff8a3d);
-  color: white;
-  border-radius: 24px;
+.accordion-item:has(.accordion-button:not(.collapsed)) {
+
+  border-color: #e6c7ab;
+
+  box-shadow:
+    0 4px 16px rgba(184, 106, 31, 0.08);
+}
+
+/* ======================
+   Support Card
+====================== */
+
+.support-card {
+
+  margin-top: 60px;
+
+  background: #f8f9fc;
+
+  border-radius: 20px;
+
   padding: 50px;
 
-  display: flex;
-  justify-content: space-between;
+  text-align: center;
+}
+
+.support-icon {
+
+  font-size: 32px;
+
+  color: #b86a1f;
+
+  margin-bottom: 16px;
+}
+
+.support-card h3 {
+
+  font-size: 28px;
+
+  font-weight: 700;
+
+  margin-bottom: 12px;
+
+  color: #333;
+}
+
+.support-card p {
+
+  max-width: 550px;
+
+  margin: 0 auto 30px;
+
+  color: #666;
+
+  line-height: 1.8;
+}
+
+.support-btn {
+
+  display: inline-flex;
+
   align-items: center;
+  justify-content: center;
 
-  h3 {
-    font-size: 32px;
-    margin-bottom: 10px;
-  }
+  min-width: 140px;
 
-  p {
-    margin: 0;
-    opacity: 0.9;
+  padding: 12px 30px;
+
+  border-radius: 999px;
+
+  background: #b86a1f;
+
+  color: white;
+
+  text-decoration: none;
+
+  transition: .25s;
+
+  &:hover {
+
+    background: #9b5818;
+
+    color: white;
   }
 }
 
-.contact-btn {
-  background: white;
-  color: black;
-  border: none;
-  border-radius: 50px;
-  padding: 14px 28px;
-  font-weight: 600;
-}
+/* ======================
+   Mobile
+====================== */
 
-/* =========================
-   Responsive
-========================= */
 @media (max-width: 768px) {
-  .faq-content {
-    grid-template-columns: 1fr;
+
+  .faq-header h1 {
+    font-size: 32px;
   }
 
-  .faq-contact {
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
+  .category-tabs {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .support-card {
+    padding: 32px 24px;
   }
 }

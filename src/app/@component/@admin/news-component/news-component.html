@@ -3,18 +3,36 @@
   <!-- Header -->
   <div class="d-flex justify-content-between align-items-center mb-4">
 
+  <!-- 左邊：標題 + 排序 -->
+  <div class="d-flex align-items-center gap-3">
+
     <div>
       <h2 class="page-title mb-1">最新消息管理</h2>
-      <p class="text-muted mb-0">
-        管理所有最新消息內容
-      </p>
+      <p class="text-muted mb-0">管理所有最新消息內容</p>
     </div>
 
-    <button class="btn add-btn" routerLink="/admin/news/create">
-      + 新增新聞
+    <!-- 排序按鈕（在標題旁邊） -->
+    <button class="btn btn-info d-flex align-items-center gap-1" (click)="toggleSort()">
+      創建時間
+      <mat-icon>
+        @if (sortAsc()) {
+          north
+        } @else {
+          south
+        }
+      </mat-icon>
     </button>
 
   </div>
+
+  <!-- 右邊：新增 -->
+  <div>
+    <button class="btn add-btn" routerLink="/admin/news/create">
+      + 新增新聞
+    </button>
+  </div>
+
+</div>
 
   <!-- List -->
   @if (pagedNews().length > 0) {
@@ -93,7 +111,7 @@
 
                 <!-- 編輯 -->
                 <button class="icon-btn edit-btn" [routerLink]="['/admin/news/edit', item.id]">
-                 <span class="material-symbols-outlined">edit</span>
+                  <span class="material-symbols-outlined">edit</span>
                 </button>
 
                 <!-- 刪除 -->
@@ -116,29 +134,20 @@
     }
 
     <div class="pagination">
-  <button
-    (click)="changePage(currentPage() - 1)"
-    [disabled]="currentPage() === 1"
-  >
-    上一頁
-  </button>
+      <button (click)="changePage(currentPage() - 1)" [disabled]="currentPage() === 1">
+        上一頁
+      </button>
 
-  @for (p of pages(); track $index) {
-    <button
-      (click)="changePage(p)"
-      [class.active]="p === currentPage()"
-    >
-      {{ p }}
-    </button>
-  }
+      @for (p of pages(); track $index) {
+      <button (click)="changePage(p)" [class.active]="p === currentPage()">
+        {{ p }}
+      </button>
+      }
 
-  <button
-    (click)="changePage(currentPage() + 1)"
-    [disabled]="currentPage() === totalPages()"
-  >
-    下一頁
-  </button>
-</div>
+      <button (click)="changePage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">
+        下一頁
+      </button>
+    </div>
 
   </div>
 

@@ -26,10 +26,12 @@ export class UsersComponent {
   pagedUsers = computed(() => {
     const allUsers = this.userservice.users();
 
+    const filterUsers = allUsers.filter(x => x.isDelete === false);
+
     const start = (this.currentPage() - 1) * this.pageSize();
     const end = start + this.pageSize();
 
-    return allUsers.slice(start, end);
+    return filterUsers.slice(start, end);
   });
 
   totalPages = computed(() => {

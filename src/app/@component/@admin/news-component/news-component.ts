@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-news-component',
-  imports: [DatePipe, NgClass, RouterLink, MatIconModule],
+  imports: [DatePipe, NgClass, RouterLink, MatIconModule, MatIconModule],
   templateUrl: './news-component.html',
   styleUrl: './news-component.scss',
 })
@@ -19,7 +19,7 @@ export class NewsComponent {
   private logsev = inject(LogService);
   currentPage = signal(1);
   pageSize = signal(5);
-
+  sortAsc = signal(false); // false = 新到舊
   constructor() {
     this.newsev.getAll();
 
@@ -28,10 +28,17 @@ export class NewsComponent {
   pagedNews = computed(() => {
     const data = this.newsev.newsData();
 
+    const sorted = data.sort((a, b) => {
+      const t1 = new Date(a.createdAt).getTime();
+      const t2 = new Date(b.createdAt).getTime();
+
+      return this.sortAsc() ? t1 - t2 : t2 - t1;
+    });
+
     const start = (this.currentPage() - 1) * this.pageSize();
     const end = start + this.pageSize();
 
-    return data.slice(start, end);
+    return sorted.slice(start, end);
   });
 
   totalPages = computed(() => {
@@ -88,5 +95,9 @@ export class NewsComponent {
 
     });
 
+  }
+  toggleSort() {
+    this.sortAsc.set(!this.sortAsc());
+    this.currentPage.set(1); // 很重要：切排序要回第一頁
   }
 }

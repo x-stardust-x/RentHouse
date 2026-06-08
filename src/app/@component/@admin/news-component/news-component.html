@@ -17,11 +17,11 @@
   </div>
 
   <!-- List -->
-  @if (newsev.newsData().length > 0) {
+  @if (pagedNews().length > 0) {
 
   <div class="d-flex flex-column gap-4">
 
-    @for (item of newsev.newsData(); track item.id) {
+    @for (item of pagedNews(); track item.id) {
 
     <div class="news-card">
 
@@ -114,6 +114,31 @@
     </div>
 
     }
+
+    <div class="pagination">
+  <button
+    (click)="changePage(currentPage() - 1)"
+    [disabled]="currentPage() === 1"
+  >
+    上一頁
+  </button>
+
+  @for (p of pages(); track $index) {
+    <button
+      (click)="changePage(p)"
+      [class.active]="p === currentPage()"
+    >
+      {{ p }}
+    </button>
+  }
+
+  <button
+    (click)="changePage(currentPage() + 1)"
+    [disabled]="currentPage() === totalPages()"
+  >
+    下一頁
+  </button>
+</div>
 
   </div>
 

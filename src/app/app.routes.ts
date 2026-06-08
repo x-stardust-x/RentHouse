@@ -81,7 +81,7 @@ export const routes: Routes = [
       {
         path: 'user-center',
         loadComponent: () => import('./@layouts/user-center-layout/user-center-layout').then(c => c.UserCenterLayout),
-        canActivate : [authGuard],
+        canActivate: [authGuard],
         data: { roles: ['young', 'old'] },
         children: [
           // { path: '', redirectTo: 'rent', pathMatch: 'full' },
@@ -130,7 +130,14 @@ export const routes: Routes = [
           {
             path: 'account-setting',
             loadComponent: () => import('./@component/@member/account-setting/account-setting').then(c => c.AccountSetting),
-          }
+          },
+          // 看房申請追蹤
+          {
+            path: 'house-viewing-applications',
+            loadComponent: () =>
+              import('./@component/house-viewing-application-tracking-component/house-viewing-application-tracking-component')
+                .then(c => c.HouseViewingApplicationTrackingComponent),
+          },
         ],
       },
     ]
@@ -142,7 +149,7 @@ export const routes: Routes = [
     // ==========================================
     path: 'admin',
     component: AdminLayout,
-    canActivate : [authGuard],
+    canActivate: [authGuard],
     data: { roles: ['admin'] },
     children: [
       { path: '', redirectTo: 'admin-review', pathMatch: 'full' },

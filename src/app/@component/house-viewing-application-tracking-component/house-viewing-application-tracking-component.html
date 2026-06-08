@@ -1,0 +1,201 @@
+<div class="review-page-container application-tracking-page">
+
+  <div class="page-header">
+    <h2 class="page-title">看房申請追蹤</h2>
+    <p class="page-subtitle">
+      追蹤您送出的看房申請、確認預約結果與房東改期訊息。
+    </p>
+  </div>
+
+  <div class="tabs-container">
+    @for (tab of tabs(); track tab.id) {
+    <button type="button" class="tab-button" [class.is-active]="activeTab() === tab.id" (click)="selectTab(tab.id)">
+      {{ tab.label }} ({{ tab.count }})
+    </button>
+    }
+  </div>
+
+  @if (isLoading()) {
+  <div class="empty-state">
+    <p>正在載入看房申請紀錄...</p>
+  </div>
+  } @else {
+  <div class="reservation-list application-list">
+
+    @for (item of filteredApplications(); track item.id) {
+    <article class="reservation-card application-card" [class.is-pending]="item.status === 'pending'"
+      [class.is-confirmed]="item.status === 'confirmed'" [class.is-rescheduled]="item.status === 'rescheduled'"
+      [class.is-rejected]="item.status === 'rejected'">
+
+      <div class="card-header">
+        <div class="header-left">
+          <span class="status-badge" [class.status-pending]="item.status === 'pending'"
+            [class.status-confirmed]="item.status === 'confirmed'" [class.status-rejected]="item.status === 'rejected'"
+            [class.status-rescheduled]="item.status === 'rescheduled'">
+            {{ getStatusLabel(item.status) }}
+          </span>
+
+          <span class="room-name">
+            {{ item.roomName }}
+
+            @if (item.roomAddress) {
+            <span class="room-address-divider">｜</span>
+            <span class="room-address">{{ item.roomAddress }}</span>
+            }
+          </span>
+        </div>
+
+        <div class="header-right">
+          <span class="order-number">預約單號: {{ item.orderNumber }}</span>
+        </div>
+      </div>
+
+      <div class="card-body application-card-body">
+
+        <div class="applicant-section tracking-room-section">
+
+          <div class="tracking-room-image-wrap">
+            <img class="tracking-room-image" [src]="item.coverUrl || 'images/default-room.jpg'" [alt]="item.roomName">
+          </div>
+
+          <div class="contact-info-box tracking-room-info">
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">payments</span>
+              <span>
+                租金：
+                <strong class="tracking-price">
+                  NT$ {{ item.rentPrice | number:'1.0-0' }}/月
+                </strong>
+              </span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">person</span>
+              <span>房東：{{ item.lessorName }}</span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">chat</span>
+              <span>{{ getLessorContactText(item) }}</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="viewing-section">
+          <p class="section-label">預約看房日期與時段</p>
+
+          <div class="viewing-time-box viewing-time-box--slots">
+            <div class="viewing-date-pill">
+              <span class="material-symbols-outlined time-icon">event_available</span>
+              <span class="time-text">{{ item.viewingDate }}</span>
+            </div>
+
+            <div class="viewing-slot-pills">
+              @for (slot of item.preferredTimeSlots; track slot) {
+              <span class="viewing-slot-pill">
+                {{ slot }}
+              </span>
+              }
+
+              @if (!item.preferredTimeSlots || item.preferredTimeSlots.length === 0) {
+              <span class="viewing-slot-pill">
+                {{ item.viewingDateTime }}
+              </span>
+              }
+            </div>
+          </div>
+
+          @if (item.status === 'rescheduled' && item.rescheduleInfo) {
+          <div class="message-quote-box reschedule-box">
+            <span class="material-symbols-outlined quote-icon-bg">event_repeat</span>
+            <p class="message-text">
+              <strong>房東提議改期：</strong>
+              {{ item.rescheduleInfo.proposedViewingDateTime }}
+              <br>
+              <strong>改期訊息：</strong>
+              {{ item.rescheduleInfo.message || '無留言' }}
+            </p>
+          </div>
+          }
+
+          @if (item.status === 'rejected') {
+          <div class="message-quote-box rejected-box">
+            <span class="material-symbols-outlined quote-icon-bg">cancel</span>
+            <p class="message-text">
+              <strong>婉拒原因：</strong>
+              {{ item.rejectReason || '房東未填寫原因' }}
+            </p>
+          </div>
+          }
+
+          @if (item.status !== 'rejected' && item.message) {
+          <div class="message-quote-box">
+            <span class="material-symbols-outlined quote-icon-bg">format_quote</span>
+            <p class="message-text">
+              {{ item.message }}
+            </p>
+          </div>
+          }
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <div class="match-score-badge">
+          <span class="material-symbols-outlined sparkle-icon">auto_awesome</span>
+          <span>契合度 {{ item.matchScore }}%</span>
+        </div>
+
+        <div class="action-buttons">
+          @if (item.status === 'pending') {
+          <button type="button" class="action-btn btn-outline" (click)="viewMap(item)">
+            查看地點
+          </button>
+
+          <button type="button" class="action-btn btn-text danger-text" (click)="cancelApplication(item)">
+            取消申請
+          </button>
+          }
+
+          @else if (item.status === 'confirmed') {
+          <button type="button" class="action-btn btn-outline" (click)="viewMap(item)">
+            導航前往
+          </button>
+
+          <button type="button" class="action-btn btn-fill" (click)="prepareContract(item)">
+            準備簽約
+          </button>
+          }
+
+          @else if (item.status === 'rescheduled') {
+          <button type="button" class="action-btn btn-outline" (click)="viewMap(item)">
+            查看地點
+          </button>
+
+          <button type="button" class="action-btn btn-fill" (click)="prepareContract(item)">
+            查看改期內容
+          </button>
+          }
+
+          @else if (item.status === 'rejected') {
+          <button type="button" class="action-btn btn-outline" (click)="reapply(item)">
+            重新申請
+          </button>
+          }
+        </div>
+      </div>
+
+    </article>
+    }
+
+    @if (filteredApplications().length === 0) {
+    <div class="empty-state">
+      <p>{{ getEmptyStateText() }}</p>
+    </div>
+    }
+
+  </div>
+  }
+
+</div>

@@ -26,6 +26,35 @@ export interface ProposeRescheduleRequest {
   message: string;
 }
 
+export interface LesseeViewingApplication {
+  id: string;
+  orderNumber: string;
+  status: 'pending' | 'confirmed' | 'rejected' | 'rescheduled';
+
+  roomName: string;
+  roomAddress: string;
+  coverUrl: string;
+  rentPrice: number;
+
+  lessorName: string;
+  lessorPhone: string;
+  lessorLineId: string;
+
+  viewingDate: string;
+  viewingDateTime: string;
+  preferredTimeSlots: string[];
+
+  message: string;
+  matchScore: number;
+  rejectReason?: string;
+
+  rescheduleInfo?: {
+    proposedViewingDateTime: string;
+    message: string;
+    count?: number;
+  };
+}
+
 
 @Injectable({
   providedIn: 'root',
@@ -129,6 +158,19 @@ export class HouseViewingService {
     return this.http.put(
       `${this.apiUrl}/reschedule`,
       data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+  }
+
+  getMyApplications(): Observable<LesseeViewingApplication[]> {
+    const token = localStorage.getItem('token');
+
+    return this.http.get<LesseeViewingApplication[]>(
+      `${this.apiUrl}/my-applications`,
       {
         headers: {
           Authorization: `Bearer ${token}`

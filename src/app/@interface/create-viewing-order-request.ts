@@ -13,16 +13,4 @@ export interface CreateViewingOrderRequest {
   message?: string;
   matchScore: number;
 
-
-  // houseId: number;
-  // viewingTime: string;
-
-  // expectedMoveIn: string;
-  // expectedMoveInText?: string;
-
-  // preferredTimeSlots?: string[];
-  // tenantProfiles?: string[];
-
-  // message: string;
-  // matchScore: number;
 }

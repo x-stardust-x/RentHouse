@@ -9,6 +9,7 @@ export interface Reservation {
   orderNumber: string;
   status: 'pending' | 'confirmed' | 'rejected' | 'rescheduled';
   roomName: string;
+  roomAddress?: string;
   applicant: {
     name: string;
     avatar: string;
@@ -17,12 +18,15 @@ export interface Reservation {
     phone: string;
     lineId: string;
   };
+  viewingDate: string;
   viewingDateTime: string;
+  preferredTimeSlots: string[];
   message: string;
   matchScore: number;
   rescheduleInfo?: {
     proposedViewingDateTime: string;
     message: string;
+    count?: number;
   };
 }
 
@@ -87,6 +91,7 @@ export class HouseViewingApprovalComponent implements OnInit {
     this.viewingService.getMyApprovals().subscribe({
       next: (data) => {
         console.log('看房預約審核 API 回傳：', data);
+        console.table(data);
         this.reservations.set(data as unknown as Reservation[]);
       },
       error: (err) => {
@@ -114,8 +119,26 @@ export class HouseViewingApprovalComponent implements OnInit {
 
   // 動作：婉拒
   decline(item: Reservation) {
-    this.updateReservationStatus(item.id, 'rejected');
-    alert(`已婉拒預約單號: ${item.orderNumber}`);
+    this.viewingService.updateReservationStatus({
+      reservationId: Number(item.id),
+      status: 'rejected'
+    }).subscribe({
+      next: () => {
+        this.updateReservationStatus(item.id, 'rejected');
+        alert(`已婉拒預約單號: ${item.orderNumber}`);
+      },
+      error: (err) => {
+        console.error('婉拒預約失敗：', err);
+
+        const backendMessage =
+          err.error?.details ||
+          err.error?.message ||
+          err.message ||
+          '未知錯誤';
+
+        alert(`婉拒預約失敗：${backendMessage}`);
+      }
+    });
   }
 
   // 動作：提議改期
@@ -142,8 +165,26 @@ export class HouseViewingApprovalComponent implements OnInit {
 
   // 動作：接受
   accept(item: Reservation) {
-    this.updateReservationStatus(item.id, 'confirmed');
-    alert(`已接受預約單號: ${item.orderNumber}`);
+    this.viewingService.updateReservationStatus({
+      reservationId: Number(item.id),
+      status: 'confirmed'
+    }).subscribe({
+      next: () => {
+        this.updateReservationStatus(item.id, 'confirmed');
+        alert(`已接受預約單號: ${item.orderNumber}`);
+      },
+      error: (err) => {
+        console.error('接受預約失敗：', err);
+
+        const backendMessage =
+          err.error?.details ||
+          err.error?.message ||
+          err.message ||
+          '未知錯誤';
+
+        alert(`接受預約失敗：${backendMessage}`);
+      }
+    });
   }
 
   /**
@@ -190,6 +231,68 @@ export class HouseViewingApprovalComponent implements OnInit {
     }
   }
 
+
+  // 核准後顯示的聯絡資訊，包含電話和 LINE ID
+  canShowFullContact(item: Reservation): boolean {
+    return item.status === 'confirmed' || item.status === 'rescheduled';
+  }
+
+  getContactHint(item: Reservation): string {
+    return this.canShowFullContact(item) ? '(已開放聯絡資訊)' : '(核准後顯示)';
+  }
+
+  displayPhone(item: Reservation): string {
+    const phone = item.applicant.phone || '';
+
+    if (this.canShowFullContact(item)) {
+      return phone || '未填寫';
+    }
+
+    return this.maskPhone(phone);
+  }
+
+  displayLineId(item: Reservation): string {
+    const lineId = item.applicant.lineId || '';
+
+    if (this.canShowFullContact(item)) {
+      return lineId || '未填寫';
+    }
+
+    return this.maskText(lineId);
+  }
+
+  private maskPhone(phone: string): string {
+    if (!phone || phone === '未填寫') {
+      return '未填寫';
+    }
+
+    const pure = phone.replace(/\s+/g, '');
+
+    // 台灣手機常見 10 碼：0980632541 → 0980***541
+    if (pure.length >= 8) {
+      return `${pure.slice(0, 4)}***${pure.slice(-3)}`;
+    }
+
+    return this.maskText(pure);
+  }
+
+  private maskText(value: string): string {
+    if (!value || value === '未填寫') {
+      return '未填寫';
+    }
+
+    if (value.length <= 2) {
+      return `${value[0] ?? ''}*`;
+    }
+
+    if (value.length <= 5) {
+      return `${value.slice(0, 1)}***${value.slice(-1)}`;
+    }
+
+    return `${value.slice(0, 2)}***${value.slice(-2)}`;
+  }
+
+
   confirmReschedule() {
     const item = this.selectedReservation();
 
@@ -220,28 +323,52 @@ export class HouseViewingApprovalComponent implements OnInit {
       return;
     }
 
-    const proposedViewingDateTime =
-      `${this.rescheduleDate()} ${this.rescheduleStartTime()} - ${this.rescheduleEndTime()}`;
+    const proposedStartTime = `${this.rescheduleDate()}T${this.rescheduleStartTime()}:00`;
+    const proposedEndTime = `${this.rescheduleDate()}T${this.rescheduleEndTime()}:00`;
 
-    this.reservations.update(current =>
-      current.map(res =>
-        res.id === item.id
-          ? {
-            ...res,
-            status: 'rescheduled',
-            rescheduleInfo: {
-              proposedViewingDateTime,
-              message: this.rescheduleMessage()
-            }
-          }
-          : res
-      )
-    );
+    this.viewingService.proposeReschedule({
+      reservationId: Number(item.id),
+      proposedStartTime,
+      proposedEndTime,
+      message: this.rescheduleMessage().trim()
+    }).subscribe({
+      next: () => {
+        const proposedViewingDateTime =
+          `${this.rescheduleDate()} ${this.rescheduleStartTime()} - ${this.rescheduleEndTime()}`;
 
-    this.activeTab.set('rescheduled');
+        this.reservations.update(current =>
+          current.map(res =>
+            res.id === item.id
+              ? {
+                ...res,
+                status: 'rescheduled',
+                rescheduleInfo: {
+                  proposedViewingDateTime,
+                  message: this.rescheduleMessage().trim(),
+                  count: (res.rescheduleInfo?.count ?? 0) + 1
+                }
+              }
+              : res
+          )
+        );
 
-    alert(`已提出改期，預約單號：${item.orderNumber}`);
+        this.activeTab.set('rescheduled');
 
-    this.closeRescheduleModal();
+        alert(`已提出改期，預約單號：${item.orderNumber}`);
+
+        this.closeRescheduleModal();
+      },
+      error: (err) => {
+        console.error('提議改期失敗：', err);
+
+        const backendMessage =
+          err.error?.details ||
+          err.error?.message ||
+          err.message ||
+          '未知錯誤';
+
+        alert(`提議改期失敗：${backendMessage}`);
+      }
+    });
   }
 }

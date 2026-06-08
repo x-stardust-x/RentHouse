@@ -13,6 +13,19 @@ export interface UpsertViewingSlotRequest {
   isEnabled: boolean;
 }
 
+export interface UpdateReservationStatusRequest {
+  reservationId: number;
+  status: 'confirmed' | 'rejected';
+  rejectReason?: string;
+}
+
+export interface ProposeRescheduleRequest {
+  reservationId: number;
+  proposedStartTime: string;
+  proposedEndTime?: string | null;
+  message: string;
+}
+
 
 @Injectable({
   providedIn: 'root',
@@ -96,5 +109,32 @@ export class HouseViewingService {
     return this.http.get<any[]>(`${this.apiUrl}/lessee/${lesseeId}/applications`);
   }
 
+  updateReservationStatus(data: UpdateReservationStatusRequest) {
+    const token = localStorage.getItem('token');
+
+    return this.http.put(
+      `${this.apiUrl}/status`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+  }
+
+  proposeReschedule(data: ProposeRescheduleRequest) {
+    const token = localStorage.getItem('token');
+
+    return this.http.put(
+      `${this.apiUrl}/reschedule`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+  }
 
 }

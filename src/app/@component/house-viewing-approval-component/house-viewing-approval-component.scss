@@ -102,6 +102,24 @@
   gap: 0.75rem;
 }
 
+.room-name {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.room-address-divider {
+  color: #c8a58d;
+  font-weight: 500;
+}
+
+.room-address {
+  color: #7a6f68;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
 .status-badge {
   font-size: 0.8rem;
   font-weight: 600;
@@ -299,6 +317,46 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+}
+
+.viewing-time-box--slots {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.viewing-date-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(180, 92, 42, 0.2);
+  color: #9a4b18;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.viewing-slot-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.viewing-slot-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.65rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(255, 112, 45, 0.1);
+  color: #9a4b18;
+  border: 1px solid rgba(255, 112, 45, 0.22);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 /* 婉拒 (純文字) */
@@ -534,6 +592,8 @@
   filter: brightness(1.04);
   transform: translateY(-1px);
 }
+
+
 
 /* =========================================================
    改期狀態顯示

@@ -24,7 +24,14 @@
             [class.status-rescheduled]="item.status === 'rescheduled'">
             {{ getStatusLabel(item.status) }}
           </span>
-          <span class="room-name">{{ item.roomName }}</span>
+          <span class="room-name">
+            {{ item.roomName }}
+
+            @if (item.roomAddress) {
+            <span class="room-address-divider">｜</span>
+            <span class="room-address">{{ item.roomAddress }}</span>
+            }
+          </span>
         </div>
         <div class="header-right">
           <span class="order-number">預約單號: {{ item.orderNumber }}</span>
@@ -53,20 +60,44 @@
             </div>
             <div class="info-row">
               <span class="material-symbols-outlined info-icon">phone_iphone</span>
-              <span>{{ item.applicant.phone }} <small class="text-muted">(核准後顯示)</small></span>
+              <span>
+                {{ displayPhone(item) }}
+                <small class="text-muted">{{ getContactHint(item) }}</small>
+              </span>
+              <!-- <span>{{ item.applicant.phone }} <small class="text-muted">(核准後顯示)</small></span> -->
             </div>
             <div class="info-row">
               <span class="material-symbols-outlined info-icon">chat</span>
-              <span>Line ID: {{ item.applicant.lineId }} <small class="text-muted">(核准後顯示)</small></span>
+              <span>
+                Line ID: {{ displayLineId(item) }}
+                <small class="text-muted">{{ getContactHint(item) }}</small>
+              </span>
+              <!-- <span>Line ID: {{ item.applicant.lineId }} <small class="text-muted">(核准後顯示)</small></span> -->
             </div>
           </div>
         </div>
 
         <div class="viewing-section">
           <p class="section-label">期望看房日期與時段</p>
-          <div class="viewing-time-box">
-            <span class="material-symbols-outlined time-icon">event_available</span>
-            <span class="time-text">{{ item.viewingDateTime }}</span>
+          <div class="viewing-time-box viewing-time-box--slots">
+            <div class="viewing-date-pill">
+              <span class="material-symbols-outlined time-icon">event_available</span>
+              <span class="time-text">{{ item.viewingDate }}</span>
+            </div>
+
+            <div class="viewing-slot-pills">
+              @for (slot of item.preferredTimeSlots; track slot) {
+              <span class="viewing-slot-pill">
+                {{ slot }}
+              </span>
+              }
+
+              @if (!item.preferredTimeSlots || item.preferredTimeSlots.length === 0) {
+              <span class="viewing-slot-pill">
+                {{ item.viewingDateTime }}
+              </span>
+              }
+            </div>
           </div>
 
           <div class="message-quote-box">

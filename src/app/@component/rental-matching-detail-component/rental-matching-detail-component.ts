@@ -48,6 +48,9 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   objectKeys = Object.keys;
   parsedRules: any = {};
 
+  isViewingSlotsLoading = signal(false);
+  viewingSlotsLoadError = signal('');
+
   readonly HABIT_ICONS: { [key: string]: string } = {
     'routines': 'routine',
     'showerRestrictions': 'do_not_disturb_on',
@@ -388,33 +391,23 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      if (hasAvailableSlots) {
-        if (selectedSlots.length === 0) {
-          alert('請至少選擇一個出租人開放的看房時段！');
-          return;
-        }
-
-        selectedTimes = selectedSlots.map(slot => slot.label);
-
-        // 目前資料表 ViewingTime / ViewingSlotId 只能存單一代表值
-        // 所以先用第一個選擇的時段作為代表時間
-        const firstSelectedSlot = selectedSlots[0];
-        finalViewingTime = `${this.roomDate()}T${firstSelectedSlot.startTime}:00`;
-      } else {
-        selectedTimes = this.roomTimeSlots()
-          .filter(t => t.checked)
-          .map(t => t.label);
-
-        if (selectedTimes.length === 0) {
-          alert('請至少選擇一個偏好看房時段！');
-          return;
-        }
-
-        finalViewingTime = new Date(this.roomDate()).toISOString();
+      if (!hasAvailableSlots) {
+        alert('出租人尚未設定可預約看房時段，暫時無法送出預約。');
+        return;
       }
 
+      if (selectedSlots.length === 0) {
+        alert('請至少選擇一個出租人開放的看房時段！');
+        return;
+      }
+
+      selectedTimes = selectedSlots.map(slot => slot.label);
+
+      const firstSelectedSlot = selectedSlots[0];
+      finalViewingTime = `${this.roomDate()}T${firstSelectedSlot.startTime}:00`;
+
       const selectedLesseeProfileTags = this.lesseeProfileTags()
-        .filter(p => p.checked && p.label !== '+ 更多偏好')
+        .filter(p => p.checked && p.label !== '更多偏好')
         .map(p => ({
           label: p.label,
           source: p.source
@@ -522,7 +515,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
             isEditing: false
           })),
           {
-            label: '+ 更多偏好',
+            label: '更多偏好',
             source: 'custom',
             icon: 'add',
             checked: false,
@@ -538,6 +531,18 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
 
   private loadAvailableViewingSlots() {
     const houseId = this.currentCleanId();
+
+    if (!houseId || houseId <= 0) {
+      console.warn('無效的房源 ID，無法取得可預約時段：', houseId);
+      this.availableViewingSlots.set([]);
+      this.viewingSlotsLoadError.set('無法取得房源 ID');
+      return;
+    }
+
+    this.isViewingSlotsLoading.set(true);
+    this.viewingSlotsLoadError.set('');
+    this.availableViewingSlots.set([]);
+    this.selectedViewingSlotIds.set([]);
 
     this.viewingService.getAvailableSlotsByHouse(houseId).subscribe({
       next: (slots: any[]) => {
@@ -556,17 +561,31 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
               availableDate: slot.availableDate ?? slot.AvailableDate ?? null,
               startTime,
               endTime,
-              label: slot.label ?? slot.Label ?? `${startTime} - ${endTime}`
+              label: slot.label ?? slot.Label ?? `${startTime} - ${endTime}`,
+              isEnabled: slot.isEnabled ?? slot.IsEnabled ?? true
             };
           })
-          .filter(slot => Number.isFinite(slot.id));
+          .filter(slot =>
+            Number.isFinite(slot.id) &&
+            slot.startTime &&
+            slot.endTime
+          );
 
         this.availableViewingSlots.set(normalizedSlots);
+        this.isViewingSlotsLoading.set(false);
 
         console.log('整理後的可預約時段：', normalizedSlots);
+
+        if (normalizedSlots.length === 0) {
+          this.viewingSlotsLoadError.set('出租人尚未設定可預約看房時段');
+        }
       },
       error: (err) => {
         console.error('取得可預約時段失敗', err);
+
+        this.availableViewingSlots.set([]);
+        this.isViewingSlotsLoading.set(false);
+        this.viewingSlotsLoadError.set('取得可預約時段失敗，請稍後再試');
       }
     });
   }
@@ -577,7 +596,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
 
     if (!target) return;
 
-    if (target.label === '+ 更多偏好') {
+    if (target.label === '更多偏好') {
       tags[index] = {
         label: '',
         source: 'custom',
@@ -587,7 +606,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
       };
 
       tags.push({
-        label: '+ 更多偏好',
+        label: '更多偏好',
         source: 'custom',
         icon: 'add',
         checked: false,
@@ -625,11 +644,11 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
       isEditing: false
     };
 
-    const hasAddMore = tags.some(t => t.label === '+ 更多偏好');
+    const hasAddMore = tags.some(t => t.label === '更多偏好');
 
     if (!hasAddMore) {
       tags.push({
-        label: '+ 更多偏好',
+        label: '更多偏好',
         source: 'custom',
         icon: 'add',
         checked: false,

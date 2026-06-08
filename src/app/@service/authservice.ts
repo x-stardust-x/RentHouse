@@ -115,4 +115,13 @@ export class Authservice {
         })
       );
   }
+
+   changeEmail(email : string){
+    return this.http.get("https://localhost:7215/api/Auth/getalladmin");
+  }
+
+  changePwd(pwd : string){
+    return this.http.get("https://localhost:7215/api/Auth/getalladmin");
+  }
+
 }

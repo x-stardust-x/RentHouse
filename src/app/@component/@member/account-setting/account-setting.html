@@ -1,6 +1,6 @@
 <div class="page">
 
-  <!-- 返回 + 標題 -->
+  <!-- 標題 -->
   <div class="header">
     <h1>帳號與安全設定</h1>
     <p class="sub">管理您的個人資料與帳號安全層級</p>
@@ -18,7 +18,9 @@
         <div class="label">登入信箱</div>
         <div class="value">{{ data().email }}</div>
       </div>
-      <button class="col-2 btn">變更信箱</button>
+      <button class="col-2 btn" data-bs-toggle="modal" data-bs-target="#emailModal" (click)="openEmailModal()">
+        變更信箱
+      </button>
     </div>
 
     <div class="row">
@@ -26,7 +28,9 @@
         <div class="label">綁定手機</div>
         <div class="value">{{ data().phone }}</div>
       </div>
-      <button class="col-2 btn">變更號碼</button>
+      <button class="col-2 btn" data-bs-toggle="modal" data-bs-target="#phoneModal" (click)="openPhoneModal()">
+        變更號碼
+      </button>
     </div>
 
     <div class="row">
@@ -34,7 +38,7 @@
         <div class="label">密碼</div>
         <div class="value muted">上次修改：2 個月前</div>
       </div>
-      <button class="col-2 btn primary">修改密碼</button>
+      <button class="col-2 btn primary" data-bs-toggle="modal" data-bs-target="#PwdModal">修改密碼</button>
     </div>
   </section>
 
@@ -102,8 +106,103 @@
         <div class="label">註銷帳號</div>
         <div class="value muted">此操作無法復原</div>
       </div>
-      <button class="col-2 btn danger-btn">註銷帳號</button>
+      <button class="col-2 btn danger-btn" data-bs-toggle="modal" data-bs-target="#deleteModal">
+        註銷帳號
+      </button>
     </div>
   </section>
 
+</div>
+
+<div class="modal fade" id="emailModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">更改信箱</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <label>新信箱</label>
+        <input class="form-control" [(ngModel)]="tempEmail" />
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn secondary" data-bs-dismiss="modal">取消</button>
+        <button class="btn primary" (click)="saveEmail()">確認</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="phoneModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">更改手機</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <label>手機號碼</label>
+        <input class="form-control" [(ngModel)]="tempPhone" />
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn secondary" data-bs-dismiss="modal">取消</button>
+        <button class="btn primary" (click)="savePhone()">確認</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="PwdModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">更改密碼</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <label>新密碼</label>
+        <input class="form-control" [(ngModel)]="newPwd" />
+        <label>確定密碼</label>
+        <input class="form-control" [(ngModel)]="newPwd2" />
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn secondary" data-bs-dismiss="modal">取消</button>
+        <button class="btn primary" (click)="savePwd()">確認</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content border-danger">
+
+      <div class="modal-header">
+        <h5 class="modal-title text-danger">危險操作</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        確定要註銷帳號嗎？此操作無法復原。
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn warn" data-bs-dismiss="modal">取消</button>
+        <button class="btn danger-btn" (click)="confirmDelete()">確認刪除</button>
+      </div>
+
+    </div>
+  </div>
 </div>

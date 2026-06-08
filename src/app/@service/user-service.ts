@@ -52,4 +52,7 @@ export class UserService {
     return this.http.get(this.baseUrl + `account-setting/${userId}`);
   }
 
+  changePhone(phone : string){
+    return this.http.get<any>(this.baseUrl);
+  }
 }

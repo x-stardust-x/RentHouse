@@ -18,7 +18,6 @@ export class AccountSetting {
   userId = Number(this.authsev.getUserId());
   data: any = signal("");
   tempEmail = '';
-  tempPhone = '';
   newPwd = '';
   newPwd2 = '';
 
@@ -33,12 +32,20 @@ export class AccountSetting {
     this.tempEmail = this.data().email;
   }
 
-  openPhoneModal() {
-    this.tempPhone = this.data().phone;
-  }
+  // openPhoneModal() {
+  //   this.tempPhone = this.data().phone;
+  // }
 
   saveEmail() {
-    this.authsev.changeEmail(this.tempEmail).subscribe(() => {
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(this.tempEmail)) {
+      alert('請輸入正確的 Email 格式');
+      return;
+    }
+
+    this.usersev.changeEmail(this.userId,this.tempEmail).subscribe(() => {
       alert('信箱更新成功');
 
       this.data.update((u: any) => ({
@@ -47,42 +54,50 @@ export class AccountSetting {
       }));
 
       this.closeModal('emailModal');
+      this.authsev.logout();
     });
   }
 
-  savePhone() {
-    this.usersev.changePhone(this.tempPhone).subscribe(() => {
-      alert('手機更新成功');
+  // savePhone() {
+  //   this.usersev.changePhone(this.tempPhone).subscribe(() => {
+  //     alert('手機更新成功');
 
-      this.data.update((u: any) => ({
-        ...u,
-        phone: this.tempPhone
-      }));
+  //     this.data.update((u: any) => ({
+  //       ...u,
+  //       phone: this.tempPhone
+  //     }));
 
-      this.closeModal('phoneModal');
-    });
-  }
+  //     this.closeModal('phoneModal');
+  //   });
+  // }
 
   savePwd() {
-    this.authsev.changePwd(this.tempPhone).subscribe(() => {
-      alert('手機更新成功');
 
-      this.data.update((u: any) => ({
-        ...u,
-        phone: this.tempPhone
-      }));
+    const pwdRegex = /^(?=.*[A-Za-z]).{4,}$/;
 
+    if(this.newPwd != null && (this.newPwd != this.newPwd2) ){
+      alert("wrong");
+      return;
+    }
+    if(!pwdRegex.test(this.newPwd)){
+      alert("至少4碼且包含英文字母");
+      return;
+    }
+    this.usersev.changePwd(this.userId,this.newPwd).subscribe(() => {
+      alert('密碼更新成功');
+      this.newPwd = '';
+      this.newPwd2 = '';
       this.closeModal('phoneModal');
+      this.authsev.logout();
     });
   }
 
   confirmDelete() {
-    if(confirm("test")){
-      this.usersev.deleteUser(this.userId).subscribe(() => {
-        alert('帳號已刪除');
-        this.closeModal('deleteModal');
-      });
-    }
+    this.usersev.deleteUser(this.userId).subscribe(() => {
+      alert('帳號已刪除');
+      this.closeModal('deleteModal');
+      this.authsev.logout();
+    });
   }
   closeModal(id: string) {
     const modalEl = document.getElementById(id);

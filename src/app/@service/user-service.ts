@@ -52,7 +52,11 @@ export class UserService {
     return this.http.get(this.baseUrl + `account-setting/${userId}`);
   }
 
-  changePhone(phone : string){
-    return this.http.get<any>(this.baseUrl);
+  changeEmail(userId : number | null ,email: string) {
+    return this.http.put(this.baseUrl + `update-email/${userId}`,{email});
+  }
+
+  changePwd(userId : number | null , pwd: string) {
+    return this.http.put(this.baseUrl + `update-pwd/${userId}`,{pwd});
   }
 }

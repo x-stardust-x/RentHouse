@@ -593,6 +593,45 @@
   transform: translateY(-1px);
 }
 
+.application-meta-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.65rem;
+}
+
+.application-meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.application-meta-pill .material-symbols-outlined {
+  font-size: 1rem;
+}
+
+.application-meta-pill--info {
+  color: #8a4a24;
+  background: rgba(255, 112, 45, 0.1);
+  border: 1px solid rgba(255, 112, 45, 0.22);
+}
+
+.application-meta-pill--warning {
+  color: #9a4b18;
+  background: rgba(255, 188, 102, 0.16);
+  border: 1px solid rgba(255, 158, 64, 0.26);
+}
+
+.application-meta-note {
+  color: #8a817b;
+  font-size: 0.85rem;
+}
 
 
 /* =========================================================

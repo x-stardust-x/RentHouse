@@ -6,6 +6,7 @@ import { ViewingOrderResponse } from '../@interface/viewing-order-response';
 import { AvailableViewingSlot } from '../@interface/available-viewing-slot';
 import { LesseeProfileTag } from '../@interface/lessee-profile-tag';
 
+
 export interface UpsertViewingSlotRequest {
   // availableDate: string;
   startTime: string;
@@ -36,13 +37,21 @@ export interface LesseeViewingApplication {
   coverUrl: string;
   rentPrice: number;
 
+  lessorId: number;
+  lessorAccountId?: number | null;
+  lessorProfileId: number;
+
   lessorName: string;
+  lessorAvatar: string;
   lessorPhone: string;
   lessorLineId: string;
 
   viewingDate: string;
   viewingDateTime: string;
   preferredTimeSlots: string[];
+
+  expectedMoveInText: string;
+  lesseeProfileTags: string[];
 
   message: string;
   matchScore: number;
@@ -53,8 +62,24 @@ export interface LesseeViewingApplication {
     message: string;
     count?: number;
   };
+
+  houseId: number;
 }
 
+export interface ReselectViewingTimeRequest {
+  reservationId: number;
+  viewingSlotId?: number | null;
+  viewingTime: string;
+  expectedMoveIn?: string | null;
+  expectedMoveInText?: string | null;
+  preferredTimeSlots: string[];
+  lesseeProfileTags: {
+    label: string;
+    source: string;
+  }[];
+  message?: string;
+  matchScore?: number;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -179,4 +204,27 @@ export class HouseViewingService {
     );
   }
 
+  reselectViewingTime(data: ReselectViewingTimeRequest) {
+    const token = localStorage.getItem('token');
+
+    return this.http.put(`${this.apiUrl}/reselect-time`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
+
+  acceptReschedule(reservationId: number) {
+    const token = localStorage.getItem('token');
+
+    return this.http.put(
+      `${this.apiUrl}/accept-reschedule/${reservationId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+  }
 }

@@ -51,6 +51,29 @@
                 }
               </div>
             </div>
+            <div class="application-meta-box">
+              @if (item.applicationFlowType === 'reselect_time') {
+              <span class="application-meta-pill application-meta-pill--info">
+                <span class="material-symbols-outlined">event_repeat</span>
+                承租人重新選擇時段
+              </span>
+
+              <span class="application-meta-note">
+                已回到待審核，請重新確認可看房時間
+              </span>
+              }
+
+              @if (item.applicationFlowType === 'reapply' && (item.attemptNo ?? 1) > 1) {
+              <span class="application-meta-pill application-meta-pill--warning">
+                <span class="material-symbols-outlined">history</span>
+                第 {{ item.attemptNo }} 次申請
+              </span>
+
+              <span class="application-meta-note">
+                此承租人曾申請過此房源
+              </span>
+              }
+            </div>
           </div>
 
           <div class="contact-info-box">

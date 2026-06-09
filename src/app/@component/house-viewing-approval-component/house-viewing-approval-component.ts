@@ -28,6 +28,9 @@ export interface Reservation {
     message: string;
     count?: number;
   };
+  applicationFlowType?: 'new' | 'reapply' | 'reselect_time';
+  attemptNo?: number;
+  maxAttemptCount?: number;
 }
 
 @Component({
@@ -83,8 +86,11 @@ export class HouseViewingApprovalComponent implements OnInit {
   // 生命週期與 API 讀取
   // ===================================================================
   ngOnInit(): void {
-    // 這裡預留給取得資料庫真實訂單的邏輯
     this.fetchReservations();
+
+    window.setInterval(() => {
+      this.fetchReservations();
+    }, 30000);
   }
 
   private fetchReservations() {

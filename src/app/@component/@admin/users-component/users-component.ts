@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { UserService } from '../../../@service/user-service';
 import { DatePipe } from '@angular/common';
 import { Authservice } from '../../../@service/authservice';
@@ -12,6 +12,8 @@ import { switchMap } from 'rxjs';
   styleUrl: './users-component.scss',
 })
 export class UsersComponent {
+  currentPage = signal(1);
+  pageSize = signal(5); // 每頁幾筆
   public userservice = inject(UserService);
   public authsev = inject(Authservice);
   private logsev = inject(LogService);
@@ -19,6 +21,30 @@ export class UsersComponent {
   constructor() {
     this.userservice.loadAllUsers();
     console.log(this.userservice.users());
+  }
+
+  pagedUsers = computed(() => {
+    const allUsers = this.userservice.users();
+
+    const filterUsers = allUsers.filter(x => x.isDelete === false);
+
+    const start = (this.currentPage() - 1) * this.pageSize();
+    const end = start + this.pageSize();
+
+    return filterUsers.slice(start, end);
+  });
+
+  totalPages = computed(() => {
+    return Math.ceil(this.userservice.users().length / this.pageSize());
+  });
+
+  pages = computed(() => {
+    return Array.from({ length: this.totalPages() }, (_, i) => i + 1);
+  });
+
+  changePage(page: number) {
+    if (page < 1 || page > this.totalPages()) return;
+    this.currentPage.set(page);
   }
 
   changeStatus(userId: number, status: boolean) {
@@ -67,6 +93,10 @@ export class UsersComponent {
         next: () => {
           alert("使用者已刪除");
           this.userservice.loadAllUsers();
+          this.currentPage.set(1);
+          if (this.currentPage() > this.totalPages()) {
+            this.currentPage.set(this.totalPages());
+          }
         },
         error: (err) => {
           console.error(err);

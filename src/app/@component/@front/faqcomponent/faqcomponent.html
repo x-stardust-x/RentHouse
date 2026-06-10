@@ -1,0 +1,104 @@
+<div class="faq-container">
+
+  <!-- 標題 -->
+  <div class="faq-header">
+
+    <h1>常見問答</h1>
+
+    <div class="category-tabs">
+
+      <button
+        class="tab-btn"
+        [class.active]="selectedCategory() === 0"
+        (click)="changeCategory(0)"
+      >
+        全部
+      </button>
+
+      @for(category of categories(); track category.id){
+
+      <button
+        class="tab-btn"
+        [class.active]="selectedCategory() === category.id"
+        (click)="changeCategory(category.id)"
+      >
+        {{ category.name }}
+
+        <span class="count">
+          {{ categoryCountMap().get(category.id) ?? 0 }}
+        </span>
+      </button>
+
+      }
+
+    </div>
+
+  </div>
+
+  <!-- FAQ -->
+
+  <div
+    class="accordion faq-accordion"
+    id="faqAccordion"
+  >
+
+    @for(item of faqList(); track item.id){
+
+    <div class="accordion-item">
+
+      <h2 class="accordion-header">
+
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          [attr.data-bs-target]="'#faq'+item.id"
+        >
+          {{ item.question }}
+        </button>
+
+      </h2>
+
+      <div
+        class="accordion-collapse collapse"
+        [id]="'faq'+item.id"
+        data-bs-parent="#faqAccordion"
+      >
+
+        <div class="accordion-body">
+          {{ item.answer }}
+        </div>
+
+      </div>
+
+    </div>
+
+    }
+
+  </div>
+
+  <!-- 聯絡客服 -->
+
+  <div class="support-card">
+
+    <div class="support-icon">
+      <i class="bi bi-headset"></i>
+    </div>
+
+    <h3>需要更多協助？</h3>
+
+    <p>
+      如果您在常見問答中找不到需要的解答，
+      歡迎直接與我們的客服團隊聯繫。
+    </p>
+
+    <a
+      routerLink="/contact"
+      class="support-btn"
+    >
+      聯絡我們
+    </a>
+
+  </div>
+
+</div>

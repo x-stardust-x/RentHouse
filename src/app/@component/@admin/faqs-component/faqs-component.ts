@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal, computed } from '@angular/core';
 import { FAQService } from '../../../@service/faqservice';
 import { FormsModule } from '@angular/forms';
 import { FAQ_I, FAQ_IDto, FAQ_C, FAQ_CDto } from '../../../@interface/faq';
@@ -24,6 +24,9 @@ export class FAQsComponent {
   categoryId = signal(0);
   showCategoryActions = signal(false);
 
+  currentPage = signal(1);
+  pageSize = signal(3);
+
   // FAQ 表單
   form: FAQ_IDto = {
     categoryId: 0,
@@ -39,6 +42,30 @@ export class FAQsComponent {
     sortOrder: 0,
     isActive: true
   };
+
+  filteredFAQ = this.faqService.filteredFAQItems;
+
+  pagedFAQ = computed(() => {
+    const data = this.faqService.filteredFAQItems();
+
+    const start = (this.currentPage() - 1) * this.pageSize();
+    const end = start + this.pageSize();
+
+    return data.slice(start, end);
+  });
+
+  totalPages = computed(() => {
+    return Math.ceil(this.filteredFAQ().length / this.pageSize());
+  });
+
+  pages = computed(() => {
+    return Array.from({ length: this.totalPages() }, (_, i) => i + 1);
+  });
+
+  changePage(page: number) {
+    if (page < 1 || page > this.totalPages()) return;
+    this.currentPage.set(page);
+  }
 
   openAddModal() {
 
@@ -243,6 +270,8 @@ export class FAQsComponent {
 
           this.closeModal();
 
+          this.currentPage.set(1);
+
         },
 
         error: (err: any) => {
@@ -286,6 +315,7 @@ export class FAQsComponent {
 
   changeCategory(categoryId: number) {
     this.faqService.selectedCategoryId.set(categoryId);
+    this.currentPage.set(1);
   }
 
   deleteFAQ(id: number) {
@@ -320,6 +350,7 @@ export class FAQsComponent {
 
           // 重新整理 FAQ 列表
           this.faqService.getAllFAQItems();
+          this.currentPage.set(1);
 
         },
 

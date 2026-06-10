@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { AdminService } from '../../../@service/admin-service';
 import { FormsModule } from '@angular/forms';
 import { AdminDto } from '../../../@interface/admin';
@@ -18,6 +18,7 @@ export class AdminsComponent {
   private logsev = inject(LogService);
 
   now_adminid: number = this.authsev.getAdminId() ?? 0;
+  isSuper = signal(this.authsev.getRole() === 'super');
   constructor() {
     this.loadAdmin();
   }
@@ -117,6 +118,32 @@ export class AdminsComponent {
         error: (err) => {
           console.error(err);
           alert("刪除失敗");
+        }
+      });
+    }
+  }
+  SuperChange(adminId:number){
+    const adminName = this.adminservice.admins().find(a => a.id === adminId)?.username ?? adminId;
+    if (confirm("確定要變更管理員權限嗎？")) {
+      const actionText = `變更管理員權限: ${adminName}`;
+      this.adminservice.SuperOc(adminId).pipe(
+        switchMap(() => this.authsev.getClientIPAddress()),
+        switchMap(ip => {
+          const logData = {
+            userId: this.authsev.getAdminId() ?? 0,
+            action: actionText,
+            ipAddress: ip,
+          };
+          return this.logsev.postLog(logData);
+        })
+      ).subscribe({
+        next: (res) => {
+          this.loadAdmin();
+          alert("管理員權限已變更");
+        },
+        error: (err) => {
+          console.error(err);
+          alert("變更失敗");
         }
       });
     }

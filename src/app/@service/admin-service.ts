@@ -21,10 +21,13 @@ export class AdminService {
   createAdmin(dto : AdminDto){
     return this.http.post<AdminDto>(this.baseUrl, dto);
   }
+  SuperOc(adminId : number){
+    return this.http.put(this.baseUrl + `SuperOc/${adminId}`, null);
+  }
   resetpwd(adminId : number){
     return this.http.put(this.baseUrl + `reset-password/${adminId}`, null);
   }
   deleteAdmin(adminId : number){
-    return this.http.delete(this.baseUrl + `${adminId}`);
+    return this.http.put(this.baseUrl + `delete/${adminId}`, null);
   }
 }

@@ -4,6 +4,8 @@ export interface Admin {
   pwd: string;
   email: string;
   phone: string;
+  isSuper : boolean;
+  isDelete : boolean;
 }
 
 export interface AdminDto {

@@ -1,0 +1,89 @@
+<section class="news-detail">
+
+  <div class="container">
+
+    @if(news(); as item){
+
+    <a routerLink="/news" class="back-btn">
+
+      ← 返回最新消息
+
+    </a>
+
+    <div class="header">
+
+      <span class="tag">
+
+        {{ item.category }}
+
+      </span>
+
+      <h1>
+
+        {{ item.title }}
+
+      </h1>
+
+      <div class="meta">
+
+        發布日期：
+        {{ item.createdAt | date:'yyyy/MM/dd' }}
+
+      </div>
+
+    </div>
+
+    <div class="cover">
+
+      <img [src]="item.cover" [alt]="item.title">
+    </div>
+
+    <div class="content" [innerHTML]="item.content">
+
+    </div>
+
+    }
+
+    @if(prevNews() || nextNews()){
+
+    <div class="prev-next">
+
+      @if(prevNews(); as prev){
+
+      <a class="nav-box left" (click)="goDetail(prev.id)">
+
+        <span>上一篇</span>
+        <div>{{ prev.title }}</div>
+
+      </a>
+
+      } @else {
+
+      <div class="nav-box empty"></div>
+
+      }
+
+      @if(nextNews(); as next){
+
+      <a class="nav-box right" (click)="goDetail(next.id)">
+
+        <span>下一篇</span>
+        <div>{{ next.title }}</div>
+
+      </a>
+
+      } @else {
+
+      <div class="nav-box empty"></div>
+
+      }
+
+    </div>
+
+    }
+
+  </div>
+
+
+
+</section>

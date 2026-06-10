@@ -9,6 +9,7 @@
       <p>後台管理</p>
       <p>管理員名字:{{adminData()?.username}}</p>
       <p>管理員ID:{{adminData()?.id}}</p>
+      <p>管理員角色:{{adminData()?.isSuper === true ? '超級管理員' : '一般管理員'}}</p>
     </div>
   </div>
 

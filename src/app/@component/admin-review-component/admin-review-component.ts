@@ -139,7 +139,7 @@ export class AdminReviewComponent implements OnInit {
     console.log('抓到的角色是:', role);
 
     // 比對角色並設定權限
-    this.isAdmin.set(role?.toLowerCase() === 'admin');
+    this.isAdmin.set(role?.toLowerCase() === 'admin' || role?.toLowerCase() === 'super');
 
   } catch (error) {
     console.error('Token 解碼失敗', error);

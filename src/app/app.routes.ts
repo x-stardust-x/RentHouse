@@ -36,6 +36,18 @@ export const routes: Routes = [
         path: 'contact',
         component: ContactComponent
       },
+      {
+        path: 'faq',
+        loadComponent: () => import('./@component/@front/faqcomponent/faqcomponent').then(c => c.FAQComponent),
+      },
+      {
+        path: 'news',
+        loadComponent: () => import('./@component/@front/front-news-component/front-news-component').then(c => c.FrontNewsComponent),
+      },
+      {
+        path: 'news/:id',
+        loadComponent: () => import('./@component/@front/news-detail-component/news-detail-component').then(c => c.NewsDetailComponent),
+      },
 
       // --- 租賃媒合相關 ---
       {
@@ -82,7 +94,7 @@ export const routes: Routes = [
         path: 'user-center',
         loadComponent: () => import('./@layouts/user-center-layout/user-center-layout').then(c => c.UserCenterLayout),
         canActivate: [authGuard],
-        data: { roles: ['young', 'old'] },
+        data: { roles: ['user'] },
         children: [
           // { path: '', redirectTo: 'rent', pathMatch: 'full' },
           // 發布新房源
@@ -150,7 +162,7 @@ export const routes: Routes = [
     path: 'admin',
     component: AdminLayout,
     canActivate: [authGuard],
-    data: { roles: ['admin'] },
+    data: { roles: ['admin', 'super'] },
     children: [
       { path: '', redirectTo: 'admin-review', pathMatch: 'full' },
       {

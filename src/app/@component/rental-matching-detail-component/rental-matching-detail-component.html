@@ -287,7 +287,10 @@
         <h2 class="rental-detail-section-title">交收位置</h2>
         }
 
-        <p class="rental-detail-map-address">{{ detailData()?.address }}</p>
+        <p class="rental-detail-map-address">
+          {{ detailData()?.address || detailData()?.Address || '尚未提供地址' }}
+        </p>
+        <!-- <p class="rental-detail-map-address">{{ detailData()?.address }}</p> -->
 
 
         <iframe class="rental-detail-map-frame" [src]="mapUrl()" width="600" height="450" allowfullscreen=""
@@ -568,7 +571,7 @@
         <img class="contact-provider-summary__avatar" src="images/mr_chen.jpg" alt="提供者">
         <div class="contact-provider-summary__info">
           <p class="contact-provider-summary__name">
-            聯絡對象：測試對象 (預設)
+            {{ detailData()?.realName }}
             <span class="provider-role-badge">
               @if (isRoom()) { 出租人 }
               @else if (isSkill()) { 技能提供者 }
@@ -576,12 +579,50 @@
             </span>
           </p>
           <p class="contact-provider-summary__item-name">
-            @if (isRoom()) { 申請項目：精緻單人雅房 <span class="badge-divider">|</span> 租金：<strong
-              class="highlight-text">$6,000/月</strong> }
-            @else if (isSkill()) { 目標項目：全端開發入門諮詢 <span class="badge-divider">|</span> 費用：<strong
-              class="highlight-text">$500/hr</strong> }
-            @else if (isTool()) { 欲借用項目：專業修繕工具組 <span class="badge-divider">|</span> 租金：<strong
-              class="highlight-text">$150/天</strong> }
+
+            @if (isRoom()) {
+            申請項目：{{ detailData()?.name || detailData()?.Name || '未命名房源' }}
+
+            <span class="badge-divider">|</span>
+
+            租金：
+            <strong class="highlight-text">
+              NT$ {{ (detailData()?.rentPrice ?? detailData()?.RentPrice ?? 0) | number:'1.0-0' }}/月
+            </strong>
+            }
+
+            @else if (isSkill()) {
+            目標項目：{{ detailData()?.name || detailData()?.Name || '未命名技能' }}
+
+            <span class="badge-divider">|</span>
+
+            費用：
+            <strong class="highlight-text">
+              NT$ {{ (detailData()?.price ?? detailData()?.Price ?? 0) | number:'1.0-0' }}/{{ detailData()?.priceUnit ||
+              detailData()?.PriceUnit || '次' }}
+            </strong>
+            }
+
+            @else if (isTool()) {
+            欲借用項目：{{ detailData()?.name || detailData()?.Name || '未命名工具' }}
+
+            <span class="badge-divider">|</span>
+
+            租金：
+            <strong class="highlight-text">
+              NT$ {{ (detailData()?.price ?? detailData()?.Price ?? 0) | number:'1.0-0' }}/{{ detailData()?.priceUnit ||
+              detailData()?.PriceUnit || '天' }}
+            </strong>
+
+            @if ((detailData()?.deposit ?? detailData()?.Deposit) > 0) {
+            <span class="badge-divider">|</span>
+            押金：
+            <strong class="highlight-text">
+              NT$ {{ (detailData()?.deposit ?? detailData()?.Deposit) | number:'1.0-0' }}
+            </strong>
+            }
+            }
+
           </p>
         </div>
       </div>
@@ -654,29 +695,39 @@
       <div class="modal-dynamic-section form-spacing-large">
         <div class="contact-form-group">
           <label class="section-title-label">
-            <span class="material-symbols-outlined icon-orange">calendar_today</span> 期望看房日期與時段
+            <span class="material-symbols-outlined icon-orange">calendar_today</span>
+            選擇看房日期與時段
           </label>
-          <div class="form-row-2col">
-            <div class="form-col">
-              <span class="sub-label">選擇日期</span>
-              <div class="date-input-wrapper">
-                <span class="material-symbols-outlined date-icon">event</span>
-                <input type="date" class="contact-form-input date-no-bg" [ngModel]="roomDate()"
-                  (ngModelChange)="roomDate.set($event)">
-              </div>
-            </div>
-            <div class="form-col">
-              <span class="sub-label">偏好時段 (可複選)</span>
-              <div class="time-slot-group">
-                @for (slot of roomTimeSlots(); track slot.label) {
-                <label class="time-slot-pill" [class.is-active]="slot.checked">
-                  <input type="checkbox" [(ngModel)]="slot.checked" class="modal-hidden-input">
-                  {{ slot.label }}
-                </label>
-                }
-              </div>
+
+          <div class="form-col">
+            <span class="sub-label">選擇日期</span>
+            <div class="date-input-wrapper">
+              <span class="material-symbols-outlined date-icon">event</span>
+              <input type="date" class="contact-form-input date-no-bg" [ngModel]="roomDate()"
+                (ngModelChange)="roomDate.set($event)">
             </div>
           </div>
+
+          @if (isViewingSlotsLoading()) {
+          <p class="textarea-hint">
+            正在載入出租人開放時段...
+          </p>
+          } @else if (availableViewingSlots().length > 0) {
+          <span class="sub-label">選擇出租人開放時段（可複選）</span>
+
+          <div class="time-slot-group">
+            @for (slot of availableViewingSlots(); track slot.id) {
+            <button type="button" class="time-slot-pill" [class.is-active]="isViewingSlotSelected(slot.id)"
+              (click)="toggleViewingSlot(slot.id)">
+              {{ slot.label }}
+            </button>
+            }
+          </div>
+          } @else {
+          <p class="textarea-hint">
+            {{ viewingSlotsLoadError() || '出租人尚未設定可預約看房時段，暫時無法送出預約。' }}
+          </p>
+          }
         </div>
 
         <hr class="modal-divider">
@@ -700,16 +751,32 @@
 
         <div class="contact-form-group">
           <label class="section-title-label">
-            <span class="material-symbols-outlined icon-orange">person_search</span> 房客微檔案
-            <span class="label-hint">(點擊標籤快速分享您的狀態)</span>
+            <span class="material-symbols-outlined icon-orange">person_search</span>
+            承租人微檔案
+            <span class="label-hint">(可選擇想分享給出租人的狀態)</span>
           </label>
+
           <div class="tenant-profile-tags">
-            @for (profile of tenantProfiles(); track profile.label) {
-            <label class="profile-tag" [class.is-active]="profile.checked">
-              <input type="checkbox" [(ngModel)]="profile.checked" class="modal-hidden-input">
-              <span class="material-symbols-outlined tag-icon">{{ profile.icon }}</span>
+            @for (profile of lesseeProfileTags(); track $index; let i = $index) {
+
+            @if (profile.isEditing) {
+            <input type="text" class="profile-tag profile-tag-input" placeholder="輸入更多偏好" [ngModel]="profile.label"
+              (ngModelChange)="profile.label = $event" (blur)="finishCustomLesseeTag(i)"
+              (keydown.enter)="finishCustomLesseeTag(i)">
+            } @else {
+            <label class="profile-tag" [class.is-active]="profile.checked" (click)="handleLesseeProfileTagClick(i)">
+
+              <input type="checkbox" [ngModel]="profile.checked" class="modal-hidden-input"
+                (click)="$event.preventDefault()">
+
+              <span class="material-symbols-outlined tag-icon">
+                {{ profile.icon || 'sell' }}
+              </span>
+
               {{ profile.label }}
             </label>
+            }
+
             }
           </div>
         </div>
@@ -728,7 +795,7 @@
       </div>
       }
 
-      <!-- ================= 工具專屬內容 ================= -->
+      <!-- ================= 工具專屬內容偏好時段 ================= -->
       @if (isTool()) {
       <div class="modal-dynamic-section form-spacing-large">
         <div class="contact-form-group">

@@ -81,7 +81,7 @@ export class ProductManagementComponent implements OnInit {
       cancelButtonColor: '#3085d6',
       confirmButtonText: '是的，刪除！',
       cancelButtonText: '取消'
-    }).then((result) => {
+    }).then((result: any) => {
       if (result.isConfirmed) {
         // 如果使用者按下了「是的，刪除！」才呼叫 API
         this.houseService.deleteProduct(id).subscribe({

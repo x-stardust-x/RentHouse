@@ -17,6 +17,7 @@ type AppFontSize = 'small' | 'medium' | 'large';
 export class PublicLayout implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('layoutHeader') layoutHeader!: ElementRef<HTMLElement>;
 
+
   private lastScrollY = 0;
   private ticking = false;
   private removeScrollListener?: () => void;

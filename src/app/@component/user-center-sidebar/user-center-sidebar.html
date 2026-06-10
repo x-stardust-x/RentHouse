@@ -23,7 +23,7 @@
     @if (currentRole() === 'lessor') {
 
     <li>
-      <a class="user-sidebar__link">
+      <a routerLink="/user-center/dashboard" class="user-sidebar__link" routerLinkActive="is-active">
         <span class="material-symbols-outlined">dashboard</span>
         <span>營運主控台</span>
       </a>
@@ -46,9 +46,9 @@
     </li>
     <li>
       <a routerLink="/user-center/houses" class="user-sidebar__link" routerLinkActive="is-active">
-  <span class="material-symbols-outlined">home_work</span>
-  <span>房源管理</span>
-</a>
+        <span class="material-symbols-outlined">home_work</span>
+        <span>房源管理</span>
+      </a>
     </li>
     <li>
       <a routerLink="/user-center/house-viewing-approval" class="user-sidebar__link" routerLinkActive="is-active">
@@ -61,16 +61,16 @@
     <li class="user-sidebar__section-title">工具 / 技能共享</li>
     <li>
       <a routerLink="/user-center/product" class="user-sidebar__link" routerLinkActive="is-active">
-  <span class="material-symbols-outlined">add_box</span>
-  <span>發布新工具 / 技能</span>
-</a>
+        <span class="material-symbols-outlined">add_box</span>
+        <span>發布新工具 / 技能</span>
+      </a>
     </li>
     <li>
-  <a routerLink="/user-center/products-list" class="user-sidebar__link" routerLinkActive="is-active">
-    <span class="material-symbols-outlined">build</span>
-    <span>共享工具 / 技能管理</span>
-  </a>
-</li>
+      <a routerLink="/user-center/products-list" class="user-sidebar__link" routerLinkActive="is-active">
+        <span class="material-symbols-outlined">build</span>
+        <span>共享工具 / 技能管理</span>
+      </a>
+    </li>
     <li>
       <a routerLink="/user-center/product-booking-approval-component" class="user-sidebar__link">
         <span class="material-symbols-outlined">assignment_turned_in</span>
@@ -106,7 +106,7 @@
 
     <li class="user-sidebar__section-title">看房申請</li>
     <li>
-      <a class="user-sidebar__link">
+      <a routerLink="/user-center/house-viewing-applications" class="user-sidebar__link" routerLinkActive="is-active">
         <span class="material-symbols-outlined">pending_actions</span>
         <span>看房申請追蹤</span>
       </a>
@@ -136,7 +136,7 @@
     <li>
       <a class="user-sidebar__link">
         <span class="material-symbols-outlined">schedule</span>
-        <span>工具與技能預約紀錄</span>
+        <span>工具借用 / 技能預約紀錄</span>
       </a>
     </li>
     <li>

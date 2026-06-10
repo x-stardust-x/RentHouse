@@ -7,6 +7,7 @@ export interface UserProfile {
   avatar?: string;
 
   phone?: string;
+  lineId?: string;
 
   address?: string;
 

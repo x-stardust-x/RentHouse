@@ -2,12 +2,14 @@ import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HouseViewingService } from '../../@service/house-viewing-service';
+import { FormsModule } from '@angular/forms';
 
 export interface Reservation {
   id: string;
   orderNumber: string;
-  status: 'pending' | 'confirmed' | 'rejected';
+  status: 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'matched' | 'closed';
   roomName: string;
+  roomAddress?: string;
   applicant: {
     name: string;
     avatar: string;
@@ -16,19 +18,49 @@ export interface Reservation {
     phone: string;
     lineId: string;
   };
+  viewingDate: string;
   viewingDateTime: string;
+  preferredTimeSlots: string[];
   message: string;
   matchScore: number;
+  rescheduleInfo?: {
+    proposedViewingDateTime: string;
+    message: string;
+    count?: number;
+  };
+  applicationFlowType?: 'new' | 'reapply' | 'reselect_time';
+  attemptNo?: number;
+  maxAttemptCount?: number;
+
+  matchedAt?: string | null;
+  matchNote?: string;
+  closedReason?: string;
 }
 
 @Component({
   selector: 'app-house-viewing-approval-component',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, CommonModule],
+  imports: [RouterLink, RouterLinkActive, CommonModule, FormsModule],
   templateUrl: './house-viewing-approval-component.html',
   styleUrl: './house-viewing-approval-component.scss',
 })
 export class HouseViewingApprovalComponent implements OnInit {
+
+  isRescheduleModalOpen = signal(false);
+  selectedReservation = signal<Reservation | null>(null);
+
+  rescheduleDate = signal('');
+  rescheduleStartTime = signal('');
+  rescheduleEndTime = signal('');
+  rescheduleMessage = signal('');
+
+  isConfirmMatchModalOpen = signal(false);
+  selectedMatchReservation = signal<Reservation | null>(null);
+
+  markHouseAsMatched = signal(true);
+  closeOtherReservations = signal(true);
+  matchNote = signal('');
+  isConfirmingMatch = signal(false);
 
   // ===================================================================
   // 注入 Services
@@ -39,49 +71,11 @@ export class HouseViewingApprovalComponent implements OnInit {
   // ===================================================================
   // 狀態管理 (Signals)
   // ===================================================================
-  activeTab = signal<'pending' | 'confirmed' | 'rejected'>('pending');
+  activeTab = signal<'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'matched' | 'closed'>('pending');
 
   // 模擬後端回傳的預約資料 (未來這裡會由 ngOnInit 呼叫 API 覆寫)
 
   reservations = signal<Reservation[]>([]);
-
-
-  // reservations = signal<Reservation[]>([
-  //   {
-  //     id: '1',
-  //     orderNumber: 'B-20261024-001',
-  //     status: 'pending',
-  //     roomName: '陽光雅房 A室 (高雄軟體園區附近)', // 稍微調整了一下地點作為範例
-  //     applicant: {
-  //       name: '林依晨',
-  //       avatar: 'images/mr_chen.jpg',
-  //       profiles: ['單人', '無寵', '不菸'],
-  //       moveInDate: '2026/11/01',
-  //       phone: '0912***678',
-  //       lineId: 'yichen***'
-  //     },
-  //     viewingDateTime: '2026/10/24 (六) 14:00 - 14:30',
-  //     message: '您好！作息正常不菸不酒，平常喜歡安靜看書或煮點簡單的料理。非常喜歡您提供的共居空間氛圍，希望能有機會現場看看環境！',
-  //     matchScore: 95
-  //   },
-  //   {
-  //     id: '2',
-  //     orderNumber: 'B-20261025-002',
-  //     status: 'pending',
-  //     roomName: '獨立套房 B室 (高雄軟體園區附近)',
-  //     applicant: {
-  //       name: '張宇軒',
-  //       avatar: 'images/mr_chen.jpg',
-  //       profiles: ['單人', '無寵', '不菸'],
-  //       moveInDate: '2026/11/15',
-  //       phone: '0988***321',
-  //       lineId: 'yuxuan***'
-  //     },
-  //     viewingDateTime: '2026/10/25 (日) 10:00 - 10:30',
-  //     message: '目前在科技業上班，生活規律，週末偶爾會去寫生或騎車。個性隨和好相處，會主動維持公共區域整潔。希望能找個舒適安靜的地方長租。',
-  //     matchScore: 78
-  //   }
-  // ]);
 
   // ===================================================================
   // 動態計算屬性 (Computed)
@@ -94,46 +88,183 @@ export class HouseViewingApprovalComponent implements OnInit {
 
   // 動態計算各狀態的數量，取代原本寫死的 count
   tabs = computed(() => [
-    { id: 'pending', label: '待審核', count: this.reservations().filter(r => r.status === 'pending').length },
-    { id: 'confirmed', label: '已確認', count: this.reservations().filter(r => r.status === 'confirmed').length },
-    { id: 'rejected', label: '已婉拒', count: this.reservations().filter(r => r.status === 'rejected').length }
+    {
+      id: 'pending' as const,
+      label: '待審核',
+      count: this.reservations().filter(r => r.status === 'pending').length
+    },
+    {
+      id: 'confirmed' as const,
+      label: '已確認',
+      count: this.reservations().filter(r => r.status === 'confirmed').length
+    },
+    {
+      id: 'matched' as const,
+      label: '媒合成功',
+      count: this.reservations().filter(r => r.status === 'matched').length
+    },
+    {
+      id: 'rejected' as const,
+      label: '已婉拒',
+      count: this.reservations().filter(r => r.status === 'rejected').length
+    },
+    {
+      id: 'rescheduled' as const,
+      label: '待回覆改期',
+      count: this.reservations().filter(r => r.status === 'rescheduled').length
+    },
+    {
+      id: 'closed' as const,
+      label: '已關閉',
+      count: this.reservations().filter(r => r.status === 'closed').length
+    }
   ] as const);
 
   // ===================================================================
   // 生命週期與 API 讀取
   // ===================================================================
   ngOnInit(): void {
-    // 這裡預留給取得資料庫真實訂單的邏輯
     this.fetchReservations();
+
+    window.setInterval(() => {
+      this.fetchReservations();
+    }, 30000);
   }
 
   private fetchReservations() {
-    // 測試階段：請改成 House_Viewing_Order 最新資料那筆的 LessorId
-    const lessorUserId = 4;
-
-    this.viewingService.getReservationsByLessor(lessorUserId).subscribe({
-
+    this.viewingService.getMyApprovals().subscribe({
       next: (data) => {
         console.log('看房預約審核 API 回傳：', data);
+        console.table(data);
         this.reservations.set(data as unknown as Reservation[]);
       },
-
-      // next: (data) => {
-      //   console.log('看房預約審核 API 回傳：', data);
-      //   this.reservations.set(data);
-      // },
       error: (err) => {
         console.error('無法取得預約資料：', err);
-
-        const backendMessage =
-          err.error?.details ||
-          err.error?.message ||
-          err.message ||
-          '未知錯誤';
-
-        alert(`無法取得看房預約審核資料：${backendMessage}`);
       }
     });
+  }
+
+  private buildGoogleCalendarDateRange(item: Reservation): string | null {
+    const startDate = this.getConfirmedViewingStartDate(item);
+
+    if (!startDate) {
+      return null;
+    }
+
+    const endDate = this.getConfirmedViewingEndDate(item, startDate);
+
+    return `${this.formatGoogleCalendarDate(startDate)}/${this.formatGoogleCalendarDate(endDate)}`;
+  }
+
+  private getConfirmedViewingStartDate(item: Reservation): Date | null {
+    const fromViewingDateTime = this.parseTaiwanDateTime(item.viewingDateTime);
+
+    if (fromViewingDateTime) {
+      return fromViewingDateTime;
+    }
+
+    if (item.viewingDate && item.preferredTimeSlots?.length > 0) {
+      const firstSlot = item.preferredTimeSlots[0];
+      const startTime = this.extractStartTime(firstSlot);
+
+      if (startTime) {
+        return this.parseTaiwanDateTime(`${item.viewingDate} ${startTime}`);
+      }
+    }
+
+    return null;
+  }
+
+  private getConfirmedViewingEndDate(item: Reservation, startDate: Date): Date {
+    if (item.viewingDate && item.preferredTimeSlots?.length > 0) {
+      const firstSlot = item.preferredTimeSlots[0];
+      const endTime = this.extractEndTime(firstSlot);
+
+      if (endTime) {
+        const endDate = this.parseTaiwanDateTime(`${item.viewingDate} ${endTime}`);
+
+        if (endDate && endDate.getTime() > startDate.getTime()) {
+          return endDate;
+        }
+      }
+    }
+
+    return new Date(startDate.getTime() + 60 * 60 * 1000);
+  }
+
+  private parseTaiwanDateTime(value?: string | null): Date | null {
+    if (!value || value.includes('尚未')) {
+      return null;
+    }
+
+    const normalized = value
+      .trim()
+      .replace(/\//g, '-')
+      .replace('T', ' ');
+
+    const match = normalized.match(
+      /^(\d{4})-(\d{1,2})-(\d{1,2})\s+(\d{1,2}):(\d{2})/
+    );
+
+    if (!match) {
+      return null;
+    }
+
+    const [, year, month, day, hour, minute] = match;
+
+    return new Date(
+      Number(year),
+      Number(month) - 1,
+      Number(day),
+      Number(hour),
+      Number(minute),
+      0
+    );
+  }
+
+  private extractStartTime(slotText: string): string | null {
+    const match = slotText.match(/(\d{1,2}:\d{2})/);
+    return match ? match[1] : null;
+  }
+
+  private extractEndTime(slotText: string): string | null {
+    const matches = slotText.match(/\d{1,2}:\d{2}/g);
+    return matches && matches.length >= 2 ? matches[1] : null;
+  }
+
+  private formatGoogleCalendarDate(date: Date): string {
+    const yyyy = date.getFullYear().toString();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const hh = String(date.getHours()).padStart(2, '0');
+    const min = String(date.getMinutes()).padStart(2, '0');
+    const ss = String(date.getSeconds()).padStart(2, '0');
+
+    return `${yyyy}${mm}${dd}T${hh}${min}${ss}`;
+  }
+
+  private copyText(text: string): void {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).catch(() => {
+        this.fallbackCopyText(text);
+      });
+
+      return;
+    }
+
+    this.fallbackCopyText(text);
+  }
+
+  private fallbackCopyText(text: string): void {
+    const input = document.createElement('input');
+    input.value = text;
+    input.style.position = 'fixed';
+    input.style.opacity = '0';
+
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand('copy');
+    document.body.removeChild(input);
   }
 
   // private fetchReservations() {
@@ -149,38 +280,390 @@ export class HouseViewingApprovalComponent implements OnInit {
   // ===================================================================
 
   // 切換頁籤
-  selectTab(tabId: 'pending' | 'confirmed' | 'rejected') {
+  selectTab(tabId: 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'matched' | 'closed') {
     this.activeTab.set(tabId);
   }
 
   // 動作：婉拒
-  decline(id: string) {
-    // TODO: 這裡放入呼叫後端更新狀態的 API
-    this.updateReservationStatus(id, 'rejected');
-    alert(`已婉拒預約單號: ${id}`);
+  decline(item: Reservation) {
+    this.viewingService.updateReservationStatus({
+      reservationId: Number(item.id),
+      status: 'rejected'
+    }).subscribe({
+      next: () => {
+        this.updateReservationStatus(item.id, 'rejected');
+        alert(`已婉拒預約單號: ${item.orderNumber}`);
+      },
+      error: (err) => {
+        console.error('婉拒預約失敗：', err);
+
+        const backendMessage =
+          err.error?.details ||
+          err.error?.message ||
+          err.message ||
+          '未知錯誤';
+
+        alert(`婉拒預約失敗：${backendMessage}`);
+      }
+    });
   }
 
   // 動作：提議改期
-  proposeReschedule(id: string) {
-    // 實務上這裡可能會打開一個 Modal 讓房東選擇新時間
-    alert(`提議改期預約單號: ${id}`);
+  proposeReschedule(item: Reservation) {
+    this.selectedReservation.set(item);
+
+    this.rescheduleDate.set('');
+    this.rescheduleStartTime.set('');
+    this.rescheduleEndTime.set('');
+    this.rescheduleMessage.set('');
+
+    this.isRescheduleModalOpen.set(true);
+  }
+
+  closeRescheduleModal() {
+    this.isRescheduleModalOpen.set(false);
+    this.selectedReservation.set(null);
+
+    this.rescheduleDate.set('');
+    this.rescheduleStartTime.set('');
+    this.rescheduleEndTime.set('');
+    this.rescheduleMessage.set('');
   }
 
   // 動作：接受
-  accept(id: string) {
-    // TODO: 這裡放入呼叫後端更新狀態的 API
-    this.updateReservationStatus(id, 'confirmed');
-    alert(`已接受預約單號: ${id}`);
+  accept(item: Reservation) {
+    this.viewingService.updateReservationStatus({
+      reservationId: Number(item.id),
+      status: 'confirmed'
+    }).subscribe({
+      next: () => {
+        this.updateReservationStatus(item.id, 'confirmed');
+        alert(`已接受預約單號: ${item.orderNumber}`);
+      },
+      error: (err) => {
+        console.error('接受預約失敗：', err);
+
+        const backendMessage =
+          err.error?.details ||
+          err.error?.message ||
+          err.message ||
+          '未知錯誤';
+
+        alert(`接受預約失敗：${backendMessage}`);
+      }
+    });
   }
 
   /**
    * 輔助方法：在前端即時更新預約單的狀態 (讓 UI 自動響應)
    */
-  private updateReservationStatus(id: string, newStatus: 'pending' | 'confirmed' | 'rejected') {
+  private updateReservationStatus(
+    id: string,
+    newStatus: 'pending' | 'confirmed' | 'rejected' | 'rescheduled'
+  ) {
     this.reservations.update(currentReservations =>
       currentReservations.map(res =>
         res.id === id ? { ...res, status: newStatus } : res
       )
     );
+  }
+
+  getStatusLabel(status: Reservation['status']) {
+    switch (status) {
+      case 'pending':
+        return '待審核';
+      case 'confirmed':
+        return '已確認';
+      case 'rescheduled':
+        return '待回覆改期';
+      case 'rejected':
+        return '已婉拒';
+      case 'matched':
+        return '媒合成功';
+      case 'closed':
+        return '已關閉';
+      default:
+        return '未知';
+    }
+  }
+
+  getEmptyStateText() {
+    switch (this.activeTab()) {
+      case 'pending':
+        return '目前沒有待審核的預約紀錄。';
+      case 'confirmed':
+        return '目前沒有已確認的預約紀錄。';
+      case 'rescheduled':
+        return '目前沒有已改期的預約紀錄。';
+      case 'rejected':
+        return '目前沒有已婉拒的預約紀錄。';
+      case 'matched':
+        return '目前沒有媒合成功的預約紀錄。';
+      case 'closed':
+        return '目前沒有已關閉的預約紀錄。';
+      default:
+        return '目前沒有預約紀錄。';
+    }
+  }
+
+
+  // 核准後顯示的聯絡資訊，包含電話和 LINE ID
+  canShowFullContact(item: Reservation): boolean {
+    return item.status === 'confirmed' || item.status === 'rescheduled';
+  }
+
+  getContactHint(item: Reservation): string {
+    return this.canShowFullContact(item) ? '(已開放聯絡資訊)' : '(核准後顯示)';
+  }
+
+  displayPhone(item: Reservation): string {
+    const phone = item.applicant.phone || '';
+
+    if (this.canShowFullContact(item)) {
+      return phone || '未填寫';
+    }
+
+    return this.maskPhone(phone);
+  }
+
+  displayLineId(item: Reservation): string {
+    const lineId = item.applicant.lineId || '';
+
+    if (this.canShowFullContact(item)) {
+      return lineId || '未填寫';
+    }
+
+    return this.maskText(lineId);
+  }
+
+  private maskPhone(phone: string): string {
+    if (!phone || phone === '未填寫') {
+      return '未填寫';
+    }
+
+    const pure = phone.replace(/\s+/g, '');
+
+    // 台灣手機常見 10 碼：0980632541 → 0980***541
+    if (pure.length >= 8) {
+      return `${pure.slice(0, 4)}***${pure.slice(-3)}`;
+    }
+
+    return this.maskText(pure);
+  }
+
+  openConfirmMatchModal(item: Reservation): void {
+    this.selectedMatchReservation.set(item);
+    this.markHouseAsMatched.set(true);
+    this.closeOtherReservations.set(true);
+    this.matchNote.set('');
+    this.isConfirmMatchModalOpen.set(true);
+  }
+
+  closeConfirmMatchModal(): void {
+    this.isConfirmMatchModalOpen.set(false);
+    this.selectedMatchReservation.set(null);
+    this.markHouseAsMatched.set(true);
+    this.closeOtherReservations.set(true);
+    this.matchNote.set('');
+    this.isConfirmingMatch.set(false);
+  }
+
+  confirmMatch(): void {
+    const item = this.selectedMatchReservation();
+
+    if (!item) return;
+
+    const confirmMessage =
+      `確認將此預約標記為媒合成功嗎？\n\n` +
+      `房源：${item.roomName}\n` +
+      `承租人：${item.applicant.name}\n` +
+      `預約單號：${item.orderNumber}`;
+
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    this.isConfirmingMatch.set(true);
+
+    this.viewingService.confirmMatch({
+      reservationId: Number(item.id),
+      markHouseAsMatched: this.markHouseAsMatched(),
+      closeOtherReservations: this.closeOtherReservations(),
+      matchNote: this.matchNote().trim()
+    }).subscribe({
+      next: () => {
+        alert('已確認媒合成功');
+
+        this.closeConfirmMatchModal();
+
+        this.activeTab.set('matched');
+        this.fetchReservations();
+      },
+      error: (err) => {
+        console.error('確認媒合失敗：', err);
+
+        const backendMessage =
+          err.error?.details ||
+          err.error?.message ||
+          err.message ||
+          '未知錯誤';
+
+        alert(`確認媒合失敗：${backendMessage}`);
+        this.isConfirmingMatch.set(false);
+      }
+    });
+  }
+
+  private maskText(value: string): string {
+    if (!value || value === '未填寫') {
+      return '未填寫';
+    }
+
+    if (value.length <= 2) {
+      return `${value[0] ?? ''}*`;
+    }
+
+    if (value.length <= 5) {
+      return `${value.slice(0, 1)}***${value.slice(-1)}`;
+    }
+
+    return `${value.slice(0, 2)}***${value.slice(-2)}`;
+  }
+
+  addToGoogleCalendar(item: Reservation): void {
+    const calendarRange = this.buildGoogleCalendarDateRange(item);
+
+    if (!calendarRange) {
+      alert('目前缺少有效的看房時間，無法加入 Google 行事曆');
+      return;
+    }
+
+    const title = `厚厝味看房預約：${item.roomName}`;
+    const details = [
+      `預約單號：${item.orderNumber}`,
+      `承租人：${item.applicant.name}`,
+      `承租人電話：${item.applicant.phone || '未填寫'}`,
+      `承租人 LINE ID：${item.applicant.lineId || '未填寫'}`,
+      `備註：${item.message || '無'}`
+    ].join('\n');
+
+    const location = item.roomAddress || '';
+
+    const url =
+      'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+      `&text=${encodeURIComponent(title)}` +
+      `&dates=${calendarRange}` +
+      `&details=${encodeURIComponent(details)}` +
+      `&location=${encodeURIComponent(location)}` +
+      '&ctz=Asia/Taipei';
+
+    window.open(url, '_blank');
+  }
+
+  contactLesseeByLine(item: Reservation): void {
+    if (!this.canShowFullContact(item)) {
+      alert('此預約尚未確認或改期，暫時不開放完整聯絡資訊');
+      return;
+    }
+
+    const lineId = item.applicant.lineId?.trim();
+
+    if (!lineId || lineId === '未填寫') {
+      alert('承租人尚未提供 LINE ID，請改用電話或等待承租人更新聯絡資訊');
+      return;
+    }
+
+    this.copyText(lineId);
+
+    const openLine = confirm(
+      `已複製承租人 LINE ID：${lineId}\n\n是否嘗試開啟 LINE？`
+    );
+
+    if (openLine) {
+      window.open(`https://line.me/R/ti/p/~${encodeURIComponent(lineId)}`, '_blank');
+    }
+  }
+
+
+  confirmReschedule() {
+    const item = this.selectedReservation();
+
+    if (!item) return;
+
+    if (!this.rescheduleDate()) {
+      alert('請選擇改期日期');
+      return;
+    }
+
+    if (!this.rescheduleStartTime()) {
+      alert('請選擇開始時間');
+      return;
+    }
+
+    if (!this.rescheduleEndTime()) {
+      alert('請選擇結束時間');
+      return;
+    }
+
+    if (this.rescheduleEndTime() <= this.rescheduleStartTime()) {
+      alert('結束時間必須晚於開始時間');
+      return;
+    }
+
+    if (!this.rescheduleMessage().trim()) {
+      alert('請填寫給承租人的改期訊息');
+      return;
+    }
+
+    const proposedStartTime = `${this.rescheduleDate()}T${this.rescheduleStartTime()}:00`;
+    const proposedEndTime = `${this.rescheduleDate()}T${this.rescheduleEndTime()}:00`;
+
+    this.viewingService.proposeReschedule({
+      reservationId: Number(item.id),
+      proposedStartTime,
+      proposedEndTime,
+      message: this.rescheduleMessage().trim()
+    }).subscribe({
+      next: () => {
+        const proposedViewingDateTime =
+          `${this.rescheduleDate()} ${this.rescheduleStartTime()} - ${this.rescheduleEndTime()}`;
+
+        this.reservations.update(current =>
+          current.map(res =>
+            res.id === item.id
+              ? {
+                ...res,
+                status: 'rescheduled',
+                rescheduleInfo: {
+                  proposedViewingDateTime,
+                  message: this.rescheduleMessage().trim(),
+                  count: (res.rescheduleInfo?.count ?? 0) + 1
+                }
+              }
+              : res
+          )
+        );
+
+        this.activeTab.set('rescheduled');
+
+        alert(`已提出改期，預約單號：${item.orderNumber}`);
+
+        this.closeRescheduleModal();
+      },
+      error: (err) => {
+        console.error('提議改期失敗：', err);
+
+        const backendMessage =
+          err.error?.details ||
+          err.error?.message ||
+          err.message ||
+          '未知錯誤';
+
+        alert(`提議改期失敗：${backendMessage}`);
+      }
+    });
+
+
+
   }
 }

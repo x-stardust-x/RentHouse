@@ -9,31 +9,73 @@ import { HouseService } from '../../../@service/house.service';
 })
 export class ProductReviewComponent implements OnInit {
 
-  // 🌟 1. 接收父元件傳來的下拉選單狀態 (all, pending, active)
+  // 接收父元件傳來的下拉選單狀態 (all, pending, active)
   @Input() set filterStatus(val: string) {
     this.currentStatus.set(val);
   }
+  @Input() viewMode: 'grid' | 'list' = 'grid';
+
+  sortSignal = signal<string>('newToOld');
+  @Input() set currentSort(value: string) {
+    this.sortSignal.set(value);
+  }
+
   currentStatus = signal<string>('all');
 
-  // 🌟 2. 原始資料庫 (保險箱)
+  currentPage = signal(1); // 目前頁碼
+  pageSize = 6;
+
   rawProducts = signal<any[]>([]);
 
-  // 🌟 3. Computed 核心魔法：根據下拉選單自動過濾 (✅ 已升級為 Status 數字判斷)
-  filteredProducts = computed(() => {
-    let result = this.rawProducts();
-    const status = this.currentStatus();
 
+  filteredFullProducts = computed(() => {
+
+    let result = [...this.rawProducts()];
+
+
+    const status = this.currentStatus();
     if (status === 'pending') {
-      // 待審核 (Status 為 0)
       result = result.filter(p => p.status === 0);
     } else if (status === 'active') {
-      // 已上架 (Status 為 1)
       result = result.filter(p => p.status === 1);
     }
+
+
+    const sortType = this.sortSignal();
+    if (sortType === 'newToOld') {
+      result.sort((a, b) => b.id - a.id);
+    } else {
+      result.sort((a, b) => a.id - b.id);
+    }
+
     return result;
   });
 
-  // 🌟 4. 圖片放大的變數 (✅ 已經乖乖收進 Class 裡面了)
+
+  pagedProducts = computed(() => {
+    const startIndex = (this.currentPage() - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    // 從完整的資料中，切出這一頁需要的筆數
+    return this.filteredFullProducts().slice(startIndex, endIndex);
+  });
+
+
+  get totalPages() {
+    return Math.ceil(this.filteredFullProducts().length / this.pageSize);
+  }
+
+  get totalPagesArray() {
+    return new Array(this.totalPages);
+  }
+
+  changePage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage.set(page);
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // 跳頁後自動滾回頂部
+    }
+  }
+
+  //圖片放大的變數
   showImageModal: boolean = false;
   fullImageUrl: string = '';       // 存放要放大的圖片網址
 

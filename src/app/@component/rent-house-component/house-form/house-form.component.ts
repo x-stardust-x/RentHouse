@@ -6,6 +6,18 @@ import { CreateHouseDto } from '../../../@interface/house';
 import { District } from '../../../@interface/location';
 import { LocationSelectComponent } from '../../location-select-component/location-select-component';
 import { Authservice } from '../../../@service/authservice';
+import { HouseViewingService } from '../../../@service/house-viewing-service';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+
+
+interface ViewingSlotForm {
+  // availableDate: string;
+  startTime: string;
+  endTime: string;
+  isEnabled: boolean;
+}
+
 
 @Component({
   selector: 'app-house-form',
@@ -16,6 +28,7 @@ import { Authservice } from '../../../@service/authservice';
 })
 export class HouseFormComponent implements OnInit {
   private readonly authsev = inject(Authservice);
+  private viewingService = inject(HouseViewingService);
 
   houses = signal<any[]>([]);
   isEditMode = false;
@@ -53,8 +66,9 @@ export class HouseFormComponent implements OnInit {
   constructor(
     private houseService: HouseService,
     private cdr: ChangeDetectorRef,
-    private route: ActivatedRoute // 🌟 3. 把網址掃描器注入進來
-  ) {}
+    private route: ActivatedRoute,
+    private router: Router
+  ) { }
 
   ngOnInit() {
 
@@ -105,7 +119,7 @@ export class HouseFormComponent implements OnInit {
 
         // 🌟 6. 新增：捕捉這間房子的舊照片 (相容後端回傳格式，可能是 images 或 houseImages)
         this.existingPhotos = data.images || data.houseImages || [];
-
+        this.loadViewingSlotsForEdit(id);
         this.cdr.detectChanges(); // 提醒畫面更新
       },
       error: (err) => console.error('撈取編輯資料失敗', err)
@@ -167,65 +181,118 @@ export class HouseFormComponent implements OnInit {
   }
 
   submitForm() {
-
     if (this.formData.accountId === 0) {
-      alert('【您尚未登入或登入已過期，請先登入後再發布房屋！');
-      // this.router.navigate(['/login']); // 實務上可以把它踢回登入頁
+      Swal.fire({
+        title: '尚未登入',
+        text: '您尚未登入或登入已過期，請先登入後再發布房屋！',
+        icon: 'warning',
+        confirmButtonText: '我知道了',
+        confirmButtonColor: '#f39c12'
+      });
+
+      this.router.navigate(['/login']);
       return;
     }
-    if (this.formData.sleepTime?.length === 5) this.formData.sleepTime += ':00';
-    if (this.formData.wakeTime?.length === 5) this.formData.wakeTime += ':00';
+
+    if (this.formData.sleepTime?.length === 5) {
+      this.formData.sleepTime += ':00';
+    }
+
+    if (this.formData.wakeTime?.length === 5) {
+      this.formData.wakeTime += ':00';
+    }
+
     console.log('送出表單', this.formData, '待上傳照片數量:', this.pendingPhotos.length);
+
     if (this.isEditMode) {
-      // 🌟 編輯模式
       this.houseService.updateHouse(this.editingId, this.formData).subscribe({
         next: () => {
-          // 檢查有沒有選擇「新」照片要上傳
-          if (this.pendingPhotos.length > 0) {
-            let completedUploads = 0;
-            this.pendingPhotos.forEach(photo => {
-              this.uploadAndBindPhoto(this.editingId, photo.file, photo.isCover, () => {
-                completedUploads++;
-                if (completedUploads === this.pendingPhotos.length) {
-                  alert('✏️ 修改成功！(包含新圖片已上傳)');
-                  this.resetForm();
-                  window.location.reload();
-                }
-              });
-            });
-          } else {
-            alert('✏️ 修改成功！');
-            this.resetForm();
-            window.location.reload();
-          }
+          this.saveViewingSlotsForHouse(this.editingId, () => {
+            this.uploadPendingPhotosIfNeeded(
+              this.editingId,
+              () => {
+                Swal.fire({
+                  title: '修改成功！',
+                  text: this.pendingPhotos.length > 0
+                    ? '您的房源資料、可看房時段與新圖片已成功更新。'
+                    : '您的房源資料與可看房時段已成功更新。',
+                  icon: 'success',
+                  confirmButtonText: '回到列表',
+                  confirmButtonColor: '#3085d6'
+                }).then((result: any) => {
+                  if (result.isConfirmed) {
+                    this.resetForm();
+                    this.router.navigate(['/user-center/houses']);
+                  }
+                });
+              }
+            );
+          });
         },
-        error: (err) => console.error('修改失敗', err)
+        error: (err) => {
+          console.error('修改失敗', err);
+          Swal.fire('錯誤', '房源修改失敗，請檢查後端狀態！', 'error');
+        }
       });
-    } else {
-      // 🌟 新增模式
-      this.houseService.createHouse(this.formData).subscribe({
-        next: (res: any) => {
-          const newHouseId = res?.id || res?.HouseId || res?.houseId;
-          if (this.pendingPhotos.length > 0 && newHouseId) {
-            let completedUploads = 0;
-            this.pendingPhotos.forEach(photo => {
-              this.uploadAndBindPhoto(newHouseId, photo.file, photo.isCover, () => {
-                completedUploads++;
-                if (completedUploads === this.pendingPhotos.length) {
-                  alert('🎉 房屋申請已送出！等待審核中。');
-                  this.resetForm();
-                  window.location.reload();
-                }
-              });
-            });
-          } else {
-            alert('🎉 房屋申請已送出！(未附照片)，等待審核中。');
-            this.resetForm();
-          }
-        },
-        error: (err) => console.error('新增房屋申請失敗', err)
-      });
+
+      return;
     }
+
+    this.houseService.createHouse(this.formData).subscribe({
+      next: (res: any) => {
+        const newHouseId = res?.id || res?.HouseId || res?.houseId;
+
+        if (!newHouseId) {
+          Swal.fire('錯誤', '房屋已建立，但無法取得房屋 ID，請檢查後端回傳格式。', 'error');
+          return;
+        }
+
+        this.saveViewingSlotsForHouse(newHouseId, () => {
+          this.uploadPendingPhotosIfNeeded(
+            newHouseId,
+            () => {
+              Swal.fire({
+                title: '申請已送出！',
+                text: this.pendingPhotos.length > 0
+                  ? '房屋申請、可看房時段與圖片已儲存，等待管理員審核中。'
+                  : '房屋申請與可看房時段已儲存，等待管理員審核中。',
+                icon: 'success',
+                confirmButtonText: '回到列表',
+                confirmButtonColor: '#28a745'
+              }).then((result: any) => {
+                if (result.isConfirmed) {
+                  this.resetForm();
+                  this.router.navigate(['/user-center/houses']);
+                }
+              });
+            }
+          );
+        });
+      },
+      error: (err) => {
+        console.error('新增房屋申請失敗', err);
+        Swal.fire('錯誤', '房屋申請失敗，請檢查後端狀態！', 'error');
+      }
+    });
+  }
+
+  private uploadPendingPhotosIfNeeded(houseId: number, onComplete: () => void): void {
+    if (this.pendingPhotos.length === 0) {
+      onComplete();
+      return;
+    }
+
+    let completedUploads = 0;
+
+    this.pendingPhotos.forEach(photo => {
+      this.uploadAndBindPhoto(houseId, photo.file, photo.isCover, () => {
+        completedUploads++;
+
+        if (completedUploads === this.pendingPhotos.length) {
+          onComplete();
+        }
+      });
+    });
   }
 
   uploadAndBindPhoto(houseId: number, file: File, isCover: boolean, onComplete: () => void) {
@@ -270,5 +337,96 @@ export class HouseFormComponent implements OnInit {
     this.isEditMode = false;
     this.editingId = 0;
     this.resetForm();
+  }
+
+
+  viewingSlots = signal<ViewingSlotForm[]>([
+    {
+      // availableDate: '',
+      startTime: '09:00',
+      endTime: '12:00',
+      isEnabled: true
+    }
+  ]);
+
+
+  addViewingSlot() {
+    this.viewingSlots.update(slots => [
+      ...slots,
+      {
+        // availableDate: '',
+        startTime: '14:00',
+        endTime: '18:00',
+        isEnabled: true
+      }
+    ]);
+  }
+
+  removeViewingSlot(index: number) {
+    this.viewingSlots.update(slots => slots.filter((_, i) => i !== index));
+  }
+
+  private loadViewingSlotsForEdit(houseId: number) {
+    this.viewingService.getAvailableSlotsByHouse(houseId).subscribe({
+      next: (slots) => {
+        if (!slots || slots.length === 0) {
+          this.viewingSlots.set([
+            {
+              // availableDate: '',
+              startTime: '09:00',
+              endTime: '12:00',
+              isEnabled: true
+            }
+          ]);
+          return;
+        }
+
+        this.viewingSlots.set(slots.map(slot => ({
+          // availableDate: slot.availableDate,
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+          isEnabled: true
+        })));
+      },
+      error: (err) => {
+        console.error('取得房源可看房時段失敗', err);
+      }
+    });
+  }
+
+  private saveViewingSlotsForHouse(houseId: number, onComplete: () => void) {
+    const validSlots = this.viewingSlots()
+      .filter(slot => slot.startTime && slot.endTime)
+      .map(slot => ({
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        isEnabled: slot.isEnabled
+      }));
+
+    console.log('準備儲存可看房時段：', {
+      houseId,
+      validSlots
+    });
+
+    this.viewingService.replaceAvailableSlotsByHouse(houseId, validSlots).subscribe({
+      next: (res) => {
+        console.log('可看房時段已儲存：', res);
+        onComplete();
+      },
+      error: (err) => {
+        console.error('儲存可看房時段失敗：', err);
+
+        const backendMessage =
+          err.error?.details ||
+          err.error?.message ||
+          err.message ||
+          '未知錯誤';
+
+        alert(`房屋資料已儲存，但可看房時段儲存失敗：${backendMessage}`);
+
+        // 即使時段儲存失敗，也讓流程結束，不要卡在畫面
+        onComplete();
+      }
+    });
   }
 }

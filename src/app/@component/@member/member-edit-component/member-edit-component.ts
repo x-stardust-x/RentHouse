@@ -45,6 +45,7 @@ export class MemberEditComponent {
         Validators.pattern(/^09\d{8}$/),
         Validators.pattern(/^\d+$/) // 台灣手機：09開頭 + 8碼
       ]],
+      lineId: [''],
 
       address: [''],
 
@@ -90,6 +91,7 @@ export class MemberEditComponent {
         avatar: profile.avatar,
 
         phone: profile.phone,
+        lineId: profile.lineId ?? '',
 
         address: profile.address,
 

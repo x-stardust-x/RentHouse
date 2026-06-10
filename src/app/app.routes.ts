@@ -27,7 +27,6 @@ export const routes: Routes = [
       {
         path: 'register',
         loadComponent: () => import('./@component/register-component/register-component').then(c => c.RegisterComponent),
-        canActivate: [loginGuard]
       },
       {
         path: 'about-homiefun',
@@ -143,7 +142,14 @@ export const routes: Routes = [
           {
             path: 'account-setting',
             loadComponent: () => import('./@component/@member/account-setting/account-setting').then(c => c.AccountSetting),
-          }
+          },
+          // 看房申請追蹤
+          {
+            path: 'house-viewing-applications',
+            loadComponent: () =>
+              import('./@component/house-viewing-application-tracking-component/house-viewing-application-tracking-component')
+                .then(c => c.HouseViewingApplicationTrackingComponent),
+          },
         ],
       },
     ]
@@ -194,7 +200,8 @@ export const routes: Routes = [
       },
       {
         path: 'admin-review',
-        component: AdminReviewComponent,
+        loadComponent: () => import('./@component/admin-review-component/admin-review-component').then(c => c.AdminReviewComponent),
+        // component: AdminReviewComponent,
       },
       {
         path: 'contact-messages',

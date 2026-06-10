@@ -12,11 +12,11 @@
         <div class="card h-100 shadow-sm">
 
           <div style="height: 200px; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center;">
-            @if (item.coverImageUrl) {
-              <img [src]="item.coverImageUrl" class="w-100 h-100" style="object-fit: cover;" alt="技能圖片">
-            } @else {
-              <span class="material-symbols-outlined" style="font-size: 4rem; color: #dee2e6;">handyman</span>
-            }
+           @if (item.coverUrl) {
+  <img [src]="'https://localhost:7215/' + item.coverUrl" class="w-100 h-100" style="object-fit: cover;" alt="技能圖片">
+} @else {
+  <span class="material-symbols-outlined" style="font-size: 4rem; color: #dee2e6;">handyman</span>
+}
           </div>
 
           <div class="card-body">
@@ -27,7 +27,7 @@
             </span>
 
             <ul class="list-unstyled mt-3 mb-0">
-              <li><small class="text-muted">📍 服務地區：{{ item.serviceArea }}</small></li>
+              <li><small class="text-muted">📍 服務地區：{{ item.address }}</small></li>
               <li><small class="text-muted">💰 費用：{{ item.price }} 元/次</small></li>
             </ul>
           </div>

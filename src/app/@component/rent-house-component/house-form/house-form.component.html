@@ -72,13 +72,66 @@
 
       <div class="rental-form__panel">
         <h4 class="rental-form__panel-title">
+          <span class="material-symbols-outlined">event_available</span>
+          可預約看房時段
+        </h4>
+
+        <p class="rental-form__hint">
+          設定承租人可以選擇的看房時間，會顯示在前台「線上預約看房」彈窗中。
+        </p>
+
+        <div class="viewing-slot-list">
+          @for (slot of viewingSlots(); track $index; let i = $index) {
+          <div class="viewing-slot-item">
+
+            <!-- <div class="rental-form__group">
+              <label class="rental-form__label">日期</label>
+              <input type="date" class="rental-form__input" [(ngModel)]="slot.availableDate"
+                name="availableDate_{{ i }}">
+            </div> -->
+
+            <div class="rental-form__side-grid">
+              <div class="rental-form__group">
+                <label class="rental-form__label">開始時間</label>
+                <input type="time" class="rental-form__input" [(ngModel)]="slot.startTime" name="startTime_{{ i }}">
+              </div>
+
+              <div class="rental-form__group">
+                <label class="rental-form__label">結束時間</label>
+                <input type="time" class="rental-form__input" [(ngModel)]="slot.endTime" name="endTime_{{ i }}">
+              </div>
+            </div>
+
+            <label class="rental-form__checkbox-label">
+              <input type="checkbox" class="rental-form__checkbox" [(ngModel)]="slot.isEnabled"
+                name="slotEnabled_{{ i }}">
+              開放此時段
+            </label>
+
+            @if (viewingSlots().length > 1) {
+            <button type="button" class="rental-form__btn rental-form__btn--secondary" (click)="removeViewingSlot(i)">
+              移除此時段
+            </button>
+            }
+
+          </div>
+          }
+        </div>
+
+        <button type="button" class="rental-form__btn rental-form__btn--secondary" (click)="addViewingSlot()">
+          ＋ 新增可看房時段
+        </button>
+      </div>
+
+      <!-- <div class="rental-form__panel">
+        <h4 class="rental-form__panel-title">
           <span class="material-symbols-outlined">description</span> 房屋詳細描述
         </h4>
         <div class="rental-form__group">
           <textarea class="rental-form__textarea" rows="5" [(ngModel)]="formData.description"
             placeholder="介紹一下這個空間的特色與氛圍..."></textarea>
         </div>
-      </div>
+      </div> -->
 
       <div class="rental-form__panel rental-form__panel--dashed">
         <h4 class="rental-form__panel-title">
@@ -91,51 +144,51 @@
         </div>
 
         @if (isEditMode && existingPhotos && existingPhotos.length > 0) {
-          <div class="mt-3 mb-2">
-            <h5 class="rental-form__label" style="color: #6c757d; display: flex; align-items: center; gap: 4px;">
-              <span class="material-symbols-outlined" style="font-size: 20px;">imagesmode</span> 📸 目前已儲存的相片
-            </h5>
+        <div class="mt-3 mb-2">
+          <h5 class="rental-form__label" style="color: #6c757d; display: flex; align-items: center; gap: 4px;">
+            <span class="material-symbols-outlined" style="font-size: 20px;">imagesmode</span> 📸 目前已儲存的相片
+          </h5>
+        </div>
+        <div class="rental-form__gallery mb-4" style="border-bottom: 1px dashed #dee2e6; padding-bottom: 20px;">
+          @for (photo of existingPhotos; track photo.id; let i = $index) {
+          <div class="rental-form__photo-card" [class.is-cover]="photo.isCover">
+            <button type="button" class="rental-form__photo-delete" (click)="deleteExistingPhoto(photo.id, i)">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+            <img [src]="'https://localhost:7215' + photo.url" class="rental-form__photo-img" alt="資料庫舊圖">
+            <div class="rental-form__photo-action">
+              <label class="rental-form__radio-label" [class.is-active]="photo.isCover" style="cursor: default;">
+                {{ photo.isCover ? '⭐ 封面首圖' : '已上傳相片' }}
+              </label>
+            </div>
           </div>
-          <div class="rental-form__gallery mb-4" style="border-bottom: 1px dashed #dee2e6; padding-bottom: 20px;">
-            @for (photo of existingPhotos; track photo.id; let i = $index) {
-              <div class="rental-form__photo-card" [class.is-cover]="photo.isCover">
-                <button type="button" class="rental-form__photo-delete" (click)="deleteExistingPhoto(photo.id, i)">
-                  <span class="material-symbols-outlined">close</span>
-                </button>
-                <img [src]="'https://localhost:7215' + photo.url" class="rental-form__photo-img" alt="資料庫舊圖">
-                <div class="rental-form__photo-action">
-                  <label class="rental-form__radio-label" [class.is-active]="photo.isCover" style="cursor: default;">
-                    {{ photo.isCover ? '⭐ 封面首圖' : '已上傳相片' }}
-                  </label>
-                </div>
-              </div>
-            }
-          </div>
+          }
+        </div>
         }
 
         @if (pendingPhotos && pendingPhotos.length > 0) {
-          <div class="mt-3 mb-2">
-            <h5 class="rental-form__label" style="color: #0d6efd; display: flex; align-items: center; gap: 4px;">
-              <span class="material-symbols-outlined" style="font-size: 20px;">add_photo_alternate</span> 🚀 本次新增的預覽相片
-            </h5>
+        <div class="mt-3 mb-2">
+          <h5 class="rental-form__label" style="color: #0d6efd; display: flex; align-items: center; gap: 4px;">
+            <span class="material-symbols-outlined" style="font-size: 20px;">add_photo_alternate</span> 🚀 本次新增的預覽相片
+          </h5>
+        </div>
+        <div class="rental-form__gallery">
+          @for (photo of pendingPhotos; track $index) {
+          <div class="rental-form__photo-card" [class.is-cover]="photo.isCover">
+            <button type="button" class="rental-form__photo-delete" (click)="removePendingPhoto($index)">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+            <img [src]="photo.previewUrl" class="rental-form__photo-img" alt="新圖預覽圖">
+            <div class="rental-form__photo-action">
+              <label class="rental-form__radio-label" [class.is-active]="photo.isCover">
+                <input type="radio" class="rental-form__radio" name="coverRadio_{{$index}}" [checked]="photo.isCover"
+                  (change)="setPendingCover($index)">
+                {{ photo.isCover ? '⭐ 封面首圖' : '設為首圖' }}
+              </label>
+            </div>
           </div>
-          <div class="rental-form__gallery">
-            @for (photo of pendingPhotos; track $index) {
-              <div class="rental-form__photo-card" [class.is-cover]="photo.isCover">
-                <button type="button" class="rental-form__photo-delete" (click)="removePendingPhoto($index)">
-                  <span class="material-symbols-outlined">close</span>
-                </button>
-                <img [src]="photo.previewUrl" class="rental-form__photo-img" alt="新圖預覽圖">
-                <div class="rental-form__photo-action">
-                  <label class="rental-form__radio-label" [class.is-active]="photo.isCover">
-                    <input type="radio" class="rental-form__radio" name="coverRadio_{{$index}}" [checked]="photo.isCover"
-                      (change)="setPendingCover($index)">
-                    {{ photo.isCover ? '⭐ 封面首圖' : '設為首圖' }}
-                  </label>
-                </div>
-              </div>
-            }
-          </div>
+          }
+        </div>
         }
       </div>
 
@@ -203,6 +256,7 @@
         </div>
       </div>
 
+
       <div class="rental-form__panel">
         <h4 class="rental-form__panel-title">
           <span class="material-symbols-outlined">stars</span> 租金內含雜費項目
@@ -225,7 +279,7 @@
 
   <div class="rental-form__actions">
     @if (isEditMode) {
-      <button type="button" class="rental-form__btn rental-form__btn--secondary" (click)="cancelEdit()">取消修改</button>
+    <button type="button" class="rental-form__btn rental-form__btn--secondary" (click)="cancelEdit()">取消修改</button>
     }
     <button type="button" class="rental-form__btn rental-form__btn--primary" (click)="submitForm()">
       {{ isEditMode ? '儲存修改' : '確認送出申請' }}

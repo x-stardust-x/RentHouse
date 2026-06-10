@@ -427,7 +427,28 @@
   margin-top: 1.25rem;
 }
 
+.rental-form__divider {
+  margin: 1.25rem 0;
+  border: 0;
+  border-top: 1px solid rgba(120, 90, 70, 0.14);
+}
 
+.rental-form__sub-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #3f3028;
+}
+
+.rental-form__sub-title .material-symbols-outlined,
+.rental-form__label .material-symbols-outlined {
+  font-size: 1.1rem;
+  vertical-align: middle;
+  color: #d96f45;
+}
 
 
 

@@ -206,10 +206,12 @@
             <label class="rental-form__label">就寢時間</label>
             <input type="time" class="rental-form__input" [(ngModel)]="formData.sleepTime">
           </div>
+
           <div class="rental-form__group">
             <label class="rental-form__label">起床時間</label>
             <input type="time" class="rental-form__input" [(ngModel)]="formData.wakeTime">
           </div>
+
           <div class="rental-form__group">
             <label class="rental-form__label">潔癖程度</label>
             <select class="rental-form__select" [(ngModel)]="formData.cleanLevel">
@@ -220,6 +222,7 @@
               <option [ngValue]="5">5 - 極度潔癖</option>
             </select>
           </div>
+
           <div class="rental-form__group">
             <label class="rental-form__label">噪音容忍度</label>
             <select class="rental-form__select" [(ngModel)]="formData.noiseTolerance">
@@ -234,14 +237,97 @@
 
         <div class="rental-form__group mt-4">
           <label class="rental-form__label">基本守則限制</label>
+
           <div class="rental-form__checkbox-wrapper">
             <label class="rental-form__checkbox-label">
-              <input type="checkbox" class="rental-form__checkbox" [(ngModel)]="formData.pet"> 🐾 允許養寵物
+              <input type="checkbox" class="rental-form__checkbox" [(ngModel)]="formData.pet">
+              🐾 允許養寵物
             </label>
+
             <label class="rental-form__checkbox-label">
-              <input type="checkbox" class="rental-form__checkbox" [(ngModel)]="formData.smoke"> 🚬 允許抽菸
+              <input type="checkbox" class="rental-form__checkbox" [(ngModel)]="formData.smoke">
+              🚬 允許抽菸
             </label>
           </div>
+        </div>
+
+        <hr class="rental-form__divider">
+
+        <h5 class="rental-form__sub-title">
+          <span class="material-symbols-outlined">tune</span>
+          進階共居條件
+        </h5>
+
+        <div class="rental-form__group mt-4">
+          <label class="rental-form__label">
+            <span class="material-symbols-outlined">routine</span>
+            作息型態
+          </label>
+          <select class="rental-form__select" [(ngModel)]="formData.routineType">
+            <option value="早睡早起">早睡早起</option>
+            <option value="正常作息">正常作息</option>
+            <option value="夜貓子">夜貓子</option>
+          </select>
+        </div>
+
+        <div class="rental-form__group mt-4">
+          <label class="rental-form__label">
+            <span class="material-symbols-outlined">do_not_disturb_on</span>
+            深夜洗衣 / 洗澡限制
+          </label>
+          <select class="rental-form__select" [(ngModel)]="formData.showerRestriction">
+            <option value="無限制">無限制</option>
+            <option value="22:00後禁止">22:00 後禁止</option>
+            <option value="23:00後禁止">23:00 後禁止</option>
+          </select>
+        </div>
+
+        <div class="rental-form__group mt-4">
+          <label class="rental-form__label">
+            <span class="material-symbols-outlined">groups</span>
+            訪客留宿規範
+          </label>
+          <select class="rental-form__select" [(ngModel)]="formData.visitorPolicy">
+            <option value="完全謝絕訪客">完全謝絕訪客</option>
+            <option value="僅限白天拜訪">僅限白天拜訪</option>
+            <option value="可帶異性或同性過夜">可帶異性或同性過夜</option>
+          </select>
+        </div>
+
+        <div class="rental-form__group mt-4">
+          <label class="rental-form__label">
+            <span class="material-symbols-outlined">skillet</span>
+            廚房與飲食文化
+          </label>
+          <select class="rental-form__select" [(ngModel)]="formData.cookingHabit">
+            <option value="可大火快炒">可大火快炒</option>
+            <option value="僅限輕食微波">僅限輕食微波</option>
+            <option value="禁開伙">禁開伙</option>
+          </select>
+        </div>
+
+        <div class="rental-form__group mt-4">
+          <label class="rental-form__label">
+            <span class="material-symbols-outlined">kitchen</span>
+            冰箱使用分配
+          </label>
+          <select class="rental-form__select" [(ngModel)]="formData.fridgeAllocation">
+            <option value="各自獨立分層">各自獨立分層</option>
+            <option value="貼標籤即可">貼標籤即可</option>
+            <option value="共同分享">共同分享</option>
+          </select>
+        </div>
+
+        <div class="rental-form__group mt-4">
+          <label class="rental-form__label">
+            <span class="material-symbols-outlined">conversation</span>
+            期望交流頻率
+          </label>
+          <select class="rental-form__select" [(ngModel)]="formData.interactionFrequency">
+            <option value="純租屋互不打擾">純租屋互不打擾</option>
+            <option value="願意每週共餐聊天">願意每週共餐聊天</option>
+            <option value="期待技能傳承交流">期待技能傳承交流</option>
+          </select>
         </div>
 
         <div class="rental-form__group mt-4">
@@ -250,8 +336,8 @@
         </div>
 
         <div class="rental-form__group mt-4">
-          <label class="rental-form__label">📜 進階生活規範公約</label>
-          <textarea class="rental-form__textarea" rows="3" [(ngModel)]="formData.advancedRules"
+          <label class="rental-form__label">📜 補充生活規範公約</label>
+          <textarea class="rental-form__textarea" rows="3" [(ngModel)]="formData.advancedRulesNote"
             placeholder="例如：公共區域請勿堆放私人物品、每週日輪流倒垃圾..."></textarea>
         </div>
       </div>

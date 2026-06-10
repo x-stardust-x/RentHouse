@@ -69,6 +69,26 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
     'interactionFrequencies': '交流頻率'
   };
 
+  readonly RULE_DISPLAY_ORDER = [
+    'routines',
+    'showerRestrictions',
+    'visitorPolicies',
+    'cookingHabits',
+    'fridgeAllocations',
+    'interactionFrequencies',
+    'note'
+  ];
+
+  // HABIT_ICONS: Record<string, string> = {
+  //   routines: 'routine',
+  //   showerRestrictions: 'do_not_disturb_on',
+  //   visitorPolicies: 'groups',
+  //   cookingHabits: 'skillet',
+  //   fridgeAllocations: 'kitchen',
+  //   interactionFrequencies: 'conversation',
+  //   note: 'rule'
+  // };
+
   // ===================================================================
   // 核心資料 Signals
   // ===================================================================

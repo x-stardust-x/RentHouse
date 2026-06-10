@@ -124,7 +124,8 @@ deleteImageRecord(imageId: number) {
   }
 
   // 9. 修改技能資料 (儲存編輯用)
-  updateProduct(id: number, data: any) {
+ updateProduct(id: number, data: any) {
+    // 🌟 核心修正：把頭尾的 ' 換成 ` (在 Esc 鍵下方)
     return this.http.put(`https://localhost:7215/api/RentProduct/${id}`, data);
   }
 
@@ -142,5 +143,10 @@ deleteImageRecord(imageId: number) {
   getMyHouses(accountId: number) {
     return this.http.get<any[]>(`https://localhost:7215/api/RentHouse/GetMyHouses/${accountId}`);
   }
+  deleteProductImage(imageId: number) {
+    return this.http.delete(`https://localhost:7215/api/RentProduct/Image/${imageId}`);
+  }
+
+
 
 }

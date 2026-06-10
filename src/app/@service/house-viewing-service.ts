@@ -30,7 +30,11 @@ export interface ProposeRescheduleRequest {
 export interface LesseeViewingApplication {
   id: string;
   orderNumber: string;
-  status: 'pending' | 'confirmed' | 'rejected' | 'rescheduled';
+  status: 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'matched' | 'closed';
+
+  applicationFlowType?: 'new' | 'reapply' | 'reselect_time' | 'reschedule_accepted';
+  attemptNo?: number;
+  maxAttemptCount?: number;
 
   roomName: string;
   roomAddress: string;
@@ -64,6 +68,9 @@ export interface LesseeViewingApplication {
   };
 
   houseId: number;
+  matchedAt?: string | null;
+  matchNote?: string;
+  closedReason?: string;
 }
 
 export interface ReselectViewingTimeRequest {
@@ -79,6 +86,28 @@ export interface ReselectViewingTimeRequest {
   }[];
   message?: string;
   matchScore?: number;
+}
+
+export interface ReapplyViewingOrderRequest {
+  reservationId: number;
+  viewingSlotId?: number | null;
+  viewingTime: string;
+  expectedMoveIn?: string | null;
+  expectedMoveInText?: string | null;
+  preferredTimeSlots: string[];
+  lesseeProfileTags: {
+    label: string;
+    source: string;
+  }[];
+  message?: string;
+  matchScore?: number;
+}
+
+export interface ConfirmMatchRequest {
+  reservationId: number;
+  markHouseAsMatched: boolean;
+  closeOtherReservations: boolean;
+  matchNote?: string;
 }
 
 @Injectable({
@@ -226,5 +255,25 @@ export class HouseViewingService {
         }
       }
     );
+  }
+
+  reapplyViewingOrder(data: ReapplyViewingOrderRequest) {
+    const token = localStorage.getItem('token');
+
+    return this.http.put(`${this.apiUrl}/reapply`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
+
+  confirmMatch(data: ConfirmMatchRequest) {
+    const token = localStorage.getItem('token');
+
+    return this.http.put(`${this.apiUrl}/confirm-match`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
   }
 }

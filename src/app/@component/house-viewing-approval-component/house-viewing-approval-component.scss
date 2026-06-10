@@ -171,6 +171,7 @@
 .applicant-name {
   margin: 0 0 0.5rem 0;
   font-size: 1.15rem;
+  white-space: nowrap;
   color: var(--color-text-main, #2B2725);
 }
 
@@ -596,9 +597,10 @@
 .application-meta-box {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 0.5rem;
   flex-wrap: wrap;
-  margin-top: 0.65rem;
+  margin-top: auto;
 }
 
 .application-meta-pill {

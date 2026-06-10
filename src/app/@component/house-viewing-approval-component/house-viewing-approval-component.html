@@ -151,17 +151,71 @@
         </div>
 
         <div class="action-buttons">
+
           @if (item.status === 'pending') {
-          <button class="action-btn btn-text" (click)="decline(item)">婉拒</button>
-          <button class="action-btn btn-outline" (click)="proposeReschedule(item)">提議改期</button>
-          <button class="action-btn btn-fill" (click)="accept(item)">接受預約</button>
-          } @else if (item.status === 'rescheduled') {
-          <span class="text-muted">已提出改期，等待承租人回覆</span>
-          } @else if (item.status === 'confirmed') {
-          <span class="text-muted">此預約已確認</span>
-          } @else if (item.status === 'rejected') {
-          <span class="text-muted">此預約已婉拒</span>
+          <button type="button" class="action-btn btn-text" (click)="decline(item)">
+            婉拒
+          </button>
+
+          <button type="button" class="action-btn btn-outline" (click)="proposeReschedule(item)">
+            提議改期
+          </button>
+
+          <button type="button" class="action-btn btn-fill" (click)="accept(item)">
+            接受預約
+          </button>
           }
+
+          @else if (item.status === 'confirmed') {
+          <button type="button" class="action-btn btn-outline" (click)="addToGoogleCalendar(item)">
+            加入 Google 行事曆
+          </button>
+
+          <button type="button" class="action-btn btn-outline" (click)="contactLesseeByLine(item)">
+            LINE 聯絡承租人
+          </button>
+
+          <button type="button" class="action-btn btn-fill" (click)="openConfirmMatchModal(item)">
+            確認媒合
+          </button>
+          }
+
+          @else if (item.status === 'rescheduled') {
+          <span class="text-muted">
+            已提出改期，等待承租人回覆
+          </span>
+
+          <button type="button" class="action-btn btn-outline" (click)="proposeReschedule(item)">
+            修改改期提議
+          </button>
+
+          <button type="button" class="action-btn btn-text" (click)="contactLesseeByLine(item)">
+            LINE 聯絡承租人
+          </button>
+          }
+
+          @else if (item.status === 'matched') {
+          <span class="text-muted">
+            此預約已媒合成功
+          </span>
+
+          <button type="button" class="action-btn btn-outline" (click)="contactLesseeByLine(item)">
+            LINE 聯絡承租人
+          </button>
+          }
+
+          @else if (item.status === 'rejected') {
+          <span class="text-muted">
+            此預約已婉拒，無需後續操作
+          </span>
+          }
+
+          @else if (item.status === 'closed') {
+          <span class="text-muted">
+            {{ item.closedReason || '此申請已關閉' }}
+          </span>
+          }
+
         </div>
       </div>
 
@@ -222,6 +276,75 @@
       <div class="reschedule-modal__footer">
         <button type="button" class="action-btn btn-text" (click)="closeRescheduleModal()">取消</button>
         <button type="button" class="action-btn btn-fill" (click)="confirmReschedule()">確認改期</button>
+      </div>
+
+    </div>
+  </div>
+  }
+
+  @if (isConfirmMatchModalOpen()) {
+  <div class="reschedule-modal-overlay" (click)="closeConfirmMatchModal()">
+    <div class="reschedule-modal" (click)="$event.stopPropagation()">
+
+      <div class="reschedule-modal__header">
+        <h3>確認媒合成功</h3>
+
+        <button type="button" class="reschedule-modal__close" (click)="closeConfirmMatchModal()">
+          ×
+        </button>
+      </div>
+
+      <div class="reschedule-modal__body">
+        <p class="reschedule-modal__order">
+          預約單號：
+          <strong>{{ selectedMatchReservation()?.orderNumber }}</strong>
+        </p>
+
+        <p class="reschedule-modal__original">
+          房源：{{ selectedMatchReservation()?.roomName }}
+          <br>
+          承租人：{{ selectedMatchReservation()?.applicant?.name }}
+        </p>
+
+        <div class="message-quote-box reschedule-box">
+          <span class="material-symbols-outlined quote-icon-bg">verified</span>
+          <p class="message-text">
+            請確認雙方已完成看房與後續租賃確認。確認後，這筆預約會被標記為
+            <strong>媒合成功</strong>。
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label class="match-checkbox-label">
+            <input type="checkbox" [ngModel]="markHouseAsMatched()" (ngModelChange)="markHouseAsMatched.set($event)">
+            同步將此房源標記為已媒合並下架
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label class="match-checkbox-label">
+            <input type="checkbox" [ngModel]="closeOtherReservations()"
+              (ngModelChange)="closeOtherReservations.set($event)">
+            自動關閉此房源其他待處理預約
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label>媒合備註</label>
+          <textarea rows="4" [ngModel]="matchNote()" (ngModelChange)="matchNote.set($event)"
+            placeholder="例如：雙方已完成看房，承租人確定承租，後續將以 LINE 聯繫簽約細節。"></textarea>
+        </div>
+      </div>
+
+      <div class="reschedule-modal__footer">
+        <button type="button" class="action-btn btn-text" (click)="closeConfirmMatchModal()"
+          [disabled]="isConfirmingMatch()">
+          取消
+        </button>
+
+        <button type="button" class="action-btn btn-fill" (click)="confirmMatch()" [disabled]="isConfirmingMatch()">
+          {{ isConfirmingMatch() ? '確認中...' : '確認媒合' }}
+        </button>
       </div>
 
     </div>

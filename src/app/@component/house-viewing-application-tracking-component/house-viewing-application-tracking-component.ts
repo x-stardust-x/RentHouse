@@ -6,7 +6,7 @@ import { HouseViewingService, LesseeViewingApplication } from '../../@service/ho
 import { AvailableViewingSlot } from '../../@interface/available-viewing-slot';
 import { LesseeProfileTag } from '../../@interface/lessee-profile-tag';
 
-type ApplicationStatus = 'pending' | 'confirmed' | 'rejected' | 'rescheduled';
+type ApplicationStatus = 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'matched' | 'closed';
 
 @Component({
   selector: 'app-house-viewing-application-tracking-component',
@@ -41,6 +41,26 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
   reselectSlotsLoadError = signal('');
   isSubmittingReselect = signal(false);
 
+
+  // ===================================================================
+  // 重新申請 Modal 狀態
+  // ===================================================================
+  isReapplyModalOpen = signal(false);
+  selectedReapplyApplication = signal<LesseeViewingApplication | null>(null);
+
+  reapplyDate = signal('');
+  reapplyMoveInTime = signal('一週內');
+  reapplyIntro = signal('');
+
+  reapplyAvailableViewingSlots = signal<AvailableViewingSlot[]>([]);
+  reapplySelectedViewingSlotIds = signal<number[]>([]);
+  reapplyLesseeProfileTags = signal<LesseeProfileTag[]>([]);
+
+  isReapplySlotsLoading = signal(false);
+  reapplySlotsLoadError = signal('');
+  isSubmittingReapply = signal(false);
+
+
   tabs = computed(() => [
     {
       id: 'pending' as const,
@@ -53,14 +73,24 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
       count: this.applications().filter(x => x.status === 'confirmed').length
     },
     {
+      id: 'matched' as const,
+      label: '媒合成功',
+      count: this.applications().filter(x => x.status === 'matched').length
+    },
+    {
       id: 'rescheduled' as const,
-      label: '已改期',
+      label: '待回覆改期',
       count: this.applications().filter(x => x.status === 'rescheduled').length
     },
     {
       id: 'rejected' as const,
       label: '已婉拒',
       count: this.applications().filter(x => x.status === 'rejected').length
+    },
+    {
+      id: 'closed' as const,
+      label: '已關閉',
+      count: this.applications().filter(x => x.status === 'closed').length
     },
   ]);
 
@@ -81,11 +111,29 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
         console.table(data);
         const normalizedData = (data || []).map(item => ({
           ...item,
+
           houseId: Number(
             item.houseId ??
             (item as any).HouseId ??
             0
-          )
+          ),
+
+          attemptNo: Number(
+            item.attemptNo ??
+            (item as any).AttemptNo ??
+            1
+          ),
+
+          maxAttemptCount: Number(
+            item.maxAttemptCount ??
+            (item as any).MaxAttemptCount ??
+            3
+          ),
+
+          applicationFlowType:
+            item.applicationFlowType ??
+            (item as any).ApplicationFlowType ??
+            'new'
         }));
 
         console.log('整理後的看房申請追蹤資料：', normalizedData);
@@ -110,10 +158,14 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
         return '房東確認中';
       case 'confirmed':
         return '預約已確認';
+      case 'matched':
+        return '媒合成功';
       case 'rescheduled':
         return '房東提議改期';
       case 'rejected':
         return '已取消 / 已婉拒';
+      case 'closed':
+        return '申請已關閉';
       default:
         return '未知狀態';
     }
@@ -191,8 +243,8 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
     const title = `厚厝味看房預約：${item.roomName}`;
     const details = [
       `預約單號：${item.orderNumber}`,
-      `房東：${item.lessorName}`,
-      `房東 LINE ID：${item.lessorLineId || '未填寫'}`,
+      `出租人：${item.lessorName}`,
+      `出租人 LINE ID：${item.lessorLineId || '未填寫'}`,
       `備註：${item.message || '無'}`
     ].join('\n');
 
@@ -211,21 +263,21 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
 
   contactLessorByLine(item: LesseeViewingApplication): void {
     if (!this.canShowFullLessorContact(item)) {
-      alert('此預約尚未確認，暫時無法開放房東聯絡資訊');
+      alert('此預約尚未確認，暫時無法開放出租人聯絡資訊');
       return;
     }
 
     const lineId = item.lessorLineId?.trim();
 
     if (!lineId || lineId === '未填寫') {
-      alert('房東尚未提供 LINE ID，請改用電話或等待房東更新聯絡資訊');
+      alert('出租人尚未提供 LINE ID，請改用電話或等待出租人更新聯絡資訊');
       return;
     }
 
     this.copyText(lineId);
 
     const openLine = confirm(
-      `已複製房東 LINE ID：${lineId}\n\n是否嘗試開啟 LINE？`
+      `已複製出租人 LINE ID：${lineId}\n\n是否嘗試開啟 LINE？`
     );
 
     if (openLine) {
@@ -235,7 +287,7 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
 
   acceptReschedule(item: LesseeViewingApplication): void {
     const message =
-      `確認接受房東提出的改期時間嗎？\n\n` +
+      `確認接受出租人提出的改期時間嗎？\n\n` +
       `預約單號：${item.orderNumber}\n` +
       `改期時間：${item.rescheduleInfo?.proposedViewingDateTime || '未提供'}`;
 
@@ -639,7 +691,31 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
   }
 
   reapply(item: LesseeViewingApplication): void {
-    alert(`之後可導回房源詳情重新申請，預約單號：${item.orderNumber}`);
+    if (!this.canReapply(item)) {
+      alert('此預約已達重新申請上限，無法再次申請');
+      return;
+    }
+
+    this.selectedReapplyApplication.set(item);
+
+    this.reapplyDate.set(this.toDateInputValue(item.viewingDate));
+    this.reapplyMoveInTime.set(item.expectedMoveInText || '一週內');
+
+    const defaultMessage =
+      item.message && item.message !== '無留言'
+        ? item.message
+        : '您好，我想再次申請看房，這次已調整可配合的時段，謝謝您。';
+
+    this.reapplyIntro.set(defaultMessage);
+
+    this.reapplySelectedViewingSlotIds.set([]);
+    this.reapplyAvailableViewingSlots.set([]);
+    this.reapplyLesseeProfileTags.set([]);
+
+    this.loadReapplyAvailableViewingSlots(item);
+    this.loadReapplyLesseeProfileTags(item);
+
+    this.isReapplyModalOpen.set(true);
   }
 
   private readonly apiBaseUrl = 'https://localhost:7215';
@@ -834,5 +910,343 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
     const houseId = Number(rawHouseId);
 
     return Number.isFinite(houseId) ? houseId : 0;
+  }
+
+  canReapply(item: LesseeViewingApplication): boolean {
+    const attemptNo = item.attemptNo ?? 1;
+    const maxAttemptCount = item.maxAttemptCount ?? 3;
+
+    return item.status === 'rejected' && attemptNo < maxAttemptCount;
+  }
+
+  getReapplyButtonText(item: LesseeViewingApplication): string {
+    const attemptNo = item.attemptNo ?? 1;
+    const maxAttemptCount = item.maxAttemptCount ?? 3;
+
+    if (attemptNo >= maxAttemptCount) {
+      return '已達申請上限';
+    }
+
+    return `重新申請（剩餘 ${maxAttemptCount - attemptNo} 次）`;
+  }
+
+  closeReapplyModal(): void {
+    this.isReapplyModalOpen.set(false);
+    this.selectedReapplyApplication.set(null);
+
+    this.reapplyDate.set('');
+    this.reapplyMoveInTime.set('一週內');
+    this.reapplyIntro.set('');
+
+    this.reapplyAvailableViewingSlots.set([]);
+    this.reapplySelectedViewingSlotIds.set([]);
+    this.reapplyLesseeProfileTags.set([]);
+
+    this.reapplySlotsLoadError.set('');
+    this.isSubmittingReapply.set(false);
+  }
+
+  isReapplyViewingSlotSelected(slotId: number | string | null | undefined): boolean {
+    const id = Number(slotId);
+
+    if (!Number.isFinite(id)) {
+      return false;
+    }
+
+    return this.reapplySelectedViewingSlotIds().includes(id);
+  }
+
+  toggleReapplyViewingSlot(slotId: number | string | null | undefined): void {
+    const id = Number(slotId);
+
+    if (!Number.isFinite(id)) {
+      console.warn('無效的時段 ID：', slotId);
+      return;
+    }
+
+    this.reapplySelectedViewingSlotIds.update(current => {
+      if (current.includes(id)) {
+        return current.filter(currentId => currentId !== id);
+      }
+
+      return [...current, id];
+    });
+  }
+
+  private loadReapplyAvailableViewingSlots(item: LesseeViewingApplication): void {
+    const houseId = this.getApplicationHouseId(item);
+
+    console.log('重新申請使用的 houseId：', houseId, item);
+
+    if (!houseId || houseId <= 0) {
+      this.reapplyAvailableViewingSlots.set([]);
+      this.reapplySlotsLoadError.set('無法取得房源 ID，請重新整理後再試');
+      return;
+    }
+
+    this.isReapplySlotsLoading.set(true);
+    this.reapplySlotsLoadError.set('');
+
+    this.viewingService.getAvailableSlotsByHouse(houseId).subscribe({
+      next: (slots: any[]) => {
+        const normalizedSlots = (slots || [])
+          .map(slot => {
+            const id = Number(slot.id ?? slot.Id);
+            const startTime = slot.startTime ?? slot.StartTime ?? '';
+            const endTime = slot.endTime ?? slot.EndTime ?? '';
+
+            return {
+              id,
+              houseId: slot.houseId ?? slot.HouseId,
+              lessorId: slot.lessorId ?? slot.LessorId,
+              availableDate: slot.availableDate ?? slot.AvailableDate ?? null,
+              startTime,
+              endTime,
+              label: slot.label ?? slot.Label ?? `${startTime} - ${endTime}`,
+              isEnabled: slot.isEnabled ?? slot.IsEnabled ?? true
+            };
+          })
+          .filter(slot =>
+            Number.isFinite(slot.id) &&
+            slot.startTime &&
+            slot.endTime
+          );
+
+        this.reapplyAvailableViewingSlots.set(normalizedSlots);
+
+        const previousLabels = item.preferredTimeSlots ?? [];
+        const preselectedIds = normalizedSlots
+          .filter(slot => previousLabels.includes(slot.label))
+          .map(slot => Number(slot.id));
+
+        this.reapplySelectedViewingSlotIds.set(preselectedIds);
+
+        if (normalizedSlots.length === 0) {
+          this.reapplySlotsLoadError.set('出租人目前尚未設定可預約看房時段');
+        }
+
+        if (previousLabels.length > 0 && preselectedIds.length === 0 && normalizedSlots.length > 0) {
+          this.reapplySlotsLoadError.set('上次選擇的時段目前已不開放，請重新選擇可預約時段');
+        }
+
+        this.isReapplySlotsLoading.set(false);
+      },
+      error: (err) => {
+        console.error('取得重新申請可預約時段失敗：', err);
+
+        this.reapplyAvailableViewingSlots.set([]);
+        this.reapplySlotsLoadError.set('取得可預約時段失敗，請稍後再試');
+        this.isReapplySlotsLoading.set(false);
+      }
+    });
+  }
+
+  private loadReapplyLesseeProfileTags(item: LesseeViewingApplication): void {
+    const previousLabels = item.lesseeProfileTags ?? [];
+
+    this.viewingService.getMyLesseeProfileTags().subscribe({
+      next: (tags: LesseeProfileTag[]) => {
+        const baseTags = tags.map(tag => ({
+          ...tag,
+          checked: previousLabels.includes(tag.label),
+          isEditing: false
+        }));
+
+        const existingLabels = baseTags.map(tag => tag.label);
+
+        const customTags = previousLabels
+          .filter(label => !existingLabels.includes(label))
+          .map(label => ({
+            label,
+            source: 'custom',
+            icon: 'sell',
+            checked: true,
+            isEditing: false
+          } as LesseeProfileTag));
+
+        this.reapplyLesseeProfileTags.set([
+          ...baseTags,
+          ...customTags,
+          {
+            label: '更多偏好',
+            source: 'custom',
+            icon: 'add',
+            checked: false,
+            isEditing: false
+          }
+        ]);
+      },
+      error: (err) => {
+        console.error('取得重新申請承租人微檔案失敗：', err);
+
+        const fallbackTags = previousLabels.map(label => ({
+          label,
+          source: 'custom',
+          icon: 'sell',
+          checked: true,
+          isEditing: false
+        } as LesseeProfileTag));
+
+        this.reapplyLesseeProfileTags.set([
+          ...fallbackTags,
+          {
+            label: '更多偏好',
+            source: 'custom',
+            icon: 'add',
+            checked: false,
+            isEditing: false
+          }
+        ]);
+      }
+    });
+  }
+
+  handleReapplyProfileTagClick(index: number): void {
+    const tags = [...this.reapplyLesseeProfileTags()];
+    const target = tags[index];
+
+    if (!target) return;
+
+    if (target.label === '更多偏好') {
+      tags[index] = {
+        label: '',
+        source: 'custom',
+        icon: 'edit',
+        checked: false,
+        isEditing: true
+      };
+
+      tags.push({
+        label: '更多偏好',
+        source: 'custom',
+        icon: 'add',
+        checked: false,
+        isEditing: false
+      });
+
+      this.reapplyLesseeProfileTags.set(tags);
+      return;
+    }
+
+    target.checked = !target.checked;
+    this.reapplyLesseeProfileTags.set(tags);
+  }
+
+  finishReapplyCustomTag(index: number): void {
+    const tags = [...this.reapplyLesseeProfileTags()];
+    const target = tags[index];
+
+    if (!target) return;
+
+    const value = target.label.trim();
+
+    if (!value) {
+      tags.splice(index, 1);
+      this.reapplyLesseeProfileTags.set(tags);
+      return;
+    }
+
+    tags[index] = {
+      ...target,
+      label: value,
+      source: 'custom',
+      icon: 'sell',
+      checked: true,
+      isEditing: false
+    };
+
+    const hasAddMore = tags.some(tag => tag.label === '更多偏好');
+
+    if (!hasAddMore) {
+      tags.push({
+        label: '更多偏好',
+        source: 'custom',
+        icon: 'add',
+        checked: false,
+        isEditing: false
+      });
+    }
+
+    this.reapplyLesseeProfileTags.set(tags);
+  }
+
+  confirmReapply(): void {
+    const item = this.selectedReapplyApplication();
+
+    if (!item) return;
+
+    if (!this.canReapply(item)) {
+      alert('此預約已達重新申請上限');
+      return;
+    }
+
+    if (!this.reapplyDate()) {
+      alert('請選擇新的看房日期');
+      return;
+    }
+
+    if (this.reapplyAvailableViewingSlots().length === 0) {
+      alert('出租人目前尚未設定可預約時段，暫時無法重新申請');
+      return;
+    }
+
+    const selectedSlots = this.reapplyAvailableViewingSlots()
+      .filter(slot => this.reapplySelectedViewingSlotIds().includes(Number(slot.id)));
+
+    if (selectedSlots.length === 0) {
+      alert('請至少選擇一個出租人開放的看房時段');
+      return;
+    }
+
+    const firstSelectedSlot = selectedSlots[0];
+    const selectedTimes = selectedSlots.map(slot => slot.label);
+
+    const selectedLesseeProfileTags = this.reapplyLesseeProfileTags()
+      .filter(tag => tag.checked && tag.label !== '更多偏好')
+      .map(tag => ({
+        label: tag.label,
+        source: tag.source
+      }));
+
+    const viewingTime = `${this.reapplyDate()}T${firstSelectedSlot.startTime}:00`;
+
+    const requestData = {
+      reservationId: Number(item.id),
+      viewingSlotId: firstSelectedSlot.id,
+      viewingTime,
+      expectedMoveIn: new Date().toISOString(),
+      expectedMoveInText: this.reapplyMoveInTime(),
+      preferredTimeSlots: selectedTimes,
+      lesseeProfileTags: selectedLesseeProfileTags,
+      message: this.reapplyIntro(),
+      matchScore: item.matchScore
+    };
+
+    console.log('重新申請 requestData：', requestData);
+
+    this.isSubmittingReapply.set(true);
+
+    this.viewingService.reapplyViewingOrder(requestData).subscribe({
+      next: () => {
+        alert('已重新送出申請，等待出租人審核');
+
+        this.closeReapplyModal();
+
+        this.activeTab.set('pending');
+        this.fetchApplications();
+      },
+      error: (err) => {
+        console.error('重新申請失敗：', err);
+
+        const backendMessage =
+          err.error?.details ||
+          err.error?.message ||
+          err.message ||
+          '未知錯誤';
+
+        alert(`重新申請失敗：${backendMessage}`);
+        this.isSubmittingReapply.set(false);
+      }
+    });
   }
 }

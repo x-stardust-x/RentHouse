@@ -9,10 +9,10 @@
     </div>
 
     <div class="user-sidebar__role-toggle">
-      <button type="button" [class.is-active]="currentRole() === 'lessor'" (click)="switchRole('lessor')">
+      <button type="button" [class.is-active]="roleService.currentRole() === 'lessor'" (click)="roleService.switchRole('lessor')">
         我是出租人
       </button>
-      <button type="button" [class.is-active]="currentRole() === 'lessee'" (click)="switchRole('lessee')">
+      <button type="button" [class.is-active]="roleService.currentRole() === 'lessee'" (click)="roleService.switchRole('lessee')">
         我是承租人
       </button>
     </div>
@@ -20,7 +20,7 @@
 
   <ul class="user-sidebar__menu">
 
-    @if (currentRole() === 'lessor') {
+    @if (roleService.currentRole() === 'lessor') {
 
     <li>
       <a routerLink="/user-center/dashboard" class="user-sidebar__link" routerLinkActive="is-active">
@@ -98,7 +98,7 @@
     @else {
 
     <li>
-      <a class="user-sidebar__link">
+      <a routerLink="/user-center/dashboard" class="user-sidebar__link" routerLinkActive="is-active">
         <span class="material-symbols-outlined">dashboard</span>
         <span>總覽主控台</span>
       </a>

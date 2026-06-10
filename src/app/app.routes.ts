@@ -37,6 +37,10 @@ export const routes: Routes = [
         component: ContactComponent
       },
       {
+        path: 'safety',
+        loadComponent : () => import('./@component/@front/safety-component/safety-component').then(c => c.SafetyComponent),
+      },
+      {
         path: 'faq',
         loadComponent: () => import('./@component/@front/faqcomponent/faqcomponent').then(c => c.FAQComponent),
       },

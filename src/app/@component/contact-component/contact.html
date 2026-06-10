@@ -4,7 +4,26 @@
 
   <input type="text" name="name" [(ngModel)]="formData.name" placeholder="您的稱呼">
 
-  <input type="email" name="email" [(ngModel)]="formData.email" placeholder="example@email.com">
+
+  <div class="form-group mb-3">
+  <input type="email"
+         class="form-control"
+         [(ngModel)]="formData.email"
+         name="email"
+         placeholder="example@email.com"
+         required
+         pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+         #emailCtrl="ngModel"> @if (emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)) {
+    <div class="text-danger mt-1" style="font-size: 0.85rem; padding-left: 5px;">
+      @if (emailCtrl.errors?.['required']) {
+        <span>⚠️ 信箱是必填欄位喔！</span>
+      }
+      @if (emailCtrl.errors?.['pattern']) {
+        <span>⚠️ 信箱格式不正確，請檢查是否有漏掉 @ 或 .com</span>
+      }
+    </div>
+  }
+</div>
 
   <select name="subject" [(ngModel)]="formData.subject">
     <option value="" disabled>請選擇相關主旨</option>

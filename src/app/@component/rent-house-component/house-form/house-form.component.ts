@@ -7,6 +7,8 @@ import { District } from '../../../@interface/location';
 import { LocationSelectComponent } from '../../location-select-component/location-select-component';
 import { Authservice } from '../../../@service/authservice';
 import { HouseViewingService } from '../../../@service/house-viewing-service';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 
 interface ViewingSlotForm {
@@ -64,7 +66,8 @@ export class HouseFormComponent implements OnInit {
   constructor(
     private houseService: HouseService,
     private cdr: ChangeDetectorRef,
-    private route: ActivatedRoute // 🌟 3. 把網址掃描器注入進來
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -178,78 +181,118 @@ export class HouseFormComponent implements OnInit {
   }
 
   submitForm() {
-
     if (this.formData.accountId === 0) {
-      alert('【您尚未登入或登入已過期，請先登入後再發布房屋！');
-      // this.router.navigate(['/login']); // 實務上可以把它踢回登入頁
+      Swal.fire({
+        title: '尚未登入',
+        text: '您尚未登入或登入已過期，請先登入後再發布房屋！',
+        icon: 'warning',
+        confirmButtonText: '我知道了',
+        confirmButtonColor: '#f39c12'
+      });
+
+      this.router.navigate(['/login']);
       return;
     }
-    if (this.formData.sleepTime?.length === 5) this.formData.sleepTime += ':00';
-    if (this.formData.wakeTime?.length === 5) this.formData.wakeTime += ':00';
+
+    if (this.formData.sleepTime?.length === 5) {
+      this.formData.sleepTime += ':00';
+    }
+
+    if (this.formData.wakeTime?.length === 5) {
+      this.formData.wakeTime += ':00';
+    }
+
     console.log('送出表單', this.formData, '待上傳照片數量:', this.pendingPhotos.length);
+
     if (this.isEditMode) {
-      // 🌟 編輯模式
       this.houseService.updateHouse(this.editingId, this.formData).subscribe({
         next: () => {
           this.saveViewingSlotsForHouse(this.editingId, () => {
-            if (this.pendingPhotos.length > 0) {
-              let completedUploads = 0;
-
-              this.pendingPhotos.forEach(photo => {
-                this.uploadAndBindPhoto(this.editingId, photo.file, photo.isCover, () => {
-                  completedUploads++;
-
-                  if (completedUploads === this.pendingPhotos.length) {
-                    alert('✏️ 修改成功！包含可看房時段與新圖片已更新。');
+            this.uploadPendingPhotosIfNeeded(
+              this.editingId,
+              () => {
+                Swal.fire({
+                  title: '修改成功！',
+                  text: this.pendingPhotos.length > 0
+                    ? '您的房源資料、可看房時段與新圖片已成功更新。'
+                    : '您的房源資料與可看房時段已成功更新。',
+                  icon: 'success',
+                  confirmButtonText: '回到列表',
+                  confirmButtonColor: '#3085d6'
+                }).then((result: any) => {
+                  if (result.isConfirmed) {
                     this.resetForm();
-                    window.location.reload();
+                    this.router.navigate(['/user-center/houses']);
                   }
                 });
-              });
-            } else {
-              alert('✏️ 修改成功！包含可看房時段已更新。');
-              this.resetForm();
-              window.location.reload();
-            }
+              }
+            );
           });
         },
-        error: (err) => console.error('修改失敗', err)
+        error: (err) => {
+          console.error('修改失敗', err);
+          Swal.fire('錯誤', '房源修改失敗，請檢查後端狀態！', 'error');
+        }
       });
-    } else {
-      // 🌟 新增模式
-      this.houseService.createHouse(this.formData).subscribe({
-        next: (res: any) => {
-          const newHouseId = res?.id || res?.HouseId || res?.houseId;
 
-          if (!newHouseId) {
-            alert('房屋已建立，但無法取得房屋 ID');
-            return;
-          }
-
-          this.saveViewingSlotsForHouse(newHouseId, () => {
-            if (this.pendingPhotos.length > 0) {
-              let completedUploads = 0;
-
-              this.pendingPhotos.forEach(photo => {
-                this.uploadAndBindPhoto(newHouseId, photo.file, photo.isCover, () => {
-                  completedUploads++;
-
-                  if (completedUploads === this.pendingPhotos.length) {
-                    alert('🎉 房屋申請已送出！可看房時段與圖片已儲存。');
-                    this.resetForm();
-                    window.location.reload();
-                  }
-                });
-              });
-            } else {
-              alert('🎉 房屋申請已送出！可看房時段已儲存。');
-              this.resetForm();
-            }
-          });
-        },
-        error: (err) => console.error('新增房屋申請失敗', err)
-      });
+      return;
     }
+
+    this.houseService.createHouse(this.formData).subscribe({
+      next: (res: any) => {
+        const newHouseId = res?.id || res?.HouseId || res?.houseId;
+
+        if (!newHouseId) {
+          Swal.fire('錯誤', '房屋已建立，但無法取得房屋 ID，請檢查後端回傳格式。', 'error');
+          return;
+        }
+
+        this.saveViewingSlotsForHouse(newHouseId, () => {
+          this.uploadPendingPhotosIfNeeded(
+            newHouseId,
+            () => {
+              Swal.fire({
+                title: '申請已送出！',
+                text: this.pendingPhotos.length > 0
+                  ? '房屋申請、可看房時段與圖片已儲存，等待管理員審核中。'
+                  : '房屋申請與可看房時段已儲存，等待管理員審核中。',
+                icon: 'success',
+                confirmButtonText: '回到列表',
+                confirmButtonColor: '#28a745'
+              }).then((result: any) => {
+                if (result.isConfirmed) {
+                  this.resetForm();
+                  this.router.navigate(['/user-center/houses']);
+                }
+              });
+            }
+          );
+        });
+      },
+      error: (err) => {
+        console.error('新增房屋申請失敗', err);
+        Swal.fire('錯誤', '房屋申請失敗，請檢查後端狀態！', 'error');
+      }
+    });
+  }
+
+  private uploadPendingPhotosIfNeeded(houseId: number, onComplete: () => void): void {
+    if (this.pendingPhotos.length === 0) {
+      onComplete();
+      return;
+    }
+
+    let completedUploads = 0;
+
+    this.pendingPhotos.forEach(photo => {
+      this.uploadAndBindPhoto(houseId, photo.file, photo.isCover, () => {
+        completedUploads++;
+
+        if (completedUploads === this.pendingPhotos.length) {
+          onComplete();
+        }
+      });
+    });
   }
 
   uploadAndBindPhoto(houseId: number, file: File, isCover: boolean, onComplete: () => void) {

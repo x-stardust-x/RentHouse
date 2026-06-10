@@ -1,8 +1,8 @@
 import { Component, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-// 🌟 1. 記得把你的 ProductService 給 Import 進來！(請確認路徑是否正確)
 import { HouseService } from '../../@service/house.service';
+import Swal from 'sweetalert2'; // 🌟 記得引入美美的彈窗！
 
 @Component({
   selector: 'app-product-management',
@@ -14,22 +14,49 @@ import { HouseService } from '../../@service/house.service';
 export class ProductManagementComponent implements OnInit {
 
   products = signal<any[]>([]);
-  accountId: number = 101; // 準備一個變數裝會員 ID
+  accountId: number = 0;
 
   constructor(
     private router: Router,
-    private houseService: HouseService  // 🌟 2. 注入 Service
+    private houseService: HouseService
   ) {}
 
   ngOnInit() {
 
-      this.loadProducts();      // 去後端撈資料！
+    const token = localStorage.getItem('token');
 
+    if (token) {
+      try {
+
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        this.accountId = Number(payload.AccountId); // 抓取真實會員 ID
+
+        if (this.accountId > 0) {
+
+          this.loadProducts();
+        } else {
+          console.error('⚠️ Token 解碼成功，但裡面沒有夾帶 AccountId！');
+        }
+      } catch (e) {
+        console.error('⚠️ 解析 Token 失敗', e);
+      }
+    } else {
+      // 🌟 如果沒登入（找不到 token）
+      Swal.fire({
+        title: '尚未登入',
+        text: '請先登入後再查看您的技能/工具列表喔！',
+        icon: 'warning',
+        confirmButtonText: '前往登入'
+      }).then(() => {
+        // 實務上可以直接把他踢回登入頁面
+        this.router.navigate(['/login']);
+      });
+    }
   }
 
-  // 🌟 4. 呼叫我們剛剛在 C# 寫好的 GetProductsByAccountId
+  // 呼叫我們剛剛在 C# 寫好的 GetProductsByAccountId
   loadProducts() {
-    console.log('準備去後端撈資料，目前的 accountId 是：', this.accountId);
+    console.log('準備去後端撈資料，目前的真實 accountId 是：', this.accountId);
     this.houseService.getProductsByAccountId(this.accountId).subscribe({
       next: (data) => {
         console.log('後端傳回來的資料長這樣：', data);
@@ -44,15 +71,27 @@ export class ProductManagementComponent implements OnInit {
   }
 
   deleteProduct(id: number) {
-    if (confirm('確定要刪除這項技能/工具嗎？')) {
-      // 🌟 5. 呼叫刪除 API
-      this.houseService.deleteProduct(id).subscribe({
-        next: () => {
-          alert('刪除成功！');
-          this.loadProducts(); // 刪除完重新載入列表
-        },
-        error: (err) => alert('刪除失敗')
-      });
-    }
+    // 🌟 4. 把醜醜的 confirm 換成高級的 Swal 詢問視窗
+    Swal.fire({
+      title: '確定要刪除嗎？',
+      text: '刪除後將無法恢復這項技能/工具紀錄！',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: '是的，刪除！',
+      cancelButtonText: '取消'
+    }).then((result: any) => {
+      if (result.isConfirmed) {
+        // 如果使用者按下了「是的，刪除！」才呼叫 API
+        this.houseService.deleteProduct(id).subscribe({
+          next: () => {
+            Swal.fire('已刪除！', '您的項目已被刪除。', 'success');
+            this.loadProducts(); // 刪除完重新載入列表
+          },
+          error: (err) => Swal.fire('錯誤', '刪除失敗，請稍後再試。', 'error')
+        });
+      }
+    });
   }
 }

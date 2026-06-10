@@ -23,16 +23,16 @@ export class HouseManagementComponent implements OnInit {
   ngOnInit() {
 
 
-    // 🌟 1. 改成去拿 'token' 抽屜裡的資料
+    //  改成去拿 'token' 抽屜裡的資料
     const token = localStorage.getItem('token');
 
     if (token) {
       try {
-        // 🌟 2. 像特務一樣解碼這張數位身分證 (JWT 的第二段是夾帶的資料)
+        //  像特務一樣解碼這張數位身分證 (JWT 的第二段是夾帶的資料)
         const payload = JSON.parse(atob(token.split('.')[1]));
         console.log('🕵️‍♂️ 解碼成功！身分證裡面的資料長這樣：', payload);
 
-        // 🌟 3. 抓取身分證裡的 AccountId，並把它轉換成數字 (Number)
+        //  抓取身分證裡的 AccountId，並把它轉換成數字 (Number)
         this.accountId = Number(payload.AccountId);
 
         if (this.accountId) {

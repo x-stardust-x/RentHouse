@@ -18,14 +18,65 @@ export class AdminReviewComponent implements OnInit {
   private readonly logsev = inject(LogService);
   ipAddress = signal<string>('');
 
-  // 1. 原始資料庫：儲存後端撈回來的「所有真實資料」，絕不被篩選器破壞
+  selectedHouseDetails: any = null;
 
   rawHouses = signal<any[]>([]);
 
+   viewMode = signal<'grid' | 'list'>('grid');
 
+  currentSort = signal<string>('newToOld');
   currentTab = signal<string>('rooms');
   currentStatus = signal<string>('all');
 
+  currentPage = 1;
+  pageSize = 6;
+
+  get pagedHouses() {
+
+    const sortedHouses = [...this.pendingHouses()];
+    if (this.currentSort() === 'newToOld') {
+      sortedHouses.sort((a, b) => b.id - a.id);
+    } else {
+      sortedHouses.sort((a, b) => a.id - b.id);
+    }
+
+
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    return sortedHouses.slice(startIndex, endIndex);
+  }
+
+  openHouseDetails(house: any) {
+    this.selectedHouseDetails = house;
+  }
+
+  changeViewMode(mode: 'grid' | 'list') {
+    this.viewMode.set(mode);
+  }
+
+    onSortChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    this.currentSort.set(selectElement.value);
+
+
+    this.currentPage = 1;
+  }
+
+  get totalPages() {
+   return Math.ceil(this.pendingHouses().length / this.pageSize);
+  }
+
+  get totalPagesArray() {
+    return new Array(this.totalPages);
+  }
+
+  // 4. 換頁按鈕觸發的動作
+  changePage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
 
   pendingHouses = computed(() => {
 
@@ -62,6 +113,12 @@ export class AdminReviewComponent implements OnInit {
         this.ipAddress.set(ip);
       });
     }
+  }
+
+  //卡片摺疊
+  toggleDetails(item: any) {
+
+    item.showDetails = !item.showDetails;
   }
 
  checkAdminRole() {

@@ -1,6 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { UserService } from '../../@service/user-service';
 
 @Component({
   selector: 'app-user-center-sidebar',
@@ -10,6 +9,11 @@ import { UserService } from '../../@service/user-service';
 })
 export class UserCenterSidebar {
 
-  public roleService = inject(UserService);
+  // 🟢 用來記錄目前的身分：'lessor' (出租人) 或 'lessee' (承租人)
+  currentRole = signal<'lessor' | 'lessee'>('lessor');
+
+  switchRole(role: 'lessor' | 'lessee') {
+    this.currentRole.set(role);
+  }
 
 }

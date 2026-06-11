@@ -13,8 +13,6 @@ export class UserService {
   profile = signal<UserProfile | null>(null);
   private readonly baseUrl = 'https://localhost:7215/api/User/';
 
-  // 🟢 用來記錄目前的身分：'lessor' (出租人) 或 'lessee' (承租人)
-  currentRole = signal<'lessor' | 'lessee'>('lessor');
 
   public users = signal<any[]>([]);
 
@@ -35,7 +33,7 @@ export class UserService {
       console.log(res);
       alert("更新完成")
 
-      this.router.navigate(['/member/dashboard']);
+      this.router.navigate(['/user-center']);
     });
   }
 
@@ -61,8 +59,5 @@ export class UserService {
 
   changePwd(userId : number | null , pwd: string) {
     return this.http.put(this.baseUrl + `update-pwd/${userId}`,{pwd});
-  }
-  switchRole(role: 'lessor' | 'lessee') {
-    this.currentRole.set(role);
   }
 }

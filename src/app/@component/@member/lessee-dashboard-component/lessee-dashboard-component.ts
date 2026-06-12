@@ -1,9 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
+import { Authservice } from '../../../@service/authservice';
+import { UserService } from '../../../@service/user-service';
+import { LocationService } from '../../../@service/location-service';
+import { HouseService } from '../../../@service/house.service';
+import { HouseViewingService } from '../../../@service/house-viewing-service';
+import { RentalMatchingService } from '../../../@service/rental-matching-service';
+import { MatchHouseDto } from '../../../@interface/match-house';
 
 interface HouseRecommendation {
   id: number;
@@ -13,6 +20,7 @@ interface HouseRecommendation {
   matchScore: number;
   tags: { icon: string; text: string }[];
   price: number;
+  link : string;
   isHot?: boolean;
 }
 
@@ -24,7 +32,30 @@ interface HouseRecommendation {
   styleUrls: ['./lessee-dashboard-component.scss']
 })
 export class LesseeDashboardComponent {
-  userName = '李小明';
+
+  private readonly authsev = inject(Authservice);
+  public usersev = inject(UserService);
+  public locsev = inject(LocationService);
+  public housesev = inject(HouseService);
+  private viewingService = inject(HouseViewingService);
+  private rentalsev = inject(RentalMatchingService);
+  private router = inject(Router);
+
+
+  accountId = Number(this.authsev.getAccountId());
+  userId = this.authsev.getUserId();
+  houses = signal<MatchHouseDto[]>([]);
+  constructor(){
+    this.usersev.loadProfile(this.userId);
+    this.locsev.getUserLocation(this.userId);
+    this.rentalsev.getRentals().subscribe((res) =>{
+      this.houses.set(res);
+      console.log(this.houses());
+    })
+    this.locsev.loadAllDistricts();
+  }
+
+
   role = '承租人';
 
   // 目前媒合狀態資料
@@ -36,32 +67,66 @@ export class LesseeDashboardComponent {
   };
 
   // 精選共居空間資料
-  recommendations: HouseRecommendation[] = [
-    {
-      id: 1,
-      imageUrl: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80',
-      title: '暖隅共居公寓',
-      location: '高雄市苓雅區',
-      matchScore: 95,
+ recommendations = computed<HouseRecommendation[]>(() => {
+  const shuffled = [...this.houses()]
+    .sort(() => Math.random() - 0.5);
+
+  return shuffled
+    .slice(0, 3)
+    .map(house => ({
+      id: house.id,
+      imageUrl: this.getCoverUrl(house) ?? 'assets/images/no-image.png',
+      title: house.name,
+      location: house.address,
+      matchScore: 0,
+      price: house.rentPrice,
+      link : `/rental-matching-detail/room/` + house.houseId,
       tags: [
-        { icon: 'history', text: '鄰近長安' },
-        { icon: 'pets', text: '可養寵物' },
-        { icon: 'soup_kitchen', text: '廚具共用' }
-      ],
-      price: 12000
-    },
-    {
-      id: 2,
-      imageUrl: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80',
-      title: '綠意巷弄雅房',
-      location: '高雄市三民區',
-      matchScore: 88,
-      tags: [
-        { icon: 'Check_circle', text: '雅房' },
-        { icon: 'balcony', text: '有陽台' },
-        { icon: 'directions_bus', text: '近捷運' }
-      ],
-      price: 8500
+        ...(house.pet ? [{ icon: 'pets', text: '可養寵物' }] : []),
+        ...(house.includeWifi ? [{ icon: 'wifi', text: '附 Wi-Fi' }] : []),
+        ...(house.includeUtilities ? [{ icon: 'bolt', text: '含水電' }] : []),
+        ...(house.includeManagementFee ? [{ icon: 'apartment', text: '含管理費' }] : [])
+      ]
+    }));
+});
+
+  getCoverUrl(item: any): string {
+    let finalUrl = '';
+
+
+    if (item.coverUrl) finalUrl = item.coverUrl;
+    else if (item.CoverUrl) finalUrl = item.CoverUrl;
+    else if (item.images && item.images.length > 0) {
+      const coverImg = item.images.find((img: any) => img.isCover === true || img.IsCover === true);
+      finalUrl = coverImg ? (coverImg.url || coverImg.Url) : (item.images[0].url || item.images[0].Url);
     }
-  ];
+    else if (item.Images && item.Images.length > 0) {
+      const coverImg = item.Images.find((img: any) => img.isCover === true || img.IsCover === true);
+      finalUrl = coverImg ? (coverImg.url || coverImg.Url) : (item.Images[0].url || item.Images[0].Url);
+    }
+    else if (item.imageUrls && item.imageUrls.length > 0) finalUrl = item.imageUrls[0];
+    else if (item.ImageUrls && item.ImageUrls.length > 0) finalUrl = item.ImageUrls[0];
+    else if (item.url) finalUrl = item.url;
+    else if (item.Url) finalUrl = item.Url;
+
+
+    if (finalUrl) {
+
+      if (finalUrl.startsWith('/')) {
+        return `https://localhost:7215${finalUrl}`;
+      }
+
+      return finalUrl;
+    }
+
+
+    return 'https://via.placeholder.com/400x300/EFEFEF/999999?text=No+Image';
+  }
+  openDetail(link: string) {
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree([link])
+    );
+
+    window.open(url, '_blank');
+  }
 }

@@ -1,6 +1,6 @@
 <div class="dashboard-wrapper p-4">
   <header class="mb-4">
-    <h1 class="welcome-text m-0">早安，{{ userName }} <span class="role-badge">({{ role }})</span></h1>
+    <h1 class="welcome-text m-0">早安，{{ usersev.profile()?.realName  }} <span class="role-badge">({{ role }})</span></h1>
     <p class="subtitle text-muted">歡迎回到您的專屬空間，我們為您準備了最新的房源推薦與共居資訊。</p>
   </header>
 
@@ -78,9 +78,9 @@
     </div>
 
     <div class="row g-4">
-      @for (item of recommendations; track item.id) {
+      @for (item of recommendations(); track item.id) {
         <div class="col-12 col-md-6 col-lg-4">
-          <div class="house-card">
+          <div class="house-card" (click)="openDetail(item.link)"  style="cursor: pointer;">
             <div class="image-wrapper position-relative">
               <img [src]="item.imageUrl" [alt]="item.title" class="w-100 house-img">
               <div class="match-badge">
@@ -113,7 +113,7 @@
         </div>
       }
 
-      <div class="col-12 col-md-6 col-lg-4">
+      <!-- <div class="col-12 col-md-6 col-lg-4">
         <div class="exchange-promo-card h-100 p-4 d-flex flex-column text-center">
           <div class="promo-tag mb-3 align-self-end">熱門技能交換</div>
           <div class="flex-grow-1 d-flex flex-column justify-content-center">
@@ -125,7 +125,7 @@
             <mat-icon class="me-2">edit_square</mat-icon>提出交換確認
           </button>
         </div>
-      </div>
+      </div> -->
     </div>
   </section>
 </div>

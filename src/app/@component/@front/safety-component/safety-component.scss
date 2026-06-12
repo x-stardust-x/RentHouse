@@ -1,3 +1,8 @@
+// 變數設定 (若你已有統一變數可自行替換)
+$primary-blue: #E66F43;
+$text-muted: #666666;
+$card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
 .security-page {
   max-width: 1200px;
   margin: auto;
@@ -198,5 +203,85 @@
 
   .cta-card {
     padding: 50px 20px;
+  }
+}
+
+// 新增的藍色標題線條顏色
+.section-title.blue {
+  .line {
+    background-color: $primary-blue;
+  }
+}
+
+// 數位與金流安全卡片樣式
+.security-feature-box {
+  background: #ffffff;
+  padding: 2.5rem 1.5rem;
+  border-radius: 16px;
+  box-shadow: $card-shadow;
+  text-align: center;
+  height: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .icon-header {
+    width: 60px;
+    height: 60px;
+    background-color: rgba($primary-blue, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+
+    mat-icon {
+      color: $primary-blue;
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  h5 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #333333;
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: $text-muted;
+    line-height: 1.6;
+    margin-bottom: 0;
+  }
+}
+
+// CTA 新增的淺色外框按鈕樣式
+.btn-light-outline {
+  background: transparent;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
   }
 }

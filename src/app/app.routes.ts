@@ -15,6 +15,11 @@ export const routes: Routes = [
     component: PublicLayout,
     children: [
       {
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full'
+      },
+      {
         path: 'home',
         loadComponent: () => import('./@component/home-component/home-component').then(c => c.HomeComponent),
         pathMatch: 'full'
@@ -215,11 +220,11 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
-
   {
     // 🪤 捕捉所有未知的網址，導回首頁
     path: '**',
-    redirectTo: 'home'
+    redirectTo: 'home',
+    pathMatch: 'full'
   }
 ];
 

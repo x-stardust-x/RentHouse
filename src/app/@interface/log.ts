@@ -4,5 +4,6 @@ export interface Log {
   name : string;
   action : string;
   ipAddress : string;
+  createdAt : Date;
   timestamp : Date;
 }

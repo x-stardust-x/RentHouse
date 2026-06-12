@@ -148,6 +148,43 @@ h2 {
   }
 }
 
+.section-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(120, 90, 70, 0.16);
+  padding-bottom: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.section-heading-row h2 {
+  margin: 0;
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.section-note {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #9a8172;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .section-heading-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .section-note {
+    white-space: normal;
+    line-height: 1.5;
+  }
+}
+
 /* 7. 標籤區域 (習慣與興趣) */
 .tags-container {
   display: flex;
@@ -304,6 +341,23 @@ h2 {
     color: var(--color-primary);
     background-color: var(--color-primary-light);
   }
+}
+
+.interest-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+
+.interest-tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.5rem 0.85rem;
+  font-weight: 700;
+  color: #e86b3f;
+  background: #fff1ec;
+  border: 1px solid rgba(232, 107, 63, 0.22);
 }
 
 /* 11. 手機響應式處理 */

@@ -126,6 +126,24 @@ label {
   background: #e98b2a;
 }
 
+.preference-helper {
+  display: block;
+  margin-top: 0.45rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #8a7a70;
+}
+
+.profile-card select.custom-input {
+  cursor: pointer;
+  background-color: #fff;
+}
+
+.profile-card select.custom-input {
+  appearance: auto;
+  min-height: 3rem;
+}
+
 /* ========================================
    Slider 數值顯示
 ======================================== */
@@ -242,6 +260,108 @@ label {
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+  }
+}
+
+.interest-tag-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.interest-tag-hint {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #8a7a70;
+}
+
+.interest-tag-list,
+.interest-preset-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+
+.interest-tag-chip,
+.interest-preset-chip {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.55rem 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.interest-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #fff1ec;
+  color: #e86b3f;
+  border: 1px solid rgba(232, 107, 63, 0.24);
+}
+
+.interest-tag-chip:hover {
+  background: #ffe5dc;
+}
+
+.interest-tag-chip__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  font-size: 1rem;
+  line-height: 1;
+  background: rgba(232, 107, 63, 0.12);
+}
+
+.interest-preset-chip {
+  background: #f6f6f6;
+  color: #5f534d;
+}
+
+.interest-preset-chip.is-active {
+  background: #fff1ec;
+  color: #e86b3f;
+  box-shadow: inset 0 0 0 1px rgba(232, 107, 63, 0.28);
+}
+
+.interest-add-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.interest-add-input {
+  flex: 1;
+}
+
+.interest-add-btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.7rem 1.1rem;
+  font-weight: 800;
+  color: #7a4b34;
+  background: #f5f5f5;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.interest-add-btn:hover {
+  background: #fff1ec;
+  color: #e86b3f;
+}
+
+@media (max-width: 576px) {
+  .interest-add-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .interest-add-btn {
+    width: 100%;
   }
 }
 

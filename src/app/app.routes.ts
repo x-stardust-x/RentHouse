@@ -119,6 +119,7 @@ export const routes: Routes = [
             path: 'product-booking-approval-component',
             loadComponent: () => import('./@component/product-booking-approval-component/product-booking-approval-component').then(c => c.ProductBookingApprovalComponent),
           },
+          // 個人資料設定
           {
             path: 'edit',
             loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),

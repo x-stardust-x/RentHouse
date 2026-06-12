@@ -7,7 +7,7 @@ export interface CreateHouseDto {
   rentPrice: number;
   includeUtilities: boolean;
   includeWifi: boolean;
-  includeManagememtFee: boolean;
+  includeManagementFee: boolean;
   areaSize?: number | null;
   leaseTerm?: number;
   floorInfo: string;

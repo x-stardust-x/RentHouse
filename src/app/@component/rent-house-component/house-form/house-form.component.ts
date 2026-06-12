@@ -47,7 +47,7 @@ export class HouseFormComponent implements OnInit {
     rentPrice: 15000,
     includeUtilities: false,
     includeWifi: false,
-    includeManagememtFee: false,
+    includeManagementFee: false,
     areaSize: null,
     leaseTerm: 12,
     floorInfo: '',
@@ -109,7 +109,7 @@ export class HouseFormComponent implements OnInit {
           rentPrice: data.rentPrice || 0,
           includeUtilities: data.includeUtilities || false,
           includeWifi: data.includeWifi || false,
-          includeManagememtFee: data.includeManagementFee || false,
+          includeManagementFee: data.includeManagementFee || false,
           areaSize: data.areaSize || null,
           leaseTerm: data.leaseTerm || 12,
           floorInfo: data.floorInfo || '',
@@ -259,6 +259,9 @@ export class HouseFormComponent implements OnInit {
 
     this.syncAdvancedRulesBeforeSubmit();
 
+    this.formData.cleanLevel = Number(this.formData.cleanLevel || 3);
+    this.formData.noiseTolerance = Number(this.formData.noiseTolerance || 3);
+
     if (this.formData.sleepTime?.length === 5) {
       this.formData.sleepTime += ':00';
     }
@@ -380,7 +383,7 @@ export class HouseFormComponent implements OnInit {
   resetForm() {
     this.formData = {
       accountId: this.authsev.getAccountId() ?? 1, districtId: undefined, name: '', address: '', description: '',
-      rentPrice: 0, includeUtilities: false, includeWifi: false, includeManagememtFee: false,
+      rentPrice: 0, includeUtilities: false, includeWifi: false, includeManagementFee: false,
       areaSize: null, leaseTerm: 12, floorInfo: '', houseType: '獨立套房', status: 0,
       sleepTime: '23:30', wakeTime: '07:00', cleanLevel: 3, noiseTolerance: 3, pet: false, smoke: false, interests: '',
       advancedRules: '', routineType: '正常作息',

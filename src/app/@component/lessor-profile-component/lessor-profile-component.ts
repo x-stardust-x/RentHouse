@@ -59,26 +59,55 @@ export class LessorProfileComponent implements OnInit {
   // }
 
 
-  getInterestsArray(interests: string | undefined): string[] {
+  getInterestsArray(interests: string | undefined | null): string[] {
     if (!interests) {
       return [];
     }
 
     try {
-      // 1. 如果資料庫存的是標準 JSON 陣列字串 (例如：'["音樂","電影"]')
       const parsed = JSON.parse(interests);
+
       if (Array.isArray(parsed)) {
-        return parsed;
+        return parsed
+          .map(item => String(item).trim())
+          .filter(item => item.length > 0);
       }
-    } catch (e) {
-      // 2. 如果解析失敗，代表是普通字串，改用正規表達式同時相容「英文逗號 , 」與「中文逗號 ，」
-      return interests
-        .split(/[,，]/)                       // 同時支援中英文逗號切割
-        .map(item => item.trim())            // 去除前後空白
-        .filter(item => item !== '');        // 過濾掉空字串
+    } catch {
+      // 非 JSON 就往下用分隔符切
     }
 
-    // 備用防呆
-    return [interests];
+    return interests
+      .split(/[,，、\n]/)
+      .map(item => item.trim())
+      .filter(item => item.length > 0)
+      .filter((item, index, array) => array.indexOf(item) === index);
+  }
+
+  cleanLevelLabel(value: number | string | null | undefined): string {
+    const level = Number(value);
+
+    const labels: Record<number, string> = {
+      1: '隨性自然',
+      2: '偶爾整理',
+      3: '一般乾淨',
+      4: '注重整潔',
+      5: '非常重視整潔'
+    };
+
+    return labels[level] || '一般乾淨';
+  }
+
+  noiseToleranceLabel(value: number | string | null | undefined): string {
+    const level = Number(value);
+
+    const labels: Record<number, string> = {
+      1: '非常怕吵',
+      2: '喜歡安靜',
+      3: '一般音量可接受',
+      4: '可接受偶爾吵雜',
+      5: '可接受熱鬧環境'
+    };
+
+    return labels[level] || '一般音量可接受';
   }
 }

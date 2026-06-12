@@ -40,9 +40,23 @@
       </section>
 
       <section class="info-section">
-        <h2>生活習慣與偏好</h2>
+        <div class="section-heading-row">
+          <h2>出租人個人共居偏好</h2>
+
+          <p class="section-note">
+            ※ 實際入住規範仍以各房源頁面設定為準
+          </p>
+        </div>
 
         <div class="tags-container">
+
+          <span class="habit-tag">
+            ✨ 整潔：{{ cleanLevelLabel(profile.cleanLevel) }}
+          </span>
+
+          <span class="habit-tag">
+            🔊 噪音：{{ noiseToleranceLabel(profile.noiseTolerance) }}
+          </span>
 
           @if (!profile.smoke) {
           <span class="habit-tag">🚭 無菸環境</span>
@@ -61,17 +75,20 @@
             @if (profile.noiseTolerance <= 2) { <span class="habit-tag">🤫 寧靜空間</span>
               }
 
-              @if (profile.interests && getInterestsArray(profile.interests).length > 0) {
+              <!-- @if (profile.interests && getInterestsArray(profile.interests).length > 0) {
               <div class="tags-container">
 
                 @for (interest of getInterestsArray(profile.interests); track interest) {
                 <span class="interest-tag">{{ interest }}</span>
                 }
 
+
               </div>
               } @else {
               <p class="empty-msg">此會員尚未填寫興趣與偏好。</p>
-              }
+              } -->
+
+
 
               <!-- @if (profile.interests) {
             @for (interest of getInterestsArray(profile.interests); track interest) {
@@ -80,6 +97,24 @@
           } -->
         </div>
 
+      </section>
+
+      <section class="info-section">
+        <h2>興趣標籤</h2>
+
+        @if (getInterestsArray(profile.interests).length > 0) {
+        <div class="interest-tags-container">
+
+          @for (interest of getInterestsArray(profile.interests); track interest) {
+          <span class="interest-tag">
+            # {{ interest }}
+          </span>
+          }
+
+        </div>
+        } @else {
+        <p class="empty-msg">此會員尚未填寫興趣。</p>
+        }
       </section>
 
       <section class="info-section">

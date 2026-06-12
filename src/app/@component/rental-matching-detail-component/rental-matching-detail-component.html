@@ -180,7 +180,11 @@
               </span>
 
               <span class="rental-detail-feature-pill__text">
+                @if (HABIT_LABELS[key]) {
+                {{ HABIT_LABELS[key] }}：{{ parsedRules[key] }}
+                } @else {
                 {{ parsedRules[key] }}
+                }
               </span>
             </div>
             }
@@ -751,7 +755,7 @@
             <p class="notice-title">送出前請確認房源共居規定</p>
 
             <div class="tenant-profile-tags">
-              @for (key of objectKeys(parsedRules); track key) {
+              @for (key of RULE_DISPLAY_ORDER; track key) {
               @if (parsedRules[key]) {
               <span class="profile-tag is-active">
                 {{ parsedRules[key] }}

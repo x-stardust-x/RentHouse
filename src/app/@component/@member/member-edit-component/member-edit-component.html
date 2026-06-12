@@ -1,6 +1,6 @@
 <form [formGroup]="userProfileForm" (ngSubmit)="onSubmit()" class="profile-page">
 
-  <h2 class="mb-4 fw-bold">會員資料編輯</h2>
+  <h2 class="mb-4 fw-bold">個人資料設定</h2>
 
   <div class="profile-layout">
 
@@ -100,31 +100,35 @@
         </div>
 
         <div class="mb-4">
+          <label>我的整潔習慣</label>
 
-          <label>
-            整潔程度
-            <span class="slider-value float-end">
-              {{ userProfileForm.value.cleanLevel }}
-            </span>
-          </label>
+          <select class="custom-input" formControlName="cleanLevel">
+            @for (option of cleanLevelOptions; track option.value) {
+            <option [ngValue]="option.value">
+              {{ option.label }}
+            </option>
+            }
+          </select>
 
-          <input type="range" min="1" max="5" [value]="userProfileForm.value.cleanLevel" class="form-range"
-            formControlName="cleanLevel">
-
+          <small class="preference-helper">
+            {{ getCleanLevelDescription() }}
+          </small>
         </div>
 
         <div>
+          <label>我對聲音的接受度</label>
 
-          <label>
-            噪音容忍度
-            <span class="slider-value float-end">
-              {{ userProfileForm.value.noiseTolerance }}
-            </span>
-          </label>
+          <select class="custom-input" formControlName="noiseTolerance">
+            @for (option of noiseToleranceOptions; track option.value) {
+            <option [ngValue]="option.value">
+              {{ option.label }}
+            </option>
+            }
+          </select>
 
-          <input type="range" min="1" max="5" [value]="userProfileForm.value.noiseTolerance" class="form-range"
-            formControlName="noiseTolerance">
-
+          <small class="preference-helper">
+            {{ getNoiseToleranceDescription() }}
+          </small>
         </div>
 
       </div>
@@ -139,14 +143,14 @@
 
         <div class="section-title">
           <i class="bi bi-heart"></i>
-          生活習慣
+          個人共居偏好
         </div>
 
         <div class="switch-box">
 
           <div>
-            <strong>是否接受寵物</strong>
-            <small>可以養寵物</small>
+            <strong>我能接受寵物</strong>
+            <small>可接受共居環境中有寵物</small>
           </div>
 
           <div class="form-check form-switch">
@@ -158,8 +162,8 @@
         <div class="switch-box">
 
           <div>
-            <strong>是否接受吸菸</strong>
-            <small>接受吸菸習慣</small>
+            <strong>我能接受吸菸環境</strong>
+            <small>可接受共居者有吸菸習慣</small>
           </div>
 
           <div class="form-check form-switch">
@@ -178,17 +182,14 @@
           地址資訊
         </div>
 
-        <div class="mb-3">
+        <label>地址</label>
 
-          <label>地址</label>
-
-          <input type="text" class="custom-input" formControlName="address">
-
-        </div>
-
-        <app-location-select [districtId]="userProfileForm.value.districtId"
-          (districtSelected)="onDistrictSelected($event)">
+        <app-location-select [districtId]="selectedDistrictId()" (districtSelected)="onDistrictSelected($event)">
         </app-location-select>
+
+        <div class="mb-3">
+          <input type="text" class="custom-input" formControlName="address">
+        </div>
 
       </div>
 
@@ -202,9 +203,43 @@
 
         <div class="mb-3">
 
-          <label>興趣</label>
+          <label>興趣標籤</label>
 
-          <input type="text" class="custom-input" formControlName="interests" placeholder="例如：閱讀、電影、健身">
+          <div class="interest-tag-section">
+
+            <p class="interest-tag-hint">
+              可選擇常用興趣，也可以自行新增，這些資料會顯示在出租人公開個人頁。
+            </p>
+
+            <div class="interest-tag-list">
+              @for (tag of interestTags(); track tag) {
+              <button type="button" class="interest-tag-chip is-selected" (click)="removeInterestTag(tag)">
+                <span>{{ tag }}</span>
+                <span class="interest-tag-chip__remove">×</span>
+              </button>
+              }
+            </div>
+
+            <div class="interest-preset-list">
+              @for (tag of presetInterestTags; track tag) {
+              <button type="button" class="interest-preset-chip" [class.is-active]="isInterestSelected(tag)"
+                (click)="togglePresetInterest(tag)">
+                {{ tag }}
+              </button>
+              }
+            </div>
+
+            <div class="interest-add-row">
+              <input type="text" class="custom-input interest-add-input" placeholder="輸入更多興趣，例如：烘焙、攝影"
+                [value]="customInterestInput()" (input)="customInterestInput.set($any($event.target).value)"
+                (keydown.enter)="addCustomInterest(); $event.preventDefault()">
+
+              <button type="button" class="interest-add-btn" (click)="addCustomInterest()">
+                ＋ 新增
+              </button>
+            </div>
+
+          </div>
 
         </div>
 
@@ -223,12 +258,10 @@
       <div class="text-end">
         <button type="button" class="btn-back me-4" routerLink="../dashboard">
           返回
-
         </button>
+
         <button type="submit" class="btn-save" [disabled]="!userProfileForm.valid">
-
           儲存修改
-
         </button>
 
       </div>

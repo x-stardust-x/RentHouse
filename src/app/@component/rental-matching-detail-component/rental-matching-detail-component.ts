@@ -52,6 +52,8 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   viewingSlotsLoadError = signal('');
 
   readonly HABIT_ICONS: { [key: string]: string } = {
+    livingWithLessor: 'home',
+
     cleanLevel: 'cleaning_services',
     noiseTolerance: 'volume_down',
 
@@ -64,18 +66,35 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   };
 
   readonly HABIT_LABELS: { [key: string]: string } = {
-    cleanLevel: '整潔要求',
-    noiseTolerance: '安靜要求',
+    livingWithLessor: '與出租人同住',
+    cleanLevel: '整潔',
+    noiseTolerance: '安靜',
 
-    'routines': '作息型態',
-    'showerRestrictions': '深夜限制',
-    'visitorPolicies': '訪客規範',
-    'cookingHabits': '廚房文化',
-    'fridgeAllocations': '冰箱分配',
-    'interactionFrequencies': '交流頻率'
+    routines: '作息',
+    showerRestrictions: '深夜',
+    visitorPolicies: '訪客',
+    cookingHabits: '廚房',
+    fridgeAllocations: '冰箱',
+    interactionFrequencies: '交流',
+    note: '補充'
   };
 
+  // readonly HABIT_LABELS: { [key: string]: string } = {
+  //   livingWithLessor: '是否與出租人同住',
+
+  //   cleanLevel: '整潔要求',
+  //   noiseTolerance: '安靜要求',
+
+  //   'routines': '作息型態',
+  //   'showerRestrictions': '深夜限制',
+  //   'visitorPolicies': '訪客規範',
+  //   'cookingHabits': '廚房文化',
+  //   'fridgeAllocations': '冰箱分配',
+  //   'interactionFrequencies': '交流頻率'
+  // };
+
   readonly RULE_DISPLAY_ORDER = [
+    'livingWithLessor',
     'cleanLevel',
     'noiseTolerance',
     'routines',
@@ -106,8 +125,35 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
 
   isRoom = computed(() => this.displayType() === 'room' || this.detailData()?.displayType === 'room');
   isProduct = computed(() => this.displayType() === 'product' || this.detailData()?.displayType === 'product');
-  isSkill = computed(() => this.isProduct() && this.detailData()?.category === '專業諮詢');
-  isTool = computed(() => this.isProduct() && this.detailData()?.category === '工具共享');
+  productCategory = computed(() => {
+    return String(
+      this.detailData()?.category ??
+      this.detailData()?.Category ??
+      ''
+    ).trim();
+  });
+
+  isSkill = computed(() => {
+    const category = this.productCategory();
+
+    return this.isProduct() && [
+      '專業諮詢',
+      '技能',
+      'Skill',
+      'skill'
+    ].includes(category);
+  });
+
+  isTool = computed(() => {
+    const category = this.productCategory();
+
+    return this.isProduct() && [
+      '工具共享',
+      '工具',
+      'Tool',
+      'tool'
+    ].includes(category);
+  });
 
   mapUrl = computed<SafeResourceUrl | null>(() => {
     const data = this.detailData();
@@ -143,17 +189,109 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   selectedHeroIndex = signal(0);
   heroImageChanging = signal(false);
 
-  heroImages(): { src: string; alt: string }[] {
-    return [
-      { src: this.detailData()?.url || 'images/house1.jpg', alt: '租賃物預覽圖 1' },
-      { src: this.detailData()?.url || 'images/house2.jpg', alt: '租賃物預覽圖 2' },
-      { src: this.detailData()?.url || 'images/house3.jpg', alt: '租賃物預覽圖 3' },
-      { src: this.detailData()?.url || 'images/house4.jpg', alt: '租賃物預覽圖 4' },
-    ];
+  heroImages = signal<{ src: string; alt: string }[]>([]);
+
+  private readonly apiBaseUrl = 'https://localhost:7215';
+
+  private normalizeImageUrl(rawUrl: unknown): string | null {
+    if (rawUrl === null || rawUrl === undefined) {
+      return null;
+    }
+
+    let url = String(rawUrl).trim();
+
+    if (!url) {
+      return null;
+    }
+
+    url = url.replace(/\\/g, '/');
+
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('blob:')) {
+      return url;
+    }
+
+    if (url.startsWith('/')) {
+      return `${this.apiBaseUrl}${url}`;
+    }
+
+    if (url.startsWith('Uploads/')) {
+      return `${this.apiBaseUrl}/${url}`;
+    }
+
+    return url;
+  }
+
+  private extractImageUrls(data: any): string[] {
+    const candidates: unknown[] = [];
+
+    const coverUrl =
+      data?.coverUrl ??
+      data?.CoverUrl ??
+      data?.url ??
+      data?.Url;
+
+    if (coverUrl) {
+      candidates.push(coverUrl);
+    }
+
+    const imageUrls =
+      data?.imageUrls ??
+      data?.ImageUrls;
+
+    if (Array.isArray(imageUrls)) {
+      candidates.push(...imageUrls);
+    }
+
+    const images =
+      data?.images ??
+      data?.Images;
+
+    if (Array.isArray(images)) {
+      images.forEach((image: any) => {
+        candidates.push(
+          image?.url ??
+          image?.Url ??
+          image?.coverUrl ??
+          image?.CoverUrl
+        );
+      });
+    }
+
+    const normalizedUrls = candidates
+      .map(url => this.normalizeImageUrl(url))
+      .filter((url): url is string => !!url);
+
+    return Array.from(new Set(normalizedUrls));
+  }
+
+  private syncHeroImages(data: any): void {
+    const urls = this.extractImageUrls(data);
+
+    const fallbackUrl = 'images/default_image_16-9.jpg';
+
+    const finalUrls = urls.length > 0
+      ? urls
+      : [fallbackUrl];
+
+    const itemName =
+      data?.name ??
+      data?.Name ??
+      '租賃物';
+
+    const images = finalUrls.map((url, index) => ({
+      src: url,
+      alt: `${itemName} 圖片 ${index + 1}`
+    }));
+
+    this.heroImages.set(images);
+    this.selectedHeroIndex.set(0);
+    this.selectedHeroImage.set(images[0]?.src ?? fallbackUrl);
   }
 
   currentHeroImage(): string {
-    return this.selectedHeroImage() || this.heroImages()[0]?.src || 'images/default_image_16-9.jpg';
+    return this.selectedHeroImage()
+      || this.heroImages()[0]?.src
+      || 'images/default_image_16-9.jpg';
   }
 
   selectHeroImage(imageSrc: string, index: number): void {
@@ -255,20 +393,44 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
       })
     ).subscribe({
       next: (data: any) => {
-        console.log("🔥 API 原始回傳資料:", data);
-        this.detailData.set({ ...data, displayType: this.displayType() });
-        this.parsedRules = this.normalizeHouseRules(data);
-        const cleanHouseId = Number(data?.id || data?.Id);
+        console.log('🔥 API 原始回傳資料:', data);
 
-        if (data && data.advancedRules) {
+        const detail = {
+          ...data,
+          displayType: this.displayType()
+        };
+
+        this.detailData.set(detail);
+        this.syncHeroImages(detail);
+
+        this.parsedRules = this.normalizeHouseRules(detail);
+
+        const cleanHouseId = Number(detail?.id || detail?.Id);
+
+        let advancedRules: Record<string, string> = {};
+
+        const rawAdvancedRules =
+          detail?.advancedRules ??
+          detail?.AdvancedRules ??
+          '';
+
+        if (rawAdvancedRules) {
           try {
-            this.parsedRules = typeof data.advancedRules === 'string'
-              ? JSON.parse(data.advancedRules)
-              : data.advancedRules;
+            advancedRules = typeof rawAdvancedRules === 'string'
+              ? JSON.parse(rawAdvancedRules)
+              : rawAdvancedRules;
           } catch (e) {
-            console.error("JSON 解析失敗", e);
+            console.error('JSON 解析失敗', e);
+            advancedRules = {};
           }
         }
+
+        this.parsedRules = {
+          livingWithLessor: this.livingWithLessorLabel(detail?.livingWithLessor ?? detail?.LivingWithLessor),
+          cleanLevel: this.cleanLevelLabel(detail?.cleanLevel ?? detail?.CleanLevel),
+          noiseTolerance: this.noiseToleranceLabel(detail?.noiseTolerance ?? detail?.NoiseTolerance),
+          ...advancedRules
+        };
 
         if (this.displayType() === 'room' && cleanHouseId) {
           this.http.get<any[]>(`https://localhost:7215/api/HouseFacility/${cleanHouseId}`).subscribe({
@@ -749,4 +911,13 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
     };
   }
 
+  private livingWithLessorLabel(value: boolean | string | number | null | undefined): string {
+    const normalizedValue =
+      value === true ||
+      value === 'true' ||
+      value === 1 ||
+      value === '1';
+
+    return normalizedValue ? '是，與出租人同住' : '否，不與出租人同住';
+  }
 }

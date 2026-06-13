@@ -82,6 +82,27 @@
         <h4 class="product-form__panel-title">
           <span class="material-symbols-outlined">description</span> 詳細描述
         </h4>
+
+
+        <div class="form-group">
+          <label>工具介紹</label>
+          <textarea class="form-control" [(ngModel)]="productFormData.description" name="description">
+  </textarea>
+        </div>
+
+        <div class="form-group">
+          <label>建議使用門檻 / 條件</label>
+          <textarea class="form-control" [(ngModel)]="productFormData.usageRequirements" name="usageRequirements">
+  </textarea>
+        </div>
+
+        <div class="form-group">
+          <label>損壞賠償或使用須知</label>
+          <textarea class="form-control" [(ngModel)]="productFormData.usageTerms" name="usageTerms">
+  </textarea>
+        </div>
+
+
         <div class="product-form__group">
           <textarea class="product-form__textarea" rows="4" [(ngModel)]="productFormData.description"
             placeholder="請描述這項工具的狀況或技能的服務內容..."></textarea>
@@ -94,28 +115,30 @@
         </h4>
 
         @if (isEditMode && productExistingPhotos && productExistingPhotos.length > 0) {
-          <div class="product-form__group mb-4">
-            <label class="product-form__label" style="color: #856404;">📸 伺服器上已有的舊照片（點擊 ✕ 可直接刪除）：</label>
-            <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
-              @for (photo of productExistingPhotos; track photo.id; let i = $index) {
-                <div class="product-form__photo-card" style="position: relative; width: 120px; height: 120px; border: 1px solid #dee2e6; border-radius: 6px; overflow: hidden;">
-                  <button type="button" class="product-form__photo-delete"
-                          style="position: absolute; top: 5px; right: 5px; z-index: 10; background: rgba(220, 53, 69, 0.9); border: none; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer;"
-                          (click)="removeExistingPhoto(photo.id || photo.Id, i)">
-                    <span class="material-symbols-outlined" style="font-size: 16px;">close</span>
-                  </button>
-                  <img [src]="'https://localhost:7215/' + (photo.url || photo.Url)"
-                       style="width: 100%; height: 100%; object-fit: cover;" alt="舊相片">
-                  @if (photo.isCover || photo.IsCover) {
-                    <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(40, 167, 69, 0.9); color: white; text-align: center; font-size: 11px; padding: 2px 0;">
-                      ⭐ 封面首圖
-                    </div>
-                  }
-                </div>
+        <div class="product-form__group mb-4">
+          <label class="product-form__label" style="color: #856404;">📸 伺服器上已有的舊照片（點擊 ✕ 可直接刪除）：</label>
+          <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem;">
+            @for (photo of productExistingPhotos; track photo.id; let i = $index) {
+            <div class="product-form__photo-card"
+              style="position: relative; width: 120px; height: 120px; border: 1px solid #dee2e6; border-radius: 6px; overflow: hidden;">
+              <button type="button" class="product-form__photo-delete"
+                style="position: absolute; top: 5px; right: 5px; z-index: 10; background: rgba(220, 53, 69, 0.9); border: none; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer;"
+                (click)="removeExistingPhoto(photo.id || photo.Id, i)">
+                <span class="material-symbols-outlined" style="font-size: 16px;">close</span>
+              </button>
+              <img [src]="'https://localhost:7215/' + (photo.url || photo.Url)"
+                style="width: 100%; height: 100%; object-fit: cover;" alt="舊相片">
+              @if (photo.isCover || photo.IsCover) {
+              <div
+                style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(40, 167, 69, 0.9); color: white; text-align: center; font-size: 11px; padding: 2px 0;">
+                ⭐ 封面首圖
+              </div>
               }
             </div>
-            <hr style="border-top: 1px dashed #dee2e6; margin: 1.5rem 0;">
+            }
           </div>
+          <hr style="border-top: 1px dashed #dee2e6; margin: 1.5rem 0;">
+        </div>
         }
 
         <div class="product-form__upload-wrapper">
@@ -173,14 +196,13 @@
       {{ isEditMode ? '取消修改' : '取消新增' }}
     </button>
 
-    <button type="button" class="btn px-4 py-2 text-white"
-            style="background-color: #f07b3f; border-color: #f07b3f;"
-            (click)="submitProductForm()">
+    <button type="button" class="btn px-4 py-2 text-white" style="background-color: #f07b3f; border-color: #f07b3f;"
+      (click)="submitProductForm()">
       {{ isEditMode ? '儲存修改' : '確認送出申請' }}
     </button>
 
   </div>
-  </div>
+</div>
 
 
 

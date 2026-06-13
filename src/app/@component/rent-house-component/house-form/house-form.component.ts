@@ -59,6 +59,7 @@ export class HouseFormComponent implements OnInit {
     noiseTolerance: 3,
     pet: false,
     smoke: false,
+    livingWithLessor: false,
     interests: '',
     advancedRules: '',
     routineType: '正常作息',
@@ -122,6 +123,7 @@ export class HouseFormComponent implements OnInit {
           noiseTolerance: data.noiseTolerance || 3,
           pet: data.pet || false,
           smoke: data.smoke || false,
+          livingWithLessor: data.livingWithLessor ?? data.LivingWithLessor ?? false,
           interests: data.interests || '',
           advancedRules: data.advancedRules || '',
 
@@ -261,6 +263,7 @@ export class HouseFormComponent implements OnInit {
 
     this.formData.cleanLevel = Number(this.formData.cleanLevel || 3);
     this.formData.noiseTolerance = Number(this.formData.noiseTolerance || 3);
+    this.formData.livingWithLessor = this.formData.livingWithLessor === true;
 
     if (this.formData.sleepTime?.length === 5) {
       this.formData.sleepTime += ':00';
@@ -386,6 +389,7 @@ export class HouseFormComponent implements OnInit {
       rentPrice: 0, includeUtilities: false, includeWifi: false, includeManagementFee: false,
       areaSize: null, leaseTerm: 12, floorInfo: '', houseType: '獨立套房', status: 0,
       sleepTime: '23:30', wakeTime: '07:00', cleanLevel: 3, noiseTolerance: 3, pet: false, smoke: false, interests: '',
+      livingWithLessor: false,
       advancedRules: '', routineType: '正常作息',
       showerRestriction: '無限制',
       visitorPolicy: '僅限白天拜訪',

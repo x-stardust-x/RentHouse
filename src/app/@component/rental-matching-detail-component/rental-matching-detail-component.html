@@ -170,26 +170,35 @@
         <div class="rental-detail-card rental-detail-habits-card">
           <h2 class="rental-detail-section-title">生活習慣與規範</h2>
 
-          <div class="rental-detail-feature-grid" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+          <div class="rental-rule-list">
 
             @for (key of RULE_DISPLAY_ORDER; track key) {
             @if (parsedRules[key]) {
-            <div class="rental-detail-feature-pill">
-              <span class="material-symbols-outlined rental-detail-feature-pill__icon">
-                {{ HABIT_ICONS[key] || 'help' }}
-              </span>
 
-              <span class="rental-detail-feature-pill__text">
-                @if (HABIT_LABELS[key]) {
-                {{ HABIT_LABELS[key] }}：{{ parsedRules[key] }}
-                } @else {
+            <div class="rental-rule-item" [class.rental-rule-item--full]="key === 'note'">
+
+              <div class="rental-rule-item__label-wrap">
+
+                <!-- <span class="material-symbols-outlined rental-rule-item__icon">
+                  {{ HABIT_ICONS[key] || 'help' }}
+                </span> -->
+
+                <span class="rental-rule-item__label">
+                  {{ HABIT_LABELS[key] || '規範' }}
+                </span>
+
+              </div>
+
+              <span class="rental-rule-item__colon">：</span>
+
+              <span class="rental-rule-item__value">
                 {{ parsedRules[key] }}
-                }
               </span>
-            </div>
-            }
-            }
 
+            </div>
+
+            }
+            }
 
           </div>
         </div>
@@ -242,17 +251,23 @@
 
       <div class="rental-detail-card rental-detail-tool-card">
         <h2 class="rental-detail-section-title">工具介紹</h2>
-        <p class="rental-detail-description">{{ detailData()?.description }}</p>
+        <p class="rental-detail-description">
+          {{ detailData()?.description || detailData()?.Description || '尚未提供工具介紹' }}
+        </p>
       </div>
 
       <div class="rental-detail-card rental-detail-tool-card">
         <h2 class="rental-detail-section-title">建議使用門檻 / 條件</h2>
-        <p class="rental-detail-description">{{ detailData()?.usageRequirements }}</p>
+        <p class="rental-detail-description">
+          {{ detailData()?.usageRequirements || detailData()?.UsageRequirements || '尚未提供建議使用門檻' }}
+        </p>
       </div>
 
       <div class="rental-detail-card rental-detail-tool-card">
         <h2 class="rental-detail-section-title">損壞賠償或使用須知</h2>
-        <p class="rental-detail-description">{{ detailData()?.usageTerms }}</p>
+        <p class="rental-detail-description">
+          {{ detailData()?.usageTerms || detailData()?.UsageTerms || '尚未提供損壞賠償或使用須知' }}
+        </p>
       </div>
 
       }

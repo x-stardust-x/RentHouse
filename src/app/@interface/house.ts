@@ -21,6 +21,7 @@ export interface CreateHouseDto {
   noiseTolerance: number;
   pet: boolean;
   smoke: boolean;
+  livingWithLessor: boolean;
   interests: string;
   advancedRules: string;
 

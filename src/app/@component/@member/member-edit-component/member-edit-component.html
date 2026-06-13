@@ -146,128 +146,141 @@
           個人共居偏好
         </div>
 
-        <div class="switch-box">
+        <div class="co-living-preference-list">
+
+          <label class="co-living-preference-card" [class.is-active]="userProfileForm.get('pet')?.value">
+
+            <input type="checkbox" class="co-living-preference-card__input" formControlName="pet">
+
+            <div class="co-living-preference-card__icon">🐾</div>
+
+            <div class="co-living-preference-card__content">
+              <strong>可接受共居環境中有寵物</strong>
+              <small>
+                勾選後，出租人公開頁會顯示「寵物：可接受寵物」。
+              </small>
+            </div>
+
+            <span class="co-living-preference-card__status">
+              {{ userProfileForm.get('pet')?.value ? '可接受' : '不偏好' }}
+            </span>
+          </label>
+
+          <label class="co-living-preference-card" [class.is-active]="userProfileForm.get('smoke')?.value">
+
+            <input type="checkbox" class="co-living-preference-card__input" formControlName="smoke">
+
+            <div class="co-living-preference-card__icon">🚭</div>
+
+            <div class="co-living-preference-card__content">
+              <strong>可接受共居者有吸菸習慣</strong>
+              <small>
+                這不是表示你本人會吸菸，而是你能否接受共居環境中有人吸菸。
+              </small>
+            </div>
+
+            <span class="co-living-preference-card__status">
+              {{ userProfileForm.get('smoke')?.value ? '可接受' : '不接受' }}
+            </span>
+          </label>
+
+        </div>
+
+        <!-- 地址 -->
+        <div class="profile-card">
+
+          <div class="section-title">
+            <i class="bi bi-geo-alt"></i>
+            地址資訊
+          </div>
+
+          <label>地址</label>
+
+          <app-location-select [districtId]="selectedDistrictId()" (districtSelected)="onDistrictSelected($event)">
+          </app-location-select>
+
+          <div class="mb-3">
+            <input type="text" class="custom-input" formControlName="address">
+          </div>
+
+        </div>
+
+        <!-- 興趣與自介 -->
+        <div class="profile-card">
+
+          <div class="section-title">
+            <i class="bi bi-stars"></i>
+            興趣與自我介紹
+          </div>
+
+          <div class="mb-3">
+
+            <label>興趣標籤</label>
+
+            <div class="interest-tag-section">
+
+              <p class="interest-tag-hint">
+                可選擇常用興趣，也可以自行新增，這些資料會顯示在出租人公開個人頁。
+              </p>
+
+              <div class="interest-tag-list">
+                @for (tag of interestTags(); track tag) {
+                <button type="button" class="interest-tag-chip is-selected" (click)="removeInterestTag(tag)">
+                  <span>{{ tag }}</span>
+                  <span class="interest-tag-chip__remove">×</span>
+                </button>
+                }
+              </div>
+
+              <div class="interest-preset-list">
+                @for (tag of presetInterestTags; track tag) {
+                <button type="button" class="interest-preset-chip" [class.is-active]="isInterestSelected(tag)"
+                  (click)="togglePresetInterest(tag)">
+                  {{ tag }}
+                </button>
+                }
+              </div>
+
+              <div class="interest-add-row">
+                <input type="text" class="custom-input interest-add-input" placeholder="輸入更多興趣，例如：烘焙、攝影"
+                  [value]="customInterestInput()" (input)="customInterestInput.set($any($event.target).value)"
+                  (keydown.enter)="addCustomInterest(); $event.preventDefault()">
+
+                <button type="button" class="interest-add-btn" (click)="addCustomInterest()">
+                  ＋ 新增
+                </button>
+              </div>
+
+            </div>
+
+          </div>
 
           <div>
-            <strong>我能接受寵物</strong>
-            <small>可接受共居環境中有寵物</small>
-          </div>
 
-          <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" formControlName="pet">
-          </div>
+            <label>自我介紹</label>
 
-        </div>
-
-        <div class="switch-box">
-
-          <div>
-            <strong>我能接受吸菸環境</strong>
-            <small>可接受共居者有吸菸習慣</small>
-          </div>
-
-          <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" formControlName="smoke">
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- 地址 -->
-      <div class="profile-card">
-
-        <div class="section-title">
-          <i class="bi bi-geo-alt"></i>
-          地址資訊
-        </div>
-
-        <label>地址</label>
-
-        <app-location-select [districtId]="selectedDistrictId()" (districtSelected)="onDistrictSelected($event)">
-        </app-location-select>
-
-        <div class="mb-3">
-          <input type="text" class="custom-input" formControlName="address">
-        </div>
-
-      </div>
-
-      <!-- 興趣與自介 -->
-      <div class="profile-card">
-
-        <div class="section-title">
-          <i class="bi bi-stars"></i>
-          興趣與自我介紹
-        </div>
-
-        <div class="mb-3">
-
-          <label>興趣標籤</label>
-
-          <div class="interest-tag-section">
-
-            <p class="interest-tag-hint">
-              可選擇常用興趣，也可以自行新增，這些資料會顯示在出租人公開個人頁。
-            </p>
-
-            <div class="interest-tag-list">
-              @for (tag of interestTags(); track tag) {
-              <button type="button" class="interest-tag-chip is-selected" (click)="removeInterestTag(tag)">
-                <span>{{ tag }}</span>
-                <span class="interest-tag-chip__remove">×</span>
-              </button>
-              }
-            </div>
-
-            <div class="interest-preset-list">
-              @for (tag of presetInterestTags; track tag) {
-              <button type="button" class="interest-preset-chip" [class.is-active]="isInterestSelected(tag)"
-                (click)="togglePresetInterest(tag)">
-                {{ tag }}
-              </button>
-              }
-            </div>
-
-            <div class="interest-add-row">
-              <input type="text" class="custom-input interest-add-input" placeholder="輸入更多興趣，例如：烘焙、攝影"
-                [value]="customInterestInput()" (input)="customInterestInput.set($any($event.target).value)"
-                (keydown.enter)="addCustomInterest(); $event.preventDefault()">
-
-              <button type="button" class="interest-add-btn" (click)="addCustomInterest()">
-                ＋ 新增
-              </button>
-            </div>
-
-          </div>
-
-        </div>
-
-        <div>
-
-          <label>自我介紹</label>
-
-          <textarea rows="5" class="custom-textarea" formControlName="bio">
+            <textarea rows="5" class="custom-textarea" formControlName="bio">
           </textarea>
 
+          </div>
+
         </div>
 
-      </div>
+        <!-- 按鈕 -->
+        <div class="text-end">
+          <button type="button" class="btn-back me-4" routerLink="../dashboard">
+            返回
+          </button>
 
-      <!-- 按鈕 -->
-      <div class="text-end">
-        <button type="button" class="btn-back me-4" routerLink="../dashboard">
-          返回
-        </button>
+          <button type="submit" class="btn-save" [disabled]="!userProfileForm.valid">
+            儲存修改
+          </button>
 
-        <button type="submit" class="btn-save" [disabled]="!userProfileForm.valid">
-          儲存修改
-        </button>
+        </div>
 
       </div>
 
     </div>
-
   </div>
 
 </form>

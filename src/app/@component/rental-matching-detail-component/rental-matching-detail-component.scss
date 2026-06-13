@@ -264,6 +264,107 @@
   }
 }
 
+.rental-rule-list {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 4rem;
+  row-gap: 1.15rem;
+  align-items: start;
+}
+
+/* 中間分隔線，做出你附圖左右兩欄的感覺 */
+.rental-rule-list::before {
+  content: '';
+  position: absolute;
+  top: 0.15rem;
+  bottom: 0.15rem;
+  left: 50%;
+  width: 1px;
+  background: rgba(120, 90, 70, 0.16);
+  transform: translateX(-50%);
+}
+
+.rental-rule-item {
+  display: grid;
+  grid-template-columns: 6.5rem auto minmax(0, 1fr);
+  // grid-template-columns: 7.5rem auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.rental-rule-item--full {
+  grid-column: 1 / -1;
+  padding-top: 0.25rem;
+}
+
+.rental-rule-item__label-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.rental-rule-item__icon {
+  flex: 0 0 auto;
+  font-size: 1.15rem;
+  color: var(--color-primary);
+}
+
+.rental-rule-item__label {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--color-text-main);
+  white-space: nowrap;
+}
+
+.rental-rule-item__colon {
+  color: var(--color-text-muted);
+  font-weight: 800;
+}
+
+.rental-rule-item__value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.45rem 0.95rem;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1.35;
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  border: 1px solid rgba(232, 107, 63, 0.18);
+  overflow-wrap: anywhere;
+}
+
+/* 補充說明通常比較長，讓它滿版比較好讀 */
+.rental-rule-item--full .rental-rule-item__value {
+  width: 100%;
+  justify-content: flex-start;
+  border-radius: 1rem;
+  padding: 0.75rem 1rem;
+  white-space: normal;
+}
+
+/* 手機版改成單欄 */
+@media (max-width: 768px) {
+  .rental-rule-list {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+  }
+
+  .rental-rule-list::before {
+    display: none;
+  }
+
+  .rental-rule-item {
+    grid-template-columns: 7rem auto minmax(0, 1fr);
+  }
+}
 
 
 /* ==========================================================================
@@ -1413,5 +1514,18 @@
 @media (max-width: 768px) {
   .rental-detail-spec-grid {
     grid-template-columns: 1fr;
+  }
+
+  .rental-rule-list {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+  }
+
+  .rental-rule-list::before {
+    display: none;
+  }
+
+  .rental-rule-item {
+    grid-template-columns: 7rem auto minmax(0, 1fr);
   }
 }

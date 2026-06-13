@@ -11,6 +11,8 @@ export interface MatchFilter {
   cleanLevels: number[];
   noiseToleranceLevels: number[];
 
+  livingWithLessor: boolean | null;
+
   // 進階條件 (對應資料庫的 AdvancedRules JSON)
   routines: string[];
   showerRestrictions: string[];
@@ -18,5 +20,4 @@ export interface MatchFilter {
   cookingHabits: string[];
   fridgeAllocations: string[];
   interactionFrequencies: string[];
-
 }

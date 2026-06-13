@@ -110,4 +110,60 @@ export class LessorProfileComponent implements OnInit {
 
     return labels[level] || '一般音量可接受';
   }
+
+  petPreferenceLabel(value: boolean | string | number | null | undefined): string {
+    const accepted =
+      value === true ||
+      value === 'true' ||
+      value === 1 ||
+      value === '1';
+
+    return accepted ? '可接受寵物' : '不偏好寵物';
+  }
+
+  smokePreferenceLabel(value: boolean | string | number | null | undefined): string {
+    const accepted =
+      value === true ||
+      value === 'true' ||
+      value === 1 ||
+      value === '1';
+
+    return accepted ? '可接受吸菸環境' : '不接受吸菸環境';
+  }
+
+  routinePreferenceLabel(value: string | number | null | undefined): string {
+    const hour = this.getHourFromTime(value);
+
+    if (hour === null) {
+      return '尚未提供';
+    }
+
+    if (hour >= 21 && hour <= 23) {
+      return '早睡早起';
+    }
+
+    if (hour >= 0 && hour <= 3) {
+      return '夜貓子';
+    }
+
+    return '正常作息';
+  }
+
+  private getHourFromTime(value: string | number | null | undefined): number | null {
+    if (value === null || value === undefined || value === '') {
+      return null;
+    }
+
+    if (typeof value === 'number') {
+      return value;
+    }
+
+    const match = String(value).match(/^(\d{1,2})/);
+
+    if (!match) {
+      return null;
+    }
+
+    return Number(match[1]);
+  }
 }

@@ -53,6 +53,8 @@ export class RentalMatchingComponent implements OnInit {
     cleanLevels: [],
     noiseToleranceLevels: [],
 
+    livingWithLessor: null,
+
     routines: [],
     showerRestrictions: [],
     visitorPolicies: [],
@@ -282,5 +284,14 @@ export class RentalMatchingComponent implements OnInit {
     this.applyFilters();
   }
 
-} // 確保最後有補上這個 Class 的收尾大括號！
+  setLivingWithLessorFilter(value: boolean | null): void {
+    this.filters = {
+      ...this.filters,
+      livingWithLessor: value
+    };
+
+    this.applyFilters();
+  }
+
+}
 

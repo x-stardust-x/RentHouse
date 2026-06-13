@@ -192,82 +192,127 @@
             <div class="advanced-coonditions rental-matching__advanced-conditions">
 
               <div class="rental-matching__advanced-section">
+
                 <div class="filter-title rental-matching__filter-title">
-                  <span class="material-symbols-outlined rental-matching__filter-icon">cleaning_services</span>
-                  <h3 class="rental-matching__filter-title-text">公共空間整潔要求</h3>
+                  <span class="material-symbols-outlined rental-matching__filter-icon">home</span>
+                  <h3 class="rental-matching__filter-title-text">是否與出租人同住</h3>
                 </div>
 
                 <div class="rental-matching__advanced-options">
+
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" id="clean_1"
-                      (change)="toggleCheckbox('cleanLevels', 1, $event)">
-                    <label class="rental-matching__radio-label" for="clean_1">基本整潔即可</label>
+                    <input class="rental-matching__checkbox" type="radio" name="livingWithLessor"
+                      id="living_with_lessor_all" [ngModel]="filters.livingWithLessor" [value]="null"
+                      (ngModelChange)="setLivingWithLessorFilter($event)">
+
+                    <label class="rental-matching__radio-label" for="living_with_lessor_all">
+                      不限
+                    </label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" id="clean_2"
-                      (change)="toggleCheckbox('cleanLevels', 2, $event)">
-                    <label class="rental-matching__radio-label" for="clean_2">偶爾整理</label>
+                    <input class="rental-matching__checkbox" type="radio" name="livingWithLessor"
+                      id="living_with_lessor_yes" [ngModel]="filters.livingWithLessor" [value]="true"
+                      (ngModelChange)="setLivingWithLessorFilter($event)">
+
+                    <label class="rental-matching__radio-label" for="living_with_lessor_yes">
+                      與出租人同住
+                    </label>
                   </div>
 
                   <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" id="clean_3"
-                      (change)="toggleCheckbox('cleanLevels', 3, $event)">
-                    <label class="rental-matching__radio-label" for="clean_3">一般乾淨</label>
+                    <input class="rental-matching__checkbox" type="radio" name="livingWithLessor"
+                      id="living_with_lessor_no" [ngModel]="filters.livingWithLessor" [value]="false"
+                      (ngModelChange)="setLivingWithLessorFilter($event)">
+
+                    <label class="rental-matching__radio-label" for="living_with_lessor_no">
+                      不與出租人同住
+                    </label>
                   </div>
 
-                  <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" id="clean_4"
-                      (change)="toggleCheckbox('cleanLevels', 4, $event)">
-                    <label class="rental-matching__radio-label" for="clean_4">需保持整潔</label>
-                  </div>
-
-                  <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" id="clean_5"
-                      (change)="toggleCheckbox('cleanLevels', 5, $event)">
-                    <label class="rental-matching__radio-label" for="clean_5">高度重視整潔</label>
-                  </div>
                 </div>
               </div>
 
-              <hr class="rental-matching__advanced-divider">
+            </div>
 
-              <div class="rental-matching__advanced-section">
-                <div class="filter-title rental-matching__filter-title">
-                  <span class="material-symbols-outlined rental-matching__filter-icon">volume_down</span>
-                  <h3 class="rental-matching__filter-title-text">居住安靜要求</h3>
+            <hr class="rental-matching__advanced-divider">
+
+            <div class="rental-matching__advanced-section">
+              <div class="filter-title rental-matching__filter-title">
+                <span class="material-symbols-outlined rental-matching__filter-icon">cleaning_services</span>
+                <h3 class="rental-matching__filter-title-text">公共空間整潔要求</h3>
+              </div>
+
+              <div class="rental-matching__advanced-options">
+                <div class="rental-matching__radio-row">
+                  <input class="rental-matching__checkbox" type="checkbox" id="clean_1"
+                    (change)="toggleCheckbox('cleanLevels', 1, $event)">
+                  <label class="rental-matching__radio-label" for="clean_1">基本整潔即可</label>
                 </div>
 
-                <div class="rental-matching__advanced-options">
-                  <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" id="noise_1"
-                      (change)="toggleCheckbox('noiseToleranceLevels', 1, $event)">
-                    <label class="rental-matching__radio-label" for="noise_1">非常重視安靜</label>
-                  </div>
+                <div class="rental-matching__radio-row">
+                  <input class="rental-matching__checkbox" type="checkbox" id="clean_2"
+                    (change)="toggleCheckbox('cleanLevels', 2, $event)">
+                  <label class="rental-matching__radio-label" for="clean_2">偶爾整理</label>
+                </div>
 
-                  <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" id="noise_2"
-                      (change)="toggleCheckbox('noiseToleranceLevels', 2, $event)">
-                    <label class="rental-matching__radio-label" for="noise_2">偏好安靜</label>
-                  </div>
+                <div class="rental-matching__radio-row">
+                  <input class="rental-matching__checkbox" type="checkbox" id="clean_3"
+                    (change)="toggleCheckbox('cleanLevels', 3, $event)">
+                  <label class="rental-matching__radio-label" for="clean_3">一般乾淨</label>
+                </div>
 
-                  <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" id="noise_3"
-                      (change)="toggleCheckbox('noiseToleranceLevels', 3, $event)">
-                    <label class="rental-matching__radio-label" for="noise_3">一般生活音可接受</label>
-                  </div>
+                <div class="rental-matching__radio-row">
+                  <input class="rental-matching__checkbox" type="checkbox" id="clean_4"
+                    (change)="toggleCheckbox('cleanLevels', 4, $event)">
+                  <label class="rental-matching__radio-label" for="clean_4">需保持整潔</label>
+                </div>
 
-                  <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" id="noise_4"
-                      (change)="toggleCheckbox('noiseToleranceLevels', 4, $event)">
-                    <label class="rental-matching__radio-label" for="noise_4">可接受偶爾吵雜</label>
-                  </div>
+                <div class="rental-matching__radio-row">
+                  <input class="rental-matching__checkbox" type="checkbox" id="clean_5"
+                    (change)="toggleCheckbox('cleanLevels', 5, $event)">
+                  <label class="rental-matching__radio-label" for="clean_5">高度重視整潔</label>
+                </div>
+              </div>
+            </div>
 
-                  <div class="rental-matching__radio-row">
-                    <input class="rental-matching__checkbox" type="checkbox" id="noise_5"
-                      (change)="toggleCheckbox('noiseToleranceLevels', 5, $event)">
-                    <label class="rental-matching__radio-label" for="noise_5">可接受熱鬧環境</label>
-                  </div>
+            <hr class="rental-matching__advanced-divider">
+
+            <div class="rental-matching__advanced-section">
+              <div class="filter-title rental-matching__filter-title">
+                <span class="material-symbols-outlined rental-matching__filter-icon">volume_down</span>
+                <h3 class="rental-matching__filter-title-text">居住安靜要求</h3>
+              </div>
+
+              <div class="rental-matching__advanced-options">
+                <div class="rental-matching__radio-row">
+                  <input class="rental-matching__checkbox" type="checkbox" id="noise_1"
+                    (change)="toggleCheckbox('noiseToleranceLevels', 1, $event)">
+                  <label class="rental-matching__radio-label" for="noise_1">非常重視安靜</label>
+                </div>
+
+                <div class="rental-matching__radio-row">
+                  <input class="rental-matching__checkbox" type="checkbox" id="noise_2"
+                    (change)="toggleCheckbox('noiseToleranceLevels', 2, $event)">
+                  <label class="rental-matching__radio-label" for="noise_2">偏好安靜</label>
+                </div>
+
+                <div class="rental-matching__radio-row">
+                  <input class="rental-matching__checkbox" type="checkbox" id="noise_3"
+                    (change)="toggleCheckbox('noiseToleranceLevels', 3, $event)">
+                  <label class="rental-matching__radio-label" for="noise_3">一般生活音可接受</label>
+                </div>
+
+                <div class="rental-matching__radio-row">
+                  <input class="rental-matching__checkbox" type="checkbox" id="noise_4"
+                    (change)="toggleCheckbox('noiseToleranceLevels', 4, $event)">
+                  <label class="rental-matching__radio-label" for="noise_4">可接受偶爾吵雜</label>
+                </div>
+
+                <div class="rental-matching__radio-row">
+                  <input class="rental-matching__checkbox" type="checkbox" id="noise_5"
+                    (change)="toggleCheckbox('noiseToleranceLevels', 5, $event)">
+                  <label class="rental-matching__radio-label" for="noise_5">可接受熱鬧環境</label>
                 </div>
               </div>
 

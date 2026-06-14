@@ -298,6 +298,38 @@ h2 {
   }
 }
 
+.resource-card__image-wrap {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+  background: #f4f1ef;
+}
+
+.resource-card__image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.resource-card__badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #e86b3f;
+  background: rgba(255, 241, 236, 0.92);
+  border: 1px solid rgba(232, 107, 63, 0.2);
+}
+
+.price span {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
 /* 9. 評價區塊 */
 .review-card {
   display: flex;
@@ -376,6 +408,17 @@ h2 {
     vertical-align: middle;
     font-size: 1.25rem;
   }
+}
+
+.rental-detail-button.is-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(0.35);
+}
+
+.rental-detail-button.is-disabled:hover {
+  transform: none;
+  box-shadow: none;
 }
 
 .rental-detail-button--primary {

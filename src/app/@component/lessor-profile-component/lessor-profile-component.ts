@@ -166,4 +166,132 @@ export class LessorProfileComponent implements OnInit {
 
     return Number(match[1]);
   }
+
+  getPhoneHref(profile: any): string | null {
+    const phone = this.normalizePhone(profile?.phone ?? profile?.Phone);
+
+    if (!phone) {
+      return null;
+    }
+
+    return `tel:${phone}`;
+  }
+
+  getLineHref(profile: any): string | null {
+    const lineId = this.normalizeLineId(profile?.lineId ?? profile?.LineId);
+
+    if (!lineId) {
+      return null;
+    }
+
+    // 官方帳號通常會是 @ 開頭
+    if (lineId.startsWith('@')) {
+      return `https://line.me/R/ti/p/${lineId}`;
+    }
+
+    // 一般 LINE ID 常用 ~id 格式
+    return `https://line.me/R/ti/p/~${lineId}`;
+  }
+
+  private normalizePhone(value: string | null | undefined): string {
+    if (!value) {
+      return '';
+    }
+
+    return String(value)
+      .trim()
+      .replace(/[^\d+]/g, '');
+  }
+
+  private normalizeLineId(value: string | null | undefined): string {
+    if (!value) {
+      return '';
+    }
+
+    return String(value)
+      .trim()
+      .replace(/\s+/g, '')
+      .replace(/[^a-zA-Z0-9@._-]/g, '');
+  }
+
+  handleContactClick(event: Event, href: string | null, message: string): void {
+    if (href) {
+      return;
+    }
+
+    event.preventDefault();
+    window.alert(message);
+  }
+
+  private readonly apiBaseUrl = 'https://localhost:7215';
+
+  normalizeResourceImageUrl(url: string | null | undefined): string {
+    if (!url) {
+      return 'assets/default-house.jpg';
+    }
+
+    const value = String(url).trim().replace(/\\/g, '/');
+
+    if (
+      value.startsWith('http://') ||
+      value.startsWith('https://') ||
+      value.startsWith('assets/') ||
+      value.startsWith('images/')
+    ) {
+      return value;
+    }
+
+    if (value.startsWith('/')) {
+      return `${this.apiBaseUrl}${value}`;
+    }
+
+    if (value.startsWith('Uploads/')) {
+      return `${this.apiBaseUrl}/${value}`;
+    }
+
+    return value;
+  }
+
+  getProvidedResources(profile: any): any[] {
+    const houses = (profile?.activeHouses ?? profile?.ActiveHouses ?? []).map((item: any) => ({
+      ...item,
+      id: item.id ?? item.Id,
+      name: item.name ?? item.Name,
+      displayType: 'room',
+      price: item.rentPrice ?? item.RentPrice ?? 0,
+      priceUnit: '月',
+      mainImageUrl: item.mainImageUrl ?? item.MainImageUrl
+    }));
+
+    const products = (profile?.activeProducts ?? profile?.ActiveProducts ?? []).map((item: any) => ({
+      ...item,
+      id: item.id ?? item.Id,
+      name: item.name ?? item.Name,
+      category: item.category ?? item.Category,
+      displayType: 'product',
+      price: item.price ?? item.Price ?? 0,
+      priceUnit: item.priceUnit ?? item.PriceUnit ?? '次',
+      mainImageUrl: item.mainImageUrl ?? item.MainImageUrl
+    }));
+
+    return [...houses, ...products];
+  }
+
+  resourceTypeLabel(resource: any): string {
+    if (resource.displayType === 'room') {
+      return '房源';
+    }
+
+    const category = String(resource.category ?? '').trim();
+
+    if (category === '專業諮詢' || category === '技能') {
+      return '技能';
+    }
+
+    if (category === '工具共享' || category === '工具') {
+      return '工具';
+    }
+
+    return '資源';
+  }
 }

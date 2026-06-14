@@ -853,6 +853,17 @@
   }
 }
 
+.rental-detail-button.is-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(0.35);
+}
+
+.rental-detail-button.is-disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 .rental-detail-button--primary {
   background-color: var(--color-primary);
   color: #FFFFFF;

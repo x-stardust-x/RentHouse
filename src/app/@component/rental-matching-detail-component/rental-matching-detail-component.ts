@@ -920,4 +920,58 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
 
     return normalizedValue ? '是，與出租人同住' : '否，不與出租人同住';
   }
+
+  getProviderPhoneHref(): string | null {
+    const phone = this.normalizePhone(
+      this.detailData()?.providerPhone ??
+      this.detailData()?.ProviderPhone ??
+      this.detailData()?.phone ??
+      this.detailData()?.Phone
+    );
+
+    return phone ? `tel:${phone}` : null;
+  }
+
+  getProviderLineHref(): string | null {
+    const lineId = this.normalizeLineId(
+      this.detailData()?.providerLineId ??
+      this.detailData()?.ProviderLineId ??
+      this.detailData()?.lineId ??
+      this.detailData()?.LineId
+    );
+
+    if (!lineId) {
+      return null;
+    }
+
+    if (lineId.startsWith('@')) {
+      return `https://line.me/R/ti/p/${lineId}`;
+    }
+
+    return `https://line.me/R/ti/p/~${lineId}`;
+  }
+
+  private normalizePhone(value: string | null | undefined): string {
+    if (!value) return '';
+
+    return String(value)
+      .trim()
+      .replace(/[^\d+]/g, '');
+  }
+
+  private normalizeLineId(value: string | null | undefined): string {
+    if (!value) return '';
+
+    return String(value)
+      .trim()
+      .replace(/\s+/g, '')
+      .replace(/[^a-zA-Z0-9@._-]/g, '');
+  }
+
+  handleProviderContactClick(event: Event, href: string | null, message: string): void {
+    if (href) return;
+
+    event.preventDefault();
+    alert(message);
+  }
 }

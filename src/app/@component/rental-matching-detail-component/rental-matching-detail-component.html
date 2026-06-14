@@ -532,13 +532,20 @@
           <span class="material-symbols-outlined rental-hero__location-icon">chat_add_on</span>
           <span>線上預約看房</span>
         </a>
-        <a class="rental-detail-button rental-detail-button--secondary" href="#">
+        <a class="rental-detail-button rental-detail-button--secondary" [class.is-disabled]="!getProviderPhoneHref()"
+          [attr.href]="getProviderPhoneHref()"
+          (click)="handleProviderContactClick($event, getProviderPhoneHref(), '此出租人尚未提供電話號碼')">
+
           <span class="material-symbols-outlined rental-hero__location-icon">mobile_2</span>
-          <span>電話預約看房</span>
+          <span>電話洽詢出租人</span>
         </a>
-        <a class="rental-detail-button rental-detail-button--secondary" href="#">
+
+        <a class="rental-detail-button rental-detail-button--secondary" [class.is-disabled]="!getProviderLineHref()"
+          [attr.href]="getProviderLineHref()" target="_blank" rel="noopener noreferrer"
+          (click)="handleProviderContactClick($event, getProviderLineHref(), '此出租人尚未提供 LINE ID')">
+
           <fa-icon [icon]="faLine"></fa-icon>
-          <span>LINE 洽詢房東</span>
+          <span>LINE洽詢出租人</span>
         </a>
       </div>
 
@@ -572,7 +579,10 @@
           </span>
         </a>
 
-        <a class="rental-detail-button rental-detail-button--secondary" href="#">
+        <a class="rental-detail-button rental-detail-button--secondary" [class.is-disabled]="!getProviderPhoneHref()"
+          [attr.href]="getProviderPhoneHref()"
+          (click)="handleProviderContactClick($event, getProviderPhoneHref(), '此提供者尚未提供電話號碼')">
+
           <span class="material-symbols-outlined rental-hero__location-icon">mobile_2</span>
           <span>
             @if (detailData()?.category === '專業諮詢' || detailData()?.Category === '專業諮詢') {
@@ -583,13 +593,16 @@
           </span>
         </a>
 
-        <a class="rental-detail-button rental-detail-button--secondary" href="#">
+        <a class="rental-detail-button rental-detail-button--secondary" [class.is-disabled]="!getProviderLineHref()"
+          [attr.href]="getProviderLineHref()" target="_blank" rel="noopener noreferrer"
+          (click)="handleProviderContactClick($event, getProviderLineHref(), '此提供者尚未提供 LINE ID')">
+
           <fa-icon [icon]="faLine"></fa-icon>
           <span>
             @if (detailData()?.category === '專業諮詢' || detailData()?.Category === '專業諮詢') {
-            LINE 預約課程
+            LINE預約課程
             } @else {
-            LINE 確認工具檔期
+            LINE確認工具檔期
             }
           </span>
         </a>
@@ -714,7 +727,7 @@
             <label class="delivery-card" [class.is-active]="skillFormat() === '實體'">
               <input type="radio" name="skillFormat" value="實體" [ngModel]="skillFormat()"
                 (ngModelChange)="skillFormat.set($event)" class="modal-hidden-input">
-              <span class="card-title"><span class="material-symbols-outlined card-icon">location_on</span> 實體碰面</span>
+              <span class="card-title"><span class="material-symbols-outlined card-icon">location_on</span>實體碰面</span>
               <span class="card-desc">與導師約定教學地點</span>
               @if(skillFormat() === '實體'){ <span class="material-symbols-outlined check-mark">check_circle</span> }
             </label>

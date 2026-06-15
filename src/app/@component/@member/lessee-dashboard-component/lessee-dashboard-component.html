@@ -16,11 +16,13 @@
           <div class="row align-items-center">
             <div class="col-md-7">
               <div class="address-label text-muted fs-7">租賃房源位置</div>
-              <div class="address-value fs-5 fw-bold">{{ currentMatch.address }}</div>
+              <div class="address-value fs-5 fw-bold">{{ currentMatch()?.address }}</div>
             </div>
             <div class="col-md-5 text-md-end mt-3 mt-md-0">
-              <div class="expiry-label text-muted fs-7">合約到期日</div>
-              <div class="expiry-value fw-bold text-danger">{{ currentMatch.expiryDate }}</div>
+              @if(currentMatch()?.status == "matched"){
+                <div class="expiry-label text-muted fs-7">合約到期日</div>
+                <div class="expiry-value fw-bold text-danger">{{ currentMatch()?.expiryDate  }}</div>
+              }
             </div>
           </div>
         </div>
@@ -28,7 +30,7 @@
         <div class="row g-3">
           <div class="col-6">
             <div class="ai-match-box p-3 d-flex align-items-center">
-              <div class="score-circle me-3">{{ currentMatch.matchScore }}%</div>
+              <div class="score-circle me-3">{{ currentMatch()?.matchScore }}%</div>
               <div>
                 <div class="fs-7 text-muted">AI 精準配對</div>
                 <div class="fw-bold">高契合度</div>
@@ -39,8 +41,10 @@
             <div class="viewing-box p-3 d-flex align-items-center">
               <mat-icon class="me-3 text-warning">event</mat-icon>
               <div>
-                <div class="fs-7 text-muted">下一次看房/約訪預約</div>
-                <div class="fw-bold">{{ currentMatch.nextViewing }}</div>
+                @if (currentMatch()?.status == "confirmed") {
+                  <div class="fs-7 text-muted">下一次看房/約訪預約</div>
+                  <div class="fw-bold">{{ currentMatch()?.nextViewing}}</div>
+                }
               </div>
             </div>
           </div>

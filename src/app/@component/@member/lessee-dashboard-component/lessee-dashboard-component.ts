@@ -8,7 +8,7 @@ import { Authservice } from '../../../@service/authservice';
 import { UserService } from '../../../@service/user-service';
 import { LocationService } from '../../../@service/location-service';
 import { HouseService } from '../../../@service/house.service';
-import { HouseViewingService } from '../../../@service/house-viewing-service';
+import { HouseViewingService, LesseeViewingApplication } from '../../../@service/house-viewing-service';
 import { RentalMatchingService } from '../../../@service/rental-matching-service';
 import { MatchHouseDto } from '../../../@interface/match-house';
 
@@ -40,6 +40,7 @@ export class LesseeDashboardComponent {
   private viewingService = inject(HouseViewingService);
   private rentalsev = inject(RentalMatchingService);
   private router = inject(Router);
+  applications = signal<LesseeViewingApplication[]>([]);
 
 
   accountId = Number(this.authsev.getAccountId());
@@ -53,18 +54,87 @@ export class LesseeDashboardComponent {
       console.log(this.houses());
     })
     this.locsev.loadAllDistricts();
+    this.viewingService.getMyApplications().subscribe({
+      next: (data: LesseeViewingApplication[]) => {
+        console.log('看房申請追蹤 API 回傳：', data);
+        console.table(data);
+        const normalizedData = (data || []).map(item => ({
+          ...item,
+
+          houseId: Number(
+            item.houseId ??
+            (item as any).HouseId ??
+            0
+          ),
+
+          attemptNo: Number(
+            item.attemptNo ??
+            (item as any).AttemptNo ??
+            1
+          ),
+
+          maxAttemptCount: Number(
+            item.maxAttemptCount ??
+            (item as any).MaxAttemptCount ??
+            3
+          ),
+
+          applicationFlowType:
+            item.applicationFlowType ??
+            (item as any).ApplicationFlowType ??
+            'new'
+        }));
+
+        console.log('整理後的看房申請追蹤資料：', normalizedData);
+        this.applications.set(normalizedData);
+      },
+      error: (err: unknown) => {
+        console.error('無法取得看房申請追蹤：', err);
+        alert('無法取得看房申請追蹤資料');
+      }
+    });
   }
 
 
   role = '承租人';
 
   // 目前媒合狀態資料
-  currentMatch = {
-    address: '高雄市前鎮區廣四路 12 號 5 樓',
-    expiryDate: '2026/12/31',
-    matchScore: 92,
-    nextViewing: '本週五 14:00'
+  currentMatch = computed(() => {
+  var application = this.applications().find(
+    x => x.status === 'matched'
+  );
+  if(application == null){
+      application = this.applications().find(
+      x => x.status === 'confirmed'
+    );
+  }
+
+
+  if (!application) return null;
+
+  const test = application.matchedAt;
+
+  const expiryDate = test
+    ? (() => {
+        const date = new Date(test);
+        date.setMonth(date.getMonth() + 6);
+        return date.toLocaleString('zh-TW', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+        });
+      })()
+    : '';
+
+
+  return {
+    status : application.status,
+    address: application.roomAddress,
+    expiryDate: expiryDate,
+    matchScore: application.matchScore,
+    nextViewing: application.viewingDateTime
   };
+});
 
   // 精選共居空間資料
  recommendations = computed<HouseRecommendation[]>(() => {

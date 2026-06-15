@@ -93,9 +93,12 @@ export class HouseService {
   }
 
   // 5. 強制下架資產 (變成待審核)
- takeDownProduct(id: number) {
-  return this.http.delete(`https://localhost:7215/api/RentProduct/TakeDown/${id}`);
-}
+  takeDownProduct(id: number) {
+    return this.http.put(
+      `https://localhost:7215/api/RentProduct/TakeDown/${id}`,
+      {}
+    );
+  }
 
   // 6. 刪除資產 (退回申請時使用)
   deleteProduct(id: number) {
@@ -108,7 +111,7 @@ export class HouseService {
   }
 
 
-deleteImageRecord(imageId: number) {
+  deleteImageRecord(imageId: number) {
 
     return this.http.delete(`https://localhost:7215/api/RentHouse/Image/${imageId}`);
   }
@@ -124,7 +127,7 @@ deleteImageRecord(imageId: number) {
   }
 
   // 9. 修改技能資料 (儲存編輯用)
- updateProduct(id: number, data: any) {
+  updateProduct(id: number, data: any) {
     // 🌟 核心修正：把頭尾的 ' 換成 ` (在 Esc 鍵下方)
     return this.http.put(`https://localhost:7215/api/RentProduct/${id}`, data);
   }

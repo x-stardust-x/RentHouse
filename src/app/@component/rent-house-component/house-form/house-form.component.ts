@@ -265,6 +265,9 @@ export class HouseFormComponent implements OnInit {
     this.formData.noiseTolerance = Number(this.formData.noiseTolerance || 3);
     this.formData.livingWithLessor = this.formData.livingWithLessor === true;
 
+    // 只要房東送出新增或修改，都先回到待審核
+    this.formData.status = 0;
+
     if (this.formData.sleepTime?.length === 5) {
       this.formData.sleepTime += ':00';
     }

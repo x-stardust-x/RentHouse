@@ -66,6 +66,10 @@ export const routes: Routes = [
         path: 'rent',
         loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
       },
+      {
+        path: '404',
+        loadComponent: () => import('./@component/not-found-component/not-found-component').then(c => c.NotFoundComponent)
+      },
 
       // --- 會員中心 ---
       // {
@@ -212,9 +216,9 @@ export const routes: Routes = [
   },
 
   {
-    // 🪤 捕捉所有未知的網址，導回首頁
+    // 🪤 捕捉所有未知的網址，導至404
     path: '**',
-    redirectTo: 'home'
+    redirectTo: '404'
   }
 ];
 

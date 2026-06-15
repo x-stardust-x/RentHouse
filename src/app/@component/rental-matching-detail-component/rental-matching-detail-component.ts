@@ -393,6 +393,18 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
       })
     ).subscribe({
       next: (data: any) => {
+        if (!data) {
+          this.router.navigate(['/404'], { replaceUrl: true });
+          return;
+        }
+
+        const status = Number(data.status ?? data.Status);
+
+        if (status !== 1) {
+          this.router.navigate(['/404'], { replaceUrl: true });
+          return;
+        }
+
         console.log('🔥 API 原始回傳資料:', data);
 
         const detail = {
@@ -445,6 +457,17 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
             error: (err) => console.error('設施 API 失敗:', err)
           });
         }
+      },
+
+      error: (err) => {
+        console.error('詳情頁資料載入失敗：', err);
+
+        if (err.status === 404) {
+          this.router.navigate(['/404'], { replaceUrl: true });
+          return;
+        }
+
+        alert('載入資料失敗，請稍後再試。');
       }
     });
   }

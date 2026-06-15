@@ -104,6 +104,11 @@ export class RentalMatchingComponent implements OnInit {
         // 🛡️ 防呆裝甲：預防隊友突然改變結構，把陣列包在物件裡 (例如 { data: [...] })
         let dataArray = Array.isArray(data) ? data : (data?.data || data?.items || []);
 
+        dataArray = dataArray.filter((item: any) => {
+          const status = Number(item.status ?? item.Status);
+          return status === 1;
+        });
+
         // 幫後端回傳的資料自動補上 displayType，並自動解析正確的圖片路徑
         const formattedData = dataArray.map((item: any) => {
 
@@ -196,7 +201,6 @@ export class RentalMatchingComponent implements OnInit {
    */
   getCoverUrl(item: any): string {
     let finalUrl = '';
-
 
     if (item.coverUrl) finalUrl = item.coverUrl;
     else if (item.CoverUrl) finalUrl = item.CoverUrl;

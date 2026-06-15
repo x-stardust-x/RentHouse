@@ -48,6 +48,7 @@ export class AdminComponent {
   rawHouses = signal<any[]>([]);
   rawProducts = signal<any[]>([]);
   reservations = signal<Reservation[]>([]);
+  my_reservation = signal<any[]>([]);
   LogData = signal<Log[]>([]);
   constructor() {
     this.usersev.loadAllUsers();
@@ -74,16 +75,26 @@ export class AdminComponent {
       },
       error: (err) => console.error('取得待審核清單失敗', err)
     });
-    this.viewingService.getMyApprovals().subscribe({
-      next: (data) => {
-        // console.log('看房預約審核 API 回傳：', data);
-        // console.table(data);
-        this.reservations.set(data as unknown as Reservation[]);
+    // this.viewingService.getMyApprovals().subscribe({
+    //   next: (data) => {
+    //     // console.log('看房預約審核 API 回傳：', data);
+    //     // console.table(data);
+    //     this.reservations.set(data as unknown as Reservation[]);
+    //   },
+    //   error: (err) => {
+    //     console.error('無法取得預約資料：', err);
+    //   }
+    // });
+    this.viewingService.getAllApprovals().subscribe({
+      next:(data) =>{
+        this.my_reservation.set(data);
+        console.log(this.my_reservation());
+
       },
-      error: (err) => {
-        console.error('無法取得預約資料：', err);
+      error:(err)=>{
+        console.error('Mytest無法取得預約資料：', err);
       }
-    });
+    })
   }
 
   userTrend = computed(() => {
@@ -130,8 +141,8 @@ export class AdminComponent {
     },
     {
       title: '本月媒合成功數',
-      value: this.reservations().filter(x => x.status == 'matched').length,
-      subText: '達成目標 78%',
+      value: this.my_reservation().filter(x => x.status == 4).length,
+      subText: this.MatchPercent(this.my_reservation().filter(x => x.status == 4).length),
       icon: 'handshake',
       type: 'success'
     }
@@ -188,5 +199,8 @@ export class AdminComponent {
     if (hours < 24) return `${hours} 小時前`;
 
     return d.toLocaleString('zh-TW');
+  }
+  MatchPercent(num : number):string{
+    return `達成目標 ${num}%`;
   }
 }

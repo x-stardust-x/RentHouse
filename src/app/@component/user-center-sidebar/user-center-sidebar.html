@@ -29,11 +29,11 @@
       </a>
     </li>
 
-    <li class="user-sidebar__section-title">租客名單</li>
+    <!-- <li class="user-sidebar__section-title">當前媒合名單</li> -->
     <li>
       <a class="user-sidebar__link">
         <span class="material-symbols-outlined">group</span>
-        <span>當前租客名單</span>
+        <span>當前媒合名單</span>
       </a>
     </li>
 
@@ -74,7 +74,7 @@
     <li>
       <a routerLink="/user-center/product-booking-approval-component" class="user-sidebar__link">
         <span class="material-symbols-outlined">assignment_turned_in</span>
-        <span>工具借用 / 技能預約審核</span>
+        <span>工具 / 技能預約審核</span>
       </a>
     </li>
 
@@ -103,12 +103,11 @@
         <span>總覽主控台</span>
       </a>
     </li>
-
-    <li class="user-sidebar__section-title">看房申請</li>
+    <!-- <li class="user-sidebar__section-title">當前媒合名單</li> -->
     <li>
-      <a routerLink="/user-center/house-viewing-applications" class="user-sidebar__link" routerLinkActive="is-active">
-        <span class="material-symbols-outlined">pending_actions</span>
-        <span>看房申請追蹤</span>
+      <a class="user-sidebar__link">
+        <span class="material-symbols-outlined">group</span>
+        <span>當前媒合名單</span>
       </a>
     </li>
 
@@ -132,13 +131,22 @@
       </a>
     </li> -->
 
-    <li class="user-sidebar__section-title">共享互動</li>
+
+    <li class="user-sidebar__section-title">預約追蹤</li>
     <li>
-      <a class="user-sidebar__link">
-        <span class="material-symbols-outlined">schedule</span>
-        <span>工具借用 / 技能預約紀錄</span>
+      <a routerLink="/user-center/house-viewing-applications" class="user-sidebar__link" routerLinkActive="is-active">
+        <span class="material-symbols-outlined">pending_actions</span>
+        <span>看房預約追蹤</span>
       </a>
     </li>
+    <li>
+      <a class="user-sidebar__link" routerLink="/user-center/product-booking-applications" routerLinkActive="is-active">
+        <span class="material-symbols-outlined">schedule</span>
+        <span>工具 / 技能預約追蹤</span>
+      </a>
+    </li>
+
+    <li class="user-sidebar__section-title">共享互動</li>
     <li>
       <a class="user-sidebar__link">
         <span class="material-symbols-outlined">insights</span>

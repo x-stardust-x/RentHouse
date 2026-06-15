@@ -155,6 +155,13 @@ export const routes: Routes = [
               import('./@component/house-viewing-application-tracking-component/house-viewing-application-tracking-component')
                 .then(c => c.HouseViewingApplicationTrackingComponent),
           },
+          // 工具借用 / 技能預約紀錄
+          {
+            path: 'product-booking-applications',
+            loadComponent: () =>
+              import('./@component/product-booking-application-tracking-component/product-booking-application-tracking-component')
+                .then(c => c.ProductBookingApplicationTrackingComponent),
+          },
         ],
       },
     ]

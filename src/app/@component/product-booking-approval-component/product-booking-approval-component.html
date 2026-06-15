@@ -6,7 +6,7 @@
   </div>
 
   <div class="tabs-container">
-    @for (tab of tabs; track tab.id) {
+    @for (tab of tabs(); track tab.id) {
     <button class="tab-button" [class.is-active]="activeTab() === tab.id" (click)="selectTab(tab.id)">
       {{ tab.label }} ({{ tab.count }})
     </button>
@@ -56,22 +56,22 @@
               </span>
               <span>
                 <strong>{{ item.type === 'tool' ? '取件方式：' : '授課形式：' }}</strong>
-                {{ item.applicant.method }}
+                {{ item.method }}
               </span>
             </div>
-            @if (item.applicant.extraNote) {
+            @if (item.extraNote) {
             <div class="info-row text-alert">
               <span class="material-symbols-outlined info-icon">error</span>
-              <span><strong>注意事項：</strong>{{ item.applicant.extraNote }}</span>
+              <span><strong>注意事項：</strong>{{ item.extraNote }}</span>
             </div>
             }
             <div class="info-row">
               <span class="material-symbols-outlined info-icon">phone_iphone</span>
-              <span>聯絡電話: {{ item.applicant.phone }} <small class="text-muted">(核准後顯示)</small></span>
+              <span>聯絡電話: {{ displayPhone(item) }} <small class="text-muted">(核准後顯示)</small></span>
             </div>
             <div class="info-row">
               <span class="material-symbols-outlined info-icon">chat</span>
-              <span>Line ID: {{ item.applicant.lineId }} <small class="text-muted">(核准後顯示)</small></span>
+              <span>Line ID: {{ displayLineId(item) }} <small class="text-muted">(核准後顯示)</small></span>
             </div>
           </div>
         </div>
@@ -99,9 +99,9 @@
         </div>
 
         <div class="action-buttons">
-          <button class="action-btn btn-text" (click)="decline(item.id)">婉拒</button>
-          <button class="action-btn btn-outline" (click)="proposeReschedule(item.id)">提議改期</button>
-          <button class="action-btn btn-fill" (click)="accept(item.id)">接受預約</button>
+          <button class="action-btn btn-text" (click)="decline(item)">婉拒</button>
+          <button class="action-btn btn-outline" (click)="proposeReschedule(item)">提議改期</button>
+          <button class="action-btn btn-fill" (click)="accept(item)">接受預約</button>
         </div>
       </div>
 

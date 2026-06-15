@@ -16,6 +16,7 @@ import { AvailableViewingSlot } from '../../@interface/available-viewing-slot';
 import { RentalMatchingService } from '../../@service/rental-matching-service';
 import { HouseFacilityService } from '../../@service/house-facility-service';
 import { HouseViewingService } from '../../@service/house-viewing-service';
+import { ProductBookingService } from '../../@service/product-booking-service';
 import { MatchHouseDto } from '../../@interface/match-house';
 
 @Component({
@@ -40,6 +41,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   private sanitizer = inject(DomSanitizer);
   private houseFacilityService = inject(HouseFacilityService);
   private viewingService = inject(HouseViewingService);
+  private productBookingService = inject(ProductBookingService);
 
   // ===================================================================
   // 靜態屬性與設定
@@ -579,8 +581,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
     this.resetForm();
   }
 
-  submitContactMessage() {
-    // 【情境一：送出房屋預約 (打 API 到後端)】
+  submitContactMessage(): void {
     if (this.isRoom()) {
       if (!this.authService.isLoggedIn()) {
         alert('請先登入後再進行預約。');
@@ -629,19 +630,11 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
 
       const requestData = {
         houseId: this.currentCleanId(),
-
-        // 目前後端欄位仍是單一 ViewingSlotId，所以先存第一個選到的時段 ID
         viewingSlotId: selectedSlots.length > 0 ? selectedSlots[0].id : null,
-
-        // 目前後端欄位仍是單一 ViewingTime，所以先存第一個選到的時段開始時間
         viewingTime: finalViewingTime,
-
         expectedMoveIn: new Date().toISOString(),
         expectedMoveInText: this.roomMoveInTime(),
-
-        // 這裡會存所有複選時段
         preferredTimeSlots: selectedTimes,
-
         lesseeProfileTags: selectedLesseeProfileTags,
         message: this.roomIntro(),
         matchScore: this.detailData()?.matchScore || 85
@@ -669,32 +662,339 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
 
       return;
     }
-    // 【情境二：送出技能與工具申請 (保留舊有邏輯)】
-    else {
-      const postData = {
-        category: this.detailData()?.category || '測試類別',
-        targetId: this.detailData()?.accountId || 1,
-        projectId: this.detailData()?.id || 999,
 
-        skillData: this.isSkill() ? {
-          format: this.skillFormat(),
-          date: this.skillDate(),
-          needs: this.skillNeeds()
-        } : null,
+    if (!this.authService.isLoggedIn()) {
+      alert('請先登入後再送出預約。');
 
-        toolData: this.isTool() ? {
-          startDate: this.toolStartDate(),
-          endDate: this.toolEndDate(),
-          purpose: this.toolPurpose(),
-          delivery: this.toolDelivery()
-        } : null
-      };
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl: this.router.url }
+      });
 
-      console.log('準備送出至後端的技能/工具 DTO 資料：', postData);
-      alert('訊息已成功發送給提供者！快去訊息匣看看吧。');
-      this.closeContactModal();
+      return;
     }
+
+    const productId = this.currentCleanId();
+
+    if (!productId) {
+      alert('找不到工具 / 技能 ID');
+      return;
+    }
+
+    const bookingType: 'tool' | 'skill' = this.isSkill() ? 'skill' : 'tool';
+
+    let startTime: string | null = null;
+    let endTime: string | null = null;
+    let method = '';
+    let message = '';
+    let extraNote = '';
+
+    if (bookingType === 'tool') {
+      if (!this.toolStartDate() || !this.toolEndDate()) {
+        alert('請選擇借用開始與結束日期');
+        return;
+      }
+
+      if (!this.toolNoticeChecked()) {
+        alert('請先勾選工具借用須知');
+        return;
+      }
+
+      startTime = `${this.toolStartDate()}T09:00:00`;
+      endTime = `${this.toolEndDate()}T18:00:00`;
+      method = this.toolDelivery();
+      message = this.toolPurpose();
+
+      if (!message.trim()) {
+        alert('請填寫借用目的與用途');
+        return;
+      }
+
+      extraNote = '已確認工具借用須知，若有嚴重損壞願照價賠償';
+    }
+
+    if (bookingType === 'skill') {
+      if (!this.skillFormat()) {
+        alert('請選擇授課形式');
+        return;
+      }
+
+      if (!this.skillDate()) {
+        alert('請選擇預約日期');
+        return;
+      }
+
+      if (!this.skillNeeds().trim()) {
+        alert('請填寫學習背景與需求');
+        return;
+      }
+
+      startTime = `${this.skillDate()}T14:00:00`;
+      endTime = `${this.skillDate()}T15:00:00`;
+      method = this.skillFormat();
+      message = this.skillNeeds();
+      extraNote = this.skillToolChecked()
+        ? '已確認會自備需要的用具'
+        : '';
+    }
+
+    const requestData = {
+      productId,
+      bookingType,
+      startTime,
+      endTime,
+      method,
+      message,
+      extraNote,
+      matchScore: this.detailData()?.matchScore || 85
+    };
+
+    console.log('準備送出的工具 / 技能預約：', requestData);
+
+    this.productBookingService.apply(requestData).subscribe({
+      next: () => {
+        alert('申請已送出！請至個人專區查看工具 / 技能預約紀錄。');
+        this.closeContactModal();
+      },
+      error: (err) => {
+        console.error('工具 / 技能預約失敗：', err);
+
+        const backendMessage =
+          err.error?.details ||
+          err.error?.message ||
+          err.message ||
+          '請稍後再試';
+
+        alert(`申請失敗：${backendMessage}`);
+      }
+    });
   }
+
+  // submitContactMessage() {
+  //   // 【情境一：送出房屋預約 (打 API 到後端)】
+  //   if (this.isRoom()) {
+  //     if (!this.authService.isLoggedIn()) {
+  //       alert('請先登入後再進行預約。');
+
+  //       this.router.navigate(['/login'], {
+  //         queryParams: { returnUrl: this.router.url }
+  //       });
+
+  //       return;
+  //     }
+
+  //     const hasAvailableSlots = this.availableViewingSlots().length > 0;
+
+  //     const selectedSlots = this.availableViewingSlots()
+  //       .filter(s => this.selectedViewingSlotIds().includes(Number(s.id)));
+
+  //     let selectedTimes: string[] = [];
+  //     let finalViewingTime = '';
+
+  //     if (!this.roomDate()) {
+  //       alert('請選擇看房日期！');
+  //       return;
+  //     }
+
+  //     if (!hasAvailableSlots) {
+  //       alert('出租人尚未設定可預約看房時段，暫時無法送出預約。');
+  //       return;
+  //     }
+
+  //     if (selectedSlots.length === 0) {
+  //       alert('請至少選擇一個出租人開放的看房時段！');
+  //       return;
+  //     }
+
+  //     selectedTimes = selectedSlots.map(slot => slot.label);
+
+  //     const firstSelectedSlot = selectedSlots[0];
+  //     finalViewingTime = `${this.roomDate()}T${firstSelectedSlot.startTime}:00`;
+
+  //     const selectedLesseeProfileTags = this.lesseeProfileTags()
+  //       .filter(p => p.checked && p.label !== '更多偏好')
+  //       .map(p => ({
+  //         label: p.label,
+  //         source: p.source
+  //       }));
+
+  //     const requestData = {
+  //       houseId: this.currentCleanId(),
+
+  //       // 目前後端欄位仍是單一 ViewingSlotId，所以先存第一個選到的時段 ID
+  //       viewingSlotId: selectedSlots.length > 0 ? selectedSlots[0].id : null,
+
+  //       // 目前後端欄位仍是單一 ViewingTime，所以先存第一個選到的時段開始時間
+  //       viewingTime: finalViewingTime,
+
+  //       expectedMoveIn: new Date().toISOString(),
+  //       expectedMoveInText: this.roomMoveInTime(),
+
+  //       // 這裡會存所有複選時段
+  //       preferredTimeSlots: selectedTimes,
+
+  //       lesseeProfileTags: selectedLesseeProfileTags,
+  //       message: this.roomIntro(),
+  //       matchScore: this.detailData()?.matchScore || 85
+  //     };
+
+  //     console.log('準備發送的房屋預約請求:', requestData);
+
+  //     this.viewingService.submitApplication(requestData).subscribe({
+  //       next: () => {
+  //         alert('預約成功！請至個人專區查看追蹤。');
+  //         this.closeContactModal();
+  //       },
+  //       error: (err) => {
+  //         console.error(err);
+
+  //         const backendMessage =
+  //           err.error?.details ||
+  //           err.error?.message ||
+  //           err.message ||
+  //           '請確認後端伺服器是否正常開啟並稍後再試';
+
+  //         alert(`預約失敗：${backendMessage}`);
+  //       }
+  //     });
+
+  //     return;
+  //   }
+  //   // 【情境二：送出技能與工具申請 (保留舊有邏輯)】
+
+  //   else {
+  //     if (!this.authService.isLoggedIn()) {
+  //       alert('請先登入後再送出預約。');
+
+  //       this.router.navigate(['/login'], {
+  //         queryParams: { returnUrl: this.router.url }
+  //       });
+
+  //       return;
+  //     }
+
+  //     const productId = this.currentCleanId();
+
+  //     if (!productId) {
+  //       alert('找不到工具 / 技能 ID');
+  //       return;
+  //     }
+
+  //     const bookingType: 'tool' | 'skill' = this.isSkill() ? 'skill' : 'tool';
+
+  //     let startTime: string | null = null;
+  //     let endTime: string | null = null;
+  //     let method = '';
+  //     let message = '';
+  //     let extraNote = '';
+
+  //     if (bookingType === 'tool') {
+  //       if (!this.toolStartDate() || !this.toolEndDate()) {
+  //         alert('請選擇借用開始與結束日期');
+  //         return;
+  //       }
+
+  //       if (!this.toolNoticeChecked()) {
+  //         alert('請先勾選工具借用須知');
+  //         return;
+  //       }
+
+  //       startTime = `${this.toolStartDate()}T09:00:00`;
+  //       endTime = `${this.toolEndDate()}T18:00:00`;
+  //       method = this.toolDelivery();
+  //       message = this.toolPurpose();
+
+  //       if (!message.trim()) {
+  //         alert('請填寫借用目的與用途');
+  //         return;
+  //       }
+
+  //       extraNote = '已確認工具借用須知，若有嚴重損壞願照價賠償';
+  //     }
+
+  //     if (bookingType === 'skill') {
+  //       if (!this.skillFormat()) {
+  //         alert('請選擇授課形式');
+  //         return;
+  //       }
+
+  //       if (!this.skillDate()) {
+  //         alert('請選擇預約日期');
+  //         return;
+  //       }
+
+  //       if (!this.skillNeeds().trim()) {
+  //         alert('請填寫學習背景與需求');
+  //         return;
+  //       }
+
+  //       startTime = `${this.skillDate()}T14:00:00`;
+  //       endTime = `${this.skillDate()}T15:00:00`;
+  //       method = this.skillFormat();
+  //       message = this.skillNeeds();
+  //       extraNote = this.skillToolChecked()
+  //         ? '已確認會自備需要的用具'
+  //         : '';
+  //     }
+
+  //     const requestData = {
+  //       productId,
+  //       bookingType,
+  //       startTime,
+  //       endTime,
+  //       method,
+  //       message,
+  //       extraNote,
+  //       matchScore: this.detailData()?.matchScore || 85
+  //     };
+
+  //     console.log('準備送出的工具 / 技能預約：', requestData);
+
+  //     this.productBookingService.apply(requestData).subscribe({
+  //       next: () => {
+  //         alert('申請已送出！請至個人專區查看工具 / 技能預約紀錄。');
+  //         this.closeContactModal();
+  //       },
+  //       error: (err) => {
+  //         console.error('工具 / 技能預約失敗：', err);
+
+  //         const backendMessage =
+  //           err.error?.details ||
+  //           err.error?.message ||
+  //           err.message ||
+  //           '請稍後再試';
+
+  //         alert(`申請失敗：${backendMessage}`);
+  //       }
+  //     });
+
+  //     return;
+  //   }
+
+  //   // else {
+  //   //   const postData = {
+  //   //     category: this.detailData()?.category || '測試類別',
+  //   //     targetId: this.detailData()?.accountId || 1,
+  //   //     projectId: this.detailData()?.id || 999,
+
+  //   //     skillData: this.isSkill() ? {
+  //   //       format: this.skillFormat(),
+  //   //       date: this.skillDate(),
+  //   //       needs: this.skillNeeds()
+  //   //     } : null,
+
+  //   //     toolData: this.isTool() ? {
+  //   //       startDate: this.toolStartDate(),
+  //   //       endDate: this.toolEndDate(),
+  //   //       purpose: this.toolPurpose(),
+  //   //       delivery: this.toolDelivery()
+  //   //     } : null
+  //   //   };
+
+  //   console.log('準備送出至後端的技能/工具 DTO 資料：', postData);
+  //   alert('訊息已成功發送給提供者！快去訊息匣看看吧。');
+  //   this.closeContactModal();
+  // }
+
 
   private resetForm() {
     this.roomDate.set('');

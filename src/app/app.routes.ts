@@ -49,6 +49,11 @@ export const routes: Routes = [
         path: 'news/:id',
         loadComponent: () => import('./@component/@front/news-detail-component/news-detail-component').then(c => c.NewsDetailComponent),
       },
+      {
+      path: 'subscription',
+      // 🌟 精準導向你的獨立元件檔案，注意要沿用你目前的資料夾拼法「subsprictionTier」喔！
+      loadComponent: () => import('./@component/subsprictionTier/subscription.component').then(c => c.SubscriptionComponent)
+    },
 
       // --- 租賃媒合相關 ---
       {

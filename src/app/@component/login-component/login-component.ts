@@ -30,6 +30,7 @@ export class LoginComponent {
         console.log(res);
 
         localStorage.setItem('token',res.token);
+        localStorage.setItem('subscriptionTier',res.subscriptionTier.toString());
 
         this.Message.set("登入成功");
         if(this.isAdmin){

@@ -1,0 +1,58 @@
+<div class="pricing-container">
+  <div class="pricing-header">
+    <h2>升級您的租屋體驗</h2>
+    <p>選擇最適合您的方案，解鎖專屬 AI 尋屋秘書</p>
+  </div>
+
+  <div class="cards-wrapper">
+    <!-- 方案一：平民租客 -->
+    <mat-card class="pricing-card basic-card">
+      <mat-card-header>
+        <mat-card-title>🌱 基本方案</mat-card-title>
+        <mat-card-subtitle>免費 / 月</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <ul class="feature-list">
+          <li>✅ 瀏覽所有公開房屋資訊</li>
+          <li>✅ 查看一般會員評價</li>
+          <li>✅ 收藏喜歡的房屋</li>
+          <li class="locked">🔒 專屬 AI 智能尋屋配對</li>
+          <li class="locked">🔒 優先推播隱藏版好房</li>
+        </ul>
+      </mat-card-content>
+      <mat-card-actions class="card-action">
+        <button mat-stroked-button disabled *ngIf="currentTier < 3">您目前的方案</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- 方案二：尊榮 VIP (高亮顯示) -->
+    <mat-card class="pricing-card vip-card">
+      <div class="vip-badge">推薦</div>
+      <mat-card-header>
+        <mat-card-title>👑 尊榮 VIP</mat-card-title>
+        <mat-card-subtitle>NT$ 299 / 月</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <ul class="feature-list">
+          <li>✅ 包含所有基本功能</li>
+          <li class="highlight">🚀 無限次呼叫 AI 專屬秘書</li>
+          <li class="highlight">✨ 智能分析房東與評價優劣</li>
+          <li class="highlight">🔔 優先推播隱藏版好房</li>
+        </ul>
+      </mat-card-content>
+      <mat-card-actions class="card-action">
+        <!-- 如果是免費仔，顯示升級按鈕 -->
+        <button mat-raised-button color="accent" class="upgrade-btn"
+                *ngIf="currentTier < 3"
+                [disabled]="isLoading"
+                (click)="onUpgrade()">
+          {{ isLoading ? '升級處理中...' : '💎 立即升級解鎖' }}
+        </button>
+        <!-- 如果已經是 VIP，顯示已解鎖 -->
+        <button mat-flat-button color="primary" disabled *ngIf="currentTier >= 3">
+          🎉 您已是尊榮 VIP
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

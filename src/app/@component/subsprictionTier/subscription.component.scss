@@ -1,0 +1,87 @@
+.pricing-container {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.pricing-header h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.pricing-header p {
+  color: #666;
+  margin-bottom: 40px;
+}
+
+.cards-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap; /* 手機版會自動變成上下排列 */
+}
+
+.pricing-card {
+  width: 320px;
+  padding: 20px;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+/* 讓卡片滑過時稍微浮起 */
+.pricing-card:hover {
+  transform: translateY(-5px);
+}
+
+/* VIP 卡片的尊榮特效 */
+.vip-card {
+  border: 2px solid #ffd700; /* 金色邊框 */
+  box-shadow: 0 8px 24px rgba(255, 215, 0, 0.2);
+  transform: scale(1.05); /* 預設就比別人大一點 */
+}
+
+.vip-card:hover {
+  transform: scale(1.05) translateY(-5px);
+}
+
+.vip-badge {
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  background-color: #ff4081;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.feature-list {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  margin: 20px 0;
+  line-height: 2.5;
+}
+
+.feature-list .locked {
+  color: #999;
+  text-decoration: line-through;
+}
+
+.feature-list .highlight {
+  font-weight: bold;
+  color: #e91e63; /* 醒目的粉紅色 */
+}
+
+.card-action {
+  display: flex;
+  justify-content: center;
+  padding-top: 15px;
+}
+
+.upgrade-btn {
+  width: 100%;
+  font-size: 1.1rem;
+  padding: 8px 0;
+}

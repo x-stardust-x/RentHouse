@@ -23,7 +23,6 @@ export class ContactPermissin {
 
   lineEnabled = false;
 
-  lineId = 'homifun123';
   constructor() {
     this.usersev.getAccountSettings(this.userId).subscribe(res => {
       this.data.set(res);

@@ -1,0 +1,227 @@
+// 顏色變數設定
+$bg-main: #fbf8f3;
+$text-dark: #333333;
+$text-muted: #888888;
+$primary-brand: #9e5a0e; // 焦糖棕色
+$primary-brand-light: #f3e9dc;
+$card-bg: #ffffff;
+$border-color: #f0f0f0;
+
+:host {
+  display: block;
+  background-color: $bg-main;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+// 麵包屑與標題
+.breadcrumbs {
+  font-size: 0.85rem;
+  .active-crumb {
+    color: $primary-brand;
+    font-weight: 500;
+  }
+}
+
+.welcome-title {
+  font-weight: 700;
+  color: #2d3748;
+  .role-badge {
+    font-weight: 400;
+    font-size: 1.1rem;
+    color: #718096;
+  }
+}
+
+.subtitle {
+  font-size: 0.95rem;
+}
+
+// 按鈕客製化
+.btn-custom-outline {
+  border-color: $primary-brand !important;
+  color: $primary-brand !important;
+  border-radius: 20px !important;
+  padding: 0 20px !important;
+  height: 42px;
+}
+
+.btn-custom-primary {
+  background-color: $primary-brand !important;
+  color: #ffffff !important;
+  border-radius: 20px !important;
+  padding: 0 20px !important;
+  height: 42px;
+}
+
+// 四個指標卡片
+.stat-card {
+  background-color: $card-bg;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.02);
+  box-shadow: 0 4px 12px rgba(158, 90, 14, 0.03);
+  min-height: 140px;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  .icon-wrapper {
+    background-color: #fdfaf6;
+    border: 1px solid #f3ebd9;
+    border-radius: 12px;
+    width: 40px;
+    height: 40px;
+    color: $primary-brand;
+  }
+
+  .badge-status {
+    background-color: #e3e3e3;
+    color: #666666;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .red-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #d9383a;
+    border-radius: 50%;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+
+  .stat-title {
+    font-size: 0.9rem;
+  }
+
+  .stat-count {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: $primary-brand;
+  }
+}
+
+// 下方主要內容卡片
+.content-card {
+  background-color: $card-bg;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.015);
+}
+
+.card-section-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: $text-dark;
+  display: flex;
+  align-items: center;
+}
+
+.view-all-link {
+  color: $primary-brand;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+// 審核列表樣式
+.activity-item {
+  &:last-child {
+    border-bottom: none !important;
+  }
+
+  .activity-icon-container {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .activity-icon {
+      color: $primary-brand;
+    }
+  }
+
+  .activity-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
+  .activity-detail {
+    font-size: 0.88rem;
+  }
+
+  .btn-approve {
+    background-color: $primary-brand !important;
+    color: white !important;
+    border-radius: 15px !important;
+    font-size: 0.85rem !important;
+    padding: 0 16px !important;
+  }
+
+  .btn-reject {
+    border-color: #ccc !important;
+    color: #666 !important;
+    border-radius: 15px !important;
+    font-size: 0.85rem !important;
+    padding: 0 16px !important;
+  }
+}
+
+// 右側系統提示
+.system-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.sys-notice-box {
+  background-color: #f4f8ff;
+  border-radius: 16px;
+  font-size: 0.88rem;
+  color: #4a5568;
+  line-height: 1.4;
+
+  .text-primary-custom {
+    color: $primary-brand;
+  }
+}
+
+// 升級區塊（漸層橘咖啡色背景）
+.upgrade-card {
+  background: linear-gradient(135deg, #8b4500 0%, #a0522d 100%);
+  border-radius: 16px;
+  min-height: 180px;
+
+  .upgrade-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+
+  .upgrade-desc {
+    font-size: 0.88rem;
+  }
+
+  .btn-upgrade {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: white !important;
+    border-radius: 20px !important;
+    font-size: 0.88rem !important;
+    padding: 0 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    backdrop-filter: blur(4px);
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.25) !important;
+    }
+  }
+}
+
+// 輔助微調字級
+.fs-7 {
+  font-size: 0.8rem;
+}

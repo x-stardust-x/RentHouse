@@ -11,7 +11,8 @@ export class UserService {
   private http = inject(HttpClient);
   private router = inject(Router);
   profile = signal<UserProfile | null>(null);
-  private readonly baseUrl = 'https://localhost:7215/api/User/'
+  private readonly baseUrl = 'https://localhost:7215/api/User/';
+
 
   public users = signal<any[]>([]);
 
@@ -32,7 +33,7 @@ export class UserService {
       console.log(res);
       alert("更新完成")
 
-      this.router.navigate(['/member/dashboard']);
+      this.router.navigate(['/user-center']);
     });
   }
 

@@ -23,7 +23,7 @@
     @if (currentRole() === 'lessor') {
 
     <li>
-      <a routerLink="/user-center/dashboard" class="user-sidebar__link" routerLinkActive="is-active">
+      <a routerLink="/user-center/lessor_dashboard" class="user-sidebar__link" routerLinkActive="is-active">
         <span class="material-symbols-outlined">dashboard</span>
         <span>營運主控台</span>
       </a>
@@ -98,7 +98,7 @@
     @else {
 
     <li>
-      <a class="user-sidebar__link">
+      <a routerLink="/user-center/lessee_dashboard" class="user-sidebar__link" routerLinkActive="is-active">
         <span class="material-symbols-outlined">dashboard</span>
         <span>總覽主控台</span>
       </a>

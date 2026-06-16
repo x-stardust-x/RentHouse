@@ -1,0 +1,287 @@
+// 變數設定 (若你已有統一變數可自行替換)
+$primary-blue: #E66F43;
+$text-muted: #666666;
+$card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+.security-page {
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 20px 80px;
+}
+
+.hero-section {
+  margin-bottom: 50px;
+
+  h1 {
+    color: #E66F43;
+    font-weight: 700;
+    margin-bottom: 15px;
+  }
+
+  p {
+    color: #666;
+    max-width: 800px;
+    margin: auto;
+    line-height: 1.8;
+  }
+}
+
+.content-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 35px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 25px;
+
+  .line {
+    width: 5px;
+    height: 28px;
+    background: #E66F43;
+    border-radius: 10px;
+  }
+
+  h3 {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  &.orange .line {
+    background: #d95c00;
+  }
+}
+
+.step-card {
+  position: relative;
+  background: #fafafa;
+  border-radius: 16px;
+  padding: 30px 25px;
+  height: 100%;
+
+  .step-number {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #E66F43;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  mat-icon {
+    position: absolute;
+    right: 25px;
+    top: 25px;
+    font-size: 42px;
+    width: 42px;
+    height: 42px;
+    color: #dfe7e7;
+  }
+
+  h5 {
+    margin-bottom: 15px;
+    font-weight: 700;
+  }
+
+  p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+}
+
+.feature-item {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 30px;
+
+  h5 {
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  p {
+    color: #666;
+    margin: 0;
+    line-height: 1.8;
+  }
+}
+
+.icon-circle {
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+
+  background: #E66F43;
+  color: white;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-image {
+  width: 100%;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.cta-card {
+  position: relative;
+
+  background: linear-gradient(
+    90deg,
+    #fff8f5 0%,
+    #fff 60%,
+    #dff4f5 100%
+  );
+
+  border-radius: 24px;
+
+  padding: 70px 30px;
+  text-align: center;
+}
+
+.cta-content {
+  max-width: 700px;
+  margin: auto;
+
+  h2 {
+    margin-bottom: 15px;
+    font-weight: 700;
+  }
+
+  p {
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 30px;
+  }
+}
+
+.btn-group-custom {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.btn-main {
+  background: #c95b0c;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    background: #b04e09;
+    color: white;
+  }
+}
+
+.btn-light {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (max-width: 768px) {
+  .step-card {
+    padding: 25px;
+  }
+
+  .cta-card {
+    padding: 50px 20px;
+  }
+}
+
+// 新增的藍色標題線條顏色
+.section-title.blue {
+  .line {
+    background-color: $primary-blue;
+  }
+}
+
+// 數位與金流安全卡片樣式
+.security-feature-box {
+  background: #ffffff;
+  padding: 2.5rem 1.5rem;
+  border-radius: 16px;
+  box-shadow: $card-shadow;
+  text-align: center;
+  height: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .icon-header {
+    width: 60px;
+    height: 60px;
+    background-color: rgba($primary-blue, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+
+    mat-icon {
+      color: $primary-blue;
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  h5 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #333333;
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: $text-muted;
+    line-height: 1.6;
+    margin-bottom: 0;
+  }
+}
+
+// CTA 新增的淺色外框按鈕樣式
+.btn-light-outline {
+  background: transparent;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}

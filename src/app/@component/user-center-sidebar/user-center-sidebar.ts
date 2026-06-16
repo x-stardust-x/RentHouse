@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
@@ -8,11 +8,12 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './user-center-sidebar.scss',
 })
 export class UserCenterSidebar {
+
   // 🟢 用來記錄目前的身分：'lessor' (出租人) 或 'lessee' (承租人)
   currentRole = signal<'lessor' | 'lessee'>('lessor');
 
-  // 切換身分的方法
   switchRole(role: 'lessor' | 'lessee') {
     this.currentRole.set(role);
   }
+
 }

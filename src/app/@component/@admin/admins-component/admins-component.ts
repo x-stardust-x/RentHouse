@@ -148,4 +148,7 @@ export class AdminsComponent {
       });
     }
   }
+  changePwd(id : number){
+
+  }
 }

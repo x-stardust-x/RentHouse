@@ -276,4 +276,17 @@ export class HouseViewingService {
       }
     });
   }
+
+  getAllApprovals(){
+    const token = localStorage.getItem('token');
+
+    return this.http.get<ViewingOrderResponse[]>(
+      `${this.apiUrl}/getallapplications`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+  }
 }

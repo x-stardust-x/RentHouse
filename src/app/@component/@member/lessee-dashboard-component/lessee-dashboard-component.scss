@@ -1,0 +1,192 @@
+$brand-amber: #f59e0b;
+$brand-amber-dark: #b45309;
+$brand-amber-bg: #fffbf0;
+$card-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+$bg-main: #fcfaf7;
+
+:host {
+  display: block;
+  background-color: $bg-main;
+  min-height: 100vh;
+}
+
+.welcome-text {
+  font-weight: 700;
+  color: #2d3748;
+  .role-badge {
+    font-weight: 400;
+    font-size: 1.1rem;
+    color: #718096;
+  }
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a202c;
+}
+
+// 媒合狀態卡片
+.status-card {
+  background: white;
+  border-radius: 24px;
+  box-shadow: $card-shadow;
+  border: 1px solid #f1f1f1;
+
+  .status-icon {
+    color: $brand-amber;
+  }
+
+  .status-content {
+    background-color: #fafafa;
+    border: 1px dashed #e2e8f0;
+  }
+}
+
+.ai-match-box, .viewing-box {
+  background-color: $brand-amber-bg;
+  border-radius: 16px;
+  height: 100%;
+}
+
+.score-circle {
+  width: 54px;
+  height: 54px;
+  background: white;
+  border: 3px solid $brand-amber;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: $brand-amber;
+  font-size: 0.9rem;
+}
+
+// 右側導覽卡片
+.nav-card {
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  color: white;
+
+  &.search-card {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+  }
+
+  &.exchange-card {
+    background: white;
+    color: #2d3748;
+    border: 1px solid #edf2f7;
+    box-shadow: $card-shadow;
+    .nav-icon { color: $brand-amber; }
+  }
+
+  &:hover {
+    transform: translateX(5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+  }
+
+  .nav-icon {
+    font-size: 32px;
+    height: 32px;
+    width: 32px;
+  }
+}
+
+// 房源卡片樣式
+.house-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: $card-shadow;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-8px);
+  }
+
+  .image-wrapper {
+    height: 200px;
+    .house-img {
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .match-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      color: #76ff03;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .house-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .house-tag {
+    background: #f1f5f9;
+    color: #64748b;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .price {
+    .currency { font-size: 0.9rem; color: #444; }
+    .amount { font-size: 1.4rem; font-weight: 800; color: #1a202c; }
+    .unit { font-size: 0.8rem; color: #718096; }
+  }
+}
+
+// 技能交換促銷卡片
+.exchange-promo-card {
+  background-color: white;
+  border: 2px dashed #cbd5e1;
+  border-radius: 24px;
+
+  .promo-tag {
+    background: $brand-amber;
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 10px;
+    border-radius: 6px;
+  }
+
+  .promo-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    color: $brand-amber;
+    margin: 0 auto;
+  }
+
+  .btn-exchange-action {
+    background-color: #fff7ed !important;
+    color: $brand-amber-dark !important;
+    border: 1px solid #ffedd5 !important;
+    border-radius: 12px !important;
+    font-weight: 600;
+  }
+}
+
+.view-all {
+  color: $brand-amber;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.fs-7 { font-size: 0.85rem; }
+.cursor-pointer { cursor: pointer; }

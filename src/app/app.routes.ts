@@ -16,6 +16,11 @@ export const routes: Routes = [
     component: PublicLayout,
     children: [
       {
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full'
+      },
+      {
         path: 'home',
         loadComponent: () => import('./@component/home-component/home-component').then(c => c.HomeComponent),
         pathMatch: 'full'
@@ -36,6 +41,10 @@ export const routes: Routes = [
       {
         path: 'contact',
         component: ContactComponent
+      },
+      {
+        path: 'safety',
+        loadComponent : () => import('./@component/@front/safety-component/safety-component').then(c => c.SafetyComponent),
       },
       {
         path: 'faq',
@@ -72,6 +81,10 @@ export const routes: Routes = [
         path: 'rent',
         loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
       },
+      {
+        path: '404',
+        loadComponent: () => import('./@component/not-found-component/not-found-component').then(c => c.NotFoundComponent)
+      },
 
       // --- 會員中心 ---
       // {
@@ -105,12 +118,13 @@ export const routes: Routes = [
           // { path: '', redirectTo: 'rent', pathMatch: 'full' },
           // 發布新房源
           {
-            path: 'dashboard',
-            loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
+            path: 'lessor_dashboard',
+            loadComponent: () => import('./@component/@member/lessor-dashboard-component/lessor-dashboard-component').then(c => c.LessorDashboardComponent),
           },
-          // { path: '', redirectTo: 'rent', pathMatch: 'full' },
-
-          { path: '', redirectTo: 'rent', pathMatch: 'full' },
+          {
+            path: 'lessee_dashboard',
+            loadComponent: () => import('./@component/@member/lessee-dashboard-component/lessee-dashboard-component').then(c => c.LesseeDashboardComponent),
+          },
           {
             path: 'rent',
             loadComponent: () => import('./@component/rent-house-component/house-form/house-form.component').then(c => c.HouseFormComponent),
@@ -125,6 +139,7 @@ export const routes: Routes = [
             path: 'product-booking-approval-component',
             loadComponent: () => import('./@component/product-booking-approval-component/product-booking-approval-component').then(c => c.ProductBookingApprovalComponent),
           },
+          // 個人資料設定
           {
             path: 'edit',
             loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
@@ -165,6 +180,14 @@ export const routes: Routes = [
               import('./@component/house-viewing-application-tracking-component/house-viewing-application-tracking-component')
                 .then(c => c.HouseViewingApplicationTrackingComponent),
           },
+          // 工具借用 / 技能預約紀錄
+          {
+            path: 'product-booking-applications',
+            loadComponent: () =>
+              import('./@component/product-booking-application-tracking-component/product-booking-application-tracking-component')
+                .then(c => c.ProductBookingApplicationTrackingComponent),
+          },
+          { path: '', redirectTo: 'lessor_dashboard', pathMatch: 'full' },
         ],
       },
     ]
@@ -179,7 +202,6 @@ export const routes: Routes = [
     canActivate: [authGuard],
     data: { roles: ['admin', 'super'] },
     children: [
-      { path: '', redirectTo: 'admin-review', pathMatch: 'full' },
       {
         path: 'dashboard',
         loadComponent: () => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
@@ -221,14 +243,14 @@ export const routes: Routes = [
       {
         path: 'contact-messages',
         loadComponent: () => import('./@component/admin-contact/admin-contact').then(c => c.AdminContactComponent)
-      }
+      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
-
   {
-    // 🪤 捕捉所有未知的網址，導回首頁
+    // 🪤 捕捉所有未知的網址，導至404
     path: '**',
-    redirectTo: 'home'
+    redirectTo: '404'
   }
 ];
 

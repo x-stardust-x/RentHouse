@@ -1,0 +1,259 @@
+<div class="review-page-container application-tracking-page">
+
+  <div class="page-header">
+    <h2 class="page-title">工具借用 / 技能預約紀錄</h2>
+    <p class="page-subtitle">追蹤您送出的工具借用與技能預約申請。</p>
+  </div>
+
+  <div class="schedule-actions">
+    <div class="schedule-actions__summary">
+      <span class="material-symbols-outlined">calendar_month</span>
+
+      <div>
+        <strong>可加入日曆行程 {{ calendarAvailableCount() }} 筆</strong>
+        <p>已確認或改期中的預約可加入 Google 日曆</p>
+      </div>
+    </div>
+
+    <button type="button" class="schedule-actions__button" (click)="toggleSchedulePanel()">
+      {{ isSchedulePanelOpen() ? '收合行程' : '查看行程' }}
+    </button>
+  </div>
+
+  @if (isSchedulePanelOpen()) {
+  <div class="schedule-panel">
+
+    @for (item of calendarAvailableItems(); track item.id) {
+    <div class="schedule-panel__item">
+      <div>
+        <strong>{{ item.itemName }}</strong>
+        <p>{{ item.bookingPeriod }}</p>
+        <small>預約單號：{{ item.orderNumber }}</small>
+      </div>
+
+      <button type="button" class="schedule-panel__button" (click)="openGoogleCalendar(item)">
+        加入 Google 日曆
+      </button>
+    </div>
+    }
+
+    @if (calendarAvailableItems().length === 0) {
+    <p class="schedule-panel__empty">目前沒有可加入日曆的已確認行程。</p>
+    }
+
+  </div>
+  }
+
+  <!-- <div class="schedule-actions">
+    <div class="schedule-actions__summary">
+      <span class="material-symbols-outlined">calendar_month</span>
+      <div>
+        <strong>可加入日曆行程 {{ calendarAvailableCount() }} 筆</strong>
+        <p>已確認的工具借用與技能預約可加入 Google 日曆</p>
+      </div>
+    </div>
+  </div> -->
+
+  <div class="tabs-container">
+    @for (tab of tabs(); track tab.id) {
+    <button type="button" class="tab-button" [class.is-active]="activeTab() === tab.id" (click)="selectTab(tab.id)">
+      {{ tab.label }} ({{ tab.count }})
+    </button>
+    }
+  </div>
+
+  @if (isLoading()) {
+  <div class="empty-state">
+    <p>正在載入工具 / 技能預約紀錄...</p>
+  </div>
+  } @else {
+  <div class="reservation-list application-list">
+
+    @for (item of filteredApplications(); track item.id) {
+    <article class="reservation-card application-card">
+
+      <div class="card-header">
+        <div class="header-left">
+          <span class="status-badge" [class.status-pending]="item.status === 'pending'"
+            [class.status-confirmed]="item.status === 'confirmed'" [class.status-rejected]="item.status === 'rejected'"
+            [class.status-rescheduled]="item.status === 'rescheduled'">
+            {{ getStatusLabel(item.status) }}
+          </span>
+
+          <span class="type-badge" [ngClass]="item.type === 'tool' ? 'badge-tool' : 'badge-skill'">
+            {{ item.type === 'tool' ? '工具借用' : '技能學習' }}
+          </span>
+
+          <span class="room-name">
+            {{ item.itemName }}
+          </span>
+        </div>
+
+        <div class="header-right">
+          <span class="order-number">預約單號: {{ item.orderNumber }}</span>
+        </div>
+      </div>
+
+      <div class="card-body application-card-body">
+
+        <div class="tracking-room-section">
+          <div class="tracking-room-image-wrap">
+            <img class="tracking-room-image" [src]="item.coverUrl" [alt]="item.itemName">
+          </div>
+        </div>
+
+        <div class="viewing-section">
+          <p class="section-label">
+            {{ item.type === 'tool' ? '預約借用期間' : '預約學習時間' }}
+          </p>
+
+          <div class="viewing-time-box">
+            <span class="material-symbols-outlined time-icon">date_range</span>
+            <span class="time-text">{{ item.bookingPeriod }}</span>
+          </div>
+
+          <div class="contact-info-box tracking-room-info tracking-room-info--moved">
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">payments</span>
+              <span>
+                費用：
+                <strong class="tracking-price">{{ item.priceInfo }}</strong>
+              </span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">
+                {{ item.type === 'tool' ? 'local_shipping' : 'video_camera_front' }}
+              </span>
+              <span>
+                {{ item.type === 'tool' ? '取件方式：' : '授課形式：' }}
+                <strong>{{ item.method || '尚未填寫' }}</strong>
+              </span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">person</span>
+              <span>
+                提供者：
+                <strong>{{ item.provider?.name || '未知提供者' }}</strong>
+              </span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">phone_iphone</span>
+              <span>
+                提供者電話：{{ displayProviderPhone(item) }}
+              </span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">chat</span>
+              <span>
+                提供者 LINE ID：{{ displayProviderLineId(item) }}
+              </span>
+            </div>
+
+          </div>
+
+          @if (item.message) {
+          <div class="message-quote-box">
+            <span class="material-symbols-outlined quote-icon-bg">format_quote</span>
+            <p class="message-text">{{ item.message }}</p>
+          </div>
+          }
+
+          @if (item.status === 'rescheduled' && item.rescheduleInfo) {
+          <div class="message-quote-box reschedule-box">
+            <span class="material-symbols-outlined quote-icon-bg">event_repeat</span>
+            <p class="message-text">
+              <strong>提供者提議改期：</strong>
+              {{ item.rescheduleInfo.proposedTime }}
+              <br>
+              <strong>訊息：</strong>
+              {{ item.rescheduleInfo.message || '無留言' }}
+            </p>
+          </div>
+          }
+
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <div class="match-score-badge">
+          <span class="material-symbols-outlined sparkle-icon">auto_awesome</span>
+          <span>契合度 {{ item.matchScore }}%</span>
+        </div>
+
+        <div class="action-buttons">
+
+          @if (item.status === 'pending') {
+          <button type="button" class="action-btn btn-outline" (click)="viewProduct(item)">
+            查看項目
+          </button>
+          }
+
+          @else if (item.status === 'confirmed') {
+          <button type="button" class="action-btn btn-outline" (click)="viewProduct(item)">
+            查看項目
+          </button>
+
+          <button type="button" class="action-btn btn-outline" (click)="openGoogleCalendar(item)">
+            加入 Google 日曆
+          </button>
+
+          <button type="button" class="action-btn btn-fill" (click)="contactProviderByLine(item)">
+            LINE 聯絡提供者
+          </button>
+          }
+
+          @else if (item.status === 'rescheduled') {
+          <button type="button" class="action-btn btn-outline" (click)="viewProduct(item)">
+            查看項目
+          </button>
+
+          <button type="button" class="action-btn btn-outline" (click)="openGoogleCalendar(item)">
+            加入 Google 日曆
+          </button>
+
+          <button type="button" class="action-btn btn-fill" (click)="contactProviderByLine(item)">
+            LINE 聯絡提供者
+          </button>
+          }
+
+          <!-- @else if (item.status === 'matched') {
+          <button type="button" class="action-btn btn-outline" (click)="viewProduct(item)">
+            查看項目
+          </button>
+
+          <button type="button" class="action-btn btn-outline" (click)="openGoogleCalendar(item)">
+            加入 Google 日曆
+          </button>
+
+          <button type="button" class="action-btn btn-fill" (click)="contactProviderByLine(item)">
+            LINE 聯絡提供者
+          </button>
+          } -->
+
+          @else if (item.status === 'rejected') {
+          <button type="button" class="action-btn btn-text" (click)="viewProduct(item)">
+            查看其他時段或項目
+          </button>
+          }
+
+        </div>
+      </div>
+
+    </article>
+    }
+
+    @if (filteredApplications().length === 0) {
+    <div class="empty-state">
+      <p>{{ getEmptyStateText() }}</p>
+    </div>
+    }
+
+  </div>
+  }
+</div>

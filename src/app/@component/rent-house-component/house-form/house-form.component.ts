@@ -47,7 +47,7 @@ export class HouseFormComponent implements OnInit {
     rentPrice: 15000,
     includeUtilities: false,
     includeWifi: false,
-    includeManagememtFee: false,
+    includeManagementFee: false,
     areaSize: null,
     leaseTerm: 12,
     floorInfo: '',
@@ -59,8 +59,16 @@ export class HouseFormComponent implements OnInit {
     noiseTolerance: 3,
     pet: false,
     smoke: false,
+    livingWithLessor: false,
     interests: '',
-    advancedRules: ''
+    advancedRules: '',
+    routineType: '正常作息',
+    showerRestriction: '無限制',
+    visitorPolicy: '僅限白天拜訪',
+    cookingHabit: '僅限輕食微波',
+    fridgeAllocation: '貼標籤即可',
+    interactionFrequency: '純租屋互不打擾',
+    advancedRulesNote: ''
   };
 
   constructor(
@@ -90,6 +98,8 @@ export class HouseFormComponent implements OnInit {
       next: (data: any) => {
         console.log('準備編輯的房屋資料：', data);
 
+        // const parsedAdvancedRules = this.parseAdvancedRulesForForm(data.advancedRules);
+        const parsedAdvancedRules = this.parseAdvancedRulesForForm(data.advancedRules || data.AdvancedRules);
         // 把後端傳回來的資料，一個一個塞回 formData 裡面
         this.formData = {
           accountId: data.accountId || 1,
@@ -100,7 +110,7 @@ export class HouseFormComponent implements OnInit {
           rentPrice: data.rentPrice || 0,
           includeUtilities: data.includeUtilities || false,
           includeWifi: data.includeWifi || false,
-          includeManagememtFee: data.includeManagementFee || false,
+          includeManagementFee: data.includeManagementFee || false,
           areaSize: data.areaSize || null,
           leaseTerm: data.leaseTerm || 12,
           floorInfo: data.floorInfo || '',
@@ -113,8 +123,17 @@ export class HouseFormComponent implements OnInit {
           noiseTolerance: data.noiseTolerance || 3,
           pet: data.pet || false,
           smoke: data.smoke || false,
+          livingWithLessor: data.livingWithLessor ?? data.LivingWithLessor ?? false,
           interests: data.interests || '',
-          advancedRules: data.advancedRules || ''
+          advancedRules: data.advancedRules || '',
+
+          routineType: parsedAdvancedRules.routineType,
+          showerRestriction: parsedAdvancedRules.showerRestriction,
+          visitorPolicy: parsedAdvancedRules.visitorPolicy,
+          cookingHabit: parsedAdvancedRules.cookingHabit,
+          fridgeAllocation: parsedAdvancedRules.fridgeAllocation,
+          interactionFrequency: parsedAdvancedRules.interactionFrequency,
+          advancedRulesNote: parsedAdvancedRules.note
         };
 
         // 🌟 6. 新增：捕捉這間房子的舊照片 (相容後端回傳格式，可能是 images 或 houseImages)
@@ -180,6 +199,52 @@ export class HouseFormComponent implements OnInit {
     });
   }
 
+  private parseAdvancedRulesForForm(rawRules: string | null | undefined) {
+    const fallback = {
+      routineType: '正常作息',
+      showerRestriction: '無限制',
+      visitorPolicy: '僅限白天拜訪',
+      cookingHabit: '僅限輕食微波',
+      fridgeAllocation: '貼標籤即可',
+      interactionFrequency: '純租屋互不打擾',
+      note: rawRules || ''
+    };
+
+    if (!rawRules) {
+      return fallback;
+    }
+
+    try {
+      const parsed = JSON.parse(rawRules);
+
+      return {
+        routineType: parsed.routineType || parsed.routines || fallback.routineType,
+        showerRestriction: parsed.showerRestriction || parsed.showerRestrictions || fallback.showerRestriction,
+        visitorPolicy: parsed.visitorPolicy || parsed.visitorPolicies || fallback.visitorPolicy,
+        cookingHabit: parsed.cookingHabit || parsed.cookingHabits || fallback.cookingHabit,
+        fridgeAllocation: parsed.fridgeAllocation || parsed.fridgeAllocations || fallback.fridgeAllocation,
+        interactionFrequency: parsed.interactionFrequency || parsed.interactionFrequencies || fallback.interactionFrequency,
+        note: parsed.note || parsed.advancedRulesNote || ''
+      };
+    } catch {
+      return fallback;
+    }
+  }
+
+  private syncAdvancedRulesBeforeSubmit(): void {
+    const payload = {
+      routines: this.formData.routineType || '正常作息',
+      showerRestrictions: this.formData.showerRestriction || '無限制',
+      visitorPolicies: this.formData.visitorPolicy || '僅限白天拜訪',
+      cookingHabits: this.formData.cookingHabit || '僅限輕食微波',
+      fridgeAllocations: this.formData.fridgeAllocation || '貼標籤即可',
+      interactionFrequencies: this.formData.interactionFrequency || '純租屋互不打擾',
+      note: this.formData.advancedRulesNote || ''
+    };
+
+    this.formData.advancedRules = JSON.stringify(payload);
+  }
+
   submitForm() {
     if (this.formData.accountId === 0) {
       Swal.fire({
@@ -193,6 +258,15 @@ export class HouseFormComponent implements OnInit {
       this.router.navigate(['/login']);
       return;
     }
+
+    this.syncAdvancedRulesBeforeSubmit();
+
+    this.formData.cleanLevel = Number(this.formData.cleanLevel || 3);
+    this.formData.noiseTolerance = Number(this.formData.noiseTolerance || 3);
+    this.formData.livingWithLessor = this.formData.livingWithLessor === true;
+
+    // 只要房東送出新增或修改，都先回到待審核
+    this.formData.status = 0;
 
     if (this.formData.sleepTime?.length === 5) {
       this.formData.sleepTime += ':00';
@@ -315,10 +389,17 @@ export class HouseFormComponent implements OnInit {
   resetForm() {
     this.formData = {
       accountId: this.authsev.getAccountId() ?? 1, districtId: undefined, name: '', address: '', description: '',
-      rentPrice: 0, includeUtilities: false, includeWifi: false, includeManagememtFee: false,
+      rentPrice: 0, includeUtilities: false, includeWifi: false, includeManagementFee: false,
       areaSize: null, leaseTerm: 12, floorInfo: '', houseType: '獨立套房', status: 0,
       sleepTime: '23:30', wakeTime: '07:00', cleanLevel: 3, noiseTolerance: 3, pet: false, smoke: false, interests: '',
-      advancedRules: ''
+      livingWithLessor: false,
+      advancedRules: '', routineType: '正常作息',
+      showerRestriction: '無限制',
+      visitorPolicy: '僅限白天拜訪',
+      cookingHabit: '僅限輕食微波',
+      fridgeAllocation: '貼標籤即可',
+      interactionFrequency: '純租屋互不打擾',
+      advancedRulesNote: ''
     };
     this.pendingPhotos = [];
     this.existingPhotos = []; // 🌟 新增：重設表單時，一併清空舊照片紀錄

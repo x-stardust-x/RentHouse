@@ -147,6 +147,18 @@ deleteImageRecord(imageId: number) {
     return this.http.delete(`https://localhost:7215/api/RentProduct/Image/${imageId}`);
   }
 
+ toggleFavoriteHouse(accountId: number,  houseId: number) {
+    const payload = { accountId, houseId
 
+    };
+    return this.http.post<any>('https://localhost:7215/api/Favorite/Toggle', payload);
+
+ }
+ getMyFavorites(accountId: number) {
+    return this.http.get<any[]>(`https://localhost:7215/api/Favorite/MyList/${accountId}`);
+  }
+  checkIsFavorite(accountId: number, houseId: number) {
+    return this.http.get<any>(`https://localhost:7215/api/Favorite/Check/${accountId}/${houseId}`);
+  }
 
 }

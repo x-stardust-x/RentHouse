@@ -11,12 +11,13 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Authservice } from '../../@service/authservice';
 import { LesseeProfileTag } from '../../@interface/lessee-profile-tag';
 import { AvailableViewingSlot } from '../../@interface/available-viewing-slot';
-
+import { HouseService } from '../../@service/house.service';
 // Services & Interfaces
 import { RentalMatchingService } from '../../@service/rental-matching-service';
 import { HouseFacilityService } from '../../@service/house-facility-service';
 import { HouseViewingService } from '../../@service/house-viewing-service';
 import { MatchHouseDto } from '../../@interface/match-house';
+
 
 @Component({
   selector: 'app-rental-matching-detail-component',
@@ -39,6 +40,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   private http = inject(HttpClient);
   private sanitizer = inject(DomSanitizer);
   private houseFacilityService = inject(HouseFacilityService);
+  private houseService = inject(HouseService);
   private viewingService = inject(HouseViewingService);
 
   // ===================================================================
@@ -230,6 +232,13 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
         console.log("🔥 API 原始回傳資料:", data);
         this.detailData.set({ ...data, displayType: this.displayType() });
         const cleanHouseId = Number(data?.id || data?.Id);
+
+        if (cleanHouseId) {
+          this.checkFavoriteStatus(cleanHouseId);
+        }
+        setTimeout(() => {
+        this.detailData.set({ ...data, displayType: this.displayType() });
+      });
 
         if (data && data.advancedRules) {
           try {
@@ -667,7 +676,81 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
     );
   }
 
-}
+
+  // 房屋關注
+ isFavorite = signal(false);
+
+  onToggleFavorite() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('請先登入');
+      return;
+    }
+
+    let currentAccountId: number;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      currentAccountId = Number(payload.AccountId);
+      if (!currentAccountId) {
+         console.error('在 Token 中找不到會員 ID 欄位！');
+         return;
+      }
+    } catch (e) {
+      console.error('Token 解析失敗', e);
+      return;
+    }
+
+
+    const targetHouseId = this.currentCleanId();
+
+    this.houseService.toggleFavoriteHouse(currentAccountId, targetHouseId).subscribe({
+      next: (res) => {
+
+        console.log("🔥 [點擊收藏] API 回傳結果：", res);
+
+
+        const status = res.isFavorite !== undefined ? res.isFavorite : res.IsFavorite;
+        this.isFavorite.set(status);
+      },
+      error: (err) => {
+        console.error('收藏失敗，請稍後再試', err);
+      }
+    });
+  }
+
+
+  checkFavoriteStatus(houseId: number) {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const accountId = Number(payload.AccountId);
+
+      this.houseService.checkIsFavorite(accountId, houseId).subscribe({
+        next: (res) => {
+          // 🚨 裝上監視器：看看進場檢查時，後端說了什麼？
+          console.log("🔥 [進場檢查] API 回傳結果：", res);
+
+          // 🔍 同樣加上大小寫防呆
+          const status = res.isFavorite !== undefined ? res.isFavorite : res.IsFavorite;
+          this.isFavorite.set(status);
+        },
+        error: (err) => {
+          console.error('檢查收藏狀態失敗', err);
+        }
+      });
+    } catch (e) {
+      console.error("無法讀取登入狀態", e);
+    }
+  }
+
+
+  }
+
+
+
+
 
 
 

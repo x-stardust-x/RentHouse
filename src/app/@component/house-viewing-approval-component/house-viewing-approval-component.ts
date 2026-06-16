@@ -3,6 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HouseViewingService } from '../../@service/house-viewing-service';
 import { FormsModule } from '@angular/forms';
+import { CalendarLinkService } from '../../@service/calendar-link-service';
 
 export interface Reservation {
   id: string;
@@ -67,6 +68,7 @@ export class HouseViewingApprovalComponent implements OnInit {
   // ===================================================================
   // 預留給後續與 C# 後端 API 串接使用
   private viewingService = inject(HouseViewingService);
+  private calendarLinkService = inject(CalendarLinkService);
 
   // ===================================================================
   // 狀態管理 (Signals)
@@ -76,6 +78,52 @@ export class HouseViewingApprovalComponent implements OnInit {
   // 模擬後端回傳的預約資料 (未來這裡會由 ngOnInit 呼叫 API 覆寫)
 
   reservations = signal<Reservation[]>([]);
+
+  isSchedulePanelOpen = signal(false);
+
+  calendarAvailableItems = computed(() => {
+    return this.reservations().filter(item => this.canAddViewingToCalendar(item));
+  });
+
+  calendarAvailableCount = computed(() => {
+    return this.calendarAvailableItems().length;
+  });
+
+  toggleSchedulePanel(): void {
+    this.isSchedulePanelOpen.set(!this.isSchedulePanelOpen());
+  }
+
+  canAddViewingToCalendar(item: any): boolean {
+    const status = String(item.status ?? item.Status ?? '');
+
+    return status === 'confirmed'
+      || status === 'rescheduled'
+      || status === 'matched';
+  }
+
+  openGoogleCalendar(item: any): void {
+    const range = this.parseViewingCalendarTime(item);
+
+    if (!range) {
+      alert('這筆看房預約缺少可加入日曆的日期時間');
+      return;
+    }
+
+    this.calendarLinkService.openGoogleCalendar({
+      title: `看房預約｜${item.roomName || item.RoomName || '房源'}`,
+      startAt: range.startAt,
+      endAt: range.endAt,
+      location: item.roomAddress || item.RoomAddress || '',
+      details: [
+        `預約單號：${item.orderNumber || item.OrderNumber || ''}`,
+        `房源：${item.roomName || item.RoomName || ''}`,
+        `申請人：${item.applicant?.name || item.Applicant?.Name || '未知申請人'}`,
+        `電話：${this.displayPhone ? this.displayPhone(item) : (item.applicant?.phone || item.Applicant?.Phone || '')}`,
+        `LINE ID：${this.displayLineId ? this.displayLineId(item) : (item.applicant?.lineId || item.Applicant?.LineId || '')}`,
+        `備註：${item.message || item.Message || '無'}`
+      ].join('\n')
+    });
+  }
 
   // ===================================================================
   // 動態計算屬性 (Computed)
@@ -351,6 +399,30 @@ export class HouseViewingApprovalComponent implements OnInit {
 
         alert(`接受預約失敗：${backendMessage}`);
       }
+    });
+  }
+
+  openViewingGoogleCalendar(item: any): void {
+    const range = this.parseViewingCalendarTime(item);
+
+    if (!range) {
+      alert('這筆看房預約缺少可加入日曆的日期時間');
+      return;
+    }
+
+    this.calendarLinkService.openGoogleCalendar({
+      title: `看房預約｜${item.roomName || item.RoomName || '房源'}`,
+      startAt: range.startAt,
+      endAt: range.endAt,
+      location: item.roomAddress || item.RoomAddress || '',
+      details: [
+        `預約單號：${item.orderNumber || item.OrderNumber || ''}`,
+        `房源：${item.roomName || item.RoomName || ''}`,
+        `申請人：${item.applicant?.name || item.Applicant?.Name || '未知申請人'}`,
+        `電話：${this.displayPhone ? this.displayPhone(item) : (item.applicant?.phone || item.Applicant?.Phone || '')}`,
+        `LINE ID：${this.displayLineId ? this.displayLineId(item) : (item.applicant?.lineId || item.Applicant?.LineId || '')}`,
+        `備註：${item.message || item.Message || '無'}`
+      ].join('\n')
     });
   }
 
@@ -662,8 +734,64 @@ export class HouseViewingApprovalComponent implements OnInit {
         alert(`提議改期失敗：${backendMessage}`);
       }
     });
-
-
-
   }
+
+  private parseViewingCalendarTime(item: any): { startAt: string; endAt: string } | null {
+    const raw =
+      item.viewingDateTime ??
+      item.ViewingDateTime ??
+      '';
+
+    if (!raw) {
+      return null;
+    }
+
+    const text = String(raw).trim();
+
+    // 格式例如：2026/06/25 10:00 - 12:00
+    const rangeMatch = text.match(
+      /(\d{4})\/(\d{1,2})\/(\d{1,2}).*?(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/
+    );
+
+    if (rangeMatch) {
+      const date = `${rangeMatch[1]}-${this.padCalendarNumber(rangeMatch[2])}-${this.padCalendarNumber(rangeMatch[3])}`;
+
+      return {
+        startAt: `${date}T${this.padCalendarNumber(rangeMatch[4])}:${rangeMatch[5]}:00`,
+        endAt: `${date}T${this.padCalendarNumber(rangeMatch[6])}:${rangeMatch[7]}:00`
+      };
+    }
+
+    // 格式如果是 ISO，例如：2026-06-25T10:00:00
+    const fallbackDate = new Date(text);
+
+    if (Number.isNaN(fallbackDate.getTime())) {
+      return null;
+    }
+
+    const endDate = new Date(fallbackDate);
+    endDate.setHours(endDate.getHours() + 1);
+
+    return {
+      startAt: this.toLocalDateTimeString(fallbackDate),
+      endAt: this.toLocalDateTimeString(endDate)
+    };
+  }
+
+  private padCalendarNumber(value: string | number): string {
+    return String(value).padStart(2, '0');
+  }
+
+  private toLocalDateTimeString(date: Date): string {
+    const yyyy = date.getFullYear();
+    const mm = this.padCalendarNumber(date.getMonth() + 1);
+    const dd = this.padCalendarNumber(date.getDate());
+    const hh = this.padCalendarNumber(date.getHours());
+    const min = this.padCalendarNumber(date.getMinutes());
+
+    return `${yyyy}-${mm}-${dd}T${hh}:${min}:00`;
+  }
+
+
+
 }

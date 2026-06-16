@@ -2,14 +2,17 @@ import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductBookingService } from '../../@service/product-booking-service';
+import { CalendarLinkService } from '../../@service/calendar-link-service';
 
 type SharingStatus = 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'closed';
-type BookingStatus = 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'closed';
+// type BookingStatus = 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'closed';
 
 interface SharingReservation {
   id: string;
   orderNumber: string;
-  status: BookingStatus;
+  status: SharingStatus;
+  // status: 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'closed';
+  // status: BookingStatus;
   type: 'tool' | 'skill';
   itemName: string;
   priceInfo: string;
@@ -45,6 +48,7 @@ interface SharingReservation {
 })
 export class ProductBookingApprovalComponent implements OnInit {
   private bookingService = inject(ProductBookingService);
+  private calendarLinkService = inject(CalendarLinkService);
 
   activeTab = signal<SharingStatus>('pending');
 
@@ -94,7 +98,7 @@ export class ProductBookingApprovalComponent implements OnInit {
         const normalizedData = (data || []).map(item => ({
           id: String(item.id ?? item.Id),
           orderNumber: item.orderNumber ?? item.OrderNumber,
-          status: item.status ?? item.Status ?? 'pending',
+          status: this.normalizeStatus(item.status ?? item.Status),
           type: item.type ?? item.Type ?? 'tool',
           itemName: item.itemName ?? item.ItemName,
           priceInfo: item.priceInfo ?? item.PriceInfo,
@@ -203,7 +207,7 @@ export class ProductBookingApprovalComponent implements OnInit {
       return;
     }
 
-    const proposedStartTime = dateText.replace(' ', 'T') + ':00';
+    // const proposedStartTime = dateText.replace(' ', 'T') + ':00';
 
     this.bookingService.updateReservationStatus({
       reservationId: Number(item.id),
@@ -263,6 +267,124 @@ export class ProductBookingApprovalComponent implements OnInit {
 
     return `${text.slice(0, 2)}***${text.slice(-2)}`;
   }
+
+  calendarAvailableCount = computed(() => {
+    return this.reservations().filter(item => this.canAddToCalendar(item)).length;
+  });
+
+  canAddToCalendar(item: SharingReservation): boolean {
+    return item.status === 'confirmed' || item.status === 'rescheduled';
+  }
+
+  openGoogleCalendar(item: SharingReservation): void {
+    const event = this.buildCalendarEvent(item);
+
+    if (!event) {
+      alert('這筆預約缺少可加入日曆的日期時間');
+      return;
+    }
+
+    this.calendarLinkService.openGoogleCalendar(event);
+  }
+
+  private buildCalendarEvent(item: SharingReservation) {
+    const range = this.parseBookingPeriod(item.bookingPeriod, item.type);
+
+    if (!range) {
+      return null;
+    }
+
+    const typeText = item.type === 'tool' ? '工具借用' : '技能預約';
+
+    return {
+      title: `${typeText}｜${item.itemName}`,
+      startAt: range.startAt,
+      endAt: range.endAt,
+      location: item.method || '',
+      details: [
+        `預約單號：${item.orderNumber}`,
+        `項目：${item.itemName}`,
+        `類型：${typeText}`,
+        `費用：${item.priceInfo}`,
+        `方式：${item.method || '尚未填寫'}`,
+        `申請人：${item.applicant?.name || '未知申請人'}`,
+        `電話：${this.displayPhone(item)}`,
+        `LINE ID：${this.displayLineId(item)}`,
+        `備註：${item.message || '無'}`
+      ].join('\n')
+    };
+  }
+
+  private parseBookingPeriod(
+    bookingPeriod: string,
+    type: 'tool' | 'skill'
+  ): { startAt: string; endAt: string } | null {
+    const text = String(bookingPeriod || '').trim();
+
+    if (!text) {
+      return null;
+    }
+
+    if (type === 'tool') {
+      const match = text.match(
+        /(\d{4})\/(\d{1,2})\/(\d{1,2}).*?(\d{4})\/(\d{1,2})\/(\d{1,2})/
+      );
+
+      if (!match) {
+        return null;
+      }
+
+      const startAt = `${match[1]}-${this.pad(match[2])}-${this.pad(match[3])}T09:00:00`;
+      const endAt = `${match[4]}-${this.pad(match[5])}-${this.pad(match[6])}T18:00:00`;
+
+      return { startAt, endAt };
+    }
+
+    const skillMatch = text.match(
+      /(\d{4})\/(\d{1,2})\/(\d{1,2}).*?(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/
+    );
+
+    if (!skillMatch) {
+      return null;
+    }
+
+    const date = `${skillMatch[1]}-${this.pad(skillMatch[2])}-${this.pad(skillMatch[3])}`;
+    const startAt = `${date}T${this.pad(skillMatch[4])}:${skillMatch[5]}:00`;
+    const endAt = `${date}T${this.pad(skillMatch[6])}:${skillMatch[7]}:00`;
+
+    return { startAt, endAt };
+  }
+
+  private pad(value: string): string {
+    return String(value).padStart(2, '0');
+  }
+
+  private normalizeStatus(value: any): SharingStatus {
+    const status = String(value ?? '').trim();
+
+    if (
+      status === 'pending' ||
+      status === 'confirmed' ||
+      status === 'rejected' ||
+      status === 'rescheduled' ||
+      status === 'closed'
+    ) {
+      return status;
+    }
+
+    return 'pending';
+  }
+
+  isSchedulePanelOpen = signal(false);
+
+  calendarAvailableItems = computed(() => {
+    return this.reservations().filter(item => this.canAddToCalendar(item));
+  });
+
+  toggleSchedulePanel(): void {
+    this.isSchedulePanelOpen.set(!this.isSchedulePanelOpen());
+  }
+
 }
 
 

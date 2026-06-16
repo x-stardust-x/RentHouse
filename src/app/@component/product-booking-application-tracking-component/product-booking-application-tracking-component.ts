@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ProductBookingService } from '../../@service/product-booking-service';
+import { CalendarLinkService } from '../../@service/calendar-link-service';
 
 type BookingStatus = 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'closed';
 type BookingType = 'tool' | 'skill';
@@ -42,6 +43,7 @@ interface ProductBookingApplication {
 })
 export class ProductBookingApplicationTrackingComponent implements OnInit {
   private bookingService = inject(ProductBookingService);
+  private calendarLinkService = inject(CalendarLinkService);
 
   activeTab = signal<BookingStatus>('pending');
 
@@ -76,10 +78,6 @@ export class ProductBookingApplicationTrackingComponent implements OnInit {
       count: this.applications().filter(x => x.status === 'closed').length
     }
   ]);
-
-  filteredApplications = computed(() => {
-    return this.applications().filter(x => x.status === this.activeTab());
-  });
 
   ngOnInit(): void {
     this.fetchApplications();
@@ -221,6 +219,17 @@ export class ProductBookingApplicationTrackingComponent implements OnInit {
     window.open(`/rental-matching-detail/product/${item.productId}`, '_blank');
   }
 
+  openGoogleCalendar(item: ProductBookingApplication): void {
+    const event = this.buildCalendarEvent(item);
+
+    if (!event) {
+      alert('這筆預約缺少可加入日曆的日期時間');
+      return;
+    }
+
+    this.calendarLinkService.openGoogleCalendar(event);
+  }
+
   private normalizeStatus(value: any): BookingStatus {
     const status = String(value ?? '').trim();
 
@@ -291,4 +300,103 @@ export class ProductBookingApplicationTrackingComponent implements OnInit {
 
     return `https://localhost:7215/${value}`;
   }
+
+  canAddToCalendar(item: ProductBookingApplication): boolean {
+    return item.status === 'confirmed' || item.status === 'rescheduled';
+
+    //  return item.status === 'confirmed'
+    // || item.status === 'rescheduled'
+    // || item.status === 'matched';
+  }
+
+  filteredApplications = computed(() => {
+    return this.applications().filter(x => x.status === this.activeTab());
+  });
+
+  isSchedulePanelOpen = signal(false);
+
+  calendarAvailableItems = computed(() => {
+    return this.applications().filter(item => this.canAddToCalendar(item));
+  });
+
+  calendarAvailableCount = computed(() => {
+    return this.calendarAvailableItems().length;
+  });
+
+  toggleSchedulePanel(): void {
+    this.isSchedulePanelOpen.set(!this.isSchedulePanelOpen());
+  }
+
+  private buildCalendarEvent(item: ProductBookingApplication) {
+    const range = this.parseBookingPeriod(item.bookingPeriod, item.type);
+
+    if (!range) {
+      return null;
+    }
+
+    const typeText = item.type === 'tool' ? '工具借用' : '技能預約';
+
+    return {
+      title: `${typeText}｜${item.itemName}`,
+      startAt: range.startAt,
+      endAt: range.endAt,
+      location: item.method || '',
+      details: [
+        `預約單號：${item.orderNumber}`,
+        `項目：${item.itemName}`,
+        `類型：${typeText}`,
+        `費用：${item.priceInfo}`,
+        `方式：${item.method || '尚未填寫'}`,
+        `提供者：${item.provider?.name || '未知提供者'}`,
+        `電話：${this.canShowFullContact(item) ? item.provider?.phone : '確認後開放聯絡'}`,
+        `LINE ID：${this.canShowFullContact(item) ? item.provider?.lineId : '確認後開放聯絡'}`,
+        `備註：${item.message || '無'}`
+      ].join('\n')
+    };
+  }
+
+  private parseBookingPeriod(
+    bookingPeriod: string,
+    type: BookingType
+  ): { startAt: string; endAt: string } | null {
+    const text = String(bookingPeriod || '').trim();
+
+    if (!text) {
+      return null;
+    }
+
+    if (type === 'tool') {
+      const match = text.match(
+        /(\d{4})\/(\d{1,2})\/(\d{1,2}).*?(\d{4})\/(\d{1,2})\/(\d{1,2})/
+      );
+
+      if (!match) {
+        return null;
+      }
+
+      const startAt = `${match[1]}-${this.pad(match[2])}-${this.pad(match[3])}T09:00:00`;
+      const endAt = `${match[4]}-${this.pad(match[5])}-${this.pad(match[6])}T18:00:00`;
+
+      return { startAt, endAt };
+    }
+
+    const skillMatch = text.match(
+      /(\d{4})\/(\d{1,2})\/(\d{1,2}).*?(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/
+    );
+
+    if (!skillMatch) {
+      return null;
+    }
+
+    const date = `${skillMatch[1]}-${this.pad(skillMatch[2])}-${this.pad(skillMatch[3])}`;
+    const startAt = `${date}T${this.pad(skillMatch[4])}:${skillMatch[5]}:00`;
+    const endAt = `${date}T${this.pad(skillMatch[6])}:${skillMatch[7]}:00`;
+
+    return { startAt, endAt };
+  }
+
+  private pad(value: string): string {
+    return String(value).padStart(2, '0');
+  }
+
 }

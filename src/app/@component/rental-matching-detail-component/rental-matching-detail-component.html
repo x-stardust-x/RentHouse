@@ -62,29 +62,29 @@
         </div>
       </div>
 
-     <div class="rental-hero__actions">
+      <div class="rental-hero__actions">
 
-  <button type="button" class="share rental-hero__action-button">
-    <span class="material-symbols-outlined rental-hero__action-icon">share</span>
-    <p class="rental-hero__action-text">分享</p>
-  </button>
+        <button type="button" class="share rental-hero__action-button">
+          <span class="material-symbols-outlined rental-hero__action-icon">share</span>
+          <p class="rental-hero__action-text">分享</p>
+        </button>
 
- <button type="button" class="favorite rental-hero__action-button" (click)="onToggleFavorite()">
+        <button type="button" class="favorite rental-hero__action-button" (click)="onToggleFavorite()">
 
     <span class="material-symbols-outlined rental-hero__action-icon"
           [ngClass]="{'text-danger': isFavorite()}"
-          [ngStyle]="{'font-variation-settings': isFavorite() ? '\'FILL\' 1' : '\'FILL\' 0'}"
-          style="transition: all 0.3s ease;">
-      favorite
-    </span>
+            [ngStyle]="{'font-variation-settings': isFavorite() ? '\'FILL\' 1' : '\'FILL\' 0'}"
+            style="transition: all 0.3s ease;">
+            favorite
+          </span>
 
-    <p class="rental-hero__action-text">
-      {{ isFavorite() ? '已收藏' : '收藏' }}
-    </p>
+          <p class="rental-hero__action-text">
+            {{ isFavorite() ? '已收藏' : '收藏' }}
+          </p>
 
-  </button>
+        </button>
 
-</div>
+      </div>
 
     </div>
 

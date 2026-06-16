@@ -126,6 +126,24 @@ label {
   background: #e98b2a;
 }
 
+.preference-helper {
+  display: block;
+  margin-top: 0.45rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #8a7a70;
+}
+
+.profile-card select.custom-input {
+  cursor: pointer;
+  background-color: #fff;
+}
+
+.profile-card select.custom-input {
+  appearance: auto;
+  min-height: 3rem;
+}
+
 /* ========================================
    Slider 數值顯示
 ======================================== */
@@ -242,6 +260,193 @@ label {
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+  }
+}
+
+.interest-tag-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.interest-tag-hint {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #8a7a70;
+}
+
+.interest-tag-list,
+.interest-preset-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+
+.interest-tag-chip,
+.interest-preset-chip {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.55rem 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.interest-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #fff1ec;
+  color: #e86b3f;
+  border: 1px solid rgba(232, 107, 63, 0.24);
+}
+
+.interest-tag-chip:hover {
+  background: #ffe5dc;
+}
+
+.interest-tag-chip__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  font-size: 1rem;
+  line-height: 1;
+  background: rgba(232, 107, 63, 0.12);
+}
+
+.interest-preset-chip {
+  background: #f6f6f6;
+  color: #5f534d;
+}
+
+.interest-preset-chip.is-active {
+  background: #fff1ec;
+  color: #e86b3f;
+  box-shadow: inset 0 0 0 1px rgba(232, 107, 63, 0.28);
+}
+
+.interest-add-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.interest-add-input {
+  flex: 1;
+}
+
+.interest-add-btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.7rem 1.1rem;
+  font-weight: 800;
+  color: #7a4b34;
+  background: #f5f5f5;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.interest-add-btn:hover {
+  background: #fff1ec;
+  color: #e86b3f;
+}
+
+.co-living-preference-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.co-living-preference-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid rgba(210, 180, 160, 0.75);
+  border-radius: 1rem;
+  background: #fff;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.co-living-preference-card:hover {
+  border-color: #e98225;
+  background: #fff8f3;
+}
+
+.co-living-preference-card.is-active {
+  border-color: #e98225;
+  background: #fff3ea;
+  box-shadow: 0 0 0 3px rgba(233, 130, 37, 0.08);
+}
+
+.co-living-preference-card__input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.co-living-preference-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 999px;
+  background: #fff4ec;
+  font-size: 1.2rem;
+}
+
+.co-living-preference-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.co-living-preference-card__content strong {
+  font-size: 0.98rem;
+  color: #1f2937;
+}
+
+.co-living-preference-card__content small {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: #8a7a70;
+}
+
+.co-living-preference-card__status {
+  flex-shrink: 0;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #e98225;
+  background: rgba(233, 130, 37, 0.1);
+}
+
+@media (max-width: 576px) {
+  .interest-add-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .interest-add-btn {
+    width: 100%;
+  }
+
+  .co-living-preference-card {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .co-living-preference-card__status {
+    grid-column: 2 / -1;
+    width: fit-content;
   }
 }
 

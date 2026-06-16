@@ -7,6 +7,45 @@
     </p>
   </div>
 
+  <div class="schedule-actions">
+    <div class="schedule-actions__summary">
+      <span class="material-symbols-outlined">calendar_month</span>
+
+      <div>
+        <strong>可加入日曆行程 {{ calendarAvailableCount() }} 筆</strong>
+        <p>已確認、改期中或媒合成功的看房申請可加入 Google 日曆</p>
+      </div>
+    </div>
+
+    <button type="button" class="schedule-actions__button" (click)="toggleSchedulePanel()">
+      {{ isSchedulePanelOpen() ? '收合行程' : '查看行程' }}
+    </button>
+  </div>
+
+  @if (isSchedulePanelOpen()) {
+  <div class="schedule-panel">
+
+    @for (item of calendarAvailableItems(); track item.id) {
+    <div class="schedule-panel__item">
+      <div>
+        <strong>{{ item.roomName }}</strong>
+        <p>{{ item.viewingDateTime }}</p>
+        <small>預約單號：{{ item.orderNumber }}</small>
+      </div>
+
+      <button type="button" class="schedule-panel__button" (click)="openGoogleCalendar(item)">
+        加入 Google 日曆
+      </button>
+    </div>
+    }
+
+    @if (calendarAvailableItems().length === 0) {
+    <p class="schedule-panel__empty">目前沒有可加入日曆的看房行程。</p>
+    }
+
+  </div>
+  }
+
   <div class="tabs-container">
     @for (tab of tabs(); track tab.id) {
     <button type="button" class="tab-button" [class.is-active]="activeTab() === tab.id" (click)="selectTab(tab.id)">
@@ -233,9 +272,6 @@
           }
 
           @else if (item.status === 'confirmed') {
-          <button type="button" class="action-btn btn-outline" (click)="addToGoogleCalendar(item)">
-            加入 Google 行事曆
-          </button>
 
           <button type="button" class="action-btn btn-outline" (click)="viewMap(item)">
             導航前往
@@ -244,6 +280,12 @@
           <button type="button" class="action-btn btn-fill" (click)="contactLessorByLine(item)">
             LINE 聯絡出租人
           </button>
+
+          @if (canAddViewingToCalendar(item)) {
+          <button type="button" class="action-btn btn-outline" (click)="openGoogleCalendar(item)">
+            加入 Google 日曆
+          </button>
+          }
           }
 
           @else if (item.status === 'rescheduled') {
@@ -259,6 +301,11 @@
             LINE 聯絡出租人
           </button>
 
+          @if (canAddViewingToCalendar(item)) {
+          <button type="button" class="action-btn btn-outline" (click)="openGoogleCalendar(item)">
+            加入 Google 日曆
+          </button>
+          }
           }
 
           @else if (item.status === 'rejected') {
@@ -279,6 +326,12 @@
           <button type="button" class="action-btn btn-fill" (click)="contactLessorByLine(item)">
             LINE 聯絡房東
           </button>
+
+          @if (canAddViewingToCalendar(item)) {
+          <button type="button" class="action-btn btn-outline" (click)="openViewingGoogleCalendar(item)">
+            加入 Google 日曆
+          </button>
+          }
           }
 
           @else if (item.status === 'closed') {

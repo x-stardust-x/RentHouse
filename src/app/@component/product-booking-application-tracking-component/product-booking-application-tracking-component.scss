@@ -171,7 +171,6 @@
 .applicant-name {
   margin: 0 0 0.5rem 0;
   font-size: 1.15rem;
-  white-space: nowrap;
   color: var(--color-text-main, #2B2725);
 }
 
@@ -594,45 +593,531 @@
   transform: translateY(-1px);
 }
 
-.application-meta-box {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-top: auto;
+
+
+/* =========================================================
+   改期狀態顯示
+   ========================================================= */
+
+.status-rescheduled {
+  color: #8057c2;
+  background: rgba(128, 87, 194, 0.12);
 }
 
-.application-meta-pill {
+.reschedule-box {
+  border: 1px solid rgba(128, 87, 194, 0.18);
+  background: rgba(128, 87, 194, 0.08);
+}
+
+.reschedule-box .quote-icon-bg {
+  color: rgba(128, 87, 194, 0.28);
+}
+
+/* =========================================================
+   RWD
+   ========================================================= */
+
+@media (max-width: 640px) {
+  .reschedule-modal-overlay {
+    align-items: end;
+    padding: 0;
+  }
+
+  .reschedule-modal {
+    width: 100%;
+    max-height: 88vh;
+    border-radius: 1.25rem 1.25rem 0 0;
+  }
+
+  .reschedule-modal__header,
+  .reschedule-modal__body,
+  .reschedule-modal__footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .reschedule-modal .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .reschedule-modal__footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .reschedule-modal__footer .action-btn {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* 響應式：手機版時切換為單欄排列 */
+@media (max-width: 768px) {
+  .card-body {
+    grid-template-columns: 1fr;
+    /* 切換為單欄 */
+    gap: 1.5rem;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .card-footer {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .action-buttons {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+
+
+
+
+/* =========================================================
+   承租人：看房申請追蹤頁專用補強
+   需搭配 house-viewing-approval-component.scss 的主樣式
+   ========================================================= */
+
+.application-tracking-page {
+  font-family: inherit;
+}
+
+.application-card {
+  overflow: hidden;
+}
+
+.application-card-body {
+  display: grid;
+  grid-template-columns: minmax(22rem, 0.95fr) minmax(0, 1.25fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.tracking-room-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tracking-room-image-wrap {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: #f4f1ed;
+  border: 1px solid #ece5df;
+}
+
+.tracking-room-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 把紅框資訊移到右邊後的樣式 */
+.tracking-room-info--moved {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.tracking-room-info--moved .info-row+.info-row {
+  margin-top: 0.75rem;
+}
+
+.tracking-price {
+  color: #9a4b18;
+  font-weight: 800;
+}
+
+.status-confirmed {
+  color: #2f9e68;
+  background: rgba(47, 158, 104, 0.12);
+}
+
+.status-rejected {
+  color: #777;
+  background: rgba(120, 120, 120, 0.13);
+}
+
+.status-rescheduled {
+  color: #8057c2;
+  background: rgba(128, 87, 194, 0.12);
+}
+
+.application-card.is-rejected {
+  background: #f8fbff;
+}
+
+.application-card.is-rejected .tracking-room-image {
+  filter: grayscale(0.65) brightness(0.78);
+}
+
+.application-card.is-rejected .room-name,
+.application-card.is-rejected .room-address,
+.application-card.is-rejected .order-number {
+  color: #777;
+}
+
+.rejected-box {
+  background: #f7f8fa;
+  border: 1px solid rgba(120, 120, 120, 0.16);
+}
+
+.rejected-box .quote-icon-bg {
+  color: rgba(120, 120, 120, 0.22);
+}
+
+.danger-text {
+  color: #bf3f35;
+}
+
+.danger-text:hover {
+  color: #a83229;
+  background: #fff1ef;
+}
+
+.card-footer .btn-outline,
+.card-footer .btn-fill,
+.card-footer .btn-text {
+  min-width: 7rem;
+  text-align: center;
+}
+
+.application-card .message-quote-box+.message-quote-box {
+  margin-top: 1rem;
+}
+
+
+
+.tracking-lessor-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding-bottom: 0.85rem;
+  margin-bottom: 0.85rem;
+  border-bottom: 1px solid rgba(128, 86, 58, 0.12);
+}
+
+.tracking-lessor-avatar {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 999px;
+  object-fit: cover;
+  background: #f5f0ec;
+  border: 1px solid rgba(128, 86, 58, 0.16);
+}
+
+.tracking-lessor-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.tracking-lessor-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.tracking-lessor-name {
+  color: #2f2723;
+  font-weight: 800;
+}
+
+.tracking-lessor-role {
+  margin: 0.15rem 0 0;
+  color: #8a817b;
+  font-size: 0.9rem;
+}
+
+.tracking-lessor-profile-link {
+  color: #9a4b18;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 112, 45, 0.08);
+  border: 1px solid rgba(255, 112, 45, 0.18);
+}
+
+.tracking-lessor-profile-link:hover {
+  background: rgba(255, 112, 45, 0.14);
+}
+
+.tracking-profile-tags-block {
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(128, 86, 58, 0.12);
+}
+
+.tracking-profile-tags-title {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.45rem 0.7rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
+  margin: 0 0 0.65rem;
+  color: #6f6761;
+  font-size: 0.95rem;
   font-weight: 700;
-  line-height: 1;
 }
 
-.application-meta-pill .material-symbols-outlined {
-  font-size: 1rem;
+.tracking-profile-tags-title .material-symbols-outlined {
+  color: #b15b1f;
+  font-size: 1.15rem;
 }
 
-.application-meta-pill--info {
-  color: #8a4a24;
+.tracking-profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.reselect-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(20, 18, 16, 0.58);
+  backdrop-filter: blur(6px);
+}
+
+.reselect-modal-container {
+  width: min(46rem, 100%);
+  max-height: min(92vh, 56rem);
+  overflow: auto;
+  border-radius: 1.5rem;
+  background: #fffaf5;
+  box-shadow: 0 1.5rem 4rem rgba(70, 38, 18, 0.28);
+}
+
+.contact-modal-header,
+.reselect-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(128, 86, 58, 0.12);
+}
+
+.reselect-modal-footer {
+  border-top: 1px solid rgba(128, 86, 58, 0.12);
+  border-bottom: 0;
+}
+
+.contact-modal-title {
+  margin: 0;
+  color: #2f2723;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.contact-modal-close-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(128, 86, 58, 0.08);
+  color: #7a4d32;
+  cursor: pointer;
+}
+
+.contact-modal-body {
+  padding: 1.5rem;
+}
+
+.contact-provider-summary {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+  border-radius: 1rem;
+  background: #fff;
+  border: 1px solid rgba(128, 86, 58, 0.12);
+}
+
+.contact-provider-summary__avatar {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 1rem;
+  object-fit: cover;
+  background: #f3eee9;
+}
+
+.contact-provider-summary__name {
+  margin: 0 0 0.35rem;
+  font-weight: 800;
+  color: #2f2723;
+}
+
+.contact-provider-summary__item-name {
+  color: #6f6761;
+  line-height: 1.6;
+}
+
+.provider-role-badge {
+  display: inline-flex;
+  margin-left: 0.5rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
   background: rgba(255, 112, 45, 0.1);
-  border: 1px solid rgba(255, 112, 45, 0.22);
-}
-
-.application-meta-pill--warning {
   color: #9a4b18;
-  background: rgba(255, 188, 102, 0.16);
-  border: 1px solid rgba(255, 158, 64, 0.26);
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
-.application-meta-note {
+.highlight-text {
+  color: #9a4b18;
+}
+
+.badge-divider {
+  margin: 0 0.5rem;
+  color: #c8a58d;
+}
+
+.contact-form-group {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.form-spacing-large {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.section-title-label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #2f2723;
+  font-weight: 800;
+}
+
+.label-hint,
+.textarea-hint {
   color: #8a817b;
-  font-size: 0.85rem;
+  font-size: 0.92rem;
+}
+
+.warning-text {
+  color: #b45309;
+}
+
+.form-col {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.sub-label {
+  color: #6f6761;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.date-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.9rem;
+  background: #fff;
+  border: 1px solid rgba(128, 86, 58, 0.16);
+}
+
+.contact-form-input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+}
+
+.time-slot-group,
+.move-in-group,
+.tenant-profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.time-slot-pill,
+.move-in-btn,
+.profile-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(166, 92, 50, 0.24);
+  background: #fff;
+  color: #8a4a24;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.time-slot-pill.is-active,
+.move-in-btn.is-active,
+.profile-tag.is-active {
+  background: rgba(255, 112, 45, 0.12);
+  border-color: rgba(255, 112, 45, 0.45);
+  color: #9a4b18;
+}
+
+.profile-tag-input {
+  border-radius: 999px;
+  outline: 0;
+}
+
+.modal-hidden-input {
+  display: none;
+}
+
+.contact-form-textarea {
+  width: 100%;
+  min-height: 7rem;
+  resize: vertical;
+  padding: 0.9rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(128, 86, 58, 0.16);
+  background: #fff;
+  font: inherit;
+  outline: 0;
+}
+
+.modal-divider {
+  border: 0;
+  border-top: 1px solid rgba(128, 86, 58, 0.12);
+}
+
+.icon-orange,
+.date-icon,
+.tag-icon {
+  color: #b15b1f;
+}
+
+.badge-tool {
+  background: #fff3cd;
+  color: #8a5a00;
+}
+
+.badge-skill {
+  background: #e7f1ff;
+  color: #0d47a1;
 }
 
 .schedule-actions {
@@ -725,32 +1210,6 @@
   color: #9a928c;
 }
 
-
-/* =========================================================
-   改期狀態顯示
-   ========================================================= */
-
-.status-rescheduled {
-  color: #8057c2;
-  background: rgba(128, 87, 194, 0.12);
-}
-
-.reschedule-box {
-  border: 1px solid rgba(128, 87, 194, 0.18);
-  background: rgba(128, 87, 194, 0.08);
-}
-
-.reschedule-box .quote-icon-bg {
-  color: rgba(128, 87, 194, 0.28);
-}
-
-
-
-
-/* =========================================================
-   RWD
-   ========================================================= */
-
 @media (max-width: 900px) {
   .schedule-actions {
     justify-content: stretch;
@@ -771,62 +1230,43 @@
 }
 
 
-@media (max-width: 640px) {
-  .reschedule-modal-overlay {
-    align-items: end;
-    padding: 0;
-  }
-
-  .reschedule-modal {
-    width: 100%;
-    max-height: 88vh;
-    border-radius: 1.25rem 1.25rem 0 0;
-  }
-
-  .reschedule-modal__header,
-  .reschedule-modal__body,
-  .reschedule-modal__footer {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  .reschedule-modal .form-row {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-
-  .reschedule-modal__footer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .reschedule-modal__footer .action-btn {
-    width: 100%;
-    min-width: 0;
+/* 讓追蹤頁左側圖片區與右側資訊在較寬畫面更像同一套卡片 */
+@media (min-width: 769px) {
+  .tracking-room-section .contact-info-box {
+    min-height: 9rem;
   }
 }
 
-/* 響應式：手機版時切換為單欄排列 */
-@media (max-width: 768px) {
-  .card-body {
+/* 響應式 */
+@media (max-width: 900px) {
+  .application-card-body {
     grid-template-columns: 1fr;
-    /* 切換為單欄 */
-    gap: 1.5rem;
   }
 
-  .card-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
+  .tracking-room-image-wrap {
+    aspect-ratio: 16 / 10;
+  }
+}
+
+@media (max-width: 768px) {
+  .application-card-body {
+    grid-template-columns: 1fr;
   }
 
-  .card-footer {
-    flex-direction: column;
-    gap: 1.5rem;
+  .tracking-room-image-wrap {
+    aspect-ratio: 16 / 9;
   }
 
   .action-buttons {
     width: 100%;
     justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .card-footer .btn-outline,
+  .card-footer .btn-fill,
+  .card-footer .btn-text {
+    flex: 1;
+    min-width: 8rem;
   }
 }

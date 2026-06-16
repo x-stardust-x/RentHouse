@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HouseViewingService, LesseeViewingApplication } from '../../@service/house-viewing-service';
 import { AvailableViewingSlot } from '../../@interface/available-viewing-slot';
 import { LesseeProfileTag } from '../../@interface/lessee-profile-tag';
+import { CalendarLinkService } from '../../@service/calendar-link-service';
 
 type ApplicationStatus = 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'matched' | 'closed';
 
@@ -17,6 +18,8 @@ type ApplicationStatus = 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 
 export class HouseViewingApplicationTrackingComponent implements OnInit {
   private router = inject(Router);
   private viewingService = inject(HouseViewingService);
+  private calendarLinkService = inject(CalendarLinkService);
+
 
   activeTab = signal<ApplicationStatus>('pending');
 
@@ -40,6 +43,20 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
   isReselectSlotsLoading = signal(false);
   reselectSlotsLoadError = signal('');
   isSubmittingReselect = signal(false);
+
+  isSchedulePanelOpen = signal(false);
+
+  calendarAvailableItems = computed(() => {
+    return this.applications().filter(item => this.canAddViewingToCalendar(item));
+  });
+
+  calendarAvailableCount = computed(() => {
+    return this.calendarAvailableItems().length;
+  });
+
+  toggleSchedulePanel(): void {
+    this.isSchedulePanelOpen.set(!this.isSchedulePanelOpen());
+  }
 
 
   // ===================================================================
@@ -1248,5 +1265,187 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
         this.isSubmittingReapply.set(false);
       }
     });
+  }
+
+  canAddViewingToCalendar(item: any): boolean {
+    const status = String(item.status ?? item.Status ?? '');
+
+    return status === 'confirmed'
+      || status === 'rescheduled'
+      || status === 'matched';
+    // return item.status === 'confirmed' || item.status === 'rescheduled';
+  }
+
+  openViewingGoogleCalendar(item: any): void {
+    const range = this.parseViewingDateTime(item);
+
+    if (!range) {
+      alert('這筆看房申請缺少可加入日曆的日期時間');
+      return;
+    }
+
+    this.calendarLinkService.openGoogleCalendar({
+      title: `看房預約｜${item.roomName}`,
+      startAt: range.startAt,
+      endAt: range.endAt,
+      location: item.roomAddress || '',
+      details: [
+        `預約單號：${item.orderNumber}`,
+        `房源：${item.roomName}`,
+        `出租人：${item.lessorName || '未知出租人'}`,
+        `電話：${item.lessorPhone || '確認後開放聯絡'}`,
+        `LINE ID：${item.lessorLineId || '確認後開放聯絡'}`,
+        `備註：${item.message || '無'}`
+      ].join('\n')
+    });
+  }
+
+  private parseViewingDateTime(item: any): { startAt: string; endAt: string } | null {
+    const raw =
+      item.viewingDateTime ??
+      item.ViewingDateTime ??
+      '';
+
+    if (!raw) {
+      return null;
+    }
+
+    const text = String(raw).trim();
+
+    const match = text.match(
+      /(\d{4})\/(\d{1,2})\/(\d{1,2}).*?(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/
+    );
+
+    if (match) {
+      const date = `${match[1]}-${String(match[2]).padStart(2, '0')}-${String(match[3]).padStart(2, '0')}`;
+
+      return {
+        startAt: `${date}T${String(match[4]).padStart(2, '0')}:${match[5]}:00`,
+        endAt: `${date}T${String(match[6]).padStart(2, '0')}:${match[7]}:00`
+      };
+    }
+
+    const fallbackDate = new Date(text);
+
+    if (Number.isNaN(fallbackDate.getTime())) {
+      return null;
+    }
+
+    const endDate = new Date(fallbackDate);
+    endDate.setHours(endDate.getHours() + 1);
+
+    return {
+      startAt: fallbackDate.toISOString(),
+      endAt: endDate.toISOString()
+    };
+  }
+
+  openGoogleCalendar(item: any): void {
+    const range = this.parseViewingCalendarTime(item);
+
+    if (!range) {
+      alert('這筆看房申請缺少可加入日曆的日期時間');
+      return;
+    }
+
+    this.calendarLinkService.openGoogleCalendar({
+      title: `看房預約｜${item.roomName || item.RoomName || '房源'}`,
+      startAt: range.startAt,
+      endAt: range.endAt,
+      location: item.roomAddress || item.RoomAddress || '',
+      details: [
+        `預約單號：${item.orderNumber || item.OrderNumber || ''}`,
+        `房源：${item.roomName || item.RoomName || ''}`,
+        `出租人：${item.lessorName || item.LessorName || '未知出租人'}`,
+        `電話：${item.lessorPhone || item.LessorPhone || '確認後開放聯絡'}`,
+        `LINE ID：${item.lessorLineId || item.LessorLineId || '確認後開放聯絡'}`,
+        `備註：${item.message || item.Message || '無'}`
+      ].join('\n')
+    });
+  }
+
+  private parseViewingCalendarTime(item: any): { startAt: string; endAt: string } | null {
+    const dateText =
+      item.viewingDate ??
+      item.ViewingDate ??
+      '';
+
+    const slots =
+      item.preferredTimeSlots ??
+      item.PreferredTimeSlots ??
+      [];
+
+    if (dateText && Array.isArray(slots) && slots.length > 0) {
+      const firstSlot = String(slots[0]);
+
+      const slotMatch = firstSlot.match(
+        /(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/
+      );
+
+      const dateMatch = String(dateText).match(
+        /(\d{4})\/(\d{1,2})\/(\d{1,2})/
+      );
+
+      if (slotMatch && dateMatch) {
+        const date = `${dateMatch[1]}-${this.padCalendarNumber(dateMatch[2])}-${this.padCalendarNumber(dateMatch[3])}`;
+
+        return {
+          startAt: `${date}T${this.padCalendarNumber(slotMatch[1])}:${slotMatch[2]}:00`,
+          endAt: `${date}T${this.padCalendarNumber(slotMatch[3])}:${slotMatch[4]}:00`
+        };
+      }
+    }
+
+    const raw =
+      item.viewingDateTime ??
+      item.ViewingDateTime ??
+      '';
+
+    if (!raw) {
+      return null;
+    }
+
+    const text = String(raw).trim();
+
+    const rangeMatch = text.match(
+      /(\d{4})\/(\d{1,2})\/(\d{1,2}).*?(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/
+    );
+
+    if (rangeMatch) {
+      const date = `${rangeMatch[1]}-${this.padCalendarNumber(rangeMatch[2])}-${this.padCalendarNumber(rangeMatch[3])}`;
+
+      return {
+        startAt: `${date}T${this.padCalendarNumber(rangeMatch[4])}:${rangeMatch[5]}:00`,
+        endAt: `${date}T${this.padCalendarNumber(rangeMatch[6])}:${rangeMatch[7]}:00`
+      };
+    }
+
+    const fallbackDate = new Date(text.replace(/\//g, '-').replace(' ', 'T'));
+
+    if (Number.isNaN(fallbackDate.getTime())) {
+      return null;
+    }
+
+    const endDate = new Date(fallbackDate);
+    endDate.setHours(endDate.getHours() + 1);
+
+    return {
+      startAt: this.toLocalCalendarDateTime(fallbackDate),
+      endAt: this.toLocalCalendarDateTime(endDate)
+    };
+  }
+
+  private padCalendarNumber(value: string | number): string {
+    return String(value).padStart(2, '0');
+  }
+
+  private toLocalCalendarDateTime(date: Date): string {
+    const yyyy = date.getFullYear();
+    const mm = this.padCalendarNumber(date.getMonth() + 1);
+    const dd = this.padCalendarNumber(date.getDate());
+    const hh = this.padCalendarNumber(date.getHours());
+    const min = this.padCalendarNumber(date.getMinutes());
+
+    return `${yyyy}-${mm}-${dd}T${hh}:${min}:00`;
   }
 }

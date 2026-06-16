@@ -7,7 +7,7 @@ export interface CreateHouseDto {
   rentPrice: number;
   includeUtilities: boolean;
   includeWifi: boolean;
-  includeManagememtFee: boolean;
+  includeManagementFee: boolean;
   areaSize?: number | null;
   leaseTerm?: number;
   floorInfo: string;
@@ -21,6 +21,15 @@ export interface CreateHouseDto {
   noiseTolerance: number;
   pet: boolean;
   smoke: boolean;
+  livingWithLessor: boolean;
   interests: string;
   advancedRules: string;
+
+  routineType?: string;
+  showerRestriction?: string;
+  visitorPolicy?: string;
+  cookingHabit?: string;
+  fridgeAllocation?: string;
+  interactionFrequency?: string;
+  advancedRulesNote?: string;
 }

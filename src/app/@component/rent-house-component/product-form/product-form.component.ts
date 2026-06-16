@@ -20,15 +20,19 @@ export class ProductFormComponent implements OnInit {
   productFormData: any = {
     accountId: 0,
     name: '',
-    category: '工具',
+    category: '工具共享',
+    // category: '工具',
     description: '',
     price: null,
     priceUnit: '次',
     deposit: 0,
+    status: 0,
     isOnline: false,
     quantity: 1,
     ownTool: '',
     requiredKnowledge: '',
+    usageRequirements: '',
+    usageTerms: '',
     address: ''
   };
 
@@ -41,7 +45,7 @@ export class ProductFormComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     // 1. 裝上 JWT 指紋鎖，抓取真實會員 ID
@@ -78,15 +82,19 @@ export class ProductFormComponent implements OnInit {
         this.productFormData = {
           accountId: p.accountId || this.productFormData.accountId,
           name: p.name || '',
-          category: p.category || '工具',
+          category: p.category || '工具共享',
+          // category: p.category || '工具',
           description: p.description || '',
           price: p.price || null,
           priceUnit: p.priceUnit || '次',
           deposit: p.deposit || 0,
-          isOnline: p.status === 1 || p.isOnline || false,
+          status: p.status ?? p.Status ?? 0,
+          isOnline: (p.status ?? p.Status) === 1 || p.isOnline || p.IsOnline || false,
           quantity: p.quantity || 1,
           ownTool: p.ownTool || '',
           requiredKnowledge: p.requiredKnowledge || '',
+          usageRequirements: p.usageRequirements || '',
+          usageTerms: p.usageTerms || '',
           address: p.address || ''
         };
 
@@ -167,9 +175,16 @@ export class ProductFormComponent implements OnInit {
       return;
     }
 
+    const payload = {
+      ...this.productFormData,
+      category: this.normalizeProductCategory(this.productFormData.category),
+      usageRequirements: this.productFormData.usageRequirements ?? '',
+      usageTerms: this.productFormData.usageTerms ?? ''
+    };
+
     if (this.isEditMode) {
 
-      this.houseService.updateProduct(this.editingId, this.productFormData).subscribe({
+      this.houseService.updateProduct(this.editingId, payload).subscribe({
         next: () => {
           if (this.productPendingPhotos.length > 0) {
             let completedUploads = 0;
@@ -201,7 +216,7 @@ export class ProductFormComponent implements OnInit {
       });
     } else {
 
-      this.houseService.createProduct(this.productFormData).subscribe({
+      this.houseService.createProduct(payload).subscribe({
         next: (res: any) => {
           const newProductId = res?.product?.id || res?.product?.Id || res?.Product?.id || res?.Product?.Id;
           if (this.productPendingPhotos.length > 0 && newProductId) {
@@ -257,10 +272,40 @@ export class ProductFormComponent implements OnInit {
   }
 
   resetForm() {
+    const currentAccountId = this.productFormData.accountId;
+
     this.productFormData = {
-      accountId: 1, name: '', category: '工具', description: '', price: null,
-      priceUnit: '次', deposit: 0, isOnline: false, quantity: 1, ownTool: '', requiredKnowledge: '', address: ''
+      accountId: currentAccountId,
+      name: '',
+      category: '工具共享',
+      description: '',
+      price: null,
+      priceUnit: '次',
+      status: 0,
+      deposit: 0,
+      isOnline: false,
+      quantity: 1,
+      ownTool: '',
+      requiredKnowledge: '',
+      usageRequirements: '',
+      usageTerms: '',
+      address: ''
     };
+
     this.productPendingPhotos = [];
+  }
+
+  private normalizeProductCategory(category: string): string {
+    const value = String(category || '').trim();
+
+    if (value === '工具' || value === 'Tool' || value === 'tool') {
+      return '工具共享';
+    }
+
+    if (value === '技能' || value === 'Skill' || value === 'skill') {
+      return '專業諮詢';
+    }
+
+    return value || '工具共享';
   }
 }

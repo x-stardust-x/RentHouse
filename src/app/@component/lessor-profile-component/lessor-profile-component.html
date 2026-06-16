@@ -40,59 +40,133 @@
       </section>
 
       <section class="info-section">
-        <h2>生活習慣與偏好</h2>
+        <div class="section-heading-row">
+          <h2>出租人個人共居偏好</h2>
 
-        <div class="tags-container">
+          <p class="section-note">
+            ※ 實際入住規範仍以各房源頁面設定為準
+          </p>
+        </div>
 
-          @if (!profile.smoke) {
-          <span class="habit-tag">🚭 無菸環境</span>
-          } @else {
-          <span class="habit-tag">🚬 有吸菸習慣</span>
-          }
+        <div class="lessor-preference-list">
 
-          @if (profile.sleepTime && profile.sleepTime >= 21 && profile.sleepTime <= 23) { <span class="habit-tag">🌙
-            早睡早起</span>
-            }
+          <div class="lessor-preference-item">
+            <div class="lessor-preference-item__label-wrap">
+              <span class="lessor-preference-item__icon">✨</span>
+              <span class="lessor-preference-item__label">整潔</span>
+            </div>
 
-            @if (profile.pet) {
-            <span class="habit-tag">🐾 寵物友善</span>
-            }
+            <span class="lessor-preference-item__colon">：</span>
 
-            @if (profile.noiseTolerance <= 2) { <span class="habit-tag">🤫 寧靜空間</span>
-              }
+            <span class="lessor-preference-item__value">
+              {{ cleanLevelLabel(profile.cleanLevel) }}
+            </span>
+          </div>
 
-              @if (profile.interests && getInterestsArray(profile.interests).length > 0) {
-              <div class="tags-container">
+          <div class="lessor-preference-item">
+            <div class="lessor-preference-item__label-wrap">
+              <span class="lessor-preference-item__icon">🔊</span>
+              <span class="lessor-preference-item__label">噪音</span>
+            </div>
 
-                @for (interest of getInterestsArray(profile.interests); track interest) {
-                <span class="interest-tag">{{ interest }}</span>
-                }
+            <span class="lessor-preference-item__colon">：</span>
 
-              </div>
-              } @else {
-              <p class="empty-msg">此會員尚未填寫興趣與偏好。</p>
-              }
+            <span class="lessor-preference-item__value">
+              {{ noiseToleranceLabel(profile.noiseTolerance) }}
+            </span>
+          </div>
 
-              <!-- @if (profile.interests) {
-            @for (interest of getInterestsArray(profile.interests); track interest) {
-            <span class="interest-tag"># {{ interest }}</span>
-            }
-          } -->
+          <div class="lessor-preference-item">
+            <div class="lessor-preference-item__label-wrap">
+              <span class="lessor-preference-item__icon">🐾</span>
+              <span class="lessor-preference-item__label">寵物</span>
+            </div>
+
+            <span class="lessor-preference-item__colon">：</span>
+
+            <span class="lessor-preference-item__value">
+              {{ petPreferenceLabel(profile.pet) }}
+            </span>
+          </div>
+
+          <div class="lessor-preference-item">
+            <div class="lessor-preference-item__label-wrap">
+              <span class="lessor-preference-item__icon">🚭</span>
+              <span class="lessor-preference-item__label">吸菸</span>
+            </div>
+
+            <span class="lessor-preference-item__colon">：</span>
+
+            <span class="lessor-preference-item__value">
+              {{ smokePreferenceLabel(profile.smoke) }}
+            </span>
+          </div>
+
+          <div class="lessor-preference-item">
+            <div class="lessor-preference-item__label-wrap">
+              <span class="lessor-preference-item__icon">🌙</span>
+              <span class="lessor-preference-item__label">作息</span>
+            </div>
+
+            <span class="lessor-preference-item__colon">：</span>
+
+            <span class="lessor-preference-item__value">
+              {{ routinePreferenceLabel(profile.sleepTime) }}
+            </span>
+          </div>
+
         </div>
 
       </section>
 
       <section class="info-section">
+        <h2>興趣標籤</h2>
+
+        @if (getInterestsArray(profile.interests).length > 0) {
+        <div class="interest-tags-container">
+
+          @for (interest of getInterestsArray(profile.interests); track interest) {
+          <span class="interest-tag">
+            # {{ interest }}
+          </span>
+          }
+
+        </div>
+        } @else {
+        <p class="empty-msg">此會員尚未填寫興趣。</p>
+        }
+      </section>
+
+      <section class="info-section">
         <h2>目前提供的空間與資源</h2>
+
+        @if (getProvidedResources(profile).length > 0) {
         <div class="resource-list">
-          @for (house of profile.activeHouses; track house.id) {
-          <div class="resource-card" [routerLink]="['/rental-matching-detail', house.displayType || 'room', house.id]">
-            <img [src]="house.mainImageUrl || 'assets/default-house.jpg'">
-            <h3>{{ house.name }}</h3>
-            <p class="price">NT$ {{ house.rentPrice | number }} / 月</p>
+
+          @for (resource of getProvidedResources(profile); track resource.displayType + '-' + resource.id) {
+          <div class="resource-card" [routerLink]="['/rental-matching-detail', resource.displayType, resource.id]">
+
+            <div class="resource-card__image-wrap">
+              <img [src]="normalizeResourceImageUrl(resource.mainImageUrl)" [alt]="resource.name">
+
+              <span class="resource-card__badge">
+                {{ resourceTypeLabel(resource) }}
+              </span>
+            </div>
+
+            <h3>{{ resource.name }}</h3>
+
+            <p class="price">
+              NT$ {{ resource.price | number }}
+              <span>/ {{ resource.priceUnit }}</span>
+            </p>
           </div>
           }
+
         </div>
+        } @else {
+        <p class="empty-msg">此會員目前尚未提供任何房源、工具或技能。</p>
+        }
       </section>
 
       <section class="info-section">
@@ -119,17 +193,26 @@
     <div class="right-sidebar">
       <div class="sticky-box">
         <h3>有興趣交流嗎？</h3>
-        <p>發送訊息給主辦人，討論您的共居需求。</p>
+        <p>可透過電話或 LINE 與提供者聯繫，進一步討論共居或資源共享需求。</p>
 
         <div class="links-group rental-detail-links-group">
-          <a class="rental-detail-button rental-detail-button--primary" href="#">
+
+          <a class="rental-detail-button rental-detail-button--primary" [class.is-disabled]="!getPhoneHref(profile)"
+            [attr.href]="getPhoneHref(profile)"
+            (click)="handleContactClick($event, getPhoneHref(profile), '此出租人尚未提供電話號碼')">
+
             <span class="material-symbols-outlined rental-hero__location-icon">mobile_2</span>
-            <span>電話聯絡</span>
+            <span>電話洽詢</span>
           </a>
-          <a class="rental-detail-button rental-detail-button--secondary" href="#">
+
+          <a class="rental-detail-button rental-detail-button--secondary" [class.is-disabled]="!getLineHref(profile)"
+            [attr.href]="getLineHref(profile)" target="_blank" rel="noopener noreferrer"
+            (click)="handleContactClick($event, getLineHref(profile), '此出租人尚未提供 LINE ID')">
+
             <fa-icon [icon]="faLine"></fa-icon>
-            <span>LINE線上談</span>
+            <span>LINE洽詢</span>
           </a>
+
         </div>
 
       </div>

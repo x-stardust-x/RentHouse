@@ -5,8 +5,47 @@
     <p class="page-subtitle">管理您的工具出租與技能共享預約，精準審核每筆共享申請訂單。</p>
   </div>
 
+  <div class="schedule-actions">
+    <div class="schedule-actions__summary">
+      <span class="material-symbols-outlined">calendar_month</span>
+
+      <div>
+        <strong>可加入日曆行程 {{ calendarAvailableCount() }} 筆</strong>
+        <p>已確認或改期中的預約可加入 Google 日曆</p>
+      </div>
+    </div>
+
+    <button type="button" class="schedule-actions__button" (click)="toggleSchedulePanel()">
+      {{ isSchedulePanelOpen() ? '收合行程' : '查看行程' }}
+    </button>
+  </div>
+
+  @if (isSchedulePanelOpen()) {
+  <div class="schedule-panel">
+
+    @for (item of calendarAvailableItems(); track item.id) {
+    <div class="schedule-panel__item">
+      <div>
+        <strong>{{ item.itemName }}</strong>
+        <p>{{ item.bookingPeriod }}</p>
+        <small>預約單號：{{ item.orderNumber }}</small>
+      </div>
+
+      <button type="button" class="schedule-panel__button" (click)="openGoogleCalendar(item)">
+        加入 Google 日曆
+      </button>
+    </div>
+    }
+
+    @if (calendarAvailableItems().length === 0) {
+    <p class="schedule-panel__empty">目前沒有可加入日曆的已確認行程。</p>
+    }
+
+  </div>
+  }
+
   <div class="tabs-container">
-    @for (tab of tabs; track tab.id) {
+    @for (tab of tabs(); track tab.id) {
     <button class="tab-button" [class.is-active]="activeTab() === tab.id" (click)="selectTab(tab.id)">
       {{ tab.label }} ({{ tab.count }})
     </button>
@@ -56,22 +95,22 @@
               </span>
               <span>
                 <strong>{{ item.type === 'tool' ? '取件方式：' : '授課形式：' }}</strong>
-                {{ item.applicant.method }}
+                {{ item.method }}
               </span>
             </div>
-            @if (item.applicant.extraNote) {
+            @if (item.extraNote) {
             <div class="info-row text-alert">
               <span class="material-symbols-outlined info-icon">error</span>
-              <span><strong>注意事項：</strong>{{ item.applicant.extraNote }}</span>
+              <span><strong>注意事項：</strong>{{ item.extraNote }}</span>
             </div>
             }
             <div class="info-row">
               <span class="material-symbols-outlined info-icon">phone_iphone</span>
-              <span>聯絡電話: {{ item.applicant.phone }} <small class="text-muted">(核准後顯示)</small></span>
+              <span>聯絡電話: {{ displayPhone(item) }} <small class="text-muted">(核准後顯示)</small></span>
             </div>
             <div class="info-row">
               <span class="material-symbols-outlined info-icon">chat</span>
-              <span>Line ID: {{ item.applicant.lineId }} <small class="text-muted">(核准後顯示)</small></span>
+              <span>Line ID: {{ displayLineId(item) }} <small class="text-muted">(核准後顯示)</small></span>
             </div>
           </div>
         </div>
@@ -99,9 +138,9 @@
         </div>
 
         <div class="action-buttons">
-          <button class="action-btn btn-text" (click)="decline(item.id)">婉拒</button>
-          <button class="action-btn btn-outline" (click)="proposeReschedule(item.id)">提議改期</button>
-          <button class="action-btn btn-fill" (click)="accept(item.id)">接受預約</button>
+          <button class="action-btn btn-text" (click)="decline(item)">婉拒</button>
+          <button class="action-btn btn-outline" (click)="proposeReschedule(item)">提議改期</button>
+          <button class="action-btn btn-fill" (click)="accept(item)">接受預約</button>
         </div>
       </div>
 

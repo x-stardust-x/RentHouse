@@ -11,12 +11,14 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Authservice } from '../../@service/authservice';
 import { LesseeProfileTag } from '../../@interface/lessee-profile-tag';
 import { AvailableViewingSlot } from '../../@interface/available-viewing-slot';
-
+import { HouseService } from '../../@service/house.service';
 // Services & Interfaces
 import { RentalMatchingService } from '../../@service/rental-matching-service';
 import { HouseFacilityService } from '../../@service/house-facility-service';
 import { HouseViewingService } from '../../@service/house-viewing-service';
+import { ProductBookingService } from '../../@service/product-booking-service';
 import { MatchHouseDto } from '../../@interface/match-house';
+
 
 @Component({
   selector: 'app-rental-matching-detail-component',
@@ -39,7 +41,9 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   private http = inject(HttpClient);
   private sanitizer = inject(DomSanitizer);
   private houseFacilityService = inject(HouseFacilityService);
+  private houseService = inject(HouseService);
   private viewingService = inject(HouseViewingService);
+  private productBookingService = inject(ProductBookingService);
 
   // ===================================================================
   // 靜態屬性與設定
@@ -52,6 +56,11 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   viewingSlotsLoadError = signal('');
 
   readonly HABIT_ICONS: { [key: string]: string } = {
+    livingWithLessor: 'home',
+
+    cleanLevel: 'cleaning_services',
+    noiseTolerance: 'volume_down',
+
     'routines': 'routine',
     'showerRestrictions': 'do_not_disturb_on',
     'visitorPolicies': 'groups',
@@ -61,13 +70,55 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   };
 
   readonly HABIT_LABELS: { [key: string]: string } = {
-    'routines': '作息型態',
-    'showerRestrictions': '深夜限制',
-    'visitorPolicies': '訪客規範',
-    'cookingHabits': '廚房文化',
-    'fridgeAllocations': '冰箱分配',
-    'interactionFrequencies': '交流頻率'
+    livingWithLessor: '與出租人同住',
+    cleanLevel: '整潔',
+    noiseTolerance: '安靜',
+
+    routines: '作息',
+    showerRestrictions: '深夜',
+    visitorPolicies: '訪客',
+    cookingHabits: '廚房',
+    fridgeAllocations: '冰箱',
+    interactionFrequencies: '交流',
+    note: '補充'
   };
+
+  // readonly HABIT_LABELS: { [key: string]: string } = {
+  //   livingWithLessor: '是否與出租人同住',
+
+  //   cleanLevel: '整潔要求',
+  //   noiseTolerance: '安靜要求',
+
+  //   'routines': '作息型態',
+  //   'showerRestrictions': '深夜限制',
+  //   'visitorPolicies': '訪客規範',
+  //   'cookingHabits': '廚房文化',
+  //   'fridgeAllocations': '冰箱分配',
+  //   'interactionFrequencies': '交流頻率'
+  // };
+
+  readonly RULE_DISPLAY_ORDER = [
+    'livingWithLessor',
+    'cleanLevel',
+    'noiseTolerance',
+    'routines',
+    'showerRestrictions',
+    'visitorPolicies',
+    'cookingHabits',
+    'fridgeAllocations',
+    'interactionFrequencies',
+    'note'
+  ];
+
+  // HABIT_ICONS: Record<string, string> = {
+  //   routines: 'routine',
+  //   showerRestrictions: 'do_not_disturb_on',
+  //   visitorPolicies: 'groups',
+  //   cookingHabits: 'skillet',
+  //   fridgeAllocations: 'kitchen',
+  //   interactionFrequencies: 'conversation',
+  //   note: 'rule'
+  // };
 
   // ===================================================================
   // 核心資料 Signals
@@ -78,8 +129,35 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
 
   isRoom = computed(() => this.displayType() === 'room' || this.detailData()?.displayType === 'room');
   isProduct = computed(() => this.displayType() === 'product' || this.detailData()?.displayType === 'product');
-  isSkill = computed(() => this.isProduct() && this.detailData()?.category === '專業諮詢');
-  isTool = computed(() => this.isProduct() && this.detailData()?.category === '工具共享');
+  productCategory = computed(() => {
+    return String(
+      this.detailData()?.category ??
+      this.detailData()?.Category ??
+      ''
+    ).trim();
+  });
+
+  isSkill = computed(() => {
+    const category = this.productCategory();
+
+    return this.isProduct() && [
+      '專業諮詢',
+      '技能',
+      'Skill',
+      'skill'
+    ].includes(category);
+  });
+
+  isTool = computed(() => {
+    const category = this.productCategory();
+
+    return this.isProduct() && [
+      '工具共享',
+      '工具',
+      'Tool',
+      'tool'
+    ].includes(category);
+  });
 
   mapUrl = computed<SafeResourceUrl | null>(() => {
     const data = this.detailData();
@@ -115,17 +193,109 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   selectedHeroIndex = signal(0);
   heroImageChanging = signal(false);
 
-  heroImages(): { src: string; alt: string }[] {
-    return [
-      { src: this.detailData()?.url || 'images/house1.jpg', alt: '租賃物預覽圖 1' },
-      { src: this.detailData()?.url || 'images/house2.jpg', alt: '租賃物預覽圖 2' },
-      { src: this.detailData()?.url || 'images/house3.jpg', alt: '租賃物預覽圖 3' },
-      { src: this.detailData()?.url || 'images/house4.jpg', alt: '租賃物預覽圖 4' },
-    ];
+  heroImages = signal<{ src: string; alt: string }[]>([]);
+
+  private readonly apiBaseUrl = 'https://localhost:7215';
+
+  private normalizeImageUrl(rawUrl: unknown): string | null {
+    if (rawUrl === null || rawUrl === undefined) {
+      return null;
+    }
+
+    let url = String(rawUrl).trim();
+
+    if (!url) {
+      return null;
+    }
+
+    url = url.replace(/\\/g, '/');
+
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('blob:')) {
+      return url;
+    }
+
+    if (url.startsWith('/')) {
+      return `${this.apiBaseUrl}${url}`;
+    }
+
+    if (url.startsWith('Uploads/')) {
+      return `${this.apiBaseUrl}/${url}`;
+    }
+
+    return url;
+  }
+
+  private extractImageUrls(data: any): string[] {
+    const candidates: unknown[] = [];
+
+    const coverUrl =
+      data?.coverUrl ??
+      data?.CoverUrl ??
+      data?.url ??
+      data?.Url;
+
+    if (coverUrl) {
+      candidates.push(coverUrl);
+    }
+
+    const imageUrls =
+      data?.imageUrls ??
+      data?.ImageUrls;
+
+    if (Array.isArray(imageUrls)) {
+      candidates.push(...imageUrls);
+    }
+
+    const images =
+      data?.images ??
+      data?.Images;
+
+    if (Array.isArray(images)) {
+      images.forEach((image: any) => {
+        candidates.push(
+          image?.url ??
+          image?.Url ??
+          image?.coverUrl ??
+          image?.CoverUrl
+        );
+      });
+    }
+
+    const normalizedUrls = candidates
+      .map(url => this.normalizeImageUrl(url))
+      .filter((url): url is string => !!url);
+
+    return Array.from(new Set(normalizedUrls));
+  }
+
+  private syncHeroImages(data: any): void {
+    const urls = this.extractImageUrls(data);
+
+    const fallbackUrl = 'images/default_image_16-9.jpg';
+
+    const finalUrls = urls.length > 0
+      ? urls
+      : [fallbackUrl];
+
+    const itemName =
+      data?.name ??
+      data?.Name ??
+      '租賃物';
+
+    const images = finalUrls.map((url, index) => ({
+      src: url,
+      alt: `${itemName} 圖片 ${index + 1}`
+    }));
+
+    this.heroImages.set(images);
+    this.selectedHeroIndex.set(0);
+    this.selectedHeroImage.set(images[0]?.src ?? fallbackUrl);
   }
 
   currentHeroImage(): string {
-    return this.selectedHeroImage() || this.heroImages()[0]?.src || 'images/default_image_16-9.jpg';
+    return this.selectedHeroImage()
+      || this.heroImages()[0]?.src
+      || 'images/default_image_16-9.jpg';
   }
 
   selectHeroImage(imageSrc: string, index: number): void {
@@ -142,7 +312,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   // 表單與彈窗 Signals
   // ===================================================================
   isContactModalOpen = signal(false);
-
+  isFavorite = signal(false);
   // 1. 房屋
   roomDate = signal('');
   roomTimeSlots = signal<{ label: string; checked: boolean }[]>([
@@ -227,19 +397,46 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
       })
     ).subscribe({
       next: (data: any) => {
-        console.log("🔥 API 原始回傳資料:", data);
-        this.detailData.set({ ...data, displayType: this.displayType() });
-        const cleanHouseId = Number(data?.id || data?.Id);
+        console.log('🔥 API 原始回傳資料:', data);
 
-        if (data && data.advancedRules) {
+        const detail = {
+          ...data,
+          displayType: this.displayType()
+        };
+
+        this.detailData.set(detail);
+        this.syncHeroImages(detail);
+
+        this.isFavorite.set(
+          Boolean(detail?.isFavorite ?? detail?.IsFavorite ?? false)
+        );
+
+        const cleanHouseId = Number(detail?.id ?? detail?.Id);
+
+        let advancedRules: Record<string, string> = {};
+
+        const rawAdvancedRules =
+          detail?.advancedRules ??
+          detail?.AdvancedRules ??
+          '';
+
+        if (rawAdvancedRules) {
           try {
-            this.parsedRules = typeof data.advancedRules === 'string'
-              ? JSON.parse(data.advancedRules)
-              : data.advancedRules;
+            advancedRules = typeof rawAdvancedRules === 'string'
+              ? JSON.parse(rawAdvancedRules)
+              : rawAdvancedRules;
           } catch (e) {
-            console.error("JSON 解析失敗", e);
+            console.error('JSON 解析失敗', e);
+            advancedRules = {};
           }
         }
+
+        this.parsedRules = {
+          livingWithLessor: this.livingWithLessorLabel(detail?.livingWithLessor ?? detail?.LivingWithLessor),
+          cleanLevel: this.cleanLevelLabel(detail?.cleanLevel ?? detail?.CleanLevel),
+          noiseTolerance: this.noiseToleranceLabel(detail?.noiseTolerance ?? detail?.NoiseTolerance),
+          ...advancedRules
+        };
 
         if (this.displayType() === 'room' && cleanHouseId) {
           this.http.get<any[]>(`https://localhost:7215/api/HouseFacility/${cleanHouseId}`).subscribe({
@@ -254,6 +451,17 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
             error: (err) => console.error('設施 API 失敗:', err)
           });
         }
+      },
+
+      error: (err) => {
+        console.error('詳情頁資料載入失敗：', err);
+
+        if (err.status === 404) {
+          this.router.navigate(['/404'], { replaceUrl: true });
+          return;
+        }
+
+        alert('載入資料失敗，請稍後再試。');
       }
     });
   }
@@ -365,8 +573,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
     this.resetForm();
   }
 
-  submitContactMessage() {
-    // 【情境一：送出房屋預約 (打 API 到後端)】
+  submitContactMessage(): void {
     if (this.isRoom()) {
       if (!this.authService.isLoggedIn()) {
         alert('請先登入後再進行預約。');
@@ -415,19 +622,11 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
 
       const requestData = {
         houseId: this.currentCleanId(),
-
-        // 目前後端欄位仍是單一 ViewingSlotId，所以先存第一個選到的時段 ID
         viewingSlotId: selectedSlots.length > 0 ? selectedSlots[0].id : null,
-
-        // 目前後端欄位仍是單一 ViewingTime，所以先存第一個選到的時段開始時間
         viewingTime: finalViewingTime,
-
         expectedMoveIn: new Date().toISOString(),
         expectedMoveInText: this.roomMoveInTime(),
-
-        // 這裡會存所有複選時段
         preferredTimeSlots: selectedTimes,
-
         lesseeProfileTags: selectedLesseeProfileTags,
         message: this.roomIntro(),
         matchScore: this.detailData()?.matchScore || 85
@@ -455,32 +654,339 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
 
       return;
     }
-    // 【情境二：送出技能與工具申請 (保留舊有邏輯)】
-    else {
-      const postData = {
-        category: this.detailData()?.category || '測試類別',
-        targetId: this.detailData()?.accountId || 1,
-        projectId: this.detailData()?.id || 999,
 
-        skillData: this.isSkill() ? {
-          format: this.skillFormat(),
-          date: this.skillDate(),
-          needs: this.skillNeeds()
-        } : null,
+    if (!this.authService.isLoggedIn()) {
+      alert('請先登入後再送出預約。');
 
-        toolData: this.isTool() ? {
-          startDate: this.toolStartDate(),
-          endDate: this.toolEndDate(),
-          purpose: this.toolPurpose(),
-          delivery: this.toolDelivery()
-        } : null
-      };
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl: this.router.url }
+      });
 
-      console.log('準備送出至後端的技能/工具 DTO 資料：', postData);
-      alert('訊息已成功發送給提供者！快去訊息匣看看吧。');
-      this.closeContactModal();
+      return;
     }
+
+    const productId = this.currentCleanId();
+
+    if (!productId) {
+      alert('找不到工具 / 技能 ID');
+      return;
+    }
+
+    const bookingType: 'tool' | 'skill' = this.isSkill() ? 'skill' : 'tool';
+
+    let startTime: string | null = null;
+    let endTime: string | null = null;
+    let method = '';
+    let message = '';
+    let extraNote = '';
+
+    if (bookingType === 'tool') {
+      if (!this.toolStartDate() || !this.toolEndDate()) {
+        alert('請選擇借用開始與結束日期');
+        return;
+      }
+
+      if (!this.toolNoticeChecked()) {
+        alert('請先勾選工具借用須知');
+        return;
+      }
+
+      startTime = `${this.toolStartDate()}T09:00:00`;
+      endTime = `${this.toolEndDate()}T18:00:00`;
+      method = this.toolDelivery();
+      message = this.toolPurpose();
+
+      if (!message.trim()) {
+        alert('請填寫借用目的與用途');
+        return;
+      }
+
+      extraNote = '已確認工具借用須知，若有嚴重損壞願照價賠償';
+    }
+
+    if (bookingType === 'skill') {
+      if (!this.skillFormat()) {
+        alert('請選擇授課形式');
+        return;
+      }
+
+      if (!this.skillDate()) {
+        alert('請選擇預約日期');
+        return;
+      }
+
+      if (!this.skillNeeds().trim()) {
+        alert('請填寫學習背景與需求');
+        return;
+      }
+
+      startTime = `${this.skillDate()}T14:00:00`;
+      endTime = `${this.skillDate()}T15:00:00`;
+      method = this.skillFormat();
+      message = this.skillNeeds();
+      extraNote = this.skillToolChecked()
+        ? '已確認會自備需要的用具'
+        : '';
+    }
+
+    const requestData = {
+      productId,
+      bookingType,
+      startTime,
+      endTime,
+      method,
+      message,
+      extraNote,
+      matchScore: this.detailData()?.matchScore || 85
+    };
+
+    console.log('準備送出的工具 / 技能預約：', requestData);
+
+    this.productBookingService.apply(requestData).subscribe({
+      next: () => {
+        alert('申請已送出！請至個人專區查看工具 / 技能預約紀錄。');
+        this.closeContactModal();
+      },
+      error: (err) => {
+        console.error('工具 / 技能預約失敗：', err);
+
+        const backendMessage =
+          err.error?.details ||
+          err.error?.message ||
+          err.message ||
+          '請稍後再試';
+
+        alert(`申請失敗：${backendMessage}`);
+      }
+    });
   }
+
+  // submitContactMessage() {
+  //   // 【情境一：送出房屋預約 (打 API 到後端)】
+  //   if (this.isRoom()) {
+  //     if (!this.authService.isLoggedIn()) {
+  //       alert('請先登入後再進行預約。');
+
+  //       this.router.navigate(['/login'], {
+  //         queryParams: { returnUrl: this.router.url }
+  //       });
+
+  //       return;
+  //     }
+
+  //     const hasAvailableSlots = this.availableViewingSlots().length > 0;
+
+  //     const selectedSlots = this.availableViewingSlots()
+  //       .filter(s => this.selectedViewingSlotIds().includes(Number(s.id)));
+
+  //     let selectedTimes: string[] = [];
+  //     let finalViewingTime = '';
+
+  //     if (!this.roomDate()) {
+  //       alert('請選擇看房日期！');
+  //       return;
+  //     }
+
+  //     if (!hasAvailableSlots) {
+  //       alert('出租人尚未設定可預約看房時段，暫時無法送出預約。');
+  //       return;
+  //     }
+
+  //     if (selectedSlots.length === 0) {
+  //       alert('請至少選擇一個出租人開放的看房時段！');
+  //       return;
+  //     }
+
+  //     selectedTimes = selectedSlots.map(slot => slot.label);
+
+  //     const firstSelectedSlot = selectedSlots[0];
+  //     finalViewingTime = `${this.roomDate()}T${firstSelectedSlot.startTime}:00`;
+
+  //     const selectedLesseeProfileTags = this.lesseeProfileTags()
+  //       .filter(p => p.checked && p.label !== '更多偏好')
+  //       .map(p => ({
+  //         label: p.label,
+  //         source: p.source
+  //       }));
+
+  //     const requestData = {
+  //       houseId: this.currentCleanId(),
+
+  //       // 目前後端欄位仍是單一 ViewingSlotId，所以先存第一個選到的時段 ID
+  //       viewingSlotId: selectedSlots.length > 0 ? selectedSlots[0].id : null,
+
+  //       // 目前後端欄位仍是單一 ViewingTime，所以先存第一個選到的時段開始時間
+  //       viewingTime: finalViewingTime,
+
+  //       expectedMoveIn: new Date().toISOString(),
+  //       expectedMoveInText: this.roomMoveInTime(),
+
+  //       // 這裡會存所有複選時段
+  //       preferredTimeSlots: selectedTimes,
+
+  //       lesseeProfileTags: selectedLesseeProfileTags,
+  //       message: this.roomIntro(),
+  //       matchScore: this.detailData()?.matchScore || 85
+  //     };
+
+  //     console.log('準備發送的房屋預約請求:', requestData);
+
+  //     this.viewingService.submitApplication(requestData).subscribe({
+  //       next: () => {
+  //         alert('預約成功！請至個人專區查看追蹤。');
+  //         this.closeContactModal();
+  //       },
+  //       error: (err) => {
+  //         console.error(err);
+
+  //         const backendMessage =
+  //           err.error?.details ||
+  //           err.error?.message ||
+  //           err.message ||
+  //           '請確認後端伺服器是否正常開啟並稍後再試';
+
+  //         alert(`預約失敗：${backendMessage}`);
+  //       }
+  //     });
+
+  //     return;
+  //   }
+  //   // 【情境二：送出技能與工具申請 (保留舊有邏輯)】
+
+  //   else {
+  //     if (!this.authService.isLoggedIn()) {
+  //       alert('請先登入後再送出預約。');
+
+  //       this.router.navigate(['/login'], {
+  //         queryParams: { returnUrl: this.router.url }
+  //       });
+
+  //       return;
+  //     }
+
+  //     const productId = this.currentCleanId();
+
+  //     if (!productId) {
+  //       alert('找不到工具 / 技能 ID');
+  //       return;
+  //     }
+
+  //     const bookingType: 'tool' | 'skill' = this.isSkill() ? 'skill' : 'tool';
+
+  //     let startTime: string | null = null;
+  //     let endTime: string | null = null;
+  //     let method = '';
+  //     let message = '';
+  //     let extraNote = '';
+
+  //     if (bookingType === 'tool') {
+  //       if (!this.toolStartDate() || !this.toolEndDate()) {
+  //         alert('請選擇借用開始與結束日期');
+  //         return;
+  //       }
+
+  //       if (!this.toolNoticeChecked()) {
+  //         alert('請先勾選工具借用須知');
+  //         return;
+  //       }
+
+  //       startTime = `${this.toolStartDate()}T09:00:00`;
+  //       endTime = `${this.toolEndDate()}T18:00:00`;
+  //       method = this.toolDelivery();
+  //       message = this.toolPurpose();
+
+  //       if (!message.trim()) {
+  //         alert('請填寫借用目的與用途');
+  //         return;
+  //       }
+
+  //       extraNote = '已確認工具借用須知，若有嚴重損壞願照價賠償';
+  //     }
+
+  //     if (bookingType === 'skill') {
+  //       if (!this.skillFormat()) {
+  //         alert('請選擇授課形式');
+  //         return;
+  //       }
+
+  //       if (!this.skillDate()) {
+  //         alert('請選擇預約日期');
+  //         return;
+  //       }
+
+  //       if (!this.skillNeeds().trim()) {
+  //         alert('請填寫學習背景與需求');
+  //         return;
+  //       }
+
+  //       startTime = `${this.skillDate()}T14:00:00`;
+  //       endTime = `${this.skillDate()}T15:00:00`;
+  //       method = this.skillFormat();
+  //       message = this.skillNeeds();
+  //       extraNote = this.skillToolChecked()
+  //         ? '已確認會自備需要的用具'
+  //         : '';
+  //     }
+
+  //     const requestData = {
+  //       productId,
+  //       bookingType,
+  //       startTime,
+  //       endTime,
+  //       method,
+  //       message,
+  //       extraNote,
+  //       matchScore: this.detailData()?.matchScore || 85
+  //     };
+
+  //     console.log('準備送出的工具 / 技能預約：', requestData);
+
+  //     this.productBookingService.apply(requestData).subscribe({
+  //       next: () => {
+  //         alert('申請已送出！請至個人專區查看工具 / 技能預約紀錄。');
+  //         this.closeContactModal();
+  //       },
+  //       error: (err) => {
+  //         console.error('工具 / 技能預約失敗：', err);
+
+  //         const backendMessage =
+  //           err.error?.details ||
+  //           err.error?.message ||
+  //           err.message ||
+  //           '請稍後再試';
+
+  //         alert(`申請失敗：${backendMessage}`);
+  //       }
+  //     });
+
+  //     return;
+  //   }
+
+  //   // else {
+  //   //   const postData = {
+  //   //     category: this.detailData()?.category || '測試類別',
+  //   //     targetId: this.detailData()?.accountId || 1,
+  //   //     projectId: this.detailData()?.id || 999,
+
+  //   //     skillData: this.isSkill() ? {
+  //   //       format: this.skillFormat(),
+  //   //       date: this.skillDate(),
+  //   //       needs: this.skillNeeds()
+  //   //     } : null,
+
+  //   //     toolData: this.isTool() ? {
+  //   //       startDate: this.toolStartDate(),
+  //   //       endDate: this.toolEndDate(),
+  //   //       purpose: this.toolPurpose(),
+  //   //       delivery: this.toolDelivery()
+  //   //     } : null
+  //   //   };
+
+  //   console.log('準備送出至後端的技能/工具 DTO 資料：', postData);
+  //   alert('訊息已成功發送給提供者！快去訊息匣看看吧。');
+  //   this.closeContactModal();
+  // }
+
 
   private resetForm() {
     this.roomDate.set('');
@@ -667,6 +1173,135 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
     );
   }
 
+  private cleanLevelLabel(
+    value: number | string | null | undefined
+  ): string {
+    const level = Number(value);
+
+    const labels: Record<number, string> = {
+      1: '基本整潔即可',
+      2: '偶爾整理',
+      3: '一般乾淨',
+      4: '需保持整潔',
+      5: '高度重視整潔'
+    };
+
+    return labels[level] || '一般乾淨';
+  }
+
+  private noiseToleranceLabel(
+    value: number | string | null | undefined
+  ): string {
+    const level = Number(value);
+
+    const labels: Record<number, string> = {
+      1: '非常重視安靜',
+      2: '偏好安靜',
+      3: '一般生活音可接受',
+      4: '可接受偶爾吵雜',
+      5: '可接受熱鬧環境'
+    };
+
+    return labels[level] || '一般生活音可接受';
+  }
+
+  private livingWithLessorLabel(
+    value: boolean | string | number | null | undefined
+  ): string {
+    const normalizedValue =
+      value === true ||
+      value === 'true' ||
+      value === 1 ||
+      value === '1';
+
+    return normalizedValue
+      ? '是，與出租人同住'
+      : '否，不與出租人同住';
+  }
+
+  onToggleFavorite(): void {
+    this.isFavorite.update(current => !current);
+  }
+
+  getProviderPhoneHref(): string | null {
+    const detail = this.detailData();
+
+    const rawPhone =
+      detail?.phone ??
+      detail?.Phone ??
+      detail?.providerPhone ??
+      detail?.ProviderPhone ??
+      detail?.contactPhone ??
+      detail?.ContactPhone ??
+      '';
+
+    const phone = String(rawPhone).trim();
+
+    if (!phone) {
+      return null;
+    }
+
+    // 若後端已經回傳 tel: 開頭，直接使用
+    if (/^tel:/i.test(phone)) {
+      return phone;
+    }
+
+    // 移除空白、括號、橫線等顯示符號
+    const normalizedPhone = phone.replace(/[^\d+]/g, '');
+
+    if (!normalizedPhone) {
+      return null;
+    }
+
+    return `tel:${normalizedPhone}`;
+  }
+
+  getProviderLineHref(): string | null {
+    const detail = this.detailData();
+
+    const rawLine =
+      detail?.lineId ??
+      detail?.LineId ??
+      detail?.lineID ??
+      detail?.LineID ??
+      detail?.providerLineId ??
+      detail?.ProviderLineId ??
+      '';
+
+    const lineId = String(rawLine).trim();
+
+    if (!lineId) {
+      return null;
+    }
+
+    // 如果資料庫存的是完整網址，直接使用
+    if (/^https?:\/\//i.test(lineId)) {
+      return lineId;
+    }
+
+    // LINE 官方帳號格式
+    if (lineId.startsWith('@')) {
+      return `https://line.me/R/ti/p/${lineId}`;
+    }
+
+    // 一般 LINE ID
+    return `https://line.me/ti/p/~${encodeURIComponent(lineId)}`;
+  }
+
+  handleProviderContactClick(
+    event: Event,
+    href: string | null,
+    unavailableMessage: string
+  ): void {
+    if (href) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    alert(unavailableMessage);
+  }
 }
 
 

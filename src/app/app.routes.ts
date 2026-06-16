@@ -5,6 +5,7 @@ import { ContactComponent } from './@component/contact-component/contact';
 import { AdminReviewComponent } from './@component/admin-review-component/admin-review-component';
 import { PublicLayout } from './@layouts/public-layout/public-layout';
 import { AdminLayout } from './@layouts/admin-layout/admin-layout';
+import { FavoriteListComponent } from './@component/favorite-list/favorite-list';
 
 export const routes: Routes = [
   {
@@ -75,6 +76,10 @@ export const routes: Routes = [
         path: 'rent',
         loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
       },
+      {
+        path: '404',
+        loadComponent: () => import('./@component/not-found-component/not-found-component').then(c => c.NotFoundComponent)
+      },
 
       // --- 會員中心 ---
       // {
@@ -129,6 +134,7 @@ export const routes: Routes = [
             path: 'product-booking-approval-component',
             loadComponent: () => import('./@component/product-booking-approval-component/product-booking-approval-component').then(c => c.ProductBookingApprovalComponent),
           },
+          // 個人資料設定
           {
             path: 'edit',
             loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
@@ -149,16 +155,32 @@ export const routes: Routes = [
             path: 'contact-permission',
             loadComponent: () => import('./@component/@member/contact-permissin/contact-permissin').then(c => c.ContactPermissin),
           },
+           {
+            path: 'smart-match',
+            loadComponent: () => import('./@component/smart-match/smart-match.component').then(c => c.SmartMatchComponent),
+          },
           {
             path: 'account-setting',
             loadComponent: () => import('./@component/@member/account-setting/account-setting').then(c => c.AccountSetting),
           },
+          {
+            path: 'favorite-list',
+            loadComponent: () => import('./@component/favorite-list/favorite-list').then(c => c.FavoriteListComponent),
+          },
+
           // 看房申請追蹤
           {
             path: 'house-viewing-applications',
             loadComponent: () =>
               import('./@component/house-viewing-application-tracking-component/house-viewing-application-tracking-component')
                 .then(c => c.HouseViewingApplicationTrackingComponent),
+          },
+          // 工具借用 / 技能預約紀錄
+          {
+            path: 'product-booking-applications',
+            loadComponent: () =>
+              import('./@component/product-booking-application-tracking-component/product-booking-application-tracking-component')
+                .then(c => c.ProductBookingApplicationTrackingComponent),
           },
           { path: '', redirectTo: 'lessor_dashboard', pathMatch: 'full' },
         ],
@@ -221,10 +243,9 @@ export const routes: Routes = [
     ]
   },
   {
-    // 🪤 捕捉所有未知的網址，導回首頁
+    // 🪤 捕捉所有未知的網址，導至404
     path: '**',
-    redirectTo: 'home',
-    pathMatch: 'full'
+    redirectTo: '404'
   }
 ];
 

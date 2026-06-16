@@ -5,6 +5,7 @@ import { ContactComponent } from './@component/contact-component/contact';
 import { AdminReviewComponent } from './@component/admin-review-component/admin-review-component';
 import { PublicLayout } from './@layouts/public-layout/public-layout';
 import { AdminLayout } from './@layouts/admin-layout/admin-layout';
+import { FavoriteListComponent } from './@component/favorite-list/favorite-list';
 
 export const routes: Routes = [
   {
@@ -144,10 +145,19 @@ export const routes: Routes = [
             path: 'contact-permission',
             loadComponent: () => import('./@component/@member/contact-permissin/contact-permissin').then(c => c.ContactPermissin),
           },
+           {
+            path: 'smart-match',
+            loadComponent: () => import('./@component/smart-match/smart-match.component').then(c => c.SmartMatchComponent),
+          },
           {
             path: 'account-setting',
             loadComponent: () => import('./@component/@member/account-setting/account-setting').then(c => c.AccountSetting),
           },
+          {
+            path: 'favorite-list',
+            loadComponent: () => import('./@component/favorite-list/favorite-list').then(c => c.FavoriteListComponent),
+          },
+
           // 看房申請追蹤
           {
             path: 'house-viewing-applications',

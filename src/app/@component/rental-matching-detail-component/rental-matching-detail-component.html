@@ -62,29 +62,29 @@
         </div>
       </div>
 
-     <div class="rental-hero__actions">
+      <div class="rental-hero__actions">
 
-  <button type="button" class="share rental-hero__action-button">
-    <span class="material-symbols-outlined rental-hero__action-icon">share</span>
-    <p class="rental-hero__action-text">分享</p>
-  </button>
+        <button type="button" class="share rental-hero__action-button">
+          <span class="material-symbols-outlined rental-hero__action-icon">share</span>
+          <p class="rental-hero__action-text">分享</p>
+        </button>
 
- <button type="button" class="favorite rental-hero__action-button" (click)="onToggleFavorite()">
+        <button type="button" class="favorite rental-hero__action-button" (click)="onToggleFavorite()">
 
     <span class="material-symbols-outlined rental-hero__action-icon"
           [ngClass]="{'text-danger': isFavorite()}"
-          [ngStyle]="{'font-variation-settings': isFavorite() ? '\'FILL\' 1' : '\'FILL\' 0'}"
-          style="transition: all 0.3s ease;">
-      favorite
-    </span>
+            [ngStyle]="{'font-variation-settings': isFavorite() ? '\'FILL\' 1' : '\'FILL\' 0'}"
+            style="transition: all 0.3s ease;">
+            favorite
+          </span>
 
-    <p class="rental-hero__action-text">
-      {{ isFavorite() ? '已收藏' : '收藏' }}
-    </p>
+          <p class="rental-hero__action-text">
+            {{ isFavorite() ? '已收藏' : '收藏' }}
+          </p>
 
-  </button>
+        </button>
 
-</div>
+      </div>
 
     </div>
 
@@ -131,25 +131,86 @@
           <p class="rental-detail-description">{{ detailData()?.description }}</p>
         </div>
 
+        <div class="rental-detail-card rental-detail-basic-info-card">
+          <h2 class="rental-detail-section-title">房源基本資訊</h2>
+
+          <div class="rental-detail-spec-grid">
+
+            <div class="rental-detail-spec-item">
+              <span class="material-symbols-outlined rental-detail-spec-item__icon">
+                apartment
+              </span>
+              <div class="rental-detail-spec-item__content">
+                <span class="rental-detail-spec-item__label">房屋類型</span>
+                <strong class="rental-detail-spec-item__value">
+                  {{ detailData()?.houseType || detailData()?.HouseType || '尚未提供' }}
+                </strong>
+              </div>
+            </div>
+
+            <div class="rental-detail-spec-item">
+              <span class="material-symbols-outlined rental-detail-spec-item__icon">
+                square_foot
+              </span>
+              <div class="rental-detail-spec-item__content">
+                <span class="rental-detail-spec-item__label">坪數</span>
+                <strong class="rental-detail-spec-item__value">
+                  @if (detailData()?.areaSize || detailData()?.AreaSize) {
+                  {{ detailData()?.areaSize || detailData()?.AreaSize }} 坪
+                  } @else {
+                  尚未提供
+                  }
+                </strong>
+              </div>
+            </div>
+
+            <div class="rental-detail-spec-item">
+              <span class="material-symbols-outlined rental-detail-spec-item__icon">
+                stairs
+              </span>
+              <div class="rental-detail-spec-item__content">
+                <span class="rental-detail-spec-item__label">樓層資訊</span>
+                <strong class="rental-detail-spec-item__value">
+                  {{ detailData()?.floorInfo || detailData()?.FloorInfo || '尚未提供' }}
+                </strong>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
         <div class="rental-detail-card rental-detail-habits-card">
           <h2 class="rental-detail-section-title">生活習慣與規範</h2>
 
-          <div class="rental-detail-feature-grid" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+          <div class="rental-rule-list">
 
-            @for (key of objectKeys(parsedRules); track key) {
+            @for (key of RULE_DISPLAY_ORDER; track key) {
             @if (parsedRules[key]) {
-            <div class="rental-detail-feature-pill">
-              <span class="material-symbols-outlined rental-detail-feature-pill__icon">
-                {{ HABIT_ICONS[key] || 'help' }}
-              </span>
-              <span class="rental-detail-feature-pill__text">
-                <!-- {{ HABIT_LABELS[key] }} -->
+
+            <div class="rental-rule-item">
+
+              <div class="rental-rule-item__label-wrap">
+
+                <!-- <span class="material-symbols-outlined rental-rule-item__icon">
+                  {{ HABIT_ICONS[key] || 'help' }}
+                </span> -->
+
+                <span class="rental-rule-item__label">
+                  {{ HABIT_LABELS[key] || '規範' }}
+                </span>
+
+              </div>
+
+              <span class="rental-rule-item__colon">：</span>
+
+              <span class="rental-rule-item__value">
                 {{ parsedRules[key] }}
               </span>
-            </div>
-            }
-            }
 
+            </div>
+
+            }
+            }
 
           </div>
         </div>
@@ -202,17 +263,23 @@
 
       <div class="rental-detail-card rental-detail-tool-card">
         <h2 class="rental-detail-section-title">工具介紹</h2>
-        <p class="rental-detail-description">{{ detailData()?.description }}</p>
+        <p class="rental-detail-description">
+          {{ detailData()?.description || detailData()?.Description || '尚未提供工具介紹' }}
+        </p>
       </div>
 
       <div class="rental-detail-card rental-detail-tool-card">
         <h2 class="rental-detail-section-title">建議使用門檻 / 條件</h2>
-        <p class="rental-detail-description">{{ detailData()?.usageRequirements }}</p>
+        <p class="rental-detail-description">
+          {{ detailData()?.usageRequirements || detailData()?.UsageRequirements || '尚未提供建議使用門檻' }}
+        </p>
       </div>
 
       <div class="rental-detail-card rental-detail-tool-card">
         <h2 class="rental-detail-section-title">損壞賠償或使用須知</h2>
-        <p class="rental-detail-description">{{ detailData()?.usageTerms }}</p>
+        <p class="rental-detail-description">
+          {{ detailData()?.usageTerms || detailData()?.UsageTerms || '尚未提供損壞賠償或使用須知' }}
+        </p>
       </div>
 
       }
@@ -477,13 +544,20 @@
           <span class="material-symbols-outlined rental-hero__location-icon">chat_add_on</span>
           <span>線上預約看房</span>
         </a>
-        <a class="rental-detail-button rental-detail-button--secondary" href="#">
+        <a class="rental-detail-button rental-detail-button--secondary" [class.is-disabled]="!getProviderPhoneHref()"
+          [attr.href]="getProviderPhoneHref()"
+          (click)="handleProviderContactClick($event, getProviderPhoneHref(), '此出租人尚未提供電話號碼')">
+
           <span class="material-symbols-outlined rental-hero__location-icon">mobile_2</span>
-          <span>電話預約看房</span>
+          <span>電話洽詢出租人</span>
         </a>
-        <a class="rental-detail-button rental-detail-button--secondary" href="#">
+
+        <a class="rental-detail-button rental-detail-button--secondary" [class.is-disabled]="!getProviderLineHref()"
+          [attr.href]="getProviderLineHref()" target="_blank" rel="noopener noreferrer"
+          (click)="handleProviderContactClick($event, getProviderLineHref(), '此出租人尚未提供 LINE ID')">
+
           <fa-icon [icon]="faLine"></fa-icon>
-          <span>LINE 洽詢房東</span>
+          <span>LINE洽詢出租人</span>
         </a>
       </div>
 
@@ -517,7 +591,10 @@
           </span>
         </a>
 
-        <a class="rental-detail-button rental-detail-button--secondary" href="#">
+        <a class="rental-detail-button rental-detail-button--secondary" [class.is-disabled]="!getProviderPhoneHref()"
+          [attr.href]="getProviderPhoneHref()"
+          (click)="handleProviderContactClick($event, getProviderPhoneHref(), '此提供者尚未提供電話號碼')">
+
           <span class="material-symbols-outlined rental-hero__location-icon">mobile_2</span>
           <span>
             @if (detailData()?.category === '專業諮詢' || detailData()?.Category === '專業諮詢') {
@@ -528,13 +605,16 @@
           </span>
         </a>
 
-        <a class="rental-detail-button rental-detail-button--secondary" href="#">
+        <a class="rental-detail-button rental-detail-button--secondary" [class.is-disabled]="!getProviderLineHref()"
+          [attr.href]="getProviderLineHref()" target="_blank" rel="noopener noreferrer"
+          (click)="handleProviderContactClick($event, getProviderLineHref(), '此提供者尚未提供 LINE ID')">
+
           <fa-icon [icon]="faLine"></fa-icon>
           <span>
             @if (detailData()?.category === '專業諮詢' || detailData()?.Category === '專業諮詢') {
-            LINE 預約課程
+            LINE預約課程
             } @else {
-            LINE 確認工具檔期
+            LINE確認工具檔期
             }
           </span>
         </a>
@@ -659,7 +739,7 @@
             <label class="delivery-card" [class.is-active]="skillFormat() === '實體'">
               <input type="radio" name="skillFormat" value="實體" [ngModel]="skillFormat()"
                 (ngModelChange)="skillFormat.set($event)" class="modal-hidden-input">
-              <span class="card-title"><span class="material-symbols-outlined card-icon">location_on</span> 實體碰面</span>
+              <span class="card-title"><span class="material-symbols-outlined card-icon">location_on</span>實體碰面</span>
               <span class="card-desc">與導師約定教學地點</span>
               @if(skillFormat() === '實體'){ <span class="material-symbols-outlined check-mark">check_circle</span> }
             </label>
@@ -710,6 +790,20 @@
             <span class="material-symbols-outlined icon-orange">calendar_today</span>
             選擇看房日期與時段
           </label>
+
+          <div class="notice-box">
+            <p class="notice-title">送出前請確認房源共居規定</p>
+
+            <div class="tenant-profile-tags">
+              @for (key of RULE_DISPLAY_ORDER; track key) {
+              @if (parsedRules[key]) {
+              <span class="profile-tag is-active">
+                {{ parsedRules[key] }}
+              </span>
+              }
+              }
+            </div>
+          </div>
 
           <div class="form-col">
             <span class="sub-label">選擇日期</span>
@@ -896,227 +990,3 @@
   </div>
 </div>
 }
-
-
-
-<!-- @if (isContactModalOpen()) {
-<div class="contact-modal-overlay" (click)="closeContactModal()">
-  <div class="contact-modal-container" (click)="$event.stopPropagation()">
-
-    <div class="contact-modal-header">
-      <h3 class="contact-modal-title">
-        @if (isRoom()) { 預約看房申請 }
-        @else if (isSkill()) { 聯絡導師 — 開啟技能學習 }
-        @else if (isTool()) { 申請借用工具 }
-      </h3>
-      <button type="button" class="contact-modal-close-btn" (click)="closeContactModal()">
-        <span class="material-symbols-outlined">close</span>
-      </button>
-    </div>
-
-    <div class="contact-modal-body">
-
-      @if (isSkill()) {
-      <div class="contact-provider-summary">
-        <img class="contact-provider-summary__avatar" src="images/mr_chen.jpg" alt="提供者">
-        <div class="contact-provider-summary__info">
-          <p class="contact-provider-summary__name">聯絡對象：{{ detailData()?.realName }}</p>
-          <p class="contact-provider-summary__item-name">目標項目：{{ detailData()?.name }}</p>
-        </div>
-      </div>
-      }
-
-      @if (isRoom()) {
-      <div class="modal-dynamic-section form-spacing-large">
-
-        <div class="contact-form-group">
-          <label class="section-title-label">
-            <span class="material-symbols-outlined icon-orange">calendar_today</span> 期望看房日期與時段
-          </label>
-          <div class="form-row-2col">
-            <div class="form-col">
-              <span class="sub-label">選擇日期</span>
-              <div class="date-input-wrapper">
-                <span class="material-symbols-outlined date-icon">event</span>
-                <input type="date" class="contact-form-input date-no-bg" [(ngModel)]="roomDate">
-              </div>
-            </div>
-            <div class="form-col">
-              <span class="sub-label">偏好時段 (可複選)</span>
-              <div class="time-slot-group">
-                @for (slot of roomTimeSlots(); track slot.label) {
-                <label class="time-slot-pill" [class.is-active]="slot.checked">
-                  <input type="checkbox" [(ngModel)]="slot.checked" class="modal-hidden-input">
-                  {{ slot.label }}
-                </label>
-                }
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <hr class="modal-divider">
-
-        <div class="contact-form-group">
-          <label class="section-title-label">
-            <span class="material-symbols-outlined icon-orange">home_work</span> 預計搬入時間
-          </label>
-          <div class="move-in-group">
-            @for (time of moveInTimes(); track time) {
-            <label class="move-in-btn" [class.is-active]="roomMoveInTime() === time">
-              <input type="radio" name="moveInTime" [value]="time" [(ngModel)]="roomMoveInTime"
-                class="modal-hidden-input">
-              {{ time }}
-            </label>
-            }
-          </div>
-        </div>
-
-        <hr class="modal-divider">
-
-        <div class="contact-form-group">
-          <label class="section-title-label">
-            <span class="material-symbols-outlined icon-orange">person_search</span> 房客微檔案
-            <span class="label-hint">(點擊標籤快速分享您的狀態)</span>
-          </label>
-          <div class="tenant-profile-tags">
-            @for (profile of tenantProfiles(); track profile.label) {
-            <label class="profile-tag" [class.is-active]="profile.checked">
-              <input type="checkbox" [(ngModel)]="profile.checked" class="modal-hidden-input">
-              <span class="material-symbols-outlined tag-icon">{{ profile.icon }}</span>
-              {{ profile.label }}
-            </label>
-            }
-          </div>
-        </div>
-
-        <hr class="modal-divider">
-
-        <div class="contact-form-group">
-          <label for="roomIntro" class="section-title-label">
-            <span class="material-symbols-outlined icon-orange">chat</span> 想對房東說的話
-          </label>
-          <p class="textarea-hint">簡單自我介紹或提出看房時的特殊需求，能讓房東更快認識您喔！</p>
-          <textarea id="roomIntro" class="contact-form-textarea" rows="4" [(ngModel)]="roomIntro"
-            placeholder="例：您好，我是軟體工程師，作息正常無不良嗜好。對這間雅房非常有興趣，希望能約本週六下午看房，謝謝你！"></textarea>
-        </div>
-      </div>
-      }
-
-      @if (isSkill()) {
-      <div class="modal-dynamic-section">
-        <div class="contact-form-group">
-          <label class="contact-form-label">偏好授課形式：</label>
-          <div class="modal-radio-group">
-            <label class="modal-radio-label">
-              <input type="radio" name="skillFormat" value="線上" [(ngModel)]="skillFormat">
-              <span>線上視訊諮詢 (目前課程支援：{{ detailData()?.isOnline ? '線上' : '實體' }})</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="contact-form-group" style="margin-top: 1rem;">
-          <label for="skillDate" class="contact-form-label">希望預約諮詢日期：</label>
-          <input type="date" id="skillDate" class="contact-form-input" [(ngModel)]="skillDate">
-        </div>
-
-        <div class="contact-form-group" style="margin-top: 1rem;">
-          <label for="skillNeeds" class="contact-form-label">簡述你想請教的問題或學習背景：</label>
-          <textarea id="skillNeeds" class="contact-form-textarea" rows="3" [(ngModel)]="skillNeeds"
-            placeholder="例如：完全零基礎 / 想請教傳統旗袍打版的量身訣竅... 方便導師提早為你準備項目。"></textarea>
-        </div>
-
-        <div class="modal-defense-checkbox" style="margin-top: 1.25rem;">
-          <label class="defense-label">
-            <input type="checkbox" [(ngModel)]="skillToolChecked">
-            <span class="defense-text">我已知曉此課程需自備項目：<strong style="color: #ff5a5f;">{{ detailData()?.ownTool || '無'
-                }}</strong> 並會準時出席。</span>
-          </label>
-        </div>
-      </div>
-      }
-
-      @if (isTool()) {
-      <div class="modal-dynamic-section form-spacing-large">
-
-        <div class="tool-meta-badge">
-          <span class="material-symbols-outlined badge-icon">palette</span>
-          <span class="badge-text">欲借用項目：{{ detailData()?.name || detailData()?.Name }} <span
-              class="badge-divider">|</span> 租金：<strong class="badge-price">${{ detailData()?.price ??
-              detailData()?.Price }}/{{ detailData()?.priceUnit ?? detailData()?.PriceUnit }}</strong></span>
-        </div>
-
-        <hr class="modal-divider" style="margin-top: 1.5rem;">
-
-        <div class="contact-form-group">
-          <label class="section-title-label">
-            <span class="material-symbols-outlined icon-brown">calendar_today</span> 借用期間
-          </label>
-          <div class="date-range-box">
-            <input type="date" class="contact-form-input date-transparent" [ngModel]="toolStartDate()"
-              (ngModelChange)="toolStartDate.set($event)">
-            <span class="material-symbols-outlined arrow-icon">arrow_forward</span>
-            <input type="date" class="contact-form-input date-transparent" [ngModel]="toolEndDate()"
-              (ngModelChange)="toolEndDate.set($event)">
-          </div>
-          <div class="duration-text">
-            <span class="material-symbols-outlined duration-icon">schedule</span> 總共 {{ calculateDays() }} 天
-          </div>
-        </div>
-
-        <hr class="modal-divider">
-
-        <div class="contact-form-group">
-          <label class="section-title-label">
-            <span class="material-symbols-outlined icon-brown">local_shipping</span> 取件方式
-          </label>
-          <div class="delivery-methods">
-            <label class="delivery-card" [class.is-active]="toolDelivery() === '面交自取'">
-              <input type="radio" name="delivery" value="面交自取" [ngModel]="toolDelivery()"
-                (ngModelChange)="toolDelivery.set($event)" class="modal-hidden-input">
-              <span class="card-title"><span class="material-symbols-outlined card-icon">storefront</span> 面交自取</span>
-              <span class="card-desc">與出租人約定地點</span>
-              @if(toolDelivery() === '面交自取'){ <span class="material-symbols-outlined check-mark">check_circle</span> }
-            </label>
-
-            <label class="delivery-card" [class.is-active]="toolDelivery() === '物流寄送'">
-              <input type="radio" name="delivery" value="物流寄送" [ngModel]="toolDelivery()"
-                (ngModelChange)="toolDelivery.set($event)" class="modal-hidden-input">
-              <span class="card-title"><span class="material-symbols-outlined card-icon">package</span> 物流寄送</span>
-              <span class="card-desc">需負擔額外運費</span>
-              @if(toolDelivery() === '物流寄送'){ <span class="material-symbols-outlined check-mark">check_circle</span> }
-            </label>
-          </div>
-        </div>
-
-        <hr class="modal-divider">
-
-        <div class="contact-form-group">
-          <label for="toolPurpose" class="section-title-label">
-            <span class="material-symbols-outlined icon-brown">description</span> 借用目的與用途
-          </label>
-          <textarea id="toolPurpose" class="contact-form-textarea bg-gray" rows="3" [ngModel]="toolPurpose()"
-            (ngModelChange)="toolPurpose.set($event)"
-            placeholder="請簡述您預計將此工具用於什麼情境（例如：預計用於微縮生態瓶場景加工...），讓出租人更安心。"></textarea>
-        </div>
-      </div>
-      }
-
-    </div>
-
-    <div class="contact-modal-footer">
-      <button type="button" class="modal-btn" [ngClass]="isSkill() ? 'modal-btn--cancel' : 'modal-btn--outline'"
-        (click)="closeContactModal()">取消</button>
-
-      <button type="button" class="modal-btn" [ngClass]="isSkill() ? 'modal-btn--submit' : 'modal-btn--submit-orange'"
-        [disabled]="(isSkill() && !skillToolChecked())" (click)="submitContactMessage()">
-        @if (!isSkill()) { <span class="material-symbols-outlined btn-send-icon">send</span> }
-        @if (isRoom()) { 送出預約申請 }
-        @else if (isTool()) { 送出申請 }
-        @else { 確認發送 }
-      </button>
-    </div>
-
-  </div>
-</div>
-} -->

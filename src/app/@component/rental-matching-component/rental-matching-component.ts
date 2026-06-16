@@ -11,6 +11,17 @@ import { MatchProduct } from '../../@interface/match-product';
 import { RouterModule, Routes, RouterLink } from '@angular/router';
 import { MatchFilter } from '../../@interface/match-filter';
 
+type MultiFilterKey =
+  | 'lifeStyle'
+  | 'cleanLevels'
+  | 'noiseToleranceLevels'
+  | 'routines'
+  | 'showerRestrictions'
+  | 'visitorPolicies'
+  | 'cookingHabits'
+  | 'fridgeAllocations'
+  | 'interactionFrequencies';
+
 @Component({
   selector: 'app-rental-matching-component',
   standalone: true,
@@ -36,7 +47,14 @@ export class RentalMatchingComponent implements OnInit {
     priceMax: 50000,
     sortOrder: 'newest',
     isSmartMatch: false,
+
     lifeStyle: [],
+
+    cleanLevels: [],
+    noiseToleranceLevels: [],
+
+    livingWithLessor: null,
+
     routines: [],
     showerRestrictions: [],
     visitorPolicies: [],
@@ -86,6 +104,11 @@ export class RentalMatchingComponent implements OnInit {
         // 🛡️ 防呆裝甲：預防隊友突然改變結構，把陣列包在物件裡 (例如 { data: [...] })
         let dataArray = Array.isArray(data) ? data : (data?.data || data?.items || []);
 
+        dataArray = dataArray.filter((item: any) => {
+          const status = Number(item.status ?? item.Status);
+          return status === 1;
+        });
+
         // 幫後端回傳的資料自動補上 displayType，並自動解析正確的圖片路徑
         const formattedData = dataArray.map((item: any) => {
 
@@ -121,24 +144,26 @@ export class RentalMatchingComponent implements OnInit {
 
   // 處理複選框 (Checkbox) 的輔助函數
   // 處理複選框 (Checkbox) 的輔助函數
-  toggleCheckbox(group: keyof MatchFilter, value: string, event: Event) {
+  toggleCheckbox(group: MultiFilterKey, value: string | number, event: Event) {
     const isChecked = (event.target as HTMLInputElement).checked;
-    const array = [...(this.filters[group] as string[])]; // 使用展開運算子複製新陣列
+    const array = [...(this.filters[group] as Array<string | number>)];
 
     if (isChecked) {
-      if (!array.includes(value)) array.push(value);
+      if (!array.includes(value)) {
+        array.push(value);
+      }
     } else {
       const index = array.indexOf(value);
-      if (index > -1) array.splice(index, 1);
+      if (index > -1) {
+        array.splice(index, 1);
+      }
     }
 
-    // 🟢 關鍵修正：必須重新對 filters 賦值，產生全新物件參考，Angular 才會知道資料變了
     this.filters = {
       ...this.filters,
       [group]: array
-    };
+    } as MatchFilter;
 
-    // 陣列更新後，立刻向後端要新資料
     this.applyFilters();
   }
 
@@ -176,7 +201,6 @@ export class RentalMatchingComponent implements OnInit {
    */
   getCoverUrl(item: any): string {
     let finalUrl = '';
-
 
     if (item.coverUrl) finalUrl = item.coverUrl;
     else if (item.CoverUrl) finalUrl = item.CoverUrl;
@@ -264,5 +288,14 @@ export class RentalMatchingComponent implements OnInit {
     this.applyFilters();
   }
 
-} // 確保最後有補上這個 Class 的收尾大括號！
+  setLivingWithLessorFilter(value: boolean | null): void {
+    this.filters = {
+      ...this.filters,
+      livingWithLessor: value
+    };
+
+    this.applyFilters();
+  }
+
+}
 

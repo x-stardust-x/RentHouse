@@ -148,6 +148,101 @@ h2 {
   }
 }
 
+.section-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(120, 90, 70, 0.16);
+  padding-bottom: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.section-heading-row h2 {
+  margin: 0;
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.section-note {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #9a8172;
+  white-space: nowrap;
+}
+
+.lessor-preference-list {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 4rem;
+  row-gap: 1rem;
+  align-items: start;
+}
+
+/* 中間分隔線，做出左右兩欄效果 */
+.lessor-preference-list::before {
+  content: '';
+  position: absolute;
+  top: 0.15rem;
+  bottom: 0.15rem;
+  left: 50%;
+  width: 1px;
+  background: rgba(120, 90, 70, 0.16);
+  transform: translateX(-50%);
+}
+
+.lessor-preference-item {
+  display: grid;
+  grid-template-columns: 5.5rem auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.lessor-preference-item__label-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.lessor-preference-item__icon {
+  flex: 0 0 auto;
+  font-size: 1rem;
+}
+
+.lessor-preference-item__label {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--color-text-main);
+  white-space: nowrap;
+}
+
+.lessor-preference-item__colon {
+  color: var(--color-text-muted);
+  font-weight: 800;
+}
+
+.lessor-preference-item__value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.45rem 0.95rem;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1.35;
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  border: 1px solid rgba(232, 107, 63, 0.18);
+  overflow-wrap: anywhere;
+}
+
+
 /* 7. 標籤區域 (習慣與興趣) */
 .tags-container {
   display: flex;
@@ -201,6 +296,38 @@ h2 {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
   }
+}
+
+.resource-card__image-wrap {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+  background: #f4f1ef;
+}
+
+.resource-card__image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.resource-card__badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #e86b3f;
+  background: rgba(255, 241, 236, 0.92);
+  border: 1px solid rgba(232, 107, 63, 0.2);
+}
+
+.price span {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
 }
 
 /* 9. 評價區塊 */
@@ -283,6 +410,17 @@ h2 {
   }
 }
 
+.rental-detail-button.is-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(0.35);
+}
+
+.rental-detail-button.is-disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 .rental-detail-button--primary {
   background-color: var(--color-primary);
   color: #FFFFFF;
@@ -306,6 +444,23 @@ h2 {
   }
 }
 
+.interest-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+
+.interest-tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.5rem 0.85rem;
+  font-weight: 700;
+  color: #e86b3f;
+  background: #fff1ec;
+  border: 1px solid rgba(232, 107, 63, 0.22);
+}
+
 /* 11. 手機響應式處理 */
 @media (max-width: 768px) {
   .main-grid {
@@ -318,5 +473,44 @@ h2 {
 
   .hero-container {
     padding-bottom: 20px;
+  }
+
+  .section-heading-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .section-note {
+    white-space: normal;
+    line-height: 1.5;
+  }
+
+  .lessor-preference-list {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+  }
+
+  .lessor-preference-list::before {
+    display: none;
+  }
+
+  .lessor-preference-item {
+    grid-template-columns: 5.5rem auto minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .lessor-preference-item {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+
+  .lessor-preference-item__colon {
+    display: none;
+  }
+
+  .lessor-preference-item__value {
+    width: fit-content;
   }
 }

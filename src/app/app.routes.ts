@@ -67,6 +67,10 @@ export const routes: Routes = [
         path: 'rent',
         loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
       },
+      {
+        path: '404',
+        loadComponent: () => import('./@component/not-found-component/not-found-component').then(c => c.NotFoundComponent)
+      },
 
       // --- 會員中心 ---
       // {
@@ -120,6 +124,7 @@ export const routes: Routes = [
             path: 'product-booking-approval-component',
             loadComponent: () => import('./@component/product-booking-approval-component/product-booking-approval-component').then(c => c.ProductBookingApprovalComponent),
           },
+          // 個人資料設定
           {
             path: 'edit',
             loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
@@ -159,6 +164,13 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./@component/house-viewing-application-tracking-component/house-viewing-application-tracking-component')
                 .then(c => c.HouseViewingApplicationTrackingComponent),
+          },
+          // 工具借用 / 技能預約紀錄
+          {
+            path: 'product-booking-applications',
+            loadComponent: () =>
+              import('./@component/product-booking-application-tracking-component/product-booking-application-tracking-component')
+                .then(c => c.ProductBookingApplicationTrackingComponent),
           },
         ],
       },
@@ -221,9 +233,9 @@ export const routes: Routes = [
   },
 
   {
-    // 🪤 捕捉所有未知的網址，導回首頁
+    // 🪤 捕捉所有未知的網址，導至404
     path: '**',
-    redirectTo: 'home'
+    redirectTo: '404'
   }
 ];
 

@@ -148,7 +148,7 @@ export class LesseeDashboardComponent {
       imageUrl: this.getCoverUrl(house) ?? 'assets/images/no-image.png',
       title: house.name,
       location: house.address,
-      matchScore: 0,
+      matchScore: Math.floor((Math.random()*100)),
       price: house.rentPrice,
       link : `/rental-matching-detail/room/` + house.houseId,
       tags: [

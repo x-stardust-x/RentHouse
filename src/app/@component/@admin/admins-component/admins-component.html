@@ -64,9 +64,10 @@
                   }
                 }
                 @else {
-                  <button class="btn btn-warning btn-sm " (click)="changePwd(admin.id)">
+                  <!-- <button class="btn btn-warning btn-sm " (click)="changePwd(admin.id)">
                     更改密碼
-                  </button>
+                  </button> -->
+                  <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#PwdModal">修改密碼</button>
                 }
               </td>
 
@@ -139,3 +140,29 @@
 
   </div>
 </div>
+
+<div class="modal fade" id="PwdModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">更改密碼<small class="text-danger">(完成後會登出)</small></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <label>新密碼</label>
+        <input class="form-control" [(ngModel)]="newPwd" />
+        <label>確定密碼</label>
+        <input class="form-control" [(ngModel)]="newPwd2" />
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn secondary" data-bs-dismiss="modal">取消</button>
+        <button class="btn primary" (click)="changePwd(now_adminid)">確認</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+

@@ -26,7 +26,7 @@ export class SmartMatchComponent {
   matchResults: HouseMatchResult[] = [];
 
   // 目前登入承租人的生活習慣假資料
- mockUser = {
+  mockUser = {
     realName: "全端開發小明",
     smoke: false,
     pet: false,
@@ -36,12 +36,12 @@ export class SmartMatchComponent {
     noiseTolerance: 3,
 
     // 訂閱等級：1 = Free, 2 = Pro, 3 = VIP
-    subscriptionTier: 1
+    subscriptionTier: 3
   };
   constructor(
     private matchService: MatchService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   startMultiMatch() {
     this.isLoading = true;

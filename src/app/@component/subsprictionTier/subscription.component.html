@@ -1,58 +1,144 @@
 <div class="pricing-container">
   <div class="pricing-header">
-    <h2>升級您的租屋體驗</h2>
-    <p>選擇最適合您的方案，解鎖專屬 AI 尋屋秘書</p>
+    <h2>升級您的厚厝味體驗</h2>
+    <p>無論您是尋找好房，還是出租愛屋，我們都有最適合的方案</p>
   </div>
 
-  <div class="cards-wrapper">
-    <!-- 方案一：平民租客 -->
-    <mat-card class="pricing-card basic-card">
-      <mat-card-header>
-        <mat-card-title>🌱 基本方案</mat-card-title>
-        <mat-card-subtitle>免費 / 月</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <ul class="feature-list">
-          <li>✅ 瀏覽所有公開房屋資訊</li>
-          <li>✅ 查看一般會員評價</li>
-          <li>✅ 收藏喜歡的房屋</li>
-          <li class="locked">🔒 專屬 AI 智能尋屋配對</li>
-          <li class="locked">🔒 優先推播隱藏版好房</li>
-        </ul>
-      </mat-card-content>
-      <mat-card-actions class="card-action">
-        <button mat-stroked-button disabled *ngIf="currentTier < 3">您目前的方案</button>
-      </mat-card-actions>
-    </mat-card>
+  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" class="custom-tab-group">
 
-    <!-- 方案二：尊榮 VIP (高亮顯示) -->
-    <mat-card class="pricing-card vip-card">
-      <div class="vip-badge">推薦</div>
-      <mat-card-header>
-        <mat-card-title>👑 尊榮 VIP</mat-card-title>
-        <mat-card-subtitle>NT$ 299 / 月</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <ul class="feature-list">
-          <li>✅ 包含所有基本功能</li>
-          <li class="highlight">🚀 無限次呼叫 AI 專屬秘書</li>
-          <li class="highlight">✨ 智能分析房東與評價優劣</li>
-          <li class="highlight">🔔 優先推播隱藏版好房</li>
-        </ul>
-      </mat-card-content>
-      <mat-card-actions class="card-action">
-        <!-- 如果是免費仔，顯示升級按鈕 -->
-        <button mat-raised-button color="accent" class="upgrade-btn"
-                *ngIf="currentTier < 3"
-                [disabled]="isLoading"
-                (click)="onUpgrade()">
-          {{ isLoading ? '升級處理中...' : '💎 立即升級解鎖' }}
-        </button>
-        <!-- 如果已經是 VIP，顯示已解鎖 -->
-        <button mat-flat-button color="primary" disabled *ngIf="currentTier >= 3">
-          🎉 您已是尊榮 VIP
-        </button>
-      </mat-card-actions>
-    </mat-card>
-  </div>
+    <!-- ================= 租客方案 (需求端) ================= -->
+    <mat-tab label=" 我是租客 (需求端)">
+      <div class="cards-wrapper 3-cols">
+
+        <!-- 租客 Tier 1：平民租客 -->
+        <mat-card class="pricing-card basic-card">
+          <mat-card-header>
+            <mat-card-title> 一般租客</mat-card-title>
+            <mat-card-subtitle>免費 / 月</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <ul class="feature-list">
+              <li>✅ 瀏覽所有公開房屋資訊</li>
+              <li>✅ 查看一般會員評價</li>
+              <li>💰 支援單次付費「許願池置頂」</li>
+              <li class="locked">🔒 AI 智能尋屋配對</li>
+              <li class="locked">🔒 優先推播隱藏版好房</li>
+            </ul>
+          </mat-card-content>
+          <mat-card-actions class="card-action">
+            <button mat-stroked-button disabled *ngIf="currentTier === 1">您目前的方案</button>
+          </mat-card-actions>
+        </mat-card>
+
+       <!--  (修改) 租客 Tier 2：進階會員 -->
+        <mat-card class="pricing-card pro-card">
+          <mat-card-header>
+            <mat-card-title> 進階會員</mat-card-title>
+            <mat-card-subtitle>NT$ 199 / 月</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <ul class="feature-list">
+              <li>✅ 包含免費版所有功能</li>
+
+              <!-- 把原本的 locked 拿掉，加上打勾，刪除線就會消失了！ -->
+              <li>✅ 每月 3 次免費許願池曝光，限時置頂推播給相關房東</li>
+              <li>✅ 優先推播隱藏版好房</li>
+
+              <!-- 新增 AI 配對，並加上 class="locked" 給它上鎖與刪除線 -->
+              <li class="locked">🔒 AI智能配對</li>
+            </ul>
+          </mat-card-content>
+          <mat-card-actions class="card-action">
+            <!-- 只有 Tier 1 看得到升級按鈕 -->
+            <button mat-raised-button color="primary" class="upgrade-btn"
+                    *ngIf="currentTier < 2" [disabled]="isLoading" (click)="onUpgrade(2)">
+              {{ isLoading ? '處理中...' : '升級進階會員' }}
+            </button>
+            <button mat-stroked-button disabled *ngIf="currentTier === 2">
+              您目前的方案
+            </button>
+          </mat-card-actions>
+        </mat-card>
+
+        <!-- 租客 Tier 3：尊榮 VIP (全包) -->
+        <mat-card class="pricing-card vip-card">
+          <div class="vip-badge">最划算推薦</div>
+          <mat-card-header>
+            <mat-card-title> 尊榮 VIP</mat-card-title>
+            <mat-card-subtitle>NT$ 299 / 月</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <ul class="feature-list">
+              <li>✅ 包含進階會員所有功能</li>
+              <li class="highlight">AI智能配對</li>
+              <li class="highlight">每月 3 次免費「許願池黃金曝光」</li>
+              <li class="highlight">優先推播隱藏版好房</li>
+            </ul>
+          </mat-card-content>
+          <mat-card-actions class="card-action">
+            <!-- Tier 1 和 Tier 2 都可以升級到最高級 -->
+            <button mat-raised-button color="accent" class="upgrade-btn"
+                    *ngIf="currentTier < 3" [disabled]="isLoading" (click)="onUpgrade(3)">
+              {{ isLoading ? '處理中...' : '高級尊榮會員' }}
+            </button>
+            <button mat-flat-button color="primary" disabled *ngIf="currentTier >= 3">
+              您已是最高級 VIP
+            </button>
+          </mat-card-actions>
+        </mat-card>
+
+      </div>
+    </mat-tab>
+
+    <!-- ================= 房東方案 (供給端) ================= -->
+    <mat-tab label=" 我是房東 (供給端)">
+      <!--  剛剛你漏掉的 cards-wrapper 在這裡補上 -->
+      <div class="cards-wrapper">
+
+        <!-- 剛剛你漏掉的免費房東卡片在這裡補上 -->
+        <!-- 房東第一級：個人房東 -->
+        <mat-card class="pricing-card basic-card">
+          <mat-card-header>
+            <mat-card-title>個人房東</mat-card-title>
+            <mat-card-subtitle>免費 / 永久</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <ul class="feature-list">
+              <li>✅ 個人 1 件免費刊登</li>
+              <li>✅ 基本物件曝光與租客媒合</li>
+              <li class="locked">🔒 刊登第 2 件以上物件</li>
+              <li class="locked">🔒 免疫線下跳單保護機制</li>
+            </ul>
+          </mat-card-content>
+          <mat-card-actions class="card-action">
+            <button mat-stroked-button disabled>預設方案</button>
+          </mat-card-actions>
+        </mat-card>
+
+        <!-- 房東第二級：認證商戶 -->
+        <mat-card class="pricing-card vip-card merchant-card">
+          <div class="vip-badge" style="background-color: #4caf50;">限時優惠</div>
+          <mat-card-header>
+            <mat-card-title> 認證商戶</mat-card-title>
+            <mat-card-subtitle>NT$ 499 / 月</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <ul class="feature-list">
+              <li class="highlight"> 2 件以上視為商戶，無限件數刊登</li>
+              <li class="highlight"> 100% 免疫線下跳單 (交易前收取過路費)</li>
+              <li class="highlight"> 平台上線前半年加贈 3 個月免費體驗</li>
+            </ul>
+          </mat-card-content>
+          <mat-card-actions class="card-action">
+            <button mat-raised-button style="background-color: #4caf50; color: white; width: 100%; font-size: 1.1rem; padding: 8px 0;"
+                    (click)="onUpgradeMerchant()">
+               註冊商戶享優惠
+            </button>
+          </mat-card-actions>
+        </mat-card>
+
+      </div>
+    </mat-tab>
+
+  </mat-tab-group>
 </div>

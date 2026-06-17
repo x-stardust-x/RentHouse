@@ -36,7 +36,7 @@ export class SmartMatchComponent {
     noiseTolerance: 3,
 
     // 訂閱等級：1 = Free, 2 = Pro, 3 = VIP
-    subscriptionTier: 1
+    subscriptionTier: 3
   };
   constructor(
     private matchService: MatchService,

@@ -115,4 +115,9 @@ export class Authservice {
         })
       );
   }
+
+
+  upgradeToVip() {
+    return this.http.post('https://localhost:7215/api/Member/upgrade-vip', {});
+  }
 }

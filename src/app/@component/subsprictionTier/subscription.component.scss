@@ -1,0 +1,138 @@
+.pricing-container {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.pricing-header h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.pricing-header p {
+  color: #666;
+  margin-bottom: 40px;
+}
+
+.cards-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 30px;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 10px;
+}
+
+.pricing-card {
+  width: 320px;
+  padding: 20px;
+  position: relative;
+  transition: transform 0.3s ease;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+mat-card-content {
+  flex-grow: 1;
+}
+
+/* 讓卡片滑過時稍微浮起 */
+.pricing-card:hover {
+  transform: translateY(-5px);
+}
+
+
+.pro-card {
+  border: 2px solid #2196f3;
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.1);
+}
+
+.pro-card .highlight-blue {
+  font-weight: bold;
+  color: #1976d2;
+}
+
+
+.vip-card {
+  border: 2px solid #ffd700; /* 金色邊框 */
+  box-shadow: 0 8px 24px rgba(255, 215, 0, 0.2);
+  transform: scale(1.05); /* 預設就比別人大一點 */
+}
+
+.vip-card:hover {
+  transform: scale(1.05) translateY(-5px);
+}
+
+.vip-badge {
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  background-color: #ff4081;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+
+.feature-list {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  margin: 20px 0;
+  line-height: 2.2;
+}
+
+
+.feature-list li {
+  position: relative;
+  padding-left: 28px;
+  text-indent: -28px;
+}
+
+.feature-list .locked {
+  color: #999;
+  text-decoration: line-through;
+}
+
+.feature-list .highlight {
+  font-weight: bold;
+  color: #e91e63; /* 醒目的粉紅色 */
+}
+
+.card-action {
+  display: flex;
+  justify-content: center;
+  padding-top: 15px;
+}
+
+.upgrade-btn {
+  width: 100%;
+  font-size: 1.1rem;
+  padding: 8px 0;
+}
+
+/* 房東商戶的專屬卡片樣式 (綠色系) */
+.merchant-card {
+  border: 2px solid #4caf50;
+  box-shadow: 0 8px 24px rgba(76, 175, 80, 0.2);
+}
+
+.merchant-card .highlight {
+  color: #388e3c;
+}
+
+/* 頁籤切換區塊的間距 */
+.custom-tab-group {
+  margin-top: 20px;
+}
+
+::ng-deep .mat-mdc-tab-labels {
+  justify-content: center;
+  margin-bottom: 20px;
+}

@@ -2,6 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export type ProductBookingStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'rejected'
+  | 'rescheduled'
+  | 'matched'
+  | 'closed';
 
 export interface CreateProductBookingRequest {
   productId: number;
@@ -20,7 +27,7 @@ export interface CreateProductBookingRequest {
 export interface UpdateProductBookingStatusRequest {
   reservationId: number;
   bookingKind: 'tool' | 'skill';
-  status: 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'closed';
+  status: ProductBookingStatus;
   rejectReason?: string;
 }
 

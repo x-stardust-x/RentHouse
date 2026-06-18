@@ -1,1 +1,364 @@
-<p>lessee-current-matches-component works!</p>
+<div class="review-page-container current-matches-page">
+
+  <div class="page-header">
+    <h2 class="page-title">當前媒合項目</h2>
+    <p class="page-subtitle">
+      查看目前正在承租、借用或預約中的房源、工具與技能。
+    </p>
+  </div>
+
+  <div class="tabs-container">
+    @for (tab of tabs(); track tab.id) {
+    <button type="button" class="tab-button" [class.is-active]="activeTab() === tab.id" (click)="selectTab(tab.id)">
+      {{ tab.label }} ({{ tab.count }})
+    </button>
+    }
+  </div>
+
+  @if (isLoading()) {
+  <div class="empty-state">
+    <p>正在載入當前媒合資料...</p>
+  </div>
+  } @else if (errorMessage()) {
+  <div class="empty-state">
+    <p>{{ errorMessage() }}</p>
+    <button type="button" class="action-btn btn-outline" (click)="fetchCurrentMatches()">
+      重新載入
+    </button>
+  </div>
+  } @else {
+
+  @if (activeTab() === 'house') {
+  <div class="reservation-list application-list">
+
+    @for (item of houseMatches(); track item.id) {
+    <article class="reservation-card application-card current-match-card">
+
+      <div class="card-header">
+        <div class="header-left">
+          <span class="status-badge status-confirmed">
+            媒合中
+          </span>
+
+          <span class="room-name">
+            {{ item.roomName }}
+
+            @if (item.roomAddress) {
+            <span class="room-address-divider">｜</span>
+            <span class="room-address">{{ item.roomAddress }}</span>
+            }
+          </span>
+        </div>
+
+        <div class="header-right">
+          <span class="order-number">媒合單號: {{ item.orderNumber }}</span>
+        </div>
+      </div>
+
+      <div class="card-body application-card-body">
+
+        <div class="tracking-room-section">
+          <div class="tracking-room-image-wrap">
+            <img class="tracking-room-image" [src]="getImageUrl(item.coverUrl)" [alt]="item.roomName">
+          </div>
+        </div>
+
+        <div class="viewing-section">
+          <p class="section-label">承租房源資訊</p>
+
+          <div class="contact-info-box tracking-room-info tracking-room-info--moved">
+
+            <div class="tracking-lessor-card">
+              <img class="tracking-lessor-avatar" [src]="getLessorAvatarUrl(item)" [alt]="item.lessorName">
+
+              <div class="tracking-lessor-main">
+                <div class="tracking-lessor-name-row">
+                  <span class="tracking-lessor-name">
+                    {{ item.lessorName }}
+                  </span>
+
+                  <a class="tracking-lessor-profile-link" [routerLink]="['/lessor-profile', item.lessorProfileId]"
+                    target="_blank">
+                    查看出租人公開頁
+                  </a>
+                </div>
+
+                <p class="tracking-lessor-role">出租人</p>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">payments</span>
+              <span>
+                租金：
+                <strong class="tracking-price">
+                  NT$ {{ item.rentPrice | number:'1.0-0' }}/月
+                </strong>
+              </span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">home_work</span>
+              <span>
+                預計入住：
+                <strong>{{ item.expectedMoveInText || '尚未填寫' }}</strong>
+              </span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">event_available</span>
+              <span>
+                看房時間：
+                <strong>{{ item.viewingDateTime || '尚未填寫' }}</strong>
+              </span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">phone_iphone</span>
+              <span>出租人電話：{{ item.lessorPhone }}</span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">chat</span>
+              <span>出租人 LINE ID：{{ item.lessorLineId }}</span>
+            </div>
+
+          </div>
+
+          @if (item.matchNote || item.message) {
+          <div class="message-quote-box">
+            <span class="material-symbols-outlined quote-icon-bg">format_quote</span>
+            <p class="message-text">{{ item.matchNote || item.message }}</p>
+          </div>
+          }
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <div class="match-score-badge">
+          <span class="material-symbols-outlined sparkle-icon">auto_awesome</span>
+          <span>契合度 {{ item.matchScore }}%</span>
+        </div>
+
+        <div class="action-buttons">
+          <button type="button" class="action-btn btn-outline" (click)="viewHouse(item)">
+            查看房源
+          </button>
+
+          <button type="button" class="action-btn btn-outline" (click)="openGoogleCalendarForHouse(item)">
+            加入 Google 日曆
+          </button>
+
+          <button type="button" class="action-btn btn-fill" (click)="contactByLine(item.lessorLineId)">
+            LINE 聯絡出租人
+          </button>
+        </div>
+      </div>
+
+    </article>
+    }
+
+    @if (houseMatches().length === 0) {
+    <div class="empty-state">
+      <p>{{ getEmptyStateText() }}</p>
+    </div>
+    }
+
+  </div>
+  }
+
+  @if (activeTab() === 'tool') {
+  <div class="reservation-list application-list">
+
+    @for (item of toolMatches(); track item.id) {
+    <article class="reservation-card application-card current-match-card">
+
+      <div class="card-header">
+        <div class="header-left">
+          <span class="status-badge status-confirmed">
+            {{ getStatusLabel(item.status) }}
+          </span>
+
+          <span class="type-badge badge-tool">工具借用</span>
+          <span class="room-name">{{ item.itemName }}</span>
+        </div>
+
+        <div class="header-right">
+          <span class="order-number">預約單號: {{ item.orderNumber }}</span>
+        </div>
+      </div>
+
+      <div class="card-body application-card-body">
+
+        <div class="tracking-room-section">
+          <div class="tracking-room-image-wrap">
+            <img class="tracking-room-image" [src]="item.coverUrl" [alt]="item.itemName">
+          </div>
+        </div>
+
+        <div class="viewing-section">
+          <p class="section-label">借用工具資訊</p>
+
+          <div class="contact-info-box tracking-room-info tracking-room-info--moved">
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">person</span>
+              <span>提供者：<strong>{{ item.provider.name }}</strong></span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">date_range</span>
+              <span>借用期間：<strong>{{ item.bookingPeriod }}</strong></span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">payments</span>
+              <span>費用：<strong>{{ item.priceInfo }}</strong></span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">local_shipping</span>
+              <span>取件方式：<strong>{{ item.method }}</strong></span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">phone_iphone</span>
+              <span>提供者電話：{{ item.provider.phone }}</span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">chat</span>
+              <span>提供者 LINE ID：{{ item.provider.lineId }}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <div class="match-score-badge">
+          <span class="material-symbols-outlined sparkle-icon">construction</span>
+          <span>工具媒合中</span>
+        </div>
+
+        <div class="action-buttons">
+          <button type="button" class="action-btn btn-outline" (click)="viewProduct(item)">
+            查看工具
+          </button>
+
+          <button type="button" class="action-btn btn-fill" (click)="contactByLine(item.provider.lineId)">
+            LINE 聯絡提供者
+          </button>
+        </div>
+      </div>
+
+    </article>
+    }
+
+    @if (toolMatches().length === 0) {
+    <div class="empty-state">
+      <p>{{ getEmptyStateText() }}</p>
+    </div>
+    }
+
+  </div>
+  }
+
+  @if (activeTab() === 'skill') {
+  <div class="reservation-list application-list">
+
+    @for (item of skillMatches(); track item.id) {
+    <article class="reservation-card application-card current-match-card">
+
+      <div class="card-header">
+        <div class="header-left">
+          <span class="status-badge status-confirmed">
+            {{ getStatusLabel(item.status) }}
+          </span>
+
+          <span class="type-badge badge-skill">技能學習</span>
+          <span class="room-name">{{ item.itemName }}</span>
+        </div>
+
+        <div class="header-right">
+          <span class="order-number">預約單號: {{ item.orderNumber }}</span>
+        </div>
+      </div>
+
+      <div class="card-body application-card-body">
+
+        <div class="tracking-room-section">
+          <div class="tracking-room-image-wrap">
+            <img class="tracking-room-image" [src]="item.coverUrl" [alt]="item.itemName">
+          </div>
+        </div>
+
+        <div class="viewing-section">
+          <p class="section-label">技能預約資訊</p>
+
+          <div class="contact-info-box tracking-room-info tracking-room-info--moved">
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">person</span>
+              <span>提供者：<strong>{{ item.provider.name }}</strong></span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">date_range</span>
+              <span>預約時間：<strong>{{ item.bookingPeriod }}</strong></span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">payments</span>
+              <span>費用：<strong>{{ item.priceInfo }}</strong></span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">video_camera_front</span>
+              <span>授課形式：<strong>{{ item.method }}</strong></span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">phone_iphone</span>
+              <span>提供者電話：{{ item.provider.phone }}</span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">chat</span>
+              <span>提供者 LINE ID：{{ item.provider.lineId }}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <div class="match-score-badge">
+          <span class="material-symbols-outlined sparkle-icon">school</span>
+          <span>技能媒合中</span>
+        </div>
+
+        <div class="action-buttons">
+          <button type="button" class="action-btn btn-outline" (click)="viewProduct(item)">
+            查看技能
+          </button>
+
+          <button type="button" class="action-btn btn-fill" (click)="contactByLine(item.provider.lineId)">
+            LINE 聯絡提供者
+          </button>
+        </div>
+      </div>
+
+    </article>
+    }
+
+    @if (skillMatches().length === 0) {
+    <div class="empty-state">
+      <p>{{ getEmptyStateText() }}</p>
+    </div>
+    }
+
+  </div>
+  }
+
+  }
+</div>

@@ -4,7 +4,17 @@ import { CommonModule } from '@angular/common';
 import { ProductBookingService } from '../../@service/product-booking-service';
 import { CalendarLinkService } from '../../@service/calendar-link-service';
 
-type SharingStatus = 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'closed';
+type SharingStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'rejected'
+  | 'rescheduled'
+  | 'matched'
+  | 'closed';
+
+type SharingTabStatus = Exclude<SharingStatus, 'matched'>;
+
+// type SharingStatus = 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'closed';
 // type BookingStatus = 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'closed';
 
 interface SharingReservation {
@@ -50,7 +60,7 @@ export class ProductBookingApprovalComponent implements OnInit {
   private bookingService = inject(ProductBookingService);
   private calendarLinkService = inject(CalendarLinkService);
 
-  activeTab = signal<SharingStatus>('pending');
+  activeTab = signal<SharingTabStatus>('pending');
 
   reservations = signal<SharingReservation[]>([]);
 
@@ -83,7 +93,10 @@ export class ProductBookingApprovalComponent implements OnInit {
   ]);
 
   filteredReservations = computed(() => {
-    return this.reservations().filter(r => r.status === this.activeTab());
+    return this.reservations().filter(r =>
+      r.status !== 'matched' &&
+      r.status === this.activeTab()
+    );
   });
 
   ngOnInit(): void {
@@ -120,7 +133,7 @@ export class ProductBookingApprovalComponent implements OnInit {
     });
   }
 
-  selectTab(tabId: SharingStatus): void {
+  selectTab(tabId: SharingTabStatus): void {
     this.activeTab.set(tabId);
   }
 
@@ -367,6 +380,7 @@ export class ProductBookingApprovalComponent implements OnInit {
       status === 'confirmed' ||
       status === 'rejected' ||
       status === 'rescheduled' ||
+      status === 'matched' ||
       status === 'closed'
     ) {
       return status;

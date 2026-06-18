@@ -13,7 +13,7 @@
 
       <div>
         <strong>可加入日曆行程 {{ calendarAvailableCount() }} 筆</strong>
-        <p>已確認、改期中或媒合成功的看房申請可加入 Google 日曆</p>
+        <p>已確認或改期中的看房申請可加入 Google 日曆</p>
       </div>
     </div>
 
@@ -318,7 +318,7 @@
           </button>
           }
 
-          @else if (item.status === 'matched') {
+          <!-- @else if (item.status === 'matched') {
           <button type="button" class="action-btn btn-outline" (click)="addToGoogleCalendar(item)">
             加入 Google 行事曆
           </button>
@@ -332,7 +332,7 @@
             加入 Google 日曆
           </button>
           }
-          }
+          } -->
 
           @else if (item.status === 'closed') {
           <button type="button" class="action-btn btn-text" (click)="viewOtherRooms()">

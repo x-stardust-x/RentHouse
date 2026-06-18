@@ -31,9 +31,9 @@ export class LoginComponent {
 
         localStorage.setItem('token',res.token);
         if(!this.isAdmin){
-          localStorage.setItem('subscriptionTier',res.subscriptionTier.toString());
+          const currentTier = res.subscriptionTier ? res.subscriptionTier.toString() : '1';
+          localStorage.setItem('subscriptionTier', currentTier);
         }
-
         this.Message.set("登入成功");
         if(this.isAdmin){
           this.router.navigate(['/admin']);

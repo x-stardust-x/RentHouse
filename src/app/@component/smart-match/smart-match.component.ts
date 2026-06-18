@@ -1,7 +1,7 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatchService } from '../../@service/match.service';
-
+import Swal from 'sweetalert2';
 // 定義一對多的資料結構
 export interface HouseMatchResult {
   houseId: number;
@@ -57,6 +57,18 @@ export class SmartMatchComponent {
       },
       error: (err) => {
         console.error('一對多連線失敗：', err);
+
+
+        const errorMsg = err.error?.message || '系統目前較為擁擠，請稍後再呼叫';
+
+        Swal.fire({
+          title: 'AI 媒合暫時無法使用',
+          text: errorMsg,
+          icon: 'warning',
+          confirmButtonColor: '#e91e63',
+          confirmButtonText: '我知道了'
+        });
+
         this.isLoading = false;
         this.cdr.detectChanges();
       }

@@ -8,7 +8,7 @@ export interface MatchResult {
   reason: string;
 }
 
-// 🌟 新增定義：一對多回傳的陣列資料格式 (對應 C# 的 HouseMatchResultDto)
+
 export interface HouseMatchResult {
   houseId: number;
   name: string;

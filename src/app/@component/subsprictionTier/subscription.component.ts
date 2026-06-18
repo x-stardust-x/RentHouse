@@ -80,8 +80,8 @@ onUpgrade(targetTier: number): void {
       reverseButtons: true
     }).then((result) => {
 
-    if (confirm(`即將前往綠界科技支付 NT$${price} 升級「${tierName}」，確認繼續？`)) {
-      this.isLoading = true;
+    if (result.isConfirmed) {
+    this.isLoading = true;
 
       // 呼叫我們剛剛寫好的 C# API (請確認你的網址與 Port 是正確的)
       this.http.post(`https://localhost:7215/api/payment/ecpay-checkout?tier=${targetTier}`, {})
@@ -98,11 +98,17 @@ onUpgrade(targetTier: number): void {
             this.isLoading = false;
           },
           error: (err) => {
-            alert('產生訂單失敗，請稍後再試。');
-            this.isLoading = false;
-          }
+
+  Swal.fire({
+    title: '訂單產生失敗',
+    text: '目前無法連線到綠界金流，請稍後再試。',
+    icon: 'error',
+    confirmButtonColor: '#e91e63'
+  });
+  this.isLoading = false;
+}
         });
-    }
+      }
     });
   }
   onUpgradeMerchant(): void {

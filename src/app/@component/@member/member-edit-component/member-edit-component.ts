@@ -9,7 +9,9 @@ import { District } from '../../../@interface/location';
 import { NewsService } from '../../../@service/news-service';
 import { Authservice } from '../../../@service/authservice';
 import { A11yModule } from "@angular/cdk/a11y";
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AlertService } from '../../../@service/alert-service';
+import { F } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-member-edit-component',
@@ -23,6 +25,9 @@ export class MemberEditComponent {
   public readonly authsev = inject(Authservice);
   public readonly locsev = inject(LocationService);
   public readonly newsService = inject(NewsService);
+  private router = inject(Router);
+  private alert = inject(AlertService);
+  isSubmitting = signal(false);
   userProfileForm!: FormGroup;
   userId = this.authsev.getUserId();
   imagePreview = signal<string>('');
@@ -329,7 +334,19 @@ export class MemberEditComponent {
 
     var form: UserProfile = this.userProfileForm.getRawValue();
 
-    this.usersev.updateProfile(form);
+
+    this.isSubmitting.set(true);
+
+    this.usersev.updateProfile(form).subscribe({
+      next : (res) =>{
+        this.alert.successTime("更改成功");
+        this.router.navigate(['/user-center']);
+      },
+      error : (err) =>{
+        this.isSubmitting.set(false);
+        this.alert.error("更改失敗",err.error?.message || "請查看有無填漏");
+      }
+    });
   }
 
   onFileChange(event: Event) {

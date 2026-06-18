@@ -6,6 +6,7 @@ import { Authservice } from '../../../@service/authservice';
 import { LogService } from '../../../@service/log-service';
 import { switchMap } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
+import { AlertService } from '../../../@service/alert-service';
 
 @Component({
   selector: 'app-news-component',
@@ -17,6 +18,8 @@ export class NewsComponent {
   public newsev = inject(NewsService);
   public authsev = inject(Authservice);
   private logsev = inject(LogService);
+  private alert = inject(AlertService);
+
   currentPage = signal(1);
   pageSize = signal(5);
   sortAsc = signal(false); // false = 新到舊
@@ -54,11 +57,19 @@ export class NewsComponent {
     this.currentPage.set(page);
   }
 
-  deleteNews(id: number) {
+  async deleteNews(id: number) {
 
-    if (!confirm('確定要刪除嗎？')) return;
+    const result = await this.alert.confirm(
+      '確定要刪除嗎？',
+      '刪除後將無法復原。',
+      '刪除',
+      '取消'
+    );
 
-    const newsTitle = this.newsev.newsData().find(n => n.id === id)?.title ?? id;
+    if (!result.isConfirmed) return;
+
+    const newsTitle =
+      this.newsev.newsData().find(n => n.id === id)?.title ?? id;
 
     this.newsev.delete(id).pipe(
 
@@ -67,35 +78,42 @@ export class NewsComponent {
       switchMap(ip => {
 
         const logData = {
-          userId: this.authsev.getAdminId() ?? 0, // 這裡應該替換成實際的使用者 ID
+          userId: this.authsev.getAdminId() ?? 0,
           action: `刪除消息: ${newsTitle}`,
           ipAddress: ip,
         };
 
         return this.logsev.postLog(logData);
+
       })
 
     ).subscribe({
 
-      next: () => {
+      next: async () => {
 
-        console.log('Log posted successfully');
-
-        // 重新取得列表
         this.newsev.getAll();
 
-        this.currentPage.set(1); // ⭐ 避免刪完頁數錯亂
+        this.currentPage.set(1);
+
+        await this.alert.toastSuccess('刪除成功');
 
       },
 
-      error: err => {
+      error: (err) => {
+
         console.error(err);
-        alert('刪除失敗');
+
+        this.alert.error(
+          '刪除失敗',
+          err.error?.message ?? '請稍後再試'
+        );
+
       }
 
     });
 
   }
+
   toggleSort() {
     this.sortAsc.set(!this.sortAsc());
     this.currentPage.set(1); // 很重要：切排序要回第一頁

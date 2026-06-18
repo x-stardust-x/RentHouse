@@ -199,7 +199,7 @@
           <app-location-select [districtId]="selectedDistrictId()" (districtSelected)="onDistrictSelected($event)">
           </app-location-select>
 
-          <div class="mb-3">
+          <div class="my-3">
             <input type="text" class="custom-input" formControlName="address">
           </div>
 
@@ -268,12 +268,17 @@
 
         <!-- 按鈕 -->
         <div class="text-end">
-          <button type="button" class="btn-back me-4" routerLink="../dashboard">
+          <button type="button" class="btn-back me-4" routerLink="../">
             返回
           </button>
 
-          <button type="submit" class="btn-save" [disabled]="!userProfileForm.valid">
-            儲存修改
+          <button type="submit" class="btn-save" [disabled]="!userProfileForm.valid || isSubmitting()">
+            @if(isSubmitting()){
+             <span class="spinner-border spinner-border-sm me-2"></span>修改中
+            }
+            @else{
+             儲存修改
+            }
           </button>
 
         </div>

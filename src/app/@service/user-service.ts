@@ -29,12 +29,7 @@ export class UserService {
   }
 
   updateProfile(dto: UserProfile) {
-    this.http.put<UserProfile>(this.baseUrl + `profile/update`, dto).subscribe(res => {
-      console.log(res);
-      alert("更新完成")
-
-      this.router.navigate(['/user-center']);
-    });
+    return this.http.put<UserProfile>(this.baseUrl + `profile/update`, dto);
   }
 
   updateUserStatus(userId: number) {

@@ -81,21 +81,9 @@
               </button>
             </div>
           </form>
-
           @if (!isAdmin) {
             <div class="text-center mt-4">
               <a routerLink="/register" class="register-link"> 還沒有帳號？立即註冊 </a>
-            </div>
-          }
-
-          @if (Message() == '登入成功') {
-            <div class="alert alert-success mt-4">
-              {{ Message() }}
-            </div>
-
-          } @else if (Message()) {
-            <div class="alert alert-danger mt-4">
-              {{ Message() }}
             </div>
           }
         </div>

@@ -37,7 +37,7 @@ export class LoginComponent {
           this.router.navigate(['/admin']);
         }
         else{
-          this.router.navigate(['/user-center']);
+          this.router.navigate(['/user-center/dashboard']);
         }
       },
       error: (err) =>{
@@ -60,4 +60,9 @@ export class LoginComponent {
   get isAdmin() {
     return this.role === 'admin';
   }
+  // test(){
+  //   this.authsev.test().subscribe(res =>{
+  //     console.log(res);
+  //   });
+  // }
 }

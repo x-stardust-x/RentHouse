@@ -44,14 +44,14 @@ export class SubscriptionComponent implements OnInit {
 
         Swal.fire({
           title: '付款成功！',
-          text: '🎉 綠界授權成功！您的 VIP 權限已全面解鎖！',
+          text: ' 綠界授權成功！您的 VIP 權限已全面解鎖！',
           icon: 'success',
           confirmButtonColor: '#4caf50',
           confirmButtonText: '開始體驗'
         }).then(() => {
 
 
-        alert('🎉 綠界付款成功！您的權限已解鎖！');
+
         this.router.navigate(['/subscription']);
         });
       }
@@ -112,21 +112,42 @@ onUpgrade(targetTier: number): void {
     });
   }
   onUpgradeMerchant(): void {
-    if (confirm('確定要花費 NT$499 註冊成為「認證商戶」嗎？ (測試環境直接模擬成功)')) {
+
+  Swal.fire({
+    title: '升級認證商戶',
+    text: '確定要花費 NT$499 註冊成為「認證商戶」嗎？ ',
+    icon: 'info',
+    showCancelButton: true,
+    confirmButtonColor: '#1976d2',
+    cancelButtonColor: '#999',
+    confirmButtonText: '確定升級',
+    cancelButtonText: '取消',
+    reverseButtons: true
+  }).then((result) => {
+
+
+    if (result.isConfirmed) {
       this.isLoading = true;
 
 
-      // this.authService.upgradeToMerchant().subscribe(...)
-
-
       setTimeout(() => {
-        alert('🎉 恭喜！您已成功升級為「認證商戶」，解鎖無限件數刊登與防跳單特權！');
+
+        this.isLoading = false;
+
+
+        Swal.fire({
+          title: '升級成功！',
+          text: ' 恭喜！您已成功升級為「認證商戶」，解鎖無限件數刊登與防跳單特權！',
+          icon: 'success',
+          confirmButtonColor: '#2e7d32',
+          confirmButtonText: '開始刊登物件'
+        });
 
         // 依據你的資料庫設計，這裡可以存入特定的身份標記
         // 例如：localStorage.setItem('role', 'merchant');
 
-        this.isLoading = false;
       }, 800);
     }
-  }
+  });
+}
 }

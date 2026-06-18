@@ -88,4 +88,9 @@ export class LoginComponent {
   get isAdmin() {
     return this.role === 'admin';
   }
+  // test(){
+  //   this.authsev.test().subscribe(res =>{
+  //     console.log(res);
+  //   });
+  // }
 }

@@ -1,163 +1,93 @@
 <div class="register-page">
-
   <div class="container">
-
     <div class="row justify-content-center align-items-center min-vh-100">
-
       <!-- 左側介紹 -->
       <div class="col-lg-6 d-none d-lg-block">
-
         <div class="brand-panel">
-
           <h1>厚厝味</h1>
 
-          <h3>
-            找到最適合的共居夥伴
-          </h3>
+          <h3>找到最適合的共居夥伴</h3>
 
-          <p>
-            建立個人檔案，
-            讓系統根據你的生活習慣、
-            作息時間與居住偏好，
-            找到最適合你的室友。
-          </p>
+          <p>建立個人檔案， 讓系統根據你的生活習慣、 作息時間與居住偏好， 找到最適合你的室友。</p>
 
           <div class="feature-list">
-
             <div>🏠 房源推薦</div>
             <div>🤝 室友媒合</div>
             <div>⭐ 信用評價</div>
             <div>🔒 安全驗證</div>
-
           </div>
-
         </div>
-
       </div>
 
       <!-- 右側註冊卡 -->
       <div class="col-12 col-md-8 col-lg-5">
-
         <div class="register-card">
-
           <div class="text-center mb-4">
-
             <h2>建立帳號</h2>
 
-            <p class="text-muted">
-              開始你的共居旅程
-            </p>
-
+            <p class="text-muted">開始你的共居旅程</p>
           </div>
 
-          <form
-            [formGroup]="registerForm"
-            (ngSubmit)="onSubmit()">
-
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
             <!-- Email -->
             <div class="mb-3">
-
               <label>電子郵件<span class="required">*</span></label>
 
-              <input
-                class="custom-input"
-                formControlName="email"
-                placeholder="example@gmail.com">
+              <input class="custom-input" formControlName="email" placeholder="example@gmail.com" />
 
               @if (registerForm.get('email')?.errors?.['email']) {
-                <small class="text-danger">
-                  信箱格式錯誤
-                </small>
+              <small class="text-danger"> 信箱格式錯誤 </small>
               }
-
             </div>
 
             <!-- 密碼 -->
             <div class="mb-3">
-
               <label>密碼<span class="required">*</span></label>
 
-              <input
-                type="password"
-                class="custom-input"
-                formControlName="pwd">
+              <input type="password" class="custom-input" formControlName="pwd" />
 
               @if (registerForm.get('pwd')?.errors?.['pattern']) {
-
-                <small class="text-danger">
-                  至少4碼且包含英文字母
-                </small>
-
+              <small class="text-danger"> 至少4碼且包含英文字母 </small>
               }
-
             </div>
 
             <!-- 確認密碼 -->
             <div class="mb-3">
-
               <label>確認密碼<span class="required">*</span></label>
 
-              <input
-                type="password"
-                class="custom-input"
-                formControlName="pwdcheck">
-
+              <input type="password" class="custom-input" formControlName="pwdcheck" />
             </div>
 
             <!-- 暱稱 -->
             <div class="mb-3">
-
               <label>暱稱</label>
 
-              <input
-                class="custom-input"
-                formControlName="username">
-
+              <input class="custom-input" formControlName="username" />
             </div>
 
             <!-- 生日 -->
             <div class="mb-3">
-
               <label>生日</label>
 
-              <mat-form-field
-                appearance="outline"
-                class="custom-date-field">
+              <mat-form-field appearance="outline" class="custom-date-field">
+                <input matInput [matDatepicker]="picker" [max]="maxDate" formControlName="birthday" />
 
-                <input
-                  matInput
-                  [matDatepicker]="picker"
-                  [max]="maxDate"
-                  formControlName="birthday">
-
-                <mat-datepicker-toggle
-                  matIconSuffix
-                  [for]="picker">
-                </mat-datepicker-toggle>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"> </mat-datepicker-toggle>
 
                 <mat-datepicker #picker></mat-datepicker>
-
               </mat-form-field>
-
             </div>
 
             <!-- 年齡 -->
             <div class="mb-3">
-
               <label>年齡</label>
 
-              <input
-                readonly
-                class="custom-input"
-                formControlName="age">
-              <small class="text-muted">
-                您目前身分為：{{ iden() }}
-              </small>
+              <input readonly class="custom-input" formControlName="age" />
+              <small class="text-muted"> 您目前身分為：{{ iden() }} </small>
             </div>
 
             <!-- 身分 -->
             <div class="mb-4">
-
               <!-- <label>目前身分</label>
 
               <select
@@ -173,65 +103,37 @@
                 }
 
               </select> -->
-
             </div>
 
             <!-- 按鈕 -->
             <div class="d-flex gap-3">
+              <button type="button" class="btn-secondary-custom" routerLink="/login">返回</button>
 
-              <button
-                type="button"
-                class="btn-secondary-custom"
-                routerLink="/login">
+              <button type="button" class="btn-secondary-custom" (click)="clear()">清除</button>
 
-                返回
-
+              <button class="btn-primary-custom flex-grow-1" (click)="onSubmit()" [disabled]="isSubmitting()">
+                @if (isSubmitting()) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                註冊中...
+                } @else {
+                註冊
+                }
               </button>
-
-              <button
-                type="button"
-                class="btn-secondary-custom"
-                (click)="clear()">
-
-                清除
-
-              </button>
-
-              <button
-                type="submit"
-                class="btn-primary-custom flex-grow-1"
-                [disabled]="!registerForm.valid">
-
-                註冊帳號
-
-              </button>
-
             </div>
 
-            @if(message() == '註冊成功') {
+            @if (message() == '註冊成功') {
+            <div class="alert alert-success mt-4">
+              {{ message() }}
+            </div>
 
-              <div class="alert alert-success mt-4">
-                {{message()}}
-              </div>
-
+            } @else if (message()) {
+            <div class="alert alert-danger mt-4">
+              {{ message() }}
+            </div>
             }
-
-            @else if(message()) {
-
-              <div class="alert alert-danger mt-4">
-                {{message()}}
-              </div>
-
-            }
-
           </form>
-
         </div>
-
       </div>
-
     </div>
-
   </div>
-
 </div>

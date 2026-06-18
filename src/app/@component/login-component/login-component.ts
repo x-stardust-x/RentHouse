@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {
   FormBuilder,
   FormsModule,
@@ -22,6 +22,7 @@ export class LoginComponent {
   private readonly authsev = inject(Authservice);
   private readonly router = inject(Router);
   private readonly alert = inject(AlertService);
+  isSubmitting = signal(false);
 
   role: 'member' | 'admin' = 'member';
 
@@ -34,10 +35,12 @@ export class LoginComponent {
     if (this.loginForm.invalid) {
       this.alert.warning(
         '請填寫完整資料',
-        'Email 與密碼皆為必填'
+        '電子郵件與密碼皆為必填'
       );
       return;
     }
+
+    this.isSubmitting.set(true);
 
     const formValue = this.loginForm.getRawValue();
 
@@ -52,7 +55,7 @@ export class LoginComponent {
           );
         }
 
-        await this.alert.toastSuccess('登入成功');
+        await this.alert.successTime('登入成功');
 
         if (this.isAdmin) {
           this.router.navigate(['/admin']);
@@ -66,6 +69,7 @@ export class LoginComponent {
           '登入失敗',
           err.error?.message ?? '帳號或密碼錯誤'
         );
+        this.isSubmitting.set(false);
       },
     });
   }

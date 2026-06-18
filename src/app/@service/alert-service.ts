@@ -32,6 +32,17 @@ export class AlertService {
     });
   }
 
+  successTime(title: string, text?: string) {
+    return Swal.fire({
+      icon: 'success',
+      title,
+      text,
+      confirmButtonText: '確定',
+      timer : 1500,
+      timerProgressBar: true
+    });
+  }
+
   toastSuccess(title: string) {
     return Swal.fire({
       toast: true,
@@ -39,7 +50,19 @@ export class AlertService {
       icon: 'success',
       title,
       showConfirmButton: false,
-      timer: 1500,
+      timer: 1000,
+      timerProgressBar: true,
+    });
+  }
+
+  toastInfo(title: string){
+    return Swal.fire({
+      toast: true,
+      position: 'bottom-start',
+      icon:'info',
+      title,
+      showConfirmButton: false,
+      timer: 1000,
       timerProgressBar: true,
     });
   }

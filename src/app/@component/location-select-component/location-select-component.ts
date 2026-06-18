@@ -8,12 +8,13 @@ import { District } from '../../@interface/location';
   selector: 'app-location-select',
   standalone: true,
   imports: [CommonModule, FormsModule],
+  styleUrl: './location-select-component.scss',
   template: `
   <div class="row g-2">
 
     <div class="col">
       <select
-        class="form-select"
+        class="form-select custom-select"
         [ngModel]="selectedCityName()"
         (ngModelChange)="onCityChange($event)"
       >
@@ -29,7 +30,7 @@ import { District } from '../../@interface/location';
 
     <div class="col">
       <select
-        class="form-select"
+        class="form-select custom-select"
         [ngModel]="selectedDistrictId()"
         (ngModelChange)="onDistrictChange($event)"
         [disabled]="!filteredDistricts().length"

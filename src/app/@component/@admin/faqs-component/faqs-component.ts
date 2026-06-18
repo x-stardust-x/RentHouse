@@ -5,6 +5,7 @@ import { FAQ_I, FAQ_IDto, FAQ_C, FAQ_CDto } from '../../../@interface/faq';
 import { switchMap } from 'rxjs';
 import { Authservice } from '../../../@service/authservice';
 import { LogService } from '../../../@service/log-service';
+import { AlertService } from '../../../@service/alert-service';
 
 declare var bootstrap: any;
 @Component({
@@ -17,12 +18,14 @@ export class FAQsComponent {
   faqService = inject(FAQService);
   authsev = inject(Authservice);
   logsev = inject(LogService);
+  private alert = inject(AlertService);
 
   id = signal(0);
   editMode = signal(false);
   categoryEditMode = signal(false);
   categoryId = signal(0);
   showCategoryActions = signal(false);
+  isSubmitting = signal(false);
 
   currentPage = signal(1);
   pageSize = signal(3);
@@ -160,6 +163,11 @@ export class FAQsComponent {
 
   saveCategoryFAQ() {
 
+    if(this.categoryForm.name == null || this.categoryForm.name == ""){
+      this.alert.warning("資料未填寫完整","請確認必填欄位皆已填寫");
+      return;
+    }
+
     const action$ = this.categoryEditMode()
       ? this.faqService.updateFAQCategory(this.categoryId(), this.categoryForm)
       : this.faqService.createFAQCategory(this.categoryForm);
@@ -168,61 +176,109 @@ export class FAQsComponent {
       ? `修改分類: ${this.categoryForm.name}`
       : `新增分類: ${this.categoryForm.name}`;
 
+    this.isSubmitting.set(true);
+
     action$
       .pipe(
+
         switchMap(() => this.authsev.getClientIPAddress()),
+
         switchMap(ip => {
+
           const logData = {
             userId: this.authsev.getAdminId() ?? 0,
             action: actionText,
             ipAddress: ip,
           };
+
           return this.logsev.postLog(logData);
         })
+
       )
       .subscribe({
-        next: () => {
-          console.log('Log posted successfully');
+
+        next: async () => {
+
           this.closeCategoryModal();
+
+          await this.alert.toastSuccess(
+            this.categoryEditMode() ? '分類已更新' : '分類已新增'
+          );
+
+          this.isSubmitting.set(false);
+
         },
-        error: (err: any) => {
+
+        error: (err) => {
+
           console.error(err);
-          alert('操作失敗');
+
+          this.alert.error(
+            this.categoryEditMode() ? '更新失敗' : '新增失敗',
+            err.error?.message ?? '請稍後再試'
+          );
+
+          this.isSubmitting.set(true);
+
         }
+
       });
 
   }
 
-  deleteFAQCategory(id: number) {
+  async deleteFAQCategory(id: number) {
 
-    const categoryName = this.faqService.faqCategories().find(c => c.id === id)?.name ?? id;
+    const categoryName =
+      this.faqService.faqCategories().find(c => c.id === id)?.name ?? id;
 
-    if (!confirm('確定刪除此分類？')) {
-      return;
-    }
+    const result = await this.alert.confirm(
+      '確定刪除此分類？',
+      `分類：${categoryName}，刪除後無法復原`,
+      '刪除',
+      '取消'
+    );
+
+    if (!result.isConfirmed) return;
 
     this.faqService.deleteFAQCategory(id)
       .pipe(
+
         switchMap(() => this.authsev.getClientIPAddress()),
+
         switchMap(ip => {
+
           const logData = {
             userId: this.authsev.getAdminId() ?? 0,
             action: `刪除分類: ${categoryName}`,
             ipAddress: ip,
           };
+
           return this.logsev.postLog(logData);
         })
+
       )
       .subscribe({
-        next: () => {
-          console.log('Log posted successfully');
+
+        next: async () => {
+
           this.faqService.selectedCategoryId.set(0);
           this.faqService.getFAQCategories();
+
+          await this.alert.toastSuccess('分類已刪除');
+
         },
-        error: (err: any) => {
+
+        error: (err) => {
+
           console.error(err);
-          alert('刪除失敗');
+
+          this.alert.error(
+            '刪除失敗',
+            err.error?.message ?? '請稍後再試'
+          );
+
         }
+
       });
 
   }
@@ -235,7 +291,16 @@ export class FAQsComponent {
     modal.show();
   }
 
-  saveFAQ() {
+  async saveFAQ() {
+
+    if (this.isSubmitting()) return;
+
+    if(this.form.question.trim() == "" || this.form.answer.trim() == "" || this.form.categoryId == 0){
+      this.alert.warning("資料未填寫完整","請確認必填欄位皆已填寫")
+      return;
+    }
+
+    this.isSubmitting.set(true);
 
     const action$ = this.editMode()
       ? this.faqService.updateFAQ(this.id(), this.form)
@@ -253,7 +318,7 @@ export class FAQsComponent {
         switchMap(ip => {
 
           const logData = {
-            userId: this.authsev.getAdminId() ?? 0, // 改成實際登入者 ID
+            userId: this.authsev.getAdminId() ?? 0,
             action: actionText,
             ipAddress: ip,
           };
@@ -264,27 +329,33 @@ export class FAQsComponent {
       )
       .subscribe({
 
-        next: () => {
-
-          console.log('Log posted successfully');
+        next: async () => {
 
           this.closeModal();
-
           this.currentPage.set(1);
+
+          this.isSubmitting.set(false);
+
+          await this.alert.toastSuccess(
+            this.editMode() ? '更新成功' : '新增成功'
+          );
 
         },
 
-        error: (err: any) => {
+        error: (err) => {
 
           console.error(err);
 
-          alert('操作失敗');
+          this.isSubmitting.set(false);
+
+          this.alert.error(
+            this.editMode() ? '更新失敗' : '新增失敗',
+            err.error?.message ?? '請稍後再試'
+          );
 
         }
 
       });
-
-
 
   }
   closeModal() {
@@ -318,11 +389,16 @@ export class FAQsComponent {
     this.currentPage.set(1);
   }
 
-  deleteFAQ(id: number) {
+  async deleteFAQ(id: number) {
 
-    if (!confirm('確定刪除？')) {
-      return;
-    }
+    const result = await this.alert.confirm(
+      '確定刪除？',
+      'FAQ 刪除後將無法復原',
+      '刪除',
+      '取消'
+    );
+
+    if (!result.isConfirmed) return;
 
     this.faqService.deleteFAQ(id)
       .pipe(
@@ -331,9 +407,11 @@ export class FAQsComponent {
 
         switchMap(ip => {
 
-          const faqTitle = this.faqService.faqItems().find(x => x.id === id)?.question ?? id;
+          const faqTitle =
+            this.faqService.faqItems().find(x => x.id === id)?.question ?? id;
+
           const logData = {
-            userId: this.authsev.getAdminId() ?? 0, // 改成實際登入者 ID
+            userId: this.authsev.getAdminId() ?? 0,
             action: `刪除 FAQ: ${faqTitle}`,
             ipAddress: ip,
           };
@@ -344,21 +422,23 @@ export class FAQsComponent {
       )
       .subscribe({
 
-        next: () => {
+        next: async () => {
 
-          console.log('Log posted successfully');
-
-          // 重新整理 FAQ 列表
           this.faqService.getAllFAQItems();
           this.currentPage.set(1);
 
+          await this.alert.toastSuccess('FAQ 已刪除');
+
         },
 
-        error: (err: any) => {
+        error: (err) => {
 
           console.error(err);
 
-          alert('刪除失敗');
+          this.alert.error(
+            '刪除失敗',
+            err.error?.message ?? '請稍後再試'
+          );
 
         }
 

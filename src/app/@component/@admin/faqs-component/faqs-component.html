@@ -214,7 +214,7 @@
 
         <!-- 分類 -->
         <div class="mb-3">
-          <label class="form-label">分類</label>
+          <label class="form-label">分類<span class="text-danger">*</span></label>
 
           <select class="form-select" [(ngModel)]="form.categoryId">
 
@@ -231,13 +231,13 @@
 
         <!-- 問題 -->
         <div class="mb-3">
-          <label class="form-label">問題</label>
+          <label class="form-label">問題<span class="text-danger">*</span></label>
           <input type="text" class="form-control" [(ngModel)]="form.question">
         </div>
 
         <!-- 答案 -->
         <div class="mb-3">
-          <label class="form-label">答案</label>
+          <label class="form-label">答案<span class="text-danger">*</span></label>
           <textarea class="form-control" rows="4" [(ngModel)]="form.answer">
           </textarea>
         </div>
@@ -268,10 +268,17 @@
           取消
         </button>
 
-        <button class="btn btn-primary" (click)="saveFAQ()">
-
-          儲存
-
+        <button
+          class="btn btn-primary"
+          (click)="saveFAQ()"
+          [disabled]="isSubmitting()"
+        >
+          @if (isSubmitting()) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            儲存中...
+          } @else {
+            {{ editMode() ? '更新' : '新增' }}
+          }
         </button>
 
       </div>
@@ -297,7 +304,7 @@
 
         <!-- 分類名稱 -->
         <div class="mb-3">
-          <label class="form-label">分類名稱</label>
+          <label class="form-label">分類名稱<span class="text-danger">*</span></label>
           <input type="text" class="form-control" [(ngModel)]="categoryForm.name">
         </div>
 
@@ -327,10 +334,17 @@
           取消
         </button>
 
-        <button class="btn btn-primary" (click)="saveCategoryFAQ()">
-
-          儲存
-
+        <button
+          class="btn btn-primary"
+          (click)="saveCategoryFAQ()"
+          [disabled]="isSubmitting()"
+        >
+          @if (isSubmitting()) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            儲存中...
+          } @else {
+            {{ editMode() ? '更新' : '新增' }}
+          }
         </button>
 
       </div>

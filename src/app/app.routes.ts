@@ -182,6 +182,18 @@ export const routes: Routes = [
               import('./@component/product-booking-application-tracking-component/product-booking-application-tracking-component')
                 .then(c => c.ProductBookingApplicationTrackingComponent),
           },
+          {
+            path: 'lessor-current-matches',
+            loadComponent: () =>
+              import('./@component/lessor-current-matches-component/lessor-current-matches-component')
+                .then(c => c.LessorCurrentMatchesComponent),
+          },
+          {
+            path: 'lessee-current-matches',
+            loadComponent: () =>
+              import('./@component/lessee-current-matches-component/lessee-current-matches-component')
+                .then(c => c.LesseeCurrentMatchesComponent),
+          },
           { path: '', redirectTo: 'lessor_dashboard', pathMatch: 'full' },
         ],
       },

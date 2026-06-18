@@ -16,6 +16,8 @@ export class AdminsComponent {
   public adminservice = inject(AdminService);
   public authsev = inject(Authservice);
   private logsev = inject(LogService);
+  newPwd = '';
+  newPwd2 = '';
 
   now_adminid: number = this.authsev.getAdminId() ?? 0;
   isSuper = signal(this.authsev.getRole() === 'super');
@@ -150,5 +152,11 @@ export class AdminsComponent {
   }
   changePwd(id : number){
 
+  }
+  closeModal(id: string) {
+    const modalEl = document.getElementById(id);
+    const modal = (window as any).bootstrap.Modal.getInstance(modalEl);
+
+    modal?.hide();
   }
 }

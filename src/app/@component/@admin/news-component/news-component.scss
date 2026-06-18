@@ -24,6 +24,21 @@
   transform: translateY(-1px);
 }
 
+.sort-btn {
+  border: none;
+  border-radius: 14px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #39d0c3, #2b6a66);
+  color: white;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.sort-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
 .news-card {
   background: white;
   border-radius: 24px;

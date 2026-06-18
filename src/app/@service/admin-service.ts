@@ -30,4 +30,7 @@ export class AdminService {
   deleteAdmin(adminId : number){
     return this.http.put(this.baseUrl + `delete/${adminId}`, null);
   }
+  changePwdByMe(adminId : number, pwd: string){
+    return this.http.put(this.baseUrl + `edit-password/${adminId},`,pwd)
+  }
 }

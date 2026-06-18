@@ -37,7 +37,7 @@ export class LogsComponent {
     });
   }
 
-  displayedColumns: string[] = ['id', 'name', 'action', 'ipAddress', 'createdAt'];
+  displayedColumns: string[] = ['name', 'action', 'ipAddress', 'createdAt'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -54,7 +54,6 @@ export class LogsComponent {
 
       // 🔍 keyword search
       const text = (
-        data.id +
         data.name +
         data.action +
         data.ipAddress
@@ -77,7 +76,9 @@ export class LogsComponent {
 
   loadData() {
     this.logsev.getLogs().subscribe(res => {
-      this.dataSource.data = res;
+      this.dataSource.data = res.sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
       console.log(res);
     });
   }

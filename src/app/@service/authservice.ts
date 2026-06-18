@@ -3,6 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginResponse } from '../@interface/login-response';
 import { catchError, map, Observable, of, throwError } from 'rxjs';
+import { AlertService } from './alert-service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,7 @@ import { catchError, map, Observable, of, throwError } from 'rxjs';
 export class Authservice {
   private http = inject(HttpClient);
   private router = inject(Router);
+  private alert = inject(AlertService);
   private api = 'https://localhost:7215/api/Auth';
 
   login(data: { email: string; pwd: string }, isAdmin: boolean) {
@@ -24,8 +26,26 @@ export class Authservice {
     }
   }
 
-  logout() {
+  async logout() {
+
+    const result = await this.alert.confirm(
+      '確定要登出嗎？',
+      '',
+      '登出',
+      '取消'
+    );
+    if(!result.isConfirmed){
+      return;
+    }
+
     localStorage.removeItem('token');
+    this.alert.toastSuccess("登出成功");
+    this.router.navigate(['/login']);
+  }
+
+  logoutNoMessage(){
+    localStorage.removeItem('token');
+    this.alert.toastSuccess("登出成功");
     this.router.navigate(['/login']);
   }
 
@@ -114,5 +134,10 @@ export class Authservice {
           return of('');
         })
       );
+  }
+
+
+  upgradeToVip() {
+    return this.http.post('https://localhost:7215/api/Member/upgrade-vip', {});
   }
 }

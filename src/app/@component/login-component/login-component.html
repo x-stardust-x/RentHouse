@@ -72,30 +72,26 @@
             <div class="d-flex gap-3">
               <button type="button" class="btn-secondary-custom" (click)="clear()">清除</button>
 
-              <button
+              <!-- <button
                 type="submit"
                 class="btn-primary-custom flex-grow-1"
                 [disabled]="!loginForm.valid"
               >
                 登入
+              </button> -->
+              <button class="btn-primary-custom flex-grow-1"  [disabled]="isSubmitting() ">
+                @if (isSubmitting()) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                登入中...
+                } @else {
+                登入
+                }
               </button>
             </div>
           </form>
-
           @if (!isAdmin) {
             <div class="text-center mt-4">
               <a routerLink="/register" class="register-link"> 還沒有帳號？立即註冊 </a>
-            </div>
-          }
-
-          @if (Message() == '登入成功') {
-            <div class="alert alert-success mt-4">
-              {{ Message() }}
-            </div>
-
-          } @else if (Message()) {
-            <div class="alert alert-danger mt-4">
-              {{ Message() }}
             </div>
           }
         </div>

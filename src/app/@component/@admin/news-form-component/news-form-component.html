@@ -122,15 +122,18 @@
             </button>
 
             <button
-              type="submit"
-              class="btn publish-btn"
-            >
-              @if (isEdit) {
-                儲存修改
-              } @else {
-                立即發布
-              }
-            </button>
+  class="btn publish-btn"
+  (click)="onSubmit()"
+  [disabled]="isSubmitting()">
+
+  @if (isSubmitting()) {
+    <span class="spinner-border spinner-border-sm me-2"></span>
+    儲存中...
+  } @else {
+    {{ isEdit ? '更新' : '新增' }}
+  }
+
+</button>
 
           </div>
 

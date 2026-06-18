@@ -5,6 +5,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Authservice } from '../../../@service/authservice';
 import { UserService } from '../../../@service/user-service';
 import { A11yModule } from "@angular/cdk/a11y";
+import { AlertService } from '../../../@service/alert-service';
 
 @Component({
   selector: 'app-account-setting',
@@ -15,6 +16,8 @@ import { A11yModule } from "@angular/cdk/a11y";
 export class AccountSetting {
   private readonly usersev = inject(UserService);
   private readonly authsev = inject(Authservice);
+  private readonly alert = inject(AlertService);
+
   userId = Number(this.authsev.getUserId());
   data: any = signal("");
   tempEmail = '';
@@ -32,77 +35,142 @@ export class AccountSetting {
     this.tempEmail = this.data().email;
   }
 
-  // openPhoneModal() {
-  //   this.tempPhone = this.data().phone;
-  // }
 
   saveEmail() {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(this.tempEmail)) {
-      alert('請輸入正確的 Email 格式');
+      this.alert.warning('Email 格式錯誤');
       return;
     }
 
-    this.usersev.changeEmail(this.userId,this.tempEmail).subscribe(() => {
-      alert('信箱更新成功');
+    this.usersev.changeEmail(this.userId, this.tempEmail)
+      .subscribe({
 
-      this.data.update((u: any) => ({
-        ...u,
-        email: this.tempEmail
-      }));
+        next: async () => {
 
-      this.closeModal('emailModal');
-      this.authsev.logout();
-    });
+          this.data.update((u: any) => ({
+            ...u,
+            email: this.tempEmail
+          }));
+
+          this.closeModalAndThen('emailModal', async () => {
+
+            await this.alert.toastSuccess('信箱更新成功');
+
+            this.authsev.logoutNoMessage();
+
+          });
+
+        },
+
+        error: (err) => {
+
+          this.alert.error(
+            '更新失敗',
+            err.error?.message ?? '請稍後再試'
+          );
+
+        }
+
+      });
+
   }
-
-  // savePhone() {
-  //   this.usersev.changePhone(this.tempPhone).subscribe(() => {
-  //     alert('手機更新成功');
-
-  //     this.data.update((u: any) => ({
-  //       ...u,
-  //       phone: this.tempPhone
-  //     }));
-
-  //     this.closeModal('phoneModal');
-  //   });
-  // }
 
   savePwd() {
 
     const pwdRegex = /^(?=.*[A-Za-z]).{4,}$/;
 
-    if(this.newPwd != null && (this.newPwd != this.newPwd2) ){
-      alert("wrong");
+    if (this.newPwd !== this.newPwd2) {
+      this.alert.warning('密碼不一致');
       return;
     }
-    if(!pwdRegex.test(this.newPwd)){
-      alert("至少4碼且包含英文字母");
+
+    if (!pwdRegex.test(this.newPwd)) {
+      this.alert.warning('密碼至少 4 碼且包含英文字母');
       return;
     }
-    this.usersev.changePwd(this.userId,this.newPwd).subscribe(() => {
-      alert('密碼更新成功');
-      this.newPwd = '';
-      this.newPwd2 = '';
-      this.closeModal('phoneModal');
-      this.authsev.logout();
-    });
+
+    this.usersev.changePwd(this.userId, this.newPwd)
+      .subscribe({
+
+        next: async () => {
+
+          this.newPwd = '';
+          this.newPwd2 = '';
+
+          this.closeModalAndThen('PwdModal', async () => {
+
+            await this.alert.toastSuccess('密碼更新成功');
+
+            this.authsev.logoutNoMessage();
+
+          });
+
+        },
+
+        error: (err) => {
+
+          this.alert.error(
+            '更新失敗',
+            err.error?.message ?? '請稍後再試'
+          );
+
+        }
+
+      });
+
   }
 
-  confirmDelete() {
-    this.usersev.deleteUser(this.userId).subscribe(() => {
-      alert('帳號已刪除');
-      this.closeModal('deleteModal');
-      this.authsev.logout();
-    });
+  async confirmDelete() {
+
+    const result = await this.alert.confirm(
+      '確定要刪除帳號嗎？',
+      '此動作無法復原，所有資料將永久刪除',
+      '刪除帳號',
+      '取消'
+    );
+
+    if (!result.isConfirmed) return;
+
+    this.usersev.deleteUser(this.userId)
+      .subscribe({
+
+        next: async () => {
+
+          await this.alert.toastSuccess('帳號已刪除');
+
+          this.authsev.logoutNoMessage();
+
+        },
+
+        error: (err) => {
+
+          this.alert.error(
+            '刪除失敗',
+            err.error?.message ?? '請稍後再試'
+          );
+
+        }
+
+      });
+
   }
-  closeModal(id: string) {
-    const modalEl = document.getElementById(id);
+  closeModalAndThen(modalId: string, callback: () => void) {
+
+    const modalEl = document.getElementById(modalId);
     const modal = (window as any).bootstrap.Modal.getInstance(modalEl);
 
-    modal?.hide();
+    if (!modal) {
+      callback();
+      return;
+    }
+
+    modalEl?.addEventListener('hidden.bs.modal', () => {
+      callback();
+    }, { once: true });
+
+    modal.hide();
   }
 }

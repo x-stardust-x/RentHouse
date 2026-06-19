@@ -23,11 +23,13 @@ export class AccountSetting {
   tempEmail = '';
   newPwd = '';
   newPwd2 = '';
+  changedat = signal("");
 
   constructor() {
     this.usersev.getAccountSettings(this.userId).subscribe(res => {
       this.data.set(res);
       console.log(res);
+      this.changedat.set(this.getRelativeTime(this.data().pwdchangedat));
     })
   }
 
@@ -172,5 +174,19 @@ export class AccountSetting {
     }, { once: true });
 
     modal.hide();
+  }
+  getRelativeTime(date: string): string {
+    console.log(date);
+
+    const now = new Date().getTime();
+    const target = new Date(date).getTime();
+
+    const diff = Math.floor((now - target) / 1000);
+
+    if (diff < 60) return `${diff}秒前`;
+    if (diff < 3600) return `${Math.floor(diff / 60)}分鐘前`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}小時前`;
+
+    return `${Math.floor(diff / 86400)}天前`;
   }
 }

@@ -55,7 +55,7 @@
 
           <mat-slide-toggle
             color="primary"
-            [(ngModel)]="phoneEnabled">
+            [(ngModel)]="setting().phone">
           </mat-slide-toggle>
 
         </div>
@@ -95,7 +95,7 @@
 
           <mat-slide-toggle
             color="primary"
-            [(ngModel)]="emailEnabled">
+            [(ngModel)]="setting().email">
           </mat-slide-toggle>
 
         </div>
@@ -136,7 +136,7 @@
 
       <mat-slide-toggle
         color="primary"
-        [(ngModel)]="lineEnabled">
+        [(ngModel)]="setting().line">
       </mat-slide-toggle>
 
     </div>
@@ -192,7 +192,8 @@
 
     <button
       type="button"
-      class="btn-cancel">
+      class="btn-cancel"
+      (click)="undoSetting()">
 
       取消變更
 
@@ -200,7 +201,8 @@
 
     <button
       type="button"
-      class="btn-save">
+      class="btn-save"
+      (click)="saveSetting()">
 
       <mat-icon>save</mat-icon>
 

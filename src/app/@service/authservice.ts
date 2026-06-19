@@ -60,7 +60,7 @@ export class Authservice {
 
     if (exp < now) {
       console.log("Token已過期");
-      this.logout();
+      this.logoutNoMessage();
     }
     return exp > now;
   }

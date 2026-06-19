@@ -9,14 +9,32 @@
       <div class="status-card h-100 p-4">
         <div class="d-flex align-items-center mb-4">
           <mat-icon class="status-icon me-2">location_on</mat-icon>
-          <h2 class="section-title m-0">目前媒合狀態</h2>
+          <h2 class="section-title mx-2 my-0">目前媒合狀態</h2>
+
+            @if(currentMatch()?.status == 'pending'){
+              <small class="badge bg-danger">審核中</small>
+            }
+            @else if(currentMatch()?.status == 'confirmed'){
+              <small class="badge bg-warning text-black">已確認</small>
+            }
+            @else if(currentMatch()?.status == 'matched'){
+              <small class="badge bg-success">已媒合</small>
+            }
         </div>
 
         <div class="status-content p-3 rounded-4 mb-3">
           <div class="row align-items-center">
             <div class="col-md-7">
-              <div class="address-label text-muted fs-7">租賃房源位置</div>
-              <div class="address-value fs-5 fw-bold">{{ currentMatch()?.address }}</div>
+              <div class="row align-items-center">
+                <div class="col">
+                  <div class="address-label text-muted fs-7">租賃房源名子</div>
+                  <div class="address-value fs-5 fw-bold">{{ currentMatch()?.name }}</div>
+                </div>
+                <div class="col">
+                  <div class="address-label text-muted fs-7">租賃房源位置</div>
+                  <div class="address-value fs-5 fw-bold">{{ currentMatch()?.address }}</div>
+                </div>
+              </div>
             </div>
             <div class="col-md-5 text-md-end mt-3 mt-md-0">
               @if(currentMatch()?.status == "matched"){
@@ -41,7 +59,7 @@
             <div class="viewing-box p-3 d-flex align-items-center">
               <mat-icon class="me-3 text-warning">event</mat-icon>
               <div>
-                @if (currentMatch()?.status == "confirmed") {
+                @if (currentMatch()?.status == "confirmed" || "pending") {
                   <div class="fs-7 text-muted">下一次看房/約訪預約</div>
                   <div class="fw-bold">{{ currentMatch()?.nextViewing}}</div>
                 }

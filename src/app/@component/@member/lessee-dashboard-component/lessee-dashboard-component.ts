@@ -108,6 +108,11 @@ export class LesseeDashboardComponent {
       x => x.status === 'confirmed'
     );
   }
+  if(application == null){
+      application = this.applications().find(
+      x => x.status === 'pending'
+    );
+  }
 
 
   if (!application) return null;
@@ -117,7 +122,7 @@ export class LesseeDashboardComponent {
   const expiryDate = test
     ? (() => {
         const date = new Date(test);
-        date.setMonth(date.getMonth() + 6);
+        date.setMonth(date.getMonth() + 3);
         return date.toLocaleString('zh-TW', {
           year: 'numeric',
           month: '2-digit',
@@ -128,6 +133,7 @@ export class LesseeDashboardComponent {
 
 
   return {
+    name: application.roomName,
     status : application.status,
     address: application.roomAddress,
     expiryDate: expiryDate,
@@ -137,7 +143,7 @@ export class LesseeDashboardComponent {
 });
 
   // 精選共居空間資料
- recommendations = computed<HouseRecommendation[]>(() => {
+  recommendations = computed<HouseRecommendation[]>(() => {
   const shuffled = [...this.houses()]
     .sort(() => Math.random() - 0.5);
 

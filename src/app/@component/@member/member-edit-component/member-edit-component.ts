@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, effect, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { UserService } from '../../../@service/user-service';
@@ -11,11 +11,12 @@ import { Authservice } from '../../../@service/authservice';
 import { A11yModule } from "@angular/cdk/a11y";
 import { Router, RouterLink } from '@angular/router';
 import { AlertService } from '../../../@service/alert-service';
-import { F } from '@angular/cdk/keycodes';
+import { ImageCropperComponent } from 'ngx-image-cropper';
+
 
 @Component({
   selector: 'app-member-edit-component',
-  imports: [CommonModule, ReactiveFormsModule, LocationSelectComponent, A11yModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, LocationSelectComponent, A11yModule, RouterLink, ImageCropperComponent],
   templateUrl: './member-edit-component.html',
   styleUrl: './member-edit-component.scss',
 })
@@ -27,6 +28,10 @@ export class MemberEditComponent {
   public readonly newsService = inject(NewsService);
   private router = inject(Router);
   private alert = inject(AlertService);
+
+  @ViewChild('fileInput')
+  fileInput!: ElementRef<HTMLInputElement>;
+
   isSubmitting = signal(false);
   userProfileForm!: FormGroup;
   userId = this.authsev.getUserId();
@@ -34,7 +39,10 @@ export class MemberEditComponent {
   selectedDistrictId = signal<number | null>(null);
   interestTags = signal<string[]>([]);
   customInterestInput = signal<string>('');
-
+  isOpen = false;
+  isUploading = signal(false);
+  croppedImage = '';
+  imageChangedEvent: Event | null = null;
   readonly presetInterestTags = [
     '閱讀',
     '電影',
@@ -338,13 +346,13 @@ export class MemberEditComponent {
     this.isSubmitting.set(true);
 
     this.usersev.updateProfile(form).subscribe({
-      next : (res) =>{
+      next: (res) => {
         this.alert.successTime("更改成功");
         this.router.navigate(['/user-center']);
       },
-      error : (err) =>{
+      error: (err) => {
         this.isSubmitting.set(false);
-        this.alert.error("更改失敗",err.error?.message || "請查看有無填漏");
+        this.alert.error("更改失敗", err.error?.message || "請查看有無填漏");
       }
     });
   }
@@ -353,21 +361,48 @@ export class MemberEditComponent {
 
     const input = event.target as HTMLInputElement;
 
-    if (!input.files?.length) return;
+    if (!input.files?.length) {
+      return;
+    }
 
-    const file = input.files[0];
+    this.imageChangedEvent = event;
 
-    // 預覽
-    const reader = new FileReader();
+    this.isOpen = true;
 
-    reader.onload = () => {
-      this.imagePreview.set(reader.result as string);
-    };
+  }
+  imageCropped(event: any) {
 
-    reader.readAsDataURL(file);
+    this.croppedImage =
+      event.objectUrl ||
+      event.base64 ||
+      '';
 
-    // 上傳圖片
-    this.uploadImage(file);
+  }
+  async confirmCrop() {
+
+    if (!this.croppedImage || this.isUploading()) {
+      return;
+    }
+    this.imagePreview.set(this.croppedImage);
+    this.isUploading.set(true);
+
+    try {
+
+      const response = await fetch(this.croppedImage);
+      const blob = await response.blob();
+
+      const file = new File(
+        [blob],
+        'avatar.png',
+        { type: blob.type || 'image/png' }
+      );
+
+      this.uploadImage(file);
+
+    } finally {
+
+      // uploadImage 完成後再關掉
+    }
 
   }
   uploadImage(file: File) {
@@ -377,13 +412,30 @@ export class MemberEditComponent {
     formData.append('file', file);
 
     this.newsService.uploadImage(formData)
-      .subscribe((res: any) => {
-        // 存 URL 到 form
-        this.userProfileForm.patchValue({
-          avatar: res.url
-        });
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.userProfileForm.patchValue({
+            avatar: res.url
+          });
+
+          this.imagePreview.set(res.url);
+
+          this.closeModal();
+
+          this.isUploading.set(false);
+
+        },
+
+        error: () => {
+
+          this.isUploading.set(false);
+
+        }
 
       });
+
   }
 
   onNumberInput(event: Event) {
@@ -421,5 +473,16 @@ export class MemberEditComponent {
 
     return labels[level] || '一般音量可接受';
   }
+  closeModal() {
 
+    this.isOpen = false;
+
+    this.imageChangedEvent = null;
+
+    this.croppedImage = '';
+
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
+    }
+  }
 }

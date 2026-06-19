@@ -17,9 +17,23 @@
 
         <div class="avatar-wrapper mb-4">
 
-          <img [src]="imagePreview() || '/assets/default-avatar.png'" class="avatar">
+          <input
+            #fileInput
+            type="file"
+            accept="image/*"
+            hidden
+            (change)="onFileChange($event)"
+          >
 
-          <input type="file" accept="image/*" class="form-control custom-file mt-3" (change)="onFileChange($event)">
+          <div class="avatar-wrapper mb-4">
+
+            <img
+              [src]="imagePreview() || '/assets/default-avatar.png'"
+              class="avatar"
+              (click)="fileInput.click()"
+              style="cursor:pointer"
+            >
+          </div>
 
         </div>
 
@@ -274,10 +288,10 @@
 
           <button type="submit" class="btn-save" [disabled]="!userProfileForm.valid || isSubmitting()">
             @if(isSubmitting()){
-             <span class="spinner-border spinner-border-sm me-2"></span>修改中
+              <span class="spinner-border spinner-border-sm me-2"></span>修改中
             }
             @else{
-             儲存修改
+              儲存修改
             }
           </button>
 
@@ -289,3 +303,69 @@
   </div>
 
 </form>
+@if (isOpen) {
+
+<div class="modal fade show d-block">
+
+  <div class="modal-dialog  modal-xl modal-dialog-centered">
+
+    <div class="modal-content p-3">
+
+      <h5>裁切頭像</h5>
+
+      <image-cropper
+
+        [imageChangedEvent]="imageChangedEvent"
+
+        [maintainAspectRatio]="true"
+
+        [aspectRatio]="1"
+
+        [resizeToWidth]="200"
+        [resizeToHeight]="200"
+
+        [cropperMinWidth]="50"
+        [cropperMinHeight]="50"
+
+        format="png"
+
+        (imageCropped)="imageCropped($event)">
+
+      </image-cropper>
+
+      <div class="mt-3 text-end">
+
+        <button
+          class="btn btn-secondary"
+          (click)="closeModal()"
+          [disabled]="isUploading()">
+
+          取消
+
+        </button>
+
+        <button
+          class="btn btn-primary"
+          (click)="confirmCrop()"
+          [disabled]="isUploading()">
+
+          @if (isUploading()) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            上傳中...
+          } @else {
+            確認
+          }
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="modal-backdrop fade show"></div>
+
+}

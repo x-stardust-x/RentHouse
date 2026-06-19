@@ -1,15 +1,16 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { Authservice } from '../@service/authservice';
 import { inject } from '@angular/core';
+import { AlertService } from '../@service/alert-service';
 
 export const authGuard: CanActivateFn = (route, state) => {
 
   const auth = inject(Authservice);
   const router = inject(Router);
-
+  const alert = inject(AlertService);
   // 1️⃣ 先檢查登入
   if (!auth.isLoggedIn()) {
-    console.log("未登入");
+    alert.toastInfo("請先登入");
     router.navigate(['/login']);
     return false;
   }
@@ -31,8 +32,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   }
 
   // 5️⃣ 沒權限
-  alert("權限不足");
-  console.log("權限不足", { role, allowedRoles });
+  alert.toastInfo("權限不足");
 
   // 👉 建議不要導回 login，應該導去「無權限頁」
   // router.navigate(['/forbidden']); // 你可以自己做一頁

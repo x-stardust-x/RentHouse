@@ -10,7 +10,9 @@
         <div class="d-flex align-items-center mb-4">
           <mat-icon class="status-icon me-2">location_on</mat-icon>
           <h2 class="section-title mx-2 my-0">目前媒合狀態</h2>
-
+            @if (!currentMatch()) {
+              <small class="badge bg-secondary">暫無</small>
+            }
             @if(currentMatch()?.status == 'pending'){
               <small class="badge bg-danger">審核中</small>
             }
@@ -28,11 +30,11 @@
               <div class="row align-items-center">
                 <div class="col">
                   <div class="address-label text-muted fs-7">租賃房源名子</div>
-                  <div class="address-value fs-5 fw-bold">{{ currentMatch()?.name }}</div>
+                  <div class="address-value fs-5 fw-bold">{{ currentMatch()?.name || "無" }}</div>
                 </div>
                 <div class="col">
                   <div class="address-label text-muted fs-7">租賃房源位置</div>
-                  <div class="address-value fs-5 fw-bold">{{ currentMatch()?.address }}</div>
+                  <div class="address-value fs-5 fw-bold">{{ currentMatch()?.address || "無" }}</div>
                 </div>
               </div>
             </div>
@@ -48,10 +50,23 @@
         <div class="row g-3">
           <div class="col-6">
             <div class="ai-match-box p-3 d-flex align-items-center">
-              <div class="score-circle me-3">{{ currentMatch()?.matchScore }}%</div>
+              <div class="score-circle me-3">{{ currentMatch()?.matchScore  || 0 }}%</div>
               <div>
                 <div class="fs-7 text-muted">AI 精準配對</div>
-                <div class="fw-bold">高契合度</div>
+                <div class="fw-bold">
+                  @if(currentMatch(); as match){
+                    @if(match.matchScore > 66){
+                      高
+                    }
+                    @else if(match.matchScore <= 66 && match.matchScore > 33){
+                      中
+                    }
+                    @else if(match.matchScore <= 33 && match.matchScore >= 0){
+                      低
+                    }
+                    契合度
+                  }
+                  </div>
               </div>
             </div>
           </div>

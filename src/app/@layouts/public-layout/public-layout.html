@@ -38,10 +38,61 @@
 
         @if (authsev.isLoggedIn()) {
         <!-- <a class="nav-link" routerLink="/admin" routerLinkActive="is-active">管理員</a> -->
-        <button type="button" class="btn btn-danger" (click)="logout()">登出</button>
+        <!-- <button type="button" class="btn btn-danger" (click)="logout()">登出</button> -->
+          <div class="dropdown">
+            <!-- 頭像按鈕 -->
+            <img
+              [src]="usersev.profile()?.avatar"
+              class="rounded-circle avatar"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            />
+
+            <!-- 下拉卡片 -->
+            <div class="dropdown-menu dropdown-menu-end p-3 profile-card border border-4 border-warning">
+
+              <!-- 使用者資訊 -->
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <img
+                  [src]="usersev.profile()?.avatar"
+                  class="rounded-circle"
+                  width="45"
+                  height="45"
+                />
+
+                <div>
+                  <div class="fw-bold">{{ usersev.profile()?.realName }}</div>
+                  <small class="text-muted">{{ usersev.profile()?.englishName }}</small>
+                </div>
+              </div>
+
+              <hr />
+              <div class="my-3">
+                <div class="fw-bold">
+                  會員等級:
+                  @if(Tier == "1"){
+                    一般租客
+                  }
+                  @else if (Tier == "2") {
+                    進階會員
+                  }
+                  @else if(Tier == "3"){
+                    尊榮 VIP
+                  }
+                  @else{
+
+                  }
+                </div>
+              </div>
+              <!-- 登出 -->
+              <button class="btn btn-danger w-100" (click)="logout()">
+                登出
+              </button>
+
+            </div>
+          </div>
         }
-
-
         <div class="public-layout__font-tools" aria-label="字體大小設定">
           <span class="public-layout__font-label">字體</span>
 

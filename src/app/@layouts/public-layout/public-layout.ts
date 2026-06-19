@@ -1,7 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AfterViewInit, ElementRef, OnDestroy, Renderer2, ViewChild } from '@angular/core';
 import { Authservice } from '../../@service/authservice';
+import { UserService } from '../../@service/user-service';
+import { UserProfile } from '../../@interface/user-profile';
 
 
 type AppFontSize = 'small' | 'medium' | 'large';
@@ -23,11 +25,16 @@ export class PublicLayout implements OnInit, AfterViewInit, OnDestroy {
   private removeScrollListener?: () => void;
 
   public readonly authsev = inject(Authservice);
+  public readonly usersev = inject(UserService);
+  public userId = this.authsev.getUserId();
+  public Tier = localStorage.getItem("subscriptionTier");
 
   private readonly headerHideThreshold = 50;
   private readonly scrollDelta = 6;
 
-  constructor(private renderer: Renderer2) {}
+  constructor(private renderer: Renderer2) {
+    this.usersev.loadProfile(this.userId);
+  }
 
   ngAfterViewInit(): void {
     if (!this.layoutHeader?.nativeElement) {

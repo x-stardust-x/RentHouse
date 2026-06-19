@@ -420,6 +420,8 @@ export class MemberEditComponent {
             avatar: res.url
           });
 
+          this.alert.toastSuccess("圖片更換完成",2);
+
           this.imagePreview.set(res.url);
 
           this.closeModal();

@@ -34,16 +34,25 @@
 
 /* 品牌 Logo */
 .public-layout__logo {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  width: auto;
+  height: 42px;
   text-decoration: none;
-  letter-spacing: 1.5px;
   transition: transform 0.2s ease;
 
   &:hover {
     transform: scale(1.03);
   }
+}
+
+.public-layout__logo img {
+  display: block;
+  width: auto;
+  height: 100%;
+  max-width: 150px;
+  object-fit: contain;
 }
 
 /* 導覽列容器 */

@@ -1,1 +1,96 @@
-<p>home-component works!</p>
+<div #introRoot class="home-intro">
+
+  <!-- =====================================================
+       Hero Section
+       ===================================================== -->
+  <section class="home-hero" aria-label="厚厝味首頁主視覺">
+
+    <div class="home-hero__map js-taiwan-map" aria-hidden="true">
+      <img src="/images/taiwan_map.svg" alt="">
+    </div>
+
+    <div class="home-hero__title js-hero-title">
+      <h1>
+        <span>尋找的不只是一個房間</span>
+        <span>而是一段跨世代的好趣味。</span>
+      </h1>
+    </div>
+
+    <div class="home-hero__swiper-shell js-hero-swiper">
+      <swiper-container #heroSwiper init="false" class="home-hero__swiper" aria-label="厚厝味服務輪播">
+        @for (slide of heroLoopSlides; track slide.loopId) {
+        <swiper-slide class="home-hero__swiper-slide">
+          <a class="home-hero__slide-card" [routerLink]="slide.routerLink">
+            <img [src]="slide.imageUrl" [alt]="slide.title">
+
+            <span class="home-hero__slide-label">
+              {{ slide.label }}
+            </span>
+
+            <strong class="home-hero__slide-title">
+              {{ slide.title }}
+            </strong>
+          </a>
+        </swiper-slide>
+        }
+      </swiper-container>
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       About Section
+       ===================================================== -->
+  <section class="home-about" aria-label="關於厚厝味">
+
+    <div class="home-about__map" aria-hidden="true">
+      <img src="/images/home/taiwan_map.svg" alt="">
+    </div>
+
+    <div class="home-about__inner">
+
+      <div class="home-about__eyebrow">
+        About HomieFun
+      </div>
+
+      <div class="home-about__copy js-about-copy">
+        <p class="home-about__lead">
+          不只找到房子，<br>
+          也找到能安心生活的連結。
+        </p>
+
+        <p class="home-about__text">
+          厚厝味相信，居住不只是空間的交換，更是生活關係的建立。
+          我們看見青年租屋壓力、高齡獨居與閒置資源之間的落差，
+          因此以跨世代共居為核心，整合房源、工具與技能共享，
+          讓每一份生活資源，都可能成為某個人剛好的幫助。
+        </p>
+
+        <a class="home-about__button" routerLink="/about-homiefun">
+          <span>關於厚厝味</span>
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </a>
+      </div>
+
+      <!-- <div class="home-about__cards">
+        @for (card of aboutCards; track card.title) {
+        <article class="home-about__card js-about-card">
+          <span class="home-about__card-icon material-symbols-outlined">
+            {{ card.icon }}
+          </span>
+
+          <span class="home-about__card-label">
+            {{ card.label }}
+          </span>
+
+          <h3>{{ card.title }}</h3>
+          <p>{{ card.text }}</p>
+        </article>
+        }
+      </div> -->
+
+    </div>
+  </section>
+
+</div>

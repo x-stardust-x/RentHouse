@@ -42,7 +42,7 @@
           <div class="dropdown">
             <!-- 頭像按鈕 -->
             <img
-              [src]="usersev.profile()?.avatar"
+              [src]="usersev.profile()?.avatar || 'https://placehold.co/50'"
               class="rounded-circle avatar"
               role="button"
               data-bs-toggle="dropdown"
@@ -55,15 +55,15 @@
               <!-- 使用者資訊 -->
               <div class="d-flex align-items-center gap-2 mb-2">
                 <img
-                  [src]="usersev.profile()?.avatar"
+                  [src]="usersev.profile()?.avatar || 'https://placehold.co/50'"
                   class="rounded-circle"
                   width="45"
                   height="45"
                 />
 
                 <div>
-                  <div class="fw-bold">{{ usersev.profile()?.realName }}</div>
-                  <small class="text-muted">{{ usersev.profile()?.englishName }}</small>
+                  <div class="fw-bold">{{ usersev.profile()?.realName || "未填" }}</div>
+                  <small class="text-muted">{{ usersev.profile()?.englishName || "未填" }}</small>
                 </div>
               </div>
 

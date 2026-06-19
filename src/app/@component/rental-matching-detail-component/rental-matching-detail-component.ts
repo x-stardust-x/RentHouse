@@ -411,7 +411,14 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
           Boolean(detail?.isFavorite ?? detail?.IsFavorite ?? false)
         );
 
-        const cleanHouseId = Number(detail?.id ?? detail?.Id);
+        const cleanHouseId = Number(data?.id || data?.Id);
+
+        if (cleanHouseId) {
+          this.checkFavoriteStatus(cleanHouseId);
+        }
+        setTimeout(() => {
+          this.detailData.set({ ...data, displayType: this.displayType() });
+        });
 
         let advancedRules: Record<string, string> = {};
 
@@ -1219,8 +1226,69 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
       : '否，不與出租人同住';
   }
 
-  onToggleFavorite(): void {
-    this.isFavorite.update(current => !current);
+  onToggleFavorite() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('請先登入');
+      return;
+    }
+
+    let currentAccountId: number;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      currentAccountId = Number(payload.AccountId);
+      if (!currentAccountId) {
+        console.error('在 Token 中找不到會員 ID 欄位！');
+        return;
+      }
+    } catch (e) {
+      console.error('Token 解析失敗', e);
+      return;
+    }
+
+
+    const targetHouseId = this.currentCleanId();
+
+    this.houseService.toggleFavoriteHouse(currentAccountId, targetHouseId).subscribe({
+      next: (res) => {
+
+        console.log("🔥 [點擊收藏] API 回傳結果：", res);
+
+
+        const status = res.isFavorite !== undefined ? res.isFavorite : res.IsFavorite;
+        this.isFavorite.set(status);
+      },
+      error: (err) => {
+        console.error('收藏失敗，請稍後再試', err);
+      }
+    });
+  }
+
+
+  checkFavoriteStatus(houseId: number) {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const accountId = Number(payload.AccountId);
+
+      this.houseService.checkIsFavorite(accountId, houseId).subscribe({
+        next: (res) => {
+          // 🚨 裝上監視器：看看進場檢查時，後端說了什麼？
+          console.log("🔥 [進場檢查] API 回傳結果：", res);
+
+          // 🔍 同樣加上大小寫防呆
+          const status = res.isFavorite !== undefined ? res.isFavorite : res.IsFavorite;
+          this.isFavorite.set(status);
+        },
+        error: (err) => {
+          console.error('檢查收藏狀態失敗', err);
+        }
+      });
+    } catch (e) {
+      console.error("無法讀取登入狀態", e);
+    }
   }
 
   getProviderPhoneHref(): string | null {

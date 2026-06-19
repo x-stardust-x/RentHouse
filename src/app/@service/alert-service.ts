@@ -55,7 +55,7 @@ export class AlertService {
     });
   }
 
-  toastInfo(title: string){
+  toastInfo(title: string, background = '#ffffff' ){
     return Swal.fire({
       toast: true,
       position: 'bottom-start',
@@ -64,6 +64,7 @@ export class AlertService {
       showConfirmButton: false,
       timer: 1000,
       timerProgressBar: true,
+      background,
     });
   }
 

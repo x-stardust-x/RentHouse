@@ -2,6 +2,12 @@
 //   height: 1000vh !important;
 // }
 
+:root {
+  --color-contact-dark: #171412;
+  --color-contact-overlay: rgba(23, 20, 18, 0.9);
+  --color-contact-overlay-strong: rgba(23, 20, 18, 0.86);
+}
+
 :host {
   display: block;
   width: 100%;
@@ -14,6 +20,9 @@
   overflow-x: clip;
   overflow-y: visible;
   background: var(--color-bg-main);
+
+  perspective: 1200px;
+  perspective-origin: 55% 45%;
 }
 
 
@@ -38,6 +47,9 @@
   width: clamp(22rem, 34vw, 42rem);
   opacity: 0.15;
   pointer-events: none;
+
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
 .home-hero__map img {
@@ -97,6 +109,16 @@
 
 .home-hero__swiper-slide {
   width: clamp(13.5rem, 18vw, 19rem);
+  height: auto;
+  cursor: default;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.home-hero__swiper-slide a {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .home-hero__slide-card {
@@ -104,17 +126,16 @@
   display: block;
   overflow: hidden;
   width: 100%;
+  height: 100%;
   aspect-ratio: 0.68 / 1;
   border-radius: var(--radius-lg);
   background: var(--color-bg-card);
   box-shadow: var(--shadow-base);
   color: var(--color-bg-card);
   text-decoration: none;
+  cursor: pointer;
+  pointer-events: auto;
 
-  /**
-   * 關鍵：
-   * 每張卡片是否要跨過 H1，由 TS 動態寫入 --hero-skip-x。
-   */
   transform: translate3d(var(--hero-skip-x, 0px), 0, 0);
   transition:
     transform 0.42s cubic-bezier(0.4, 0, 0.2, 1),
@@ -131,6 +152,12 @@
       transparent 42%,
       color-mix(in srgb, var(--color-text-main) 52%, transparent) 100%);
   opacity: 0.86;
+  pointer-events: none;
+}
+
+.home-hero__slide-label,
+.home-hero__slide-title {
+  pointer-events: none;
 }
 
 .home-hero__slide-card:hover {
@@ -138,12 +165,18 @@
   box-shadow: var(--shadow-hover);
 }
 
+.home-hero__slide-card::before,
+.home-hero__slide-label,
+.home-hero__slide-title {
+  pointer-events: none;
+}
+
 .home-hero__slide-card img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: grayscale(1);
+  // filter: grayscale(1);
   transform: scale(1.03);
   transition: var(--transition-card);
 }
@@ -184,16 +217,34 @@
 
 .home-about {
   position: relative;
-  min-height: 200svh;
-  padding: clamp(6rem, 9vw, 10rem) 0 clamp(6rem, 10vw, 11rem);
-  overflow: visible;
-  // background: var(--color-bg-main);
   z-index: 1;
+  padding: 0;
+  overflow: visible;
+  background: transparent;
+}
+
+.home-first {
+  position: relative;
+  min-height: 120svh;
+  z-index: 1;
+  padding: clamp(6rem, 9vw, 10rem) 0 clamp(6rem, 10vw, 11rem);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.home-second {
+  position: relative;
+  z-index: 20;
+  min-height: 100vh;
+  background: white;
+  isolation: isolate;
 }
 
 .home-about__media {
   position: absolute;
-  inset: -4rem 0 -42vh;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
   overflow: hidden;
   opacity: 0;
@@ -206,19 +257,24 @@
   inset: 0;
   z-index: 2;
   background:
-    linear-gradient(
-      180deg,
+    // linear-gradient(180deg,
+    //   color-mix(in srgb, var(--color-bg-main) 72%, transparent) 0%,
+    //   color-mix(in srgb, var(--color-bg-main) 42%, transparent) 10%,
+    //   transparent 28%),
+    // linear-gradient(90deg,
+    //   color-mix(in srgb, var(--color-bg-main) 62%, transparent) 0%,
+    //   color-mix(in srgb, var(--color-bg-main) 28%, transparent) 46%,
+    //   color-mix(in srgb, var(--color-bg-main) 72%, transparent) 100%);
+
+    linear-gradient(180deg,
       var(--color-bg-main) 0%,
       color-mix(in srgb, var(--color-bg-main) 96%, transparent) 18%,
       color-mix(in srgb, var(--color-bg-main) 68%, transparent) 36%,
-      transparent 64%
-    ),
-    linear-gradient(
-      90deg,
+      transparent 64%),
+    linear-gradient(90deg,
       color-mix(in srgb, var(--color-bg-main) 82%, transparent) 0%,
       color-mix(in srgb, var(--color-bg-main) 52%, transparent) 46%,
-      color-mix(in srgb, var(--color-bg-main) 88%, transparent) 100%
-    );
+      color-mix(in srgb, var(--color-bg-main) 88%, transparent) 100%);
   top: -2px;
 }
 
@@ -233,15 +289,17 @@
 
 .home-about__video {
   position: absolute;
-  inset: 50% auto auto 50%;
-  z-index: 1;
-  width: 118%;
-  height: 132%;
-  min-width: 118%;
-  min-height: 132%;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
   object-fit: cover;
-  filter: grayscale(1) blur(3px) contrast(0.95);
-  transform: translate(-50%, -50%) scale(1.14);
+  filter: grayscale(1) blur(0.2px) contrast(0.95);
+  transform: none;
+  transform: scale(1.15);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .home-about__map {
@@ -389,11 +447,12 @@
 
 .home-rental {
   position: relative;
-  z-index: 5;
+  z-index: 10;
   overflow: hidden;
   padding: 32rem 0 6.5rem;
-  // background: var(--color-bg-main);
+  background: var(--color-bg-main);
   isolation: isolate;
+  will-change: transform;
 }
 
 .home-rental::before {
@@ -1677,6 +1736,130 @@
   color: var(--color-primary);
 }
 
+.home-contact-cta {
+  position: relative;
+  min-height: clamp(32rem, 72vh, 46rem);
+  overflow: hidden;
+  display: grid;
+  align-items: center;
+  background: var(--color-contact-dark);
+  color: var(--color-bg-card);
+  isolation: isolate;
+}
+
+.home-contact-cta__media {
+  position: absolute;
+  inset: -12%;
+  z-index: -2;
+  overflow: hidden;
+}
+
+.home-contact-cta__video {
+  width: 100%;
+  height: 120%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.04);
+  transform: scale(1.12);
+  will-change: transform;
+}
+
+.home-contact-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(17, 16, 15, 0.78);
+  // background:
+  //   linear-gradient(90deg,
+  //     var(--color-contact-overlay-strong) 0%,
+  //     var(--color-contact-overlay) 46%,
+  //     rgba(23, 20, 18, 0.62) 100%);
+  pointer-events: none;
+}
+
+.home-contact-cta::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 18%;
+  width: min(24vw, 18rem);
+  height: 100%;
+  z-index: -1;
+  background: rgba(253, 251, 249, 0.12);
+  transform: skewX(-14deg);
+  transform-origin: top right;
+  pointer-events: none;
+}
+
+.home-contact-cta__inner {
+  width: min(100% - 4rem, 1120px);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.8fr) minmax(0, 1.25fr);
+  gap: clamp(3rem, 8vw, 8rem);
+  align-items: center;
+}
+
+.home-contact-cta__side p {
+  margin: 0 0 0.6rem;
+  color: color-mix(in srgb, var(--color-bg-card) 68%, transparent);
+  font-size: clamp(1rem, 1.6vw, 1.35rem);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.home-contact-cta__side h2 {
+  margin: 0;
+  color: var(--color-bg-card);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  letter-spacing: 0.12em;
+}
+
+.home-contact-cta__content h3 {
+  margin: 0;
+  color: var(--color-bg-card);
+  font-size: clamp(1.55rem, 3.2vw, 2.45rem);
+  line-height: 1.55;
+  letter-spacing: 0.08em;
+}
+
+.home-contact-cta__content p {
+  max-width: 620px;
+  margin: clamp(1.4rem, 3vw, 2rem) 0 0;
+  color: color-mix(in srgb, var(--color-bg-card) 82%, transparent);
+  font-size: clamp(0.98rem, 1.35vw, 1.1rem);
+  line-height: 2.1;
+  letter-spacing: 0.06em;
+}
+
+.home-contact-cta__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: clamp(2rem, 4vw, 3rem);
+  color: var(--color-bg-card);
+  text-decoration: none;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.home-contact-cta__button span {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--color-bg-card);
+  color: var(--color-primary);
+  transition: var(--transition-base);
+}
+
+.home-contact-cta__button:hover span {
+  background: var(--color-primary);
+  color: var(--color-bg-card);
+  transform: translateX(4px);
+}
+
 /* =========================================================
    平板
    ========================================================= */
@@ -1841,6 +2024,23 @@
     inset: auto;
     width: 100%;
   }
+
+  .home-contact-cta {
+    min-height: auto;
+    padding: 6rem 0;
+  }
+
+  .home-contact-cta__inner {
+    width: min(100% - 3rem, 760px);
+    grid-template-columns: 1fr;
+    gap: 2.6rem;
+  }
+
+  .home-contact-cta::after {
+    right: -4rem;
+    width: 13rem;
+    opacity: 0.7;
+  }
 }
 
 @media (max-width: 767px) {
@@ -1974,6 +2174,22 @@
   .home-user-stack__features {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  .home-contact-cta {
+    padding: 5rem 0;
+  }
+
+  .home-contact-cta__inner {
+    width: min(100% - 2rem, 520px);
+  }
+
+  .home-contact-cta__content h3 br {
+    display: none;
+  }
+
+  .home-contact-cta__content p {
+    line-height: 1.9;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -1985,7 +2201,8 @@
      * 36px = 你桌機版原本正常間距
      * clamp(...) = 額外留給 H1 的空間
      */
-    margin-right: calc(36px + clamp(13rem, 16vw, 18rem)) !important;
+    margin-right: calc(clamp(13rem, 16vw, 18rem)) !important;
+    // margin-right: calc(36px + clamp(13rem, 16vw, 18rem)) !important;
   }
 }
 
@@ -2133,3 +2350,73 @@
     min-height: 12rem;
   }
 }
+
+
+
+
+
+
+
+
+
+
+// .home-about__media {
+//   position: absolute;
+//   inset: 0;
+//   width: 100%;
+//   height: 100%;
+//   z-index: 1;
+//   overflow: hidden;
+//   opacity: 1 !important;
+//   pointer-events: auto;
+// }
+
+// .home-about__media::before,
+// .home-about__media::after {
+//   display: none;
+//   pointer-events: none;
+// }
+
+// .home-about__video {
+//   position: absolute;
+//   inset: 0;
+//   z-index: 1;
+//   width: 100%;
+//   height: 100%;
+//   min-width: 0;
+//   min-height: 0;
+//   object-fit: cover;
+//   filter: none;
+//   transform: scale(1);
+// }
+
+.home-about__inner,
+.home-about__map {
+  position: relative;
+  z-index: 2;
+}
+
+
+
+// .home-about__media {
+//   position: absolute;
+//   inset: 0;
+//   z-index: 0;
+//   overflow: hidden;
+//   opacity: 1;
+//   pointer-events: none;
+// }
+
+// .home-about__media::before,
+// .home-about__media::after {
+//   pointer-events: none;
+// }
+
+// .home-about__video {
+//   position: absolute;
+//   inset: 0;
+//   width: 100%;
+//   height: 100%;
+//   object-fit: cover;
+//   transform: scale(1.15);
+// }

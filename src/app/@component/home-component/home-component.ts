@@ -111,6 +111,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   @ViewChild('rentalSwiper', { static: true })
   rentalSwiper!: ElementRef<any>;
 
+  @ViewChild('aboutVideo') aboutVideo?: ElementRef<HTMLVideoElement>;
+
   private rentalUpdateRafId = 0;
 
   private mm?: gsap.MatchMedia;
@@ -119,25 +121,25 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     {
       label: 'Shared Home',
       title: '跨世代共居',
-      imageUrl: '/images/home/hero-01.jpg',
+      imageUrl: '/images/about_hero.jpg',
       routerLink: ['/rental-matching-component'],
     },
     {
       label: 'Living Together',
       title: '安心看房媒合',
-      imageUrl: '/images/home/hero-02.jpg',
+      imageUrl: '/images/house_viewing.jpg',
       routerLink: ['/rental-matching-component'],
     },
     {
       label: 'Tool Sharing',
       title: '工具共享',
-      imageUrl: '/images/home/hero-03.jpg',
+      imageUrl: '/images/tool_sharing.jpeg',
       routerLink: ['/rental-matching-component'],
     },
     {
       label: 'Skill Exchange',
       title: '技能交流',
-      imageUrl: '/images/home/hero-04.jpg',
+      imageUrl: '/images/skill_exchange.jpg',
       routerLink: ['/rental-matching-component'],
     },
   ];
@@ -332,8 +334,35 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         this.initRentalSwiper();
         this.initScrollMotion();
         this.initHeroTitleSkipMotion();
+        this.playAboutVideo();
+        this.initContactParallax();
       });
     });
+  }
+
+  private playAboutVideo(): void {
+    const video = this.aboutVideo?.nativeElement;
+
+    if (!video) {
+      return;
+    }
+
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+
+    const play = () => {
+      video.play().catch((error) => {
+        console.warn('背景影片播放失敗：', error);
+      });
+    };
+
+    if (video.readyState >= 2) {
+      play();
+    } else {
+      video.addEventListener('loadeddata', play, { once: true });
+      video.load();
+    }
   }
 
   ngOnDestroy(): void {
@@ -535,8 +564,19 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
          * 地圖到下方後的位置。
          * x 越大越往右，y 越大越往下。
          */
-        const MAP_FINAL_X = '45vw';
+        const MAP_FINAL_X = '36vw';
         const MAP_FINAL_Y = '95vh';
+        const MAP_FINAL_Z = 80;
+
+
+
+        // const MAP_FINAL_ROTATE_X = -16;
+        // const MAP_FINAL_ROTATE_Y = 16;
+        // const MAP_FINAL_ROTATE_Z = 2;
+
+        const MAP_FINAL_ROTATE_X = -20;
+        const MAP_FINAL_ROTATE_Y = 0;
+        const MAP_FINAL_ROTATE_Z = 10;
 
         // const MAP_FINAL_X = '14vw';
         // const MAP_FINAL_Y = '90vh';
@@ -595,6 +635,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
         gsap.set(map, {
           transformOrigin: 'center center',
+          transformPerspective: 1200,
+          force3D: true,
           willChange: 'transform, opacity',
         });
 
@@ -625,6 +667,10 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
             scale: MAP_FINAL_SCALE,
             x: MAP_FINAL_X,
             y: MAP_FINAL_Y,
+            z: MAP_FINAL_Z,
+            rotationX: MAP_FINAL_ROTATE_X,
+            rotationY: MAP_FINAL_ROTATE_Y,
+            rotationZ: MAP_FINAL_ROTATE_Z,
             opacity: 0.14,
             duration: ARRIVE_PROGRESS,
             delay: 0.08,
@@ -667,14 +713,15 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
             scale: 1.04,
           },
           {
-            opacity: 0.9,
+            opacity: 0.55,
             scale: 1,
             ease: 'none',
             scrollTrigger: {
-              trigger: '.home-about',
-              start: 'top 20%',
-              end: 'top 30%',
+              trigger: '.home-first',
+              start: 'top 80%',
+              end: 'top 20%',
               scrub: 1.2,
+              invalidateOnRefresh: true,
             },
           }
         );
@@ -682,7 +729,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         if (aboutSection && rentalSection) {
           ScrollTrigger.create({
             trigger: aboutSection,
-            start: 'bottom bottom',
+            start: 'bottom 85%',
             end: () => `+=${window.innerHeight * 0.95}`,
             pin: aboutSection,
             pinSpacing: false,
@@ -693,7 +740,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
           gsap.fromTo(
             rentalSection,
             {
-              y: () => window.innerHeight * 0.18,
+              y: () => window.innerHeight * 0.28,
             },
             {
               y: 0,
@@ -756,10 +803,10 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
             opacity: 0,
           },
           {
-            opacity: 0.1,
+            opacity: 0.35,
             ease: 'none',
             scrollTrigger: {
-              trigger: '.home-about',
+              trigger: '.home-first',
               start: 'top 88%',
               end: 'top 42%',
               scrub: 1,
@@ -1055,5 +1102,49 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     return keys
       .map((key) => this.userCenterCards.find((card) => card.key === key))
       .filter((card): card is HomeUserCenterCard => Boolean(card));
+  }
+
+  private initContactParallax(): void {
+    const root = this.introRoot.nativeElement;
+    const section = root.querySelector<HTMLElement>('.js-contact-cta');
+    const video = root.querySelector<HTMLElement>('.js-contact-video');
+    const side = root.querySelector<HTMLElement>('.js-contact-side');
+    const content = root.querySelector<HTMLElement>('.js-contact-content');
+
+    if (!section || !video) {
+      return;
+    }
+
+    gsap.fromTo(
+      video,
+      {
+        yPercent: -8,
+        scale: 1.16,
+      },
+      {
+        yPercent: 8,
+        scale: 1.08,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1.2,
+          invalidateOnRefresh: true,
+        },
+      }
+    );
+
+    gsap.from([side, content], {
+      y: 48,
+      opacity: 0,
+      duration: 0.85,
+      stagger: 0.14,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 72%',
+      },
+    });
   }
 }

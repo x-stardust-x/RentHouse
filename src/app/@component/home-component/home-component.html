@@ -4,7 +4,6 @@
        Hero Section
        ===================================================== -->
   <section class="home-hero" aria-label="厚厝味首頁主視覺">
-
     <div class="home-hero__map js-taiwan-map" aria-hidden="true">
       <img src="/images/taiwan_map.svg" alt="">
     </div>
@@ -35,7 +34,6 @@
         }
       </swiper-container>
     </div>
-
   </section>
 
 
@@ -50,11 +48,16 @@
 
     <div class="home-about__inner">
 
-      <div class="home-about__eyebrow">
+      <!-- <div class="home-about__eyebrow">
         About HomieFun
-      </div>
+      </div> -->
 
       <div class="home-about__copy js-about-copy">
+        <div class="home-rental__heading" style="margin: 0 0 2em; text-align: unset;">
+          <p>Rental Matching</p>
+          <h2>租賃物媒合</h2>
+        </div>
+
         <p class="home-about__lead">
           不只找到房子，<br>
           也找到能安心生活的連結。
@@ -90,6 +93,197 @@
         }
       </div> -->
 
+    </div>
+  </section>
+
+  <section class="home-rental">
+    <!-- <div class="home-rental__brush" aria-hidden="true"></div> -->
+
+    <div class="home-rental__heading">
+      <p>Rental Matching</p>
+      <h2>租賃物媒合</h2>
+      <strong>
+        每一份生活資源，<br>
+        都可能成為某個人剛好的幫助
+      </strong>
+    </div>
+
+    <div class="home-rental__tabs" aria-label="租賃物分類">
+      @for (category of rentalCategories; track category.value) {
+      <button type="button" [class.is-active]="activeRentalCategory === category.value"
+        (click)="setRentalCategory(category.value)">
+        {{ category.label }}
+      </button>
+      }
+    </div>
+
+    <div class="home-rental__swiper-shell">
+      <swiper-container #rentalSwiper init="false" class="home-rental__swiper" aria-label="租賃物媒合輪播">
+        @for (item of filteredRentalLoopItems; track item.loopId) {
+        <swiper-slide class="home-rental__swiper-slide">
+          <article class="home-rental-card">
+            <a [routerLink]="item.routerLink">
+              <figure class="home-rental-card__image">
+                <img [src]="item.imageUrl" [alt]="item.title">
+              </figure>
+
+              <div class="home-rental-card__body">
+                <h3>{{ item.title }}</h3>
+
+                <p class="home-rental-card__price">
+                  {{ item.price }}
+                </p>
+
+                <p class="home-rental-card__meta">
+                  <span class="material-symbols-outlined">location_on</span>
+                  {{ item.meta }}
+                </p>
+
+                <span class="home-rental-card__tag">
+                  {{ item.tag }}
+                </span>
+
+                <span class="home-rental-card__button">
+                  查看詳情
+                </span>
+              </div>
+            </a>
+          </article>
+        </swiper-slide>
+        }
+      </swiper-container>
+
+      <!-- <button type="button" class="home-rental__nav home-rental__nav--prev" aria-label="上一張"
+        (click)="controlRentalSwiper('prev')">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+
+      <button type="button" class="home-rental__nav home-rental__nav--next" aria-label="下一張"
+        (click)="controlRentalSwiper('next')">
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </button> -->
+    </div>
+
+    <a class="home-section-link" routerLink="/rental-matching-component">
+      <span class="material-symbols-outlined">arrow_forward</span>
+      查看更多
+    </a>
+  </section>
+
+  <section class="home-user-center" aria-label="個人專區">
+    <div class="home-user-center__lead">
+      <p>在這裡，管理你的空間、共享與預約，</p>
+      <strong>
+        也慢慢累積每一段
+        <span>安心的生活連結</span>
+      </strong>
+    </div>
+
+    <div class="home-user-center__heading">
+      <p>User Center</p>
+      <h2>個人專區</h2>
+    </div>
+
+    <div class="home-user-center__cards">
+      @for (card of userCenterCards; track card.title; let i = $index) {
+      <a [class]="'home-user-card js-user-center-card home-user-card--' + card.tone" [style.--card-index]="i"
+        [routerLink]="card.routerLink" (mousemove)="moveUserCenterCard($event)"
+        (mouseleave)="resetUserCenterCard($event)">
+        <span class="home-user-card__decor home-user-card__decor--circle"></span>
+        <span class="home-user-card__decor home-user-card__decor--square"></span>
+        <span class="home-user-card__decor home-user-card__decor--dot"></span>
+
+        <span class="home-user-card__layer home-user-card__icon material-symbols-outlined">
+          {{ card.icon }}
+        </span>
+
+        <h3 class="home-user-card__layer">{{ card.title }}</h3>
+        <p class="home-user-card__layer">{{ card.text }}</p>
+      </a>
+      }
+    </div>
+
+    <figure class="home-user-center__preview">
+      <img src="/images/user-center-preview.jpg" alt="個人專區介面預覽">
+    </figure>
+  </section>
+
+  <section class="home-news">
+    <div class="home-news__inner">
+      <div class="home-news__side">
+        <p>News</p>
+        <h2>最新消息</h2>
+
+        <div class="home-news__categories">
+          @for (category of newsCategories; track category) {
+          <button type="button" [class.is-active]="activeNewsCategory === category" (click)="setNewsCategory(category)">
+            {{ category }}
+          </button>
+          }
+        </div>
+      </div>
+
+      <div class="home-news__list">
+        @for (item of filteredNewsItems; track item.id) {
+        <article class="home-news-item">
+          <a [routerLink]="item.routerLink">
+            <div class="home-news-item__meta">
+              <span>{{ item.category }}</span>
+              <time>{{ item.date }}</time>
+            </div>
+
+            <h3>{{ item.title }}</h3>
+
+            <span class="home-news-item__arrow material-symbols-outlined">
+              arrow_forward
+            </span>
+          </a>
+        </article>
+        }
+
+        <a class="home-news__more" routerLink="/news">
+          <span class="material-symbols-outlined">arrow_forward</span>
+          查看更多
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-faq" aria-label="常見問題">
+    <div class="home-faq__inner">
+      <div class="home-faq__side">
+        <p>FAQ</p>
+        <h2>常見問題</h2>
+
+        <div class="home-faq__categories">
+          @for (category of faqCategories; track category) {
+          <button type="button" [class.is-active]="activeFaqCategory === category" (click)="setFaqCategory(category)">
+            {{ category }}
+          </button>
+          }
+        </div>
+      </div>
+
+      <div class="home-faq__list">
+        @for (item of filteredFaqItems; track item.id) {
+        <article class="home-faq-item">
+          <div class="home-faq-item__row">
+            <strong>問</strong>
+            <h3>{{ item.question }}</h3>
+          </div>
+
+          <div class="home-faq-item__row home-faq-item__row--answer">
+            <strong>答</strong>
+            <p>{{ item.answer }}</p>
+          </div>
+        </article>
+        }
+
+        <a class="home-faq__more" routerLink="/faqs">
+          <span class="material-symbols-outlined">arrow_forward</span>
+          查看更多
+        </a>
+      </div>
     </div>
   </section>
 

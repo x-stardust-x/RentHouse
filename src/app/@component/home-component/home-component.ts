@@ -29,6 +29,52 @@ type HeroLoopSlide = HeroSlide & {
   loopId: string;
 };
 
+type HomeRentalCategory = 'room' | 'tool' | 'skill';
+
+type HomeRentalItem = {
+  id: number;
+  category: HomeRentalCategory;
+  title: string;
+  price: string;
+  meta: string;
+  tag: string;
+  imageUrl: string;
+  routerLink: string[];
+};
+
+type HomeNewsCategory = '全部' | '會員故事' | '平台公告' | '共居知識';
+
+type HomeNewsItem = {
+  id: number;
+  category: Exclude<HomeNewsCategory, '全部'>;
+  date: string;
+  title: string;
+  routerLink: string[];
+};
+
+type HomeRentalLoopItem = HomeRentalItem & {
+  loopId: string;
+};
+
+type HomeUserCenterTone = 'orange' | 'green' | 'blue' | 'pink' | 'gold';
+
+type HomeUserCenterCard = {
+  icon: string;
+  title: string;
+  text: string;
+  tone: HomeUserCenterTone;
+  routerLink: string[];
+};
+
+type HomeFaqCategory = '會員與帳號' | '刊登與內容審核' | '媒合、預約與追蹤' | '會員故事';
+
+type HomeFaqItem = {
+  id: number;
+  category: HomeFaqCategory;
+  question: string;
+  answer: string;
+};
+
 @Component({
   selector: 'app-home-component',
   standalone: true,
@@ -40,12 +86,20 @@ type HeroLoopSlide = HeroSlide & {
 export class HomeComponent implements AfterViewInit, OnDestroy {
   private zone = inject(NgZone);
   private heroSkipRafId = 0;
+  private readonly rentalAutoSpeed = 6200;
+  // private readonly rentalNavSpeed = 650;
+  // private rentalNavRestartTimer = 0;
 
   @ViewChild('introRoot', { static: true })
   introRoot!: ElementRef<HTMLElement>;
 
   @ViewChild('heroSwiper', { static: true })
   heroSwiper!: ElementRef<any>;
+
+  @ViewChild('rentalSwiper', { static: true })
+  rentalSwiper!: ElementRef<any>;
+
+  private rentalUpdateRafId = 0;
 
   private mm?: gsap.MatchMedia;
 
@@ -104,13 +158,166 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     },
   ];
 
+  activeRentalCategory: HomeRentalCategory = 'room';
+  activeNewsCategory: HomeNewsCategory = '全部';
+
+  rentalCategories: Array<{
+    label: string;
+    value: HomeRentalCategory;
+  }> = [
+      { label: '房屋', value: 'room' },
+      { label: '工具', value: 'tool' },
+      { label: '技能', value: 'skill' },
+    ];
+
+  rentalItems: HomeRentalItem[] = [
+    {
+      id: 1,
+      category: 'room',
+      title: '溫馨小宅',
+      price: 'NT$ 8,000 / 月',
+      meta: '中華路 3 段',
+      tag: '可養寵物',
+      imageUrl: '/images/home/rental-room-01.jpg',
+      routerLink: ['/rental-matching-detail', 'room', '1'],
+    },
+    {
+      id: 2,
+      category: 'room',
+      title: '採光共居房',
+      price: 'NT$ 9,500 / 月',
+      meta: '三民區 建工路',
+      tag: '近公車站',
+      imageUrl: '/images/home/rental-room-02.jpg',
+      routerLink: ['/rental-matching-detail', 'room', '2'],
+    },
+    {
+      id: 3,
+      category: 'room',
+      title: '安靜套房',
+      price: 'NT$ 7,800 / 月',
+      meta: '苓雅區 文化路',
+      tag: '含網路',
+      imageUrl: '/images/home/rental-room-03.jpg',
+      routerLink: ['/rental-matching-detail', 'room', '3'],
+    },
+    {
+      id: 4,
+      category: 'tool',
+      title: '電動起子組',
+      price: 'NT$ 120 / 日',
+      meta: '左營區 可面交',
+      tag: '居家修繕',
+      imageUrl: '/images/home/rental-tool-01.jpg',
+      routerLink: ['/rental-matching-detail', 'product', '4'],
+    },
+    {
+      id: 5,
+      category: 'tool',
+      title: '摺疊梯',
+      price: 'NT$ 80 / 日',
+      meta: '鳳山區 可預約',
+      tag: '清潔整理',
+      imageUrl: '/images/home/rental-tool-02.jpg',
+      routerLink: ['/rental-matching-detail', 'product', '5'],
+    },
+    {
+      id: 6,
+      category: 'skill',
+      title: '簡易手機教學',
+      price: 'NT$ 300 / 次',
+      meta: '線上或到府',
+      tag: '長輩友善',
+      imageUrl: '/images/home/rental-skill-01.jpg',
+      routerLink: ['/rental-matching-detail', 'product', '6'],
+    },
+  ];
+
+  newsCategories: HomeNewsCategory[] = ['全部', '會員故事', '平台公告', '共居知識'];
+
+  newsItems: HomeNewsItem[] = [
+    {
+      id: 1,
+      category: '會員故事',
+      date: '2026.06.18',
+      title: '從一間空房開始：林阿姨與小安的跨世代共居日常',
+      routerLink: ['/news', '1'],
+    },
+    {
+      id: 2,
+      category: '平台公告',
+      date: '2026.06.12',
+      title: '厚厝味新增線上預約看房功能，讓媒合流程更安心',
+      routerLink: ['/news', '2'],
+    },
+    {
+      id: 3,
+      category: '共居知識',
+      date: '2026.06.05',
+      title: '第一次共居前，可以先討論的五個生活習慣',
+      routerLink: ['/news', '3'],
+    },
+    {
+      id: 4,
+      category: '會員故事',
+      date: '2026.05.28',
+      title: '工具共享讓老屋修繕變簡單：一次鄰里間的互相幫忙',
+      routerLink: ['/news', '4'],
+    },
+  ];
+
+  get filteredRentalItems(): HomeRentalItem[] {
+    return this.rentalItems.filter((item) => item.category === this.activeRentalCategory);
+  }
+
+  get filteredNewsItems(): HomeNewsItem[] {
+    if (this.activeNewsCategory === '全部') {
+      return this.newsItems;
+    }
+
+    return this.newsItems.filter((item) => item.category === this.activeNewsCategory);
+  }
+
+  private readonly rentalLoopSlotCount = 18;
+
+  get filteredRentalLoopItems(): HomeRentalLoopItem[] {
+    const items = this.filteredRentalItems;
+
+    if (!items.length) {
+      return [];
+    }
+
+    return Array.from({ length: this.rentalLoopSlotCount }).map((_, index) => {
+      const item = items[index % items.length];
+
+      return {
+        ...item,
+        loopId: `rental-loop-${index}`,
+      };
+    });
+  }
+
+  setRentalCategory(category: HomeRentalCategory): void {
+    if (this.activeRentalCategory === category) {
+      return;
+    }
+
+    this.activeRentalCategory = category;
+    this.scheduleRentalSwiperUpdate();
+  }
+
+  setNewsCategory(category: HomeNewsCategory): void {
+    this.activeNewsCategory = category;
+  }
+
   ngAfterViewInit(): void {
     this.zone.runOutsideAngular(() => {
       register();
       gsap.registerPlugin(ScrollTrigger);
 
       requestAnimationFrame(() => {
-        this.initSwiper();
+        this.initHeroSwiper();
+        this.initRentalSwiper();
         this.initScrollMotion();
         this.initHeroTitleSkipMotion();
       });
@@ -127,9 +334,22 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     if (swiperInstance) {
       swiperInstance.destroy(true, true);
     }
+
+    if (this.rentalUpdateRafId) {
+      cancelAnimationFrame(this.rentalUpdateRafId);
+      this.rentalUpdateRafId = 0;
+    }
+
+    const rentalSwiperInstance = this.rentalSwiper?.nativeElement?.swiper;
+
+    if (rentalSwiperInstance) {
+      rentalSwiperInstance.destroy(true, true);
+    }
+
+    // window.clearTimeout(this.rentalNavRestartTimer);
   }
 
-  private initSwiper(): void {
+  private initHeroSwiper(): void {
     const swiperEl = this.heroSwiper.nativeElement;
 
     Object.assign(swiperEl, {
@@ -174,6 +394,65 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     requestAnimationFrame(() => {
       swiperEl.swiper?.update();
+    });
+  }
+
+  private initRentalSwiper(): void {
+    const swiperEl = this.rentalSwiper.nativeElement;
+
+    Object.assign(swiperEl, {
+      slidesPerView: 'auto',
+      centeredSlides: false,
+      loop: true,
+      loopAdditionalSlides: 12,
+      // speed: 6200,
+      grabCursor: true,
+      watchSlidesProgress: true,
+      observer: true,
+      observeParents: true,
+      autoplay: {
+        delay: 0,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+      },
+      // navigation: true,
+      speed: this.rentalAutoSpeed,
+      loopPreventsSliding: false,
+      preventInteractionOnTransition: false,
+      spaceBetween: 40,
+      breakpoints: {
+        0: {
+          spaceBetween: 18,
+        },
+        768: {
+          spaceBetween: 28,
+        },
+        1024: {
+          spaceBetween: 40,
+        },
+      },
+    });
+
+    swiperEl.initialize();
+
+    requestAnimationFrame(() => {
+      swiperEl.swiper?.update();
+      swiperEl.swiper?.autoplay?.start();
+    });
+  }
+
+  private scheduleRentalSwiperUpdate(): void {
+    if (this.rentalUpdateRafId) {
+      cancelAnimationFrame(this.rentalUpdateRafId);
+    }
+
+    this.rentalUpdateRafId = requestAnimationFrame(() => {
+      this.rentalUpdateRafId = requestAnimationFrame(() => {
+        const swiper = this.rentalSwiper?.nativeElement?.swiper;
+
+        swiper?.update();
+        swiper?.autoplay?.start();
+      });
     });
   }
 
@@ -246,8 +525,22 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
          * h1 到下方後的位置與大小。
          * TITLE_FINAL_Y 越大，h1 越往下。
          */
-        const TITLE_FINAL_Y = () => window.innerHeight * 0.90;
-        const TITLE_FINAL_SCALE = 0.82;
+        const TITLE_FINAL_Y = () => window.innerHeight * 0.85;
+        const TITLE_FINAL_SCALE = 0.75;
+        const userCards = gsap.utils.toArray<HTMLElement>('.js-user-center-card');
+
+        gsap.from(userCards, {
+          y: 72,
+          opacity: 0,
+          duration: 1.05,
+          stagger: 0.22,
+          delay: 0.18,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.home-user-center__cards',
+            start: 'top 68%',
+          },
+        });
 
         gsap.set(heroTitle, {
           transformOrigin: 'center center',
@@ -452,7 +745,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
          * safeWidth 是 H1 保留區，
          * slideWidth * 0.86 是補上卡片自身寬度，避免卡片邊緣壓到 H1。
          */
-        const skipDistance = safeWidth + slideWidth * 0.2;
+        const skipDistance = safeWidth + slideWidth * -0.3;
 
         const shouldSkip = slideLeft > crossingLine;
 
@@ -474,5 +767,138 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       cancelAnimationFrame(this.heroSkipRafId);
       this.heroSkipRafId = 0;
     }
+  }
+
+  activeFaqCategory: HomeFaqCategory = '會員與帳號';
+
+  userCenterCards: HomeUserCenterCard[] = [
+    {
+      icon: 'switch_account',
+      title: '角色切換',
+      text: '出租人與承租人雙視角，依角色切換不同管理流程。',
+      tone: 'orange',
+      routerLink: ['/user-center/dashboard'],
+    },
+    {
+      icon: 'handshake',
+      title: '當前媒合',
+      text: '成功媒合後集中管理，方便聯絡與追蹤後續。',
+      tone: 'green',
+      routerLink: ['/user-center/dashboard'],
+    },
+    {
+      icon: 'dashboard',
+      title: '資源總覽',
+      text: '房源、工具、技能與預約狀態集中呈現。',
+      tone: 'blue',
+      routerLink: ['/user-center/dashboard'],
+    },
+    {
+      icon: 'tips_and_updates',
+      title: '智慧提示',
+      text: '系統提示待辦與配對建議，降低管理負擔。',
+      tone: 'pink',
+      routerLink: ['/user-center/dashboard'],
+    },
+    {
+      icon: 'notifications_active',
+      title: '近期動態',
+      text: '重要申請與預約提醒，快速掌握最新進度。',
+      tone: 'gold',
+      routerLink: ['/user-center/dashboard'],
+    },
+  ];
+
+  faqCategories: HomeFaqCategory[] = ['會員與帳號', '刊登與內容審核', '媒合、預約與追蹤', '會員故事'];
+
+  faqItems: HomeFaqItem[] = [
+    {
+      id: 1,
+      category: '會員與帳號',
+      question: '如何註冊厚厝味會員？',
+      answer: '進入註冊頁面，填寫基本資料、電子信箱與密碼後，即可建立會員帳號。',
+    },
+    {
+      id: 2,
+      category: '會員與帳號',
+      question: '可以同時使用出租人與承租人身份嗎？',
+      answer: '可以，會員可依需求切換角色，管理房源、共享資源或查看預約申請。',
+    },
+    {
+      id: 3,
+      category: '會員與帳號',
+      question: '忘記密碼時該怎麼處理？',
+      answer: '可在登入頁面使用忘記密碼功能，依照信箱驗證流程重新設定密碼。',
+    },
+    {
+      id: 4,
+      category: '刊登與內容審核',
+      question: '刊登房源後會立即上架嗎？',
+      answer: '房源送出後會進入審核流程，確認資料完整與內容合規後才會正式顯示。',
+    },
+    {
+      id: 5,
+      category: '媒合、預約與追蹤',
+      question: '如何預約看房或共享資源？',
+      answer: '進入租賃物詳情頁後，可依照頁面指示送出預約或聯繫申請。',
+    },
+  ];
+
+  get filteredFaqItems(): HomeFaqItem[] {
+    return this.faqItems
+      .filter((item) => item.category === this.activeFaqCategory)
+      .slice(0, 3);
+  }
+
+  setFaqCategory(category: HomeFaqCategory): void {
+    this.activeFaqCategory = category;
+  }
+
+  moveUserCenterCard(event: MouseEvent): void {
+    const card = event.currentTarget as HTMLElement;
+    const rect = card.getBoundingClientRect();
+
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+
+    const rotateX = (y - 0.5) * -10;
+    const rotateY = (x - 0.5) * 10;
+
+    card.style.setProperty('--card-rotate-x', `${rotateX}deg`);
+    card.style.setProperty('--card-rotate-y', `${rotateY}deg`);
+    card.style.setProperty('--card-glow-x', `${x * 100}%`);
+    card.style.setProperty('--card-glow-y', `${y * 100}%`);
+
+    const layers = card.querySelectorAll<HTMLElement>('.home-user-card__layer');
+    layers.forEach((layer, index) => {
+      const depth = 18 + index * 10;
+      const moveX = (x - 0.5) * (8 + index * 4);
+      const moveY = (y - 0.5) * (8 + index * 4);
+
+      layer.style.transform = `translate3d(${moveX}px, ${moveY}px, ${depth}px)`;
+    });
+
+    const decors = card.querySelectorAll<HTMLElement>('.home-user-card__decor');
+    decors.forEach((decor, index) => {
+      const moveX = (x - 0.5) * (12 + index * 8);
+      const moveY = (y - 0.5) * (12 + index * 8);
+
+      decor.style.transform = `translate3d(${moveX}px, ${moveY}px, ${8 + index * 8}px)`;
+    });
+  }
+
+  resetUserCenterCard(event: MouseEvent): void {
+    const card = event.currentTarget as HTMLElement;
+
+    card.style.removeProperty('--card-rotate-x');
+    card.style.removeProperty('--card-rotate-y');
+    card.style.removeProperty('--card-glow-x');
+    card.style.removeProperty('--card-glow-y');
+
+    card
+      .querySelectorAll<HTMLElement>('.home-user-card__layer, .home-user-card__decor')
+      .forEach((element) => {
+        element.style.removeProperty('transform');
+      });
   }
 }

@@ -42,6 +42,11 @@
        ===================================================== -->
   <section class="home-about" aria-label="關於厚厝味">
 
+    <div class="home-about__media js-about-media" aria-hidden="true">
+      <video class="home-about__video" src="/videos/0_People_Asian_Grandmother_1920x1010.mp4" autoplay muted loop playsinline
+        preload="metadata"></video>
+    </div>
+
     <div class="home-about__map" aria-hidden="true">
       <img src="/images/home/taiwan_map.svg" alt="">
     </div>
@@ -53,21 +58,22 @@
       </div> -->
 
       <div class="home-about__copy js-about-copy">
-        <div class="home-rental__heading" style="margin: 0 0 2em; text-align: unset;">
-          <p>Rental Matching</p>
-          <h2>租賃物媒合</h2>
+        <div class="home-rental__heading" style="margin: 0 0 4em; text-align: unset;">
+          <p>About HomieFun</p>
+          <h2>關於厚厝味</h2>
         </div>
 
         <p class="home-about__lead">
-          不只找到房子，<br>
-          也找到能安心生活的連結。
+          當少子化與高齡化，<br>
+          成為台灣正在面對的人口危機。
         </p>
 
         <p class="home-about__text">
-          厚厝味相信，居住不只是空間的交換，更是生活關係的建立。
-          我們看見青年租屋壓力、高齡獨居與閒置資源之間的落差，
-          因此以跨世代共居為核心，整合房源、工具與技能共享，
-          讓每一份生活資源，都可能成為某個人剛好的幫助。
+          台灣正快速走向超高齡社會，新生兒數也持續探低。
+          青年租屋壓力、高齡獨居、閒置房源與生活資源分散，
+          已不只是個人生活問題，更是整個社會需要共同回應的挑戰。
+          厚厝味希望從居住開始，串連房源、工具與技能共享，
+          讓空間不只是被租出去，也成為跨世代互相支持的生活連結。
         </p>
 
         <a class="home-about__button" routerLink="/about-homiefun">
@@ -184,7 +190,60 @@
       <h2>個人專區</h2>
     </div>
 
-    <div class="home-user-center__cards">
+    <div class="home-user-stack">
+      <div class="home-user-stack__cards">
+        @for (page of userCenterPages; track page.title; let i = $index) {
+        <article class="home-user-stack__card js-user-stack-card" [style.--stack-index]="i">
+          <div class="home-user-stack__body">
+            <div class="home-user-stack__copy">
+              <span>{{ page.eyebrow }}</span>
+              <h3>{{ page.title }}</h3>
+              <p>{{ page.text }}</p>
+            </div>
+
+            <div class="home-user-stack__screen">
+              @if (page.imageUrl) {
+              <img [src]="page.imageUrl" [alt]="page.title">
+              } @else {
+              <div class="home-user-stack__mock">
+                <span class="material-symbols-outlined">dashboard</span>
+                <strong>{{ page.mockLabel }}</strong>
+
+                <div class="home-user-stack__mock-grid">
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                </div>
+              </div>
+              }
+            </div>
+
+            <div class="home-user-stack__features">
+              @for (card of getUserCenterCards(page.featureKeys); track card.key) {
+              <a [class]="'home-user-card home-user-card--' + card.tone + ' home-user-stack__feature js-stack-feature home-user-stack__feature--' + card.key"
+                [routerLink]="card.routerLink" (mousemove)="moveUserCenterCard($event)"
+                (mouseleave)="resetUserCenterCard($event)">
+                <span class="home-user-card__decor home-user-card__decor--circle"></span>
+                <span class="home-user-card__decor home-user-card__decor--square"></span>
+                <span class="home-user-card__decor home-user-card__decor--dot"></span>
+
+                <span class="home-user-card__layer home-user-card__icon material-symbols-outlined">
+                  {{ card.icon }}
+                </span>
+
+                <h3 class="home-user-card__layer">{{ card.title }}</h3>
+                <p class="home-user-card__layer">{{ card.text }}</p>
+              </a>
+              }
+            </div>
+          </div>
+        </article>
+        }
+      </div>
+    </div>
+
+    <!-- <div class="home-user-center__cards">
       @for (card of userCenterCards; track card.title; let i = $index) {
       <a [class]="'home-user-card js-user-center-card home-user-card--' + card.tone" [style.--card-index]="i"
         [routerLink]="card.routerLink" (mousemove)="moveUserCenterCard($event)"
@@ -205,7 +264,7 @@
 
     <figure class="home-user-center__preview">
       <img src="/images/user-center-preview.jpg" alt="個人專區介面預覽">
-    </figure>
+    </figure> -->
   </section>
 
   <section class="home-news">

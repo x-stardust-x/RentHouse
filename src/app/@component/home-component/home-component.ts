@@ -58,14 +58,6 @@ type HomeRentalLoopItem = HomeRentalItem & {
 
 type HomeUserCenterTone = 'orange' | 'green' | 'blue' | 'pink' | 'gold';
 
-type HomeUserCenterCard = {
-  icon: string;
-  title: string;
-  text: string;
-  tone: HomeUserCenterTone;
-  routerLink: string[];
-};
-
 type HomeFaqCategory = '會員與帳號' | '刊登與內容審核' | '媒合、預約與追蹤' | '會員故事';
 
 type HomeFaqItem = {
@@ -73,6 +65,26 @@ type HomeFaqItem = {
   category: HomeFaqCategory;
   question: string;
   answer: string;
+};
+
+type HomeUserCenterFeatureKey = 'role' | 'match' | 'resource' | 'smart' | 'activity';
+
+type HomeUserCenterCard = {
+  key: HomeUserCenterFeatureKey;
+  icon: string;
+  title: string;
+  text: string;
+  tone: HomeUserCenterTone;
+  routerLink: string[];
+};
+
+type HomeUserCenterPage = {
+  title: string;
+  eyebrow: string;
+  text: string;
+  imageUrl?: string;
+  mockLabel?: string;
+  featureKeys: HomeUserCenterFeatureKey[];
 };
 
 @Component({
@@ -495,6 +507,10 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         const map = root.querySelector('.js-taiwan-map');
         const aboutText = root.querySelector('.js-about-copy');
         const aboutCards = gsap.utils.toArray<HTMLElement>('.js-about-card');
+        const stackCards = gsap.utils.toArray<HTMLElement>('.js-user-stack-card');
+        const aboutMedia = root.querySelector('.js-about-media');
+        const aboutSection = root.querySelector<HTMLElement>('.home-about');
+        const rentalSection = root.querySelector<HTMLElement>('.home-rental');
 
         /**
          * ===== 可調整參數 =====
@@ -512,14 +528,18 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
          * 地圖到下方後的大小。
          * 數字越大，地圖越大。
          */
-        const MAP_FINAL_SCALE = 1.0;
+        const MAP_FINAL_SCALE = 1.1;
+        // const MAP_FINAL_SCALE = 1.0;
 
         /**
          * 地圖到下方後的位置。
          * x 越大越往右，y 越大越往下。
          */
-        const MAP_FINAL_X = '14vw';
-        const MAP_FINAL_Y = '90vh';
+        const MAP_FINAL_X = '45vw';
+        const MAP_FINAL_Y = '95vh';
+
+        // const MAP_FINAL_X = '14vw';
+        // const MAP_FINAL_Y = '90vh';
 
         /**
          * h1 到下方後的位置與大小。
@@ -527,20 +547,46 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
          */
         const TITLE_FINAL_Y = () => window.innerHeight * 0.85;
         const TITLE_FINAL_SCALE = 0.75;
-        const userCards = gsap.utils.toArray<HTMLElement>('.js-user-center-card');
+        // const userCards = gsap.utils.toArray<HTMLElement>('.js-user-center-card');
 
-        gsap.from(userCards, {
-          y: 72,
-          opacity: 0,
-          duration: 1.05,
-          stagger: 0.22,
-          delay: 0.18,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: '.home-user-center__cards',
-            start: 'top 68%',
-          },
+        stackCards.forEach((stackCard) => {
+          const featureCards = stackCard.querySelectorAll<HTMLElement>('.js-stack-feature');
+
+          gsap.fromTo(
+            featureCards,
+            {
+              y: 56,
+              opacity: 0,
+            },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.9,
+              stagger: 0.6,
+              delay: 0.5,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: stackCard,
+                start: 'top 70%',
+                end: 'bottom 35%',
+                toggleActions: 'restart none none reverse',
+              },
+            }
+          );
         });
+
+        // gsap.from(userCards, {
+        //   y: 72,
+        //   opacity: 0,
+        //   duration: 1.05,
+        //   stagger: 0.22,
+        //   delay: 0.18,
+        //   ease: 'power3.out',
+        //   scrollTrigger: {
+        //     trigger: '.home-user-center__cards',
+        //     start: 'top 68%',
+        //   },
+        // });
 
         gsap.set(heroTitle, {
           transformOrigin: 'center center',
@@ -579,8 +625,9 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
             scale: MAP_FINAL_SCALE,
             x: MAP_FINAL_X,
             y: MAP_FINAL_Y,
-            opacity: 0.24,
+            opacity: 0.14,
             duration: ARRIVE_PROGRESS,
+            delay: 0.08,
             ease: 'none',
           },
           0
@@ -612,6 +659,55 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
           },
           ARRIVE_PROGRESS
         );
+
+        gsap.fromTo(
+          aboutMedia,
+          {
+            opacity: 0,
+            scale: 1.04,
+          },
+          {
+            opacity: 0.9,
+            scale: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '.home-about',
+              start: 'top 20%',
+              end: 'top 30%',
+              scrub: 1.2,
+            },
+          }
+        );
+
+        if (aboutSection && rentalSection) {
+          ScrollTrigger.create({
+            trigger: aboutSection,
+            start: 'bottom bottom',
+            end: () => `+=${window.innerHeight * 0.95}`,
+            pin: aboutSection,
+            pinSpacing: false,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          });
+
+          gsap.fromTo(
+            rentalSection,
+            {
+              y: () => window.innerHeight * 0.18,
+            },
+            {
+              y: 0,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: aboutSection,
+                start: 'bottom bottom',
+                end: () => `+=${window.innerHeight * 0.95}`,
+                scrub: 1,
+                invalidateOnRefresh: true,
+              },
+            }
+          );
+        }
 
         gsap.from(aboutText, {
           y: 48,
@@ -653,6 +749,23 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
           stagger: 0.08,
           ease: 'power2.out',
         });
+
+        gsap.fromTo(
+          '.js-about-media',
+          {
+            opacity: 0,
+          },
+          {
+            opacity: 0.1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '.home-about',
+              start: 'top 88%',
+              end: 'top 42%',
+              scrub: 1,
+            },
+          }
+        );
 
         gsap.from('.js-about-copy', {
           y: 32,
@@ -773,6 +886,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
   userCenterCards: HomeUserCenterCard[] = [
     {
+      key: 'role',
       icon: 'switch_account',
       title: '角色切換',
       text: '出租人與承租人雙視角，依角色切換不同管理流程。',
@@ -780,6 +894,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       routerLink: ['/user-center/dashboard'],
     },
     {
+      key: 'match',
       icon: 'handshake',
       title: '當前媒合',
       text: '成功媒合後集中管理，方便聯絡與追蹤後續。',
@@ -787,6 +902,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       routerLink: ['/user-center/dashboard'],
     },
     {
+      key: 'resource',
       icon: 'dashboard',
       title: '資源總覽',
       text: '房源、工具、技能與預約狀態集中呈現。',
@@ -794,6 +910,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       routerLink: ['/user-center/dashboard'],
     },
     {
+      key: 'smart',
       icon: 'tips_and_updates',
       title: '智慧提示',
       text: '系統提示待辦與配對建議，降低管理負擔。',
@@ -801,6 +918,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       routerLink: ['/user-center/dashboard'],
     },
     {
+      key: 'activity',
       icon: 'notifications_active',
       title: '近期動態',
       text: '重要申請與預約提醒，快速掌握最新進度。',
@@ -900,5 +1018,42 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       .forEach((element) => {
         element.style.removeProperty('transform');
       });
+  }
+
+  userCenterPages: HomeUserCenterPage[] = [
+    {
+      eyebrow: 'Dashboard',
+      title: '個人專區首頁',
+      text: '從角色切換、資源總覽到待辦提醒，快速掌握目前狀態。',
+      imageUrl: '/images/user-center-preview.jpg',
+      featureKeys: ['role', 'resource'],
+    },
+    {
+      eyebrow: 'Resources',
+      title: '房源與共享資源管理',
+      text: '集中管理房源、工具與技能，讓刊登與維護流程更清楚。',
+      mockLabel: '房源 / 工具 / 技能管理畫面',
+      featureKeys: ['resource'],
+    },
+    {
+      eyebrow: 'Matching',
+      title: '媒合與聯繫追蹤',
+      text: '媒合成立後，集中追蹤聯繫、狀態與後續提醒。',
+      mockLabel: '當前媒合與聯繫管理畫面',
+      featureKeys: ['match', 'smart'],
+    },
+    {
+      eyebrow: 'Reservation',
+      title: '預約審核與近期動態',
+      text: '看房、工具與技能預約都能集中審核，重要動態即時提示。',
+      mockLabel: '預約審核與近期動態畫面',
+      featureKeys: ['activity', 'smart'],
+    },
+  ];
+
+  getUserCenterCards(keys: HomeUserCenterFeatureKey[]): HomeUserCenterCard[] {
+    return keys
+      .map((key) => this.userCenterCards.find((card) => card.key === key))
+      .filter((card): card is HomeUserCenterCard => Boolean(card));
   }
 }

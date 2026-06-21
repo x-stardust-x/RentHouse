@@ -9,9 +9,9 @@
     </div>
 
     <div class="home-hero__title js-hero-title">
-      <h1>
+      <h1 class="js-scroll-title-reveal" data-reveal-delay="2" style="display: flex; flex-direction: row;">
         <span>尋找的不只是一個房間</span>
-        <span>而是一段跨世代的好趣味。</span>
+        <span style="margin-top: 1.5em;">而是一段跨世代的好趣味</span>
       </h1>
     </div>
 
@@ -64,17 +64,15 @@
             <h2>關於厚厝味</h2>
           </div>
 
-          <p class="home-about__lead">
-            當少子化與高齡化，<br>
-            成為台灣正在面對的人口危機。
+          <p class="home-about__lead js-scroll-title-reveal">
+            當<span
+              style="display: inline; font-size: clamp(1.75rem, 2.75vw, 3rem); color: var(--color-primary); margin-inline: .2rem;">少子化</span>與<span
+              style="display: inline; font-size: clamp(1.75rem, 2.75vw, 3rem); color: var(--color-primary); margin-inline: .2rem;">高齡化</span>，<br>
+            成為台灣正在面對的人口危機
           </p>
 
           <p class="home-about__text">
-            台灣正快速走向超高齡社會，新生兒數也持續探低。
-            青年租屋壓力、高齡獨居、閒置房源與生活資源分散，
-            已不只是個人生活問題，更是整個社會需要共同回應的挑戰。
-            厚厝味希望從居住開始，串連房源、工具與技能共享，
-            讓空間不只是被租出去，也成為跨世代互相支持的生活連結。
+            台灣正快速走向超高齡社會，新生兒數也持續探低。青年租屋壓力、高齡獨居、閒置房源與生活資源分散，已不只是個人生活問題，更是整個社會需要共同回應的挑戰。厚厝味希望從居住開始，串連房源、工具與技能共享，讓空間不只是被租出去，也成為跨世代互相支持的生活連結。
           </p>
 
           <a class="home-about__button" routerLink="/about-homiefun">
@@ -104,8 +102,70 @@
     </div>
 
     <div class="home-second">
-      <h2 style="display: flex; align-items: center; justify-content: center; height: -webkit-fill-available;">第二個區塊
-      </h2>
+      <section class="home-ai-match js-ai-match-section" aria-label="AI 跨世代共居媒合">
+        <div class="home-ai-match__stage js-ai-match-stage">
+          <div class="home-ai-match__heading js-ai-heading">
+            <h2 class="js-scroll-title-reveal">
+              AI 找出的不是條件相同，<br>
+              而是生活<span
+                style="display: inline; font-size: clamp(1.75rem, 2.75vw, 3rem); color: var(--color-primary); margin-left: .5rem;">剛好的交集</span>
+            </h2>
+            <span>
+              厚厝味會整理銀髮出租人的生活期待，也理解青年承租人的預算、作息與居住偏好，
+              透過 AI 契合度分析，讓雙方在開始溝通前，就更清楚彼此是否適合一起生活。
+            </span>
+          </div>
+
+          <div class="home-ai-match__arc" aria-hidden="true">
+            <svg viewBox="0 0 1200 420">
+              <path class="home-ai-match__arc-track" d="M 120 340 C 320 70, 880 70, 1080 340" />
+              <path class="home-ai-match__arc-flow js-ai-arc-flow" d="M 120 340 C 320 70, 880 70, 1080 340" />
+            </svg>
+          </div>
+
+          <div class="home-ai-match__orb js-ai-orb" data-target="95">
+            <svg class="home-ai-match__orb-svg" viewBox="0 0 220 220" aria-hidden="true">
+              <circle class="home-ai-match__orb-track" cx="110" cy="110" r="86"></circle>
+              <circle class="home-ai-match__orb-progress js-ai-progress" cx="110" cy="110" r="86"></circle>
+              <circle class="home-ai-match__orb-inner" cx="110" cy="110" r="58"></circle>
+            </svg>
+
+            <div class="home-ai-match__orb-content">
+              <span>AI 契合度</span>
+              <strong class="js-ai-number">0%</strong>
+              <!-- <em>Matching Score</em> -->
+            </div>
+          </div>
+
+          <div class="home-ai-match__tags">
+            <span class="home-ai-match__tag js-ai-tag" data-end-x="420" data-end-y="280">生活作息</span>
+            <span class="home-ai-match__tag js-ai-tag" data-end-x="480" data-end-y="350">互動期待</span>
+            <span class="home-ai-match__tag js-ai-tag" data-end-x="-420" data-end-y="280">預算符合</span>
+            <span class="home-ai-match__tag js-ai-tag" data-end-x="-480" data-end-y="350">空間偏好</span>
+          </div>
+
+          <div class="home-ai-match__speech home-ai-match__speech--young js-ai-speech-young">
+            <p>喜歡和長輩聊天，<br>但也需要自己的空間。</p>
+          </div>
+
+          <div class="home-ai-match__speech home-ai-match__speech--elder js-ai-speech-elder">
+            <p>我不只是想出租房間，<br>也希望住得安心。</p>
+          </div>
+
+          <div class="home-ai-match__people">
+            <img class="home-ai-match__person home-ai-match__person--young js-ai-young" src="/images/young_lessee.png"
+              alt="青年承租人">
+
+            <img class="home-ai-match__person home-ai-match__person--elder js-ai-elder" src="/images/old_lessor.png"
+              alt="銀髮出租人">
+          </div>
+
+          <div class="home-ai-match__result js-ai-result">
+            <span>推薦媒合</span>
+            <strong>高契合</strong>
+          </div>
+        </div>
+      </section>
     </div>
 
   </section>
@@ -114,12 +174,14 @@
     <!-- <div class="home-rental__brush" aria-hidden="true"></div> -->
 
     <div class="home-rental__heading">
+      <strong class="js-scroll-title-reveal">
+        每一份生活資源，<br>
+        都可能成為某個人<span
+          style="display: inline; font-size: clamp(1.75rem, 2.75vw, 3rem); color: var(--color-primary); margin-left: .5rem;">剛好的幫助</span>
+      </strong>
+
       <p>Rental Matching</p>
       <h2>租賃物媒合</h2>
-      <strong>
-        每一份生活資源，<br>
-        都可能成為某個人剛好的幫助
-      </strong>
     </div>
 
     <div class="home-rental__tabs" aria-label="租賃物分類">
@@ -185,29 +247,53 @@
   </section>
 
   <section class="home-user-center" aria-label="個人專區">
+    <div class="home-user-center__color-wash js-user-stack-bg" aria-hidden="true"></div>
     <div class="home-user-center__lead">
-      <p>在這裡，管理你的空間、共享與預約，</p>
+
+      <div class="home-rental__heading js-scroll-title-reveal">
+        <strong>
+          在這裡，管理你的空間、共享與預約，<br>
+          也慢慢累積每一段<span
+            style="display: inline; font-size: clamp(1.75rem, 2.75vw, 3rem); color: var(--color-primary); margin-left: .5rem;">安心的生活連結</span>
+        </strong>
+      </div>
+
+      <!-- <p>在這裡，管理你的空間、共享與預約，</p>
       <strong>
         也慢慢累積每一段
         <span>安心的生活連結</span>
-      </strong>
+      </strong> -->
+
     </div>
 
-    <div class="home-user-center__heading">
+    <div class="home-rental__heading" style="margin: 12em auto 0;">
       <p>User Center</p>
       <h2>個人專區</h2>
     </div>
 
     <div class="home-user-stack">
+      <div class="home-user-stack__copy-stage" aria-live="polite">
+        <div class="home-user-stack__copy js-user-stack-copy">
+          <span class="js-user-stack-copy-eyebrow">
+            {{ userCenterPages[0].eyebrow }}
+          </span>
+          <h3 class="js-user-stack-copy-title">
+            {{ userCenterPages[0].title }}
+          </h3>
+          <p class="js-user-stack-copy-text">
+            {{ userCenterPages[0].text }}
+          </p>
+        </div>
+      </div>
       <div class="home-user-stack__cards">
         @for (page of userCenterPages; track page.title; let i = $index) {
         <article class="home-user-stack__card js-user-stack-card" [style.--stack-index]="i">
           <div class="home-user-stack__body">
-            <div class="home-user-stack__copy">
+            <!-- <div class="home-user-stack__copy">
               <span>{{ page.eyebrow }}</span>
               <h3>{{ page.title }}</h3>
               <p>{{ page.text }}</p>
-            </div>
+            </div> -->
 
             <div class="home-user-stack__screen">
               @if (page.imageUrl) {
@@ -368,9 +454,10 @@
       </div>
 
       <div class="home-contact-cta__content js-contact-content">
-        <h3>
+        <h3 class="js-scroll-title-reveal">
           有想分享的空間、工具、技能，<br>
-          或一起合作的想法嗎？
+          或<span
+            style="display: inline; font-size: clamp(1.75rem, 2.75vw, 3rem); color: var(--color-primary); margin-inline: .2rem;">一起合作的想法</span>嗎？
         </h3>
 
         <p>

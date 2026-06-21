@@ -98,7 +98,7 @@ type HomeUserCenterPage = {
 export class HomeComponent implements AfterViewInit, OnDestroy {
   private zone = inject(NgZone);
   private heroSkipRafId = 0;
-  private readonly rentalAutoSpeed = 6200;
+  private readonly rentalAutoSpeed = 10000;
   // private readonly rentalNavSpeed = 650;
   // private rentalNavRestartTimer = 0;
 
@@ -192,7 +192,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       price: 'NT$ 8,000 / 月',
       meta: '中華路 3 段',
       tag: '可養寵物',
-      imageUrl: '/images/home/rental-room-01.jpg',
+      imageUrl: '/images/villa1.jpg',
       routerLink: ['/rental-matching-detail', 'room', '1'],
     },
     {
@@ -202,7 +202,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       price: 'NT$ 9,500 / 月',
       meta: '三民區 建工路',
       tag: '近公車站',
-      imageUrl: '/images/home/rental-room-02.jpg',
+      imageUrl: '/images/villa2.jpg',
       routerLink: ['/rental-matching-detail', 'room', '2'],
     },
     {
@@ -212,38 +212,108 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       price: 'NT$ 7,800 / 月',
       meta: '苓雅區 文化路',
       tag: '含網路',
-      imageUrl: '/images/home/rental-room-03.jpg',
+      imageUrl: '/images/house3.jpg',
       routerLink: ['/rental-matching-detail', 'room', '3'],
     },
     {
       id: 4,
       category: 'tool',
-      title: '電動起子組',
-      price: 'NT$ 120 / 日',
+      title: '家用縫紉機',
+      price: 'NT$ 180 / 日',
       meta: '左營區 可面交',
-      tag: '居家修繕',
-      imageUrl: '/images/home/rental-tool-01.jpg',
+      tag: '衣物修補',
+      imageUrl: '/images/家用縫紉機.jpg',
       routerLink: ['/rental-matching-detail', 'product', '4'],
     },
     {
       id: 5,
       category: 'tool',
-      title: '摺疊梯',
-      price: 'NT$ 80 / 日',
+      title: '傳統蒸籠組',
+      price: 'NT$ 100 / 日',
       meta: '鳳山區 可預約',
-      tag: '清潔整理',
-      imageUrl: '/images/home/rental-tool-02.jpg',
+      tag: '料理器具',
+      imageUrl: '/images/傳統蒸籠組.jpg',
       routerLink: ['/rental-matching-detail', 'product', '5'],
     },
     {
       id: 6,
+      category: 'tool',
+      title: '手搖磨豆機',
+      price: 'NT$ 80 / 日',
+      meta: '三民區 可面交',
+      tag: '生活器物',
+      imageUrl: '/images/手搖磨豆機.jpg',
+      routerLink: ['/rental-matching-detail', 'product', '6'],
+    },
+    {
+      id: 7,
+      category: 'tool',
+      title: '老式工具箱',
+      price: 'NT$ 120 / 日',
+      meta: '鼓山區 可預約',
+      tag: '居家修繕',
+      imageUrl: '/images/老式工具箱.jpg',
+      routerLink: ['/rental-matching-detail', 'product', '7'],
+    },
+    {
+      id: 8,
+      category: 'tool',
+      title: '傳統熨斗組',
+      price: 'NT$ 90 / 日',
+      meta: '前鎮區 可自取',
+      tag: '衣物整理',
+      imageUrl: '/images/傳統熨斗組.jpg',
+      routerLink: ['/rental-matching-detail', 'product', '8'],
+    },
+    {
+      id: 9,
       category: 'skill',
-      title: '簡易手機教學',
+      title: '退休生活規劃交流',
       price: 'NT$ 300 / 次',
       meta: '線上或到府',
-      tag: '長輩友善',
-      imageUrl: '/images/home/rental-skill-01.jpg',
-      routerLink: ['/rental-matching-detail', 'product', '6'],
+      tag: '跨世代對談',
+      imageUrl: '/images/退休生活規劃交流.jpg',
+      routerLink: ['/rental-matching-detail', 'product', '9'],
+    },
+    {
+      id: 10,
+      category: 'skill',
+      title: '居家水電檢查',
+      price: 'NT$ 500 / 次',
+      meta: '高雄市區 可到府',
+      tag: '生活維修',
+      imageUrl: '/images/居家水電檢查.jpg',
+      routerLink: ['/rental-matching-detail', 'product', '10'],
+    },
+    {
+      id: 11,
+      category: 'skill',
+      title: '家常料理教學',
+      price: 'NT$ 450 / 次',
+      meta: '苓雅區 可預約',
+      tag: '料理交流',
+      imageUrl: '/images/家常料理教學.jpg',
+      routerLink: ['/rental-matching-detail', 'product', '11'],
+    },
+    {
+      id: 12,
+      category: 'skill',
+      title: '園藝整理陪作',
+      price: 'NT$ 350 / 次',
+      meta: '鳳山區 可到府',
+      tag: '植栽照護',
+      imageUrl: '/images/園藝整理陪作.jpg',
+      routerLink: ['/rental-matching-detail', 'product', '12'],
+    },
+    {
+      id: 13,
+      category: 'skill',
+      title: '傳統手作編織',
+      price: 'NT$ 400 / 次',
+      meta: '左營區 可預約',
+      tag: '手作技藝',
+      imageUrl: '/images/傳統手作編織.jpg',
+      routerLink: ['/rental-matching-detail', 'product', '13'],
     },
   ];
 
@@ -336,6 +406,11 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         this.initHeroTitleSkipMotion();
         this.playAboutVideo();
         this.initContactParallax();
+        this.initUserStackCopyMotion();
+        this.initAboutAiMatchMotion();
+        this.initScrollTitleRevealMotion();
+
+        requestAnimationFrame(() => ScrollTrigger.refresh());
       });
     });
   }
@@ -446,21 +521,36 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       centeredSlides: false,
       loop: true,
       loopAdditionalSlides: 12,
-      // speed: 6200,
+      speed: this.rentalAutoSpeed,
       grabCursor: true,
       watchSlidesProgress: true,
       observer: true,
       observeParents: true,
+
+      freeMode: {
+        enabled: true,
+        momentum: false,
+      },
+
       autoplay: {
         delay: 0,
         disableOnInteraction: false,
-        pauseOnMouseEnter: true,
+        pauseOnMouseEnter: false,
       },
-      // navigation: true,
-      speed: this.rentalAutoSpeed,
+
       loopPreventsSliding: false,
       preventInteractionOnTransition: false,
+
+      injectStyles: [
+        `
+        .swiper-wrapper {
+          transition-timing-function: linear !important;
+        }
+      `,
+      ],
+
       spaceBetween: 40,
+
       breakpoints: {
         0: {
           spaceBetween: 18,
@@ -718,7 +808,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
             ease: 'none',
             scrollTrigger: {
               trigger: '.home-first',
-              start: 'top 80%',
+              start: 'top 70%',
               end: 'top 20%',
               scrub: 1.2,
               invalidateOnRefresh: true,
@@ -726,35 +816,35 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
           }
         );
 
-        if (aboutSection && rentalSection) {
-          ScrollTrigger.create({
-            trigger: aboutSection,
-            start: 'bottom 85%',
-            end: () => `+=${window.innerHeight * 0.95}`,
-            pin: aboutSection,
-            pinSpacing: false,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-          });
+        // if (aboutSection && rentalSection) {
+        //   ScrollTrigger.create({
+        //     trigger: aboutSection,
+        //     start: 'bottom 85%',
+        //     end: () => `+=${window.innerHeight * 0.95}`,
+        //     pin: aboutSection,
+        //     pinSpacing: false,
+        //     anticipatePin: 1,
+        //     invalidateOnRefresh: true,
+        //   });
 
-          gsap.fromTo(
-            rentalSection,
-            {
-              y: () => window.innerHeight * 0.28,
-            },
-            {
-              y: 0,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: aboutSection,
-                start: 'bottom bottom',
-                end: () => `+=${window.innerHeight * 0.95}`,
-                scrub: 1,
-                invalidateOnRefresh: true,
-              },
-            }
-          );
-        }
+        //   gsap.fromTo(
+        //     rentalSection,
+        //     {
+        //       y: () => window.innerHeight * 0.28,
+        //     },
+        //     {
+        //       y: 0,
+        //       ease: 'none',
+        //       scrollTrigger: {
+        //         trigger: aboutSection,
+        //         start: 'bottom bottom',
+        //         end: () => `+=${window.innerHeight * 0.95}`,
+        //         scrub: 1,
+        //         invalidateOnRefresh: true,
+        //       },
+        //     }
+        //   );
+        // }
 
         gsap.from(aboutText, {
           y: 48,
@@ -1080,6 +1170,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       title: '房源與共享資源管理',
       text: '集中管理房源、工具與技能，讓刊登與維護流程更清楚。',
       mockLabel: '房源 / 工具 / 技能管理畫面',
+      imageUrl: '/images/user-center-management.png',
       featureKeys: ['resource'],
     },
     {
@@ -1087,6 +1178,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       title: '媒合與聯繫追蹤',
       text: '媒合成立後，集中追蹤聯繫、狀態與後續提醒。',
       mockLabel: '當前媒合與聯繫管理畫面',
+      imageUrl: '/images/user-center-matches.png',
       featureKeys: ['match', 'smart'],
     },
     {
@@ -1094,6 +1186,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       title: '預約審核與近期動態',
       text: '看房、工具與技能預約都能集中審核，重要動態即時提示。',
       mockLabel: '預約審核與近期動態畫面',
+      imageUrl: '/images/user-center-booking.png',
       featureKeys: ['activity', 'smart'],
     },
   ];
@@ -1146,5 +1239,363 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         start: 'top 72%',
       },
     });
+  }
+
+  private initUserStackCopyMotion(): void {
+    const root = this.introRoot.nativeElement;
+
+    const copy = root.querySelector<HTMLElement>('.js-user-stack-copy');
+    const eyebrow = root.querySelector<HTMLElement>('.js-user-stack-copy-eyebrow');
+    const title = root.querySelector<HTMLElement>('.js-user-stack-copy-title');
+    const text = root.querySelector<HTMLElement>('.js-user-stack-copy-text');
+    const cards = gsap.utils.toArray<HTMLElement>('.js-user-stack-card');
+    const copyStage = root.querySelector<HTMLElement>('.home-user-stack__copy-stage');
+    const stack = root.querySelector<HTMLElement>('.home-user-stack');
+    const stackBg = root.querySelector<HTMLElement>('.js-user-stack-bg');
+
+    if (!copy || !copyStage || !stack || !eyebrow || !title || !text || !cards.length) {
+      return;
+    }
+
+    if (stackBg) {
+      gsap.set(stackBg, { opacity: 0 });
+
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: stack,
+          start: 'top 100%',
+          end: 'bottom 100%',
+          scrub: 1,
+          invalidateOnRefresh: true,
+        },
+      })
+        .to(stackBg, {
+          opacity: 0.92,
+          duration: 0.22,
+          ease: 'none',
+        })
+        .to(stackBg, {
+          opacity: 1.00,
+          duration: 0.56,
+          ease: 'none',
+        })
+        .to(stackBg, {
+          opacity: 0,
+          duration: 0.22,
+          ease: 'none',
+        });
+    }
+
+    let activeIndex = 0;
+
+    const updateCopy = (index: number) => {
+      const page = this.userCenterPages[index];
+
+      if (!page || index === activeIndex) {
+        return;
+      }
+
+      activeIndex = index;
+
+      const targets = [eyebrow, title, text];
+
+      gsap.killTweensOf(targets);
+
+      gsap.to(targets, {
+        y: -10,
+        opacity: 0,
+        duration: 0.18,
+        stagger: 0.03,
+        ease: 'power2.out',
+        onComplete: () => {
+          eyebrow.textContent = page.eyebrow;
+          title.textContent = page.title;
+          text.textContent = page.text;
+
+          gsap.fromTo(
+            targets,
+            {
+              y: 18,
+              opacity: 0,
+            },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.45,
+              stagger: 0.06,
+              ease: 'power3.out',
+            }
+          );
+        },
+      });
+    };
+
+    copyStage.classList.remove('is-exiting');
+
+    ScrollTrigger.create({
+      trigger: stack,
+      start: 'top 85%',
+      end: 'bottom 82%',
+      onEnter: () => copyStage.classList.remove('is-exiting'),
+      onEnterBack: () => copyStage.classList.remove('is-exiting'),
+      onLeave: () => copyStage.classList.add('is-exiting'),
+      onLeaveBack: () => copyStage.classList.add('is-exiting'),
+      invalidateOnRefresh: true,
+    });
+
+    cards.forEach((card, index) => {
+      ScrollTrigger.create({
+        trigger: card,
+        start: 'top 48%',
+        end: 'bottom 48%',
+        onEnter: () => updateCopy(index),
+        onEnterBack: () => updateCopy(index),
+        invalidateOnRefresh: true,
+      });
+    });
+  }
+
+  private initAboutAiMatchMotion(): void {
+    const root = this.introRoot.nativeElement;
+    const section = root.querySelector<HTMLElement>('.js-ai-match-section');
+    const stage = root.querySelector<HTMLElement>('.js-ai-match-stage');
+
+    if (!section || !stage) {
+      return;
+    }
+
+    const HOLD_DISTANCE = window.innerHeight * 1.2;
+
+    const getAiAnimationEnd = () => {
+      const total = section.offsetHeight - window.innerHeight;
+      return `+=${Math.max(window.innerHeight * 3, total - HOLD_DISTANCE)}`;
+    };
+
+    const q = gsap.utils.selector(stage);
+
+    const heading = q<HTMLElement>('.js-ai-heading')[0];
+    const progress = q<SVGCircleElement>('.js-ai-progress')[0];
+    const number = q<HTMLElement>('.js-ai-number')[0];
+    const orb = q<HTMLElement>('.js-ai-orb')[0];
+    const young = q<HTMLElement>('.js-ai-young')[0];
+    const elder = q<HTMLElement>('.js-ai-elder')[0];
+    const arcFlow = q<SVGPathElement>('.js-ai-arc-flow')[0];
+    const result = q<HTMLElement>('.js-ai-result')[0];
+    const tags = q<HTMLElement>('.js-ai-tag');
+    const speech = q<HTMLElement>('.js-ai-speech-young, .js-ai-speech-elder');
+
+    if (!heading || !progress || !number || !orb || !young || !elder || !arcFlow || !result) {
+      return;
+    }
+
+    const radius = 86;
+    const circumference = 2 * Math.PI * radius;
+    const target = Number(orb.dataset['target'] || 95);
+    const score = { value: 0 };
+
+    progress.style.strokeDasharray = `${circumference}`;
+    progress.style.strokeDashoffset = `${circumference}`;
+
+    // gsap.set(stage, { clearProps: 'position,top,left,width,height,transform' });
+    gsap.set(heading, { opacity: 1, y: 0 });
+    gsap.set(young, { x: '-38vw', opacity: 0 });
+    gsap.set(elder, { x: '38vw', opacity: 0 });
+    gsap.set(orb, {
+      xPercent: -50,
+      yPercent: -50,
+      scale: 0.86,
+      transformOrigin: '50% 50%',
+    });
+    // gsap.set(orb, { scale: 0.86, transformOrigin: '50% 50%' });
+    gsap.set(tags, { opacity: 0, y: 16, scale: 0.92, x: 0 });
+    gsap.set(speech, { opacity: 0, y: 20 });
+    gsap.set(result, { opacity: 0, y: 20 });
+    gsap.set(arcFlow, { opacity: 0, strokeDashoffset: 0 });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        end: getAiAnimationEnd,
+        // end: 'bottom bottom',
+        scrub: 1.1,
+        invalidateOnRefresh: true,
+      },
+    });
+
+    tl.to(
+      young,
+      {
+        x: '-11vw',
+        opacity: 1,
+        duration: 0.36,
+        ease: 'none',
+      },
+      0.04
+    );
+
+    tl.to(
+      elder,
+      {
+        x: '11vw',
+        opacity: 1,
+        duration: 0.36,
+        ease: 'none',
+      },
+      0.04
+    );
+
+    tl.to(speech, {
+      opacity: 1,
+      y: 0,
+      duration: 0.16,
+      stagger: 0.04,
+      ease: 'power2.out',
+    }, 0.12);
+
+    tl.to(tags, {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      duration: 0.16,
+      stagger: 0.035,
+      ease: 'power2.out',
+    }, 0.22);
+
+    tl.to(orb, {
+      scale: 1,
+      duration: 0.24,
+      ease: 'back.out(1.5)',
+    }, 0.3);
+
+    tl.to(arcFlow, {
+      opacity: 1,
+      strokeDashoffset: -420,
+      duration: 0.45,
+      ease: 'none',
+    }, 0.34);
+
+    tl.to(score, {
+      value: target,
+      duration: 0.38,
+      ease: 'power2.out',
+      onUpdate: () => {
+        const value = Math.round(score.value);
+        number.textContent = `${value}%`;
+        progress.style.strokeDashoffset = `${circumference * (1 - value / 100)}`;
+      },
+    }, 0.42);
+
+    tl.to(tags, {
+      x: (_index, element) => Number((element as HTMLElement).dataset['endX'] || 0),
+      y: (_index, element) => Number((element as HTMLElement).dataset['endY'] || 0),
+      scale: 0.82,
+      opacity: 0.28,
+      duration: 0.3,
+      stagger: 0.025,
+      ease: 'power1.inOut',
+    }, 0.48);
+
+    tl.to(young, { x: '-4vw', duration: 0.26, ease: 'power1.inOut' }, 0.68);
+    tl.to(elder, { x: '4vw', duration: 0.26, ease: 'power1.inOut' }, 0.68);
+
+    tl.to(result, {
+      opacity: 1,
+      y: 0,
+      duration: 0.18,
+      ease: 'power2.out',
+    }, 0.78);
+  }
+
+  private initScrollTitleRevealMotion(): void {
+    const root = this.introRoot.nativeElement;
+    const titles = gsap.utils.toArray<HTMLElement>(
+      root.querySelectorAll('.js-scroll-title-reveal')
+    );
+
+    titles.forEach((title) => {
+      this.splitTextToRevealChars(title);
+
+      const chars = gsap.utils.toArray<HTMLElement>(
+        title.querySelectorAll('.js-scroll-title-char')
+      );
+      const revealDelay = Number(title.dataset['revealDelay'] ?? 0);
+
+      gsap.set(chars, {
+        opacity: 0,
+        y: 24,
+        filter: 'blur(4px)',
+      });
+
+      gsap.to(chars, {
+        opacity: 1,
+        y: 0,
+        filter: 'blur(0px)',
+        duration: 0.75,
+        ease: 'power3.out',
+        stagger: {
+          each: 0.035,
+          from: 'start',
+        },
+        scrollTrigger: {
+          trigger: title,
+          start: 'top 78%',
+          once: true,
+        },
+      });
+    });
+  }
+
+  private splitTextToRevealChars(element: HTMLElement): void {
+    if (element.dataset['titleRevealSplit'] === 'true') {
+      return;
+    }
+
+    const splitNode = (node: ChildNode): DocumentFragment => {
+      const fragment = document.createDocumentFragment();
+
+      if (node.nodeType === Node.TEXT_NODE) {
+        const text = node.textContent ?? '';
+
+        Array.from(text).forEach((char) => {
+          if (char.trim() === '') {
+            fragment.appendChild(document.createTextNode(char));
+            return;
+          }
+
+          const span = document.createElement('span');
+          span.className = 'js-scroll-title-char';
+          span.textContent = char;
+          span.style.display = 'inline-block';
+          span.style.willChange = 'transform, opacity, filter';
+
+          fragment.appendChild(span);
+        });
+
+        return fragment;
+      }
+
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const originalElement = node as HTMLElement;
+        const clonedElement = originalElement.cloneNode(false) as HTMLElement;
+
+        Array.from(originalElement.childNodes).forEach((childNode) => {
+          clonedElement.appendChild(splitNode(childNode));
+        });
+
+        fragment.appendChild(clonedElement);
+      }
+
+      return fragment;
+    };
+
+    const fragment = document.createDocumentFragment();
+
+    Array.from(element.childNodes).forEach((childNode) => {
+      fragment.appendChild(splitNode(childNode));
+    });
+
+    element.replaceChildren(fragment);
+    element.dataset['titleRevealSplit'] = 'true';
   }
 }

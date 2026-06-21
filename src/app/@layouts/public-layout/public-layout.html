@@ -7,64 +7,63 @@
       <img src="images/logo/homiefun_logo.svg" alt="">
     </a>
 
-    <nav class="public-layout__nav">
 
-      <nav class="public-layout__nav" aria-label="前台主要導覽">
+    <nav class="public-layout__nav" aria-label="前台主要導覽">
 
-        <a class="nav-link" routerLink="home" routerLinkActive="is-active">首頁</a>
+      <a class="nav-link" routerLink="home" routerLinkActive="is-active">首頁</a>
 
-        <a class="nav-link" routerLink="/about-homiefun" routerLinkActive="is-active">關於厚厝味</a>
+      <a class="nav-link" routerLink="/about-homiefun" routerLinkActive="is-active">關於厚厝味</a>
 
-        <a class="nav-link" routerLink="safety" routerLinkActive="is-active">安全保障</a>
+      <a class="nav-link" routerLink="safety" routerLinkActive="is-active">安全保障</a>
 
-        <!-- <a class="nav-link" routerLink="member/dashboard" routerLinkActive="is-active">會員中心</a> -->
+      <!-- <a class="nav-link" routerLink="member/dashboard" routerLinkActive="is-active">會員中心</a> -->
 
-        <a class="nav-link" routerLink="/rental-matching-component" routerLinkActive="is-active">租賃物媒合</a>
+      <a class="nav-link" routerLink="/rental-matching-component" routerLinkActive="is-active">租賃物媒合</a>
 
-        <!-- <a class="nav-link" routerLink="/rent" routerLinkActive="is-active">租屋管理</a> -->
+      <!-- <a class="nav-link" routerLink="/rent" routerLinkActive="is-active">租屋管理</a> -->
 
-        <a class="nav-link" routerLink="/news" routerLinkActive="is-active">最新消息</a>
+      <a class="nav-link" routerLink="/news" routerLinkActive="is-active">最新消息</a>
 
-        <a class="nav-link" routerLink="/faq" routerLinkActive="is-active">FAQ常見問題</a>
+      <a class="nav-link" routerLink="/faq" routerLinkActive="is-active">FAQ常見問題</a>
 
-        <a class="nav-link" routerLink="/contact" routerLinkActive="is-active">聯絡我們</a>
+      <a class="nav-link" routerLink="/contact" routerLinkActive="is-active">聯絡我們</a>
 
-        <a class="nav-link" routerLink="/user-center" routerLinkActive="is-active">個人專區</a>
+      <a class="nav-link" routerLink="/user-center" routerLinkActive="is-active">個人專區</a>
 
-        <a class="nav-link" routerLink="/subscription" routerLinkActive="is-active">升級 VIP</a>
-
-
-        <br>
-        @if (!authsev.isLoggedIn()) {
-        <a class="nav-link" routerLink="login" routerLinkActive="is-active">登入</a>
-        }
-
-        @if (authsev.isLoggedIn()) {
-        <!-- <a class="nav-link" routerLink="/admin" routerLinkActive="is-active">管理員</a> -->
-        <button type="button" class="btn btn-danger" (click)="logout()">登出</button>
-        }
+      <a class="nav-link" routerLink="/subscription" routerLinkActive="is-active">升級 VIP</a>
 
 
-        <div class="public-layout__font-tools" aria-label="字體大小設定">
-          <span class="public-layout__font-label">字體</span>
+      <br>
+      @if (!authsev.isLoggedIn()) {
+      <a class="nav-link" routerLink="login" routerLinkActive="is-active">登入</a>
+      }
 
-          <button type="button" class="public-layout__font-button" [class.is-active]="fontSize === 'small'"
-            (click)="setFontSize('small')">
-            小
-          </button>
+      @if (authsev.isLoggedIn()) {
+      <!-- <a class="nav-link" routerLink="/admin" routerLinkActive="is-active">管理員</a> -->
+      <button type="button" class="btn btn-danger" (click)="logout()">登出</button>
+      }
 
-          <button type="button" class="public-layout__font-button" [class.is-active]="fontSize === 'medium'"
-            (click)="setFontSize('medium')">
-            中
-          </button>
 
-          <button type="button" class="public-layout__font-button" [class.is-active]="fontSize === 'large'"
-            (click)="setFontSize('large')">
-            大
-          </button>
+      <div class="public-layout__font-tools" aria-label="字體大小設定">
+        <span class="public-layout__font-label">字體</span>
 
-        </div>
-      </nav>
+        <button type="button" class="public-layout__font-button" [class.is-active]="fontSize === 'small'"
+          (click)="setFontSize('small')">
+          小
+        </button>
+
+        <button type="button" class="public-layout__font-button" [class.is-active]="fontSize === 'medium'"
+          (click)="setFontSize('medium')">
+          中
+        </button>
+
+        <button type="button" class="public-layout__font-button" [class.is-active]="fontSize === 'large'"
+          (click)="setFontSize('large')">
+          大
+        </button>
+
+      </div>
+
 
 
       <!-- 屬於後台 -->

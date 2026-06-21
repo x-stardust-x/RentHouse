@@ -4,6 +4,9 @@ export interface LoginResponse {
   username : string;
   role : string;
 
-  subscriptionTier: number;
+  subscriptionTier?: number;
+
+  accountId?: number;
+  userId?: number;
 }
 //沒有用

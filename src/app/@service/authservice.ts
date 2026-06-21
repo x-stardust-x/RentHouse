@@ -37,14 +37,21 @@ export class Authservice {
     if(!result.isConfirmed){
       return;
     }
-
     localStorage.removeItem('token');
+
+    localStorage.removeItem('userId');
+    localStorage.removeItem('accountId');
+    localStorage.removeItem('subscriptionTier');
+
     this.alert.toastSuccess("登出成功");
     this.router.navigate(['/login']);
   }
 
   logoutNoMessage(){
     localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('accountId');
+    localStorage.removeItem('subscriptionTier');
     this.alert.toastSuccess("登出成功");
     this.router.navigate(['/login']);
   }

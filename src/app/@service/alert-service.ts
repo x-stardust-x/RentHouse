@@ -38,32 +38,47 @@ export class AlertService {
       title,
       text,
       confirmButtonText: '確定',
-      timer : 1500,
+      timer: 1500,
       timerProgressBar: true
     });
   }
 
-  toastSuccess(title: string) {
-    return Swal.fire({
-      toast: true,
-      position: 'bottom-start',
-      icon: 'success',
-      title,
-      showConfirmButton: false,
-      timer: 1000,
-      timerProgressBar: true,
-    });
+  toastSuccess(title: string, num: number = 1) {
+    if (num == 1) {
+      return Swal.fire({
+        toast: true,
+        position: 'bottom-start',
+        icon: 'success',
+        title,
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+      });
+    }
+    else {
+      return Swal.fire({
+        toast: true,
+        position: 'bottom-end',
+        icon: 'success',
+        title,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        theme: 'dark'
+      });
+    }
   }
 
-  toastInfo(title: string){
+  toastInfo(title: string, background = '#ffffff') {
     return Swal.fire({
       toast: true,
       position: 'bottom-start',
-      icon:'info',
+      icon: 'info',
       title,
       showConfirmButton: false,
       timer: 1000,
       timerProgressBar: true,
+      background,
     });
   }
 

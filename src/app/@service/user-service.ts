@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { NotificationSetting } from '../@interface/notification-setting';
 
 @Injectable({
   providedIn: 'root',
@@ -64,4 +65,11 @@ export class UserService {
   upgradeUserTier(userId: number, tier: number) {
   return this.http.put(`${this.baseUrl}upgrade/${userId}/${tier}`, {});
   }
+  GetNotificationSetting(userId : number | null){
+    return this.http.get<NotificationSetting>(this.baseUrl + `get-notification/${userId}`);
+  }
+  SaveNotificationSetting(userId : number | null,setting: NotificationSetting){
+    return this.http.put(this.baseUrl + `update-notification/${userId}`,setting);
+  }
 }
+

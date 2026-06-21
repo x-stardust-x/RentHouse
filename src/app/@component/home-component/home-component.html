@@ -60,7 +60,7 @@
 
         <div class="home-about__copy js-about-copy">
           <div class="home-rental__heading" style="margin: 0 0 4em; text-align: unset;">
-            <p>About HomieFun</p>
+            <p class="home__en-heading">About HomieFun</p>
             <h2>關於厚厝味</h2>
           </div>
 
@@ -173,7 +173,29 @@
   <section class="home-rental">
     <!-- <div class="home-rental__brush" aria-hidden="true"></div> -->
 
+
     <div class="home-rental__heading">
+
+      <div style="margin-block: 5em 9em;">
+        <strong class="js-scroll-title-reveal">
+          每一份生活資源，<br>
+          都可能成為某個人<span
+            style="display: inline; font-size: clamp(1.75rem, 2.75vw, 3rem); color: var(--color-primary); margin-left: .5rem;">剛好的幫助</span>
+        </strong>
+
+        <p class="home-section-description">
+          從空房、工具到生活技能，厚厝味讓閒置資源被重新看見。
+          不只是單純租借，而是讓需要的人找到合適的支持，也讓分享的人延續生活中的價值。
+        </p>
+      </div>
+
+      <p class="home__en-heading">Rental Matching</p>
+      <h2>租賃物媒合</h2>
+
+
+    </div>
+
+    <!-- <div class="home-rental__heading">
       <strong class="js-scroll-title-reveal">
         每一份生活資源，<br>
         都可能成為某個人<span
@@ -182,7 +204,7 @@
 
       <p>Rental Matching</p>
       <h2>租賃物媒合</h2>
-    </div>
+    </div> -->
 
     <div class="home-rental__tabs" aria-label="租賃物分類">
       @for (category of rentalCategories; track category.value) {
@@ -258,16 +280,15 @@
         </strong>
       </div>
 
-      <!-- <p>在這裡，管理你的空間、共享與預約，</p>
-      <strong>
-        也慢慢累積每一段
-        <span>安心的生活連結</span>
-      </strong> -->
+      <p class="home-section-description">
+        個人專區整合房源刊登、租賃管理、預約紀錄與會員資料，
+        讓每一次互動都有清楚的狀態，也讓使用者能安心追蹤自己的共享與媒合進度。
+      </p>
 
     </div>
 
-    <div class="home-rental__heading" style="margin: 12em auto 0;">
-      <p>User Center</p>
+    <div class="home-rental__heading" style="margin: 8em auto 0;">
+      <p class="home__en-heading">User Center</p>
       <h2>個人專區</h2>
     </div>
 
@@ -364,7 +385,7 @@
   <section class="home-news">
     <div class="home-news__inner">
       <div class="home-news__side">
-        <p>News</p>
+        <p class="home__en-heading">News</p>
         <h2>最新消息</h2>
 
         <div class="home-news__categories">
@@ -449,7 +470,7 @@
 
     <div class="home-contact-cta__inner">
       <div class="home-contact-cta__side js-contact-side">
-        <p>Contact</p>
+        <p class="home__en-heading">Contact</p>
         <h2>聯絡我們</h2>
       </div>
 

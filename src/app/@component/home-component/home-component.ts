@@ -1258,32 +1258,34 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     }
 
     if (stackBg) {
+      const firstCard = cards[0];
+      const lastCard = cards[cards.length - 1];
+
       gsap.set(stackBg, { opacity: 0 });
 
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: stack,
-          start: 'top 100%',
-          end: 'bottom 100%',
-          scrub: 1,
-          invalidateOnRefresh: true,
-        },
-      })
-        .to(stackBg, {
-          opacity: 0.92,
-          duration: 0.22,
-          ease: 'none',
-        })
-        .to(stackBg, {
-          opacity: 1.00,
-          duration: 0.56,
-          ease: 'none',
-        })
-        .to(stackBg, {
-          opacity: 0,
-          duration: 0.22,
-          ease: 'none',
+      const userCenterSection = root.querySelector<HTMLElement>('.home-user-center');
+      const setStackBgActive = (isActive: boolean) => {
+        userCenterSection?.classList.toggle('is-stack-active', isActive);
+
+        gsap.killTweensOf(stackBg);
+        gsap.to(stackBg, {
+          opacity: isActive ? 1 : 0,
+          duration: 0.16,
+          ease: 'power2.out',
         });
+      };
+
+      ScrollTrigger.create({
+        trigger: firstCard,
+        start: 'top 52%',
+        endTrigger: lastCard,
+        end: 'bottom 48%',
+        onEnter: () => setStackBgActive(true),
+        onEnterBack: () => setStackBgActive(true),
+        onLeave: () => setStackBgActive(false),
+        onLeaveBack: () => setStackBgActive(false),
+        invalidateOnRefresh: true,
+      });
     }
 
     let activeIndex = 0;

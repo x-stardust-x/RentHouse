@@ -891,12 +891,17 @@
 //   pointer-events: none;
 // }
 
+.home__en-heading {
+  color: var(--color-primary) !important;
+  font-weight: 700;
+  letter-spacing: .12rem;
+}
 
 .home-rental__heading {
   position: relative;
   z-index: 10;
   width: min(100% - 2rem, 760px);
-  margin: 16em auto 0;
+  margin: 0em auto 0;
   text-align: center;
 }
 
@@ -905,8 +910,15 @@
   margin: 0 0 0.45rem;
   color: var(--color-text-muted);
   font-size: 1rem;
-  font-weight: 700;
+  // font-weight: 700;
   letter-spacing: 0.15em;
+
+  display: block;
+  margin: 0.5rem auto 0;
+  color: var(--color-text-muted);
+  font-size: clamp(1rem, 1.35vw, 0.28rem);
+  line-height: 2;
+  letter-spacing: 0.04em;
 }
 
 .home-rental__heading h2,
@@ -920,7 +932,7 @@
 
 .home-rental__heading strong {
   display: block;
-  margin-block: 15em 6em;
+  margin-block: 10em 0em;
   color: var(--color-text-main);
   font-size: clamp(1.75rem, 2.25vw, 3rem);
   // line-height: 1.9;
@@ -1282,7 +1294,7 @@
 .home-user-center__heading {
   position: relative;
   z-index: 1;
-  width: min(100% - 2rem, 920px);
+  width: min(100% - 2rem, 720px);
   margin: 0 auto;
   text-align: center;
 }
@@ -1295,6 +1307,16 @@
   // line-height: 1.8;
   font-weight: 700;
   letter-spacing: 0.08em;
+}
+
+.home-user-center__lead p {
+  display: block;
+  margin: 0.5rem auto 0;
+  color: var(--color-text-muted);
+  font-size: clamp(1rem, 1.35vw, 0.28rem);
+  line-height: 2;
+  letter-spacing: 0.04em;
+  font-weight: unset;
 }
 
 .home-user-center__lead strong span {
@@ -1783,6 +1805,7 @@
   overflow: hidden;
   padding: 6.5rem 0 7.5rem;
   background: var(--color-bg-main);
+  min-height: 100vh;
 }
 
 /* 上方色塊：和租賃物媒合一樣 */
@@ -1927,6 +1950,7 @@
   overflow: hidden;
   padding: 6.5rem 0 7.5rem;
   background: var(--color-bg-main);
+  min-height: 100vh;
 }
 
 .home-faq__inner {
@@ -2120,7 +2144,7 @@
 .home-user-center__heading p,
 .home-news__side p,
 .home-faq__side p {
-  color: var(--color-primary);
+  // color: var(--color-primary);
 }
 
 /* 主要標題維持重色 */
@@ -2305,6 +2329,21 @@
   background: var(--color-primary);
   color: var(--color-bg-card);
   transform: translateX(4px);
+}
+
+
+
+.home-user-center>.home-rental__heading h2,
+.home-user-center>.home-rental__heading .home__en-heading {
+  transition: color 0.2s ease;
+}
+
+.home-user-center.is-stack-active>.home-rental__heading h2 {
+  color: #FFFFFF;
+}
+
+.home-user-center.is-stack-active>.home-rental__heading .home__en-heading {
+  color: var(--color-primary);
 }
 
 /* =========================================================

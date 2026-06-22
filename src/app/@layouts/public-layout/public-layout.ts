@@ -9,7 +9,8 @@ import {
   ViewChild,
 } from '@angular/core';
 
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { filter, Subscription } from 'rxjs';
 
 import { Authservice } from '../../@service/authservice';
 import { UserService } from '../../@service/user-service';
@@ -17,6 +18,7 @@ import { UserService } from '../../@service/user-service';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
 
 type AppFontSize = 'small' | 'medium' | 'large';
 
@@ -30,12 +32,20 @@ type AppFontSize = 'small' | 'medium' | 'large';
 export class PublicLayout implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('layoutHeader') layoutHeader!: ElementRef<HTMLElement>;
 
+  private readonly router = inject(Router);
+  private routeScrollSub?: Subscription;
+  private routeScrollRafId = 0;
+
   private lenis?: Lenis;
   private lenisTicker?: (time: number) => void;
 
   private lastScrollY = 0;
   private ticking = false;
   private removeScrollListener?: () => void;
+
+  get isUserCenterPage(): boolean {
+    return this.router.url.startsWith('/user-center');
+  }
 
   private readonly headerHideThreshold = 50;
   private readonly scrollDelta = 6;
@@ -59,6 +69,16 @@ export class PublicLayout implements OnInit, AfterViewInit, OnDestroy {
 
     this.fontSize = savedFontSize || 'medium';
     this.applyFontSize(this.fontSize);
+
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+
+    this.routeScrollSub = this.router.events
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.scrollToPageTop();
+      });
   }
 
   ngAfterViewInit(): void {
@@ -81,6 +101,13 @@ export class PublicLayout implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.routeScrollSub?.unsubscribe();
+
+    if (this.routeScrollRafId) {
+      cancelAnimationFrame(this.routeScrollRafId);
+      this.routeScrollRafId = 0;
+    }
+
     this.removeScrollListener?.();
     this.destroyLenisSmoothScroll();
   }
@@ -175,5 +202,29 @@ export class PublicLayout implements OnInit, AfterViewInit, OnDestroy {
 
   logout(): void {
     this.authsev.logout();
+  }
+
+  private scrollToPageTop(): void {
+    if (this.routeScrollRafId) {
+      cancelAnimationFrame(this.routeScrollRafId);
+    }
+
+    this.routeScrollRafId = requestAnimationFrame(() => {
+      this.routeScrollRafId = requestAnimationFrame(() => {
+        this.lenis?.scrollTo(0, {
+          immediate: true,
+          force: true,
+        });
+
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'auto',
+        });
+
+        ScrollTrigger.refresh();
+        this.routeScrollRafId = 0;
+      });
+    });
   }
 }

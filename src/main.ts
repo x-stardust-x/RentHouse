@@ -7,3 +7,12 @@ register();
 
 bootstrapApplication(App, appConfig)
   .catch((err) => console.error(err));
+
+
+const hot = (import.meta as any).hot;
+
+if (hot) {
+  hot.accept(() => {
+    window.location.reload();
+  });
+}

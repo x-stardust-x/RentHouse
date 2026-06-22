@@ -37,7 +37,7 @@ $global-navbar-height: 70px;
 
   // --- 🎯 右側頂部控制列 (紅圈 2 固定處) ---
   &__topbar {
-    position: sticky;
+    // position: sticky;
     top: $global-navbar-height; // 黏在螢幕最頂端
     z-index: 99;                // 確保層級夠高，能壓住往上滾動的表單內容
 

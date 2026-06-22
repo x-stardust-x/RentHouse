@@ -325,9 +325,28 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(43, 39, 37, 0.01);
+
+  position: relative;
   display: flex;
   flex-direction: column;
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+}
+
+.ai-score-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: linear-gradient(135deg, #4caf50, #2e7d32); /* 質感漸層綠 */
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(76, 175, 80, 0.4);
+  z-index: 10; /* 確保它浮在圖片的最上面 */
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .rental-matching__card:hover {

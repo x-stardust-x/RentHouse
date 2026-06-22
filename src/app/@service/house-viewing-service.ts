@@ -30,7 +30,8 @@ export interface ProposeRescheduleRequest {
 export interface LesseeViewingApplication {
   id: string;
   orderNumber: string;
-  status: 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'matched' | 'closed';
+  status: ViewingStatus;
+  // status: 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'matched' | 'closed';
 
   applicationFlowType?: 'new' | 'reapply' | 'reselect_time' | 'reschedule_accepted';
   attemptNo?: number;
@@ -109,6 +110,14 @@ export interface ConfirmMatchRequest {
   closeOtherReservations: boolean;
   matchNote?: string;
 }
+
+export type ViewingStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'rejected'
+  | 'rescheduled'
+  | 'matched'
+  | 'closed';
 
 @Injectable({
   providedIn: 'root',
@@ -277,7 +286,7 @@ export class HouseViewingService {
     });
   }
 
-  getAllApprovals(){
+  getAllApprovals() {
     const token = localStorage.getItem('token');
 
     return this.http.get<ViewingOrderResponse[]>(

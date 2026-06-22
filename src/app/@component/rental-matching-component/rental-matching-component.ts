@@ -10,7 +10,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatchProduct } from '../../@interface/match-product';
 import { RouterModule, Routes, RouterLink } from '@angular/router';
 import { MatchFilter } from '../../@interface/match-filter';
-
+import Swal from 'sweetalert2';
 type MultiFilterKey =
   | 'lifeStyle'
   | 'cleanLevels'
@@ -94,39 +94,53 @@ export class RentalMatchingComponent implements OnInit {
   }
 
 
-  applyFilters() {
-   const rawUserId = localStorage.getItem('userId');
+ applyFilters() {
+    const rawUserId = localStorage.getItem('userId');
     const isLoggedIn = rawUserId !== null && rawUserId !== 'null' && rawUserId !== 'undefined' && rawUserId !== '';
-
     const currentTier = Number(localStorage.getItem('subscriptionTier')) || 1;
 
-    // 如果使用者想打開 AI 開關...
     if (this.filters.isSmartMatch) {
 
-      // 第一關：沒登入 (或是登入憑證無效)
+
       if (!isLoggedIn) {
 
 
-        this.filters.isSmartMatch = false;
-        setTimeout(() => {
-        alert('請先登入會員，才能使用 AI 智慧尋屋功能喔！');
-      }, 10);
+       setTimeout(() => {
+          this.filters.isSmartMatch = false;
+        }, 50);
 
-      return;
-    }
+
+        Swal.fire({
+          icon: 'warning',
+          title: '需要登入',
+          text: '請先登入會員，才能使用 AI 智慧尋屋功能喔！🤖',
+          confirmButtonColor: '#e07a5f',
+          confirmButtonText: '確定'
+        });
+
+        return;
+      }
+
 
       if (currentTier < 3) {
 
-      this.filters.isSmartMatch = false;
+
+        setTimeout(() => {
+          this.filters.isSmartMatch = false;
+        }, 50);
 
 
-      setTimeout(() => {
-        alert('AI 智慧尋屋為 VIP 專屬功能，請升級會員等級後再試喔！');
-      }, 10);
+        Swal.fire({
+          icon: 'info',
+          title: 'VIP 專屬功能 💎',
+          text: 'AI 智慧尋屋為 VIP 專屬功能，請升級會員等級後再試喔！',
+          confirmButtonColor: '#e07a5f',
+          confirmButtonText: '我知道了'
+        });
 
-      return;
+        return;
+      }
     }
-  }
     console.log('準備傳送給後端的條件:', this.filters);
 
     this.rentalMatchingService.searchRentals(this.filters).subscribe({

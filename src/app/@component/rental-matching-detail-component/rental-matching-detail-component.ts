@@ -18,6 +18,7 @@ import { HouseFacilityService } from '../../@service/house-facility-service';
 import { HouseViewingService } from '../../@service/house-viewing-service';
 import { ProductBookingService } from '../../@service/product-booking-service';
 import { MatchHouseDto } from '../../@interface/match-house';
+import { AlertService } from '../../@service/alert-service';
 
 
 @Component({
@@ -44,6 +45,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   private houseService = inject(HouseService);
   private viewingService = inject(HouseViewingService);
   private productBookingService = inject(ProductBookingService);
+  private alert = inject(AlertService);
 
   // ===================================================================
   // 靜態屬性與設定
@@ -529,7 +531,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
     if (!this.authService.isLoggedIn()) {
       const returnUrl = this.router.url;
 
-      alert('請先登入後再進行預約。');
+      this.alert.warning('請先登入後再進行預約。');
 
       this.router.navigate(['/login'], {
         queryParams: { returnUrl }
@@ -583,7 +585,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   submitContactMessage(): void {
     if (this.isRoom()) {
       if (!this.authService.isLoggedIn()) {
-        alert('請先登入後再進行預約。');
+        this.alert.warning('請先登入後再進行預約。');
 
         this.router.navigate(['/login'], {
           queryParams: { returnUrl: this.router.url }
@@ -601,17 +603,17 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
       let finalViewingTime = '';
 
       if (!this.roomDate()) {
-        alert('請選擇看房日期！');
+        this.alert.warning('請選擇看房日期！');
         return;
       }
 
       if (!hasAvailableSlots) {
-        alert('出租人尚未設定可預約看房時段，暫時無法送出預約。');
+        this.alert.warning('出租人尚未設定可預約看房時段，暫時無法送出預約。');
         return;
       }
 
       if (selectedSlots.length === 0) {
-        alert('請至少選擇一個出租人開放的看房時段！');
+        this.alert.warning('請至少選擇一個出租人開放的看房時段！');
         return;
       }
 
@@ -643,7 +645,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
 
       this.viewingService.submitApplication(requestData).subscribe({
         next: () => {
-          alert('預約成功！請至個人專區查看追蹤。');
+          this.alert.success('預約成功！請至個人專區查看追蹤。');
           this.closeContactModal();
         },
         error: (err) => {
@@ -655,7 +657,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
             err.message ||
             '請確認後端伺服器是否正常開啟並稍後再試';
 
-          alert(`預約失敗：${backendMessage}`);
+          this.alert.error(`預約失敗：${backendMessage}`);
         }
       });
 
@@ -663,7 +665,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
     }
 
     if (!this.authService.isLoggedIn()) {
-      alert('請先登入後再送出預約。');
+      this.alert.warning('請先登入後再送出預約。');
 
       this.router.navigate(['/login'], {
         queryParams: { returnUrl: this.router.url }
@@ -675,7 +677,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
     const productId = this.currentCleanId();
 
     if (!productId) {
-      alert('找不到工具 / 技能 ID');
+      this.alert.warning('找不到工具 / 技能 ID');
       return;
     }
 
@@ -689,12 +691,12 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
 
     if (bookingType === 'tool') {
       if (!this.toolStartDate() || !this.toolEndDate()) {
-        alert('請選擇借用開始與結束日期');
+        this.alert.warning('請選擇借用開始與結束日期');
         return;
       }
 
       if (!this.toolNoticeChecked()) {
-        alert('請先勾選工具借用須知');
+        this.alert.warning('請先勾選工具借用須知');
         return;
       }
 
@@ -704,7 +706,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
       message = this.toolPurpose();
 
       if (!message.trim()) {
-        alert('請填寫借用目的與用途');
+        this.alert.warning('請填寫借用目的與用途');
         return;
       }
 
@@ -713,17 +715,17 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
 
     if (bookingType === 'skill') {
       if (!this.skillFormat()) {
-        alert('請選擇授課形式');
+        this.alert.warning('請選擇授課形式');
         return;
       }
 
       if (!this.skillDate()) {
-        alert('請選擇預約日期');
+        this.alert.warning('請選擇預約日期');
         return;
       }
 
       if (!this.skillNeeds().trim()) {
-        alert('請填寫學習背景與需求');
+        this.alert.warning('請填寫學習背景與需求');
         return;
       }
 
@@ -751,7 +753,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
 
     this.productBookingService.apply(requestData).subscribe({
       next: () => {
-        alert('申請已送出！請至個人專區查看工具 / 技能預約紀錄。');
+        this.alert.success('申請已送出！請至個人專區查看工具 / 技能預約紀錄。');
         this.closeContactModal();
       },
       error: (err) => {
@@ -763,7 +765,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
           err.message ||
           '請稍後再試';
 
-        alert(`申請失敗：${backendMessage}`);
+        this.alert.error(`申請失敗：${backendMessage}`);
       }
     });
   }
@@ -1229,7 +1231,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   onToggleFavorite() {
     const token = localStorage.getItem('token');
     if (!token) {
-      alert('請先登入');
+      this.alert.warning('請先登入');
       return;
     }
 
@@ -1368,7 +1370,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
     event.preventDefault();
     event.stopPropagation();
 
-    alert(unavailableMessage);
+    this.alert.warning(unavailableMessage);
   }
 }
 

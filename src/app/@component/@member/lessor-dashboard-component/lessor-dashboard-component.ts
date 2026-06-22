@@ -76,7 +76,7 @@ export class LessorDashboardComponent {
     { title: '活躍房源', count: this.myHouses().filter(x=>x.status === 1).length, icon: 'home', badge: '上架中', link: '../houses' },
     { title: '共享工具/技能', count: this.myProducts().filter(x=>x.status === 1).length, icon: 'build', link: '../products-list' },
     { title: '待審核預約', count: this.reservations().filter(x => x.status == "pending").length, icon: 'calendar_today', hasDot: (this.reservations().filter(x => x.status == "pending").length != 0) , link: "../house-viewing-approval" },
-    { title: '當前租客總數', count: this.reservations().filter(x => x.status == "matched").length, icon: 'groups', link: '' }
+    { title: '當前租客總數', count: this.reservations().filter(x => x.status == "matched").length, icon: 'groups', link: '../lessor-current-matches' }
   ]);
 
   recentActivities = computed(() =>

@@ -7,7 +7,18 @@ import { AvailableViewingSlot } from '../../@interface/available-viewing-slot';
 import { LesseeProfileTag } from '../../@interface/lessee-profile-tag';
 import { CalendarLinkService } from '../../@service/calendar-link-service';
 
-type ApplicationStatus = 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'matched' | 'closed';
+
+type ApplicationStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'rejected'
+  | 'rescheduled'
+  | 'matched'
+  | 'closed';
+
+type ApplicationTabStatus = Exclude<ApplicationStatus, 'matched'>;
+
+// type ApplicationStatus = 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'matched' | 'closed';
 
 @Component({
   selector: 'app-house-viewing-application-tracking-component',
@@ -21,7 +32,7 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
   private calendarLinkService = inject(CalendarLinkService);
 
 
-  activeTab = signal<ApplicationStatus>('pending');
+  activeTab = signal<ApplicationTabStatus>('pending');
 
   applications = signal<LesseeViewingApplication[]>([]);
 
@@ -90,11 +101,6 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
       count: this.applications().filter(x => x.status === 'confirmed').length
     },
     {
-      id: 'matched' as const,
-      label: '媒合成功',
-      count: this.applications().filter(x => x.status === 'matched').length
-    },
-    {
       id: 'rescheduled' as const,
       label: '待回覆改期',
       count: this.applications().filter(x => x.status === 'rescheduled').length
@@ -108,11 +114,14 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
       id: 'closed' as const,
       label: '已關閉',
       count: this.applications().filter(x => x.status === 'closed').length
-    },
+    }
   ]);
 
   filteredApplications = computed(() => {
-    return this.applications().filter(x => x.status === this.activeTab());
+    return this.applications().filter(x =>
+      x.status !== 'matched' &&
+      x.status === this.activeTab()
+    );
   });
 
   ngOnInit(): void {
@@ -165,7 +174,7 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
     });
   }
 
-  selectTab(tabId: ApplicationStatus): void {
+  selectTab(tabId: ApplicationTabStatus): void {
     this.activeTab.set(tabId);
   }
 
@@ -195,9 +204,11 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
       case 'confirmed':
         return '目前沒有已確認的看房申請。';
       case 'rescheduled':
-        return '目前沒有已改期的看房申請。';
+        return '目前沒有待回覆改期的看房申請。';
       case 'rejected':
         return '目前沒有已婉拒的看房申請。';
+      case 'closed':
+        return '目前沒有已關閉的看房申請。';
       default:
         return '目前沒有看房申請紀錄。';
     }
@@ -1267,13 +1278,8 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
     });
   }
 
-  canAddViewingToCalendar(item: any): boolean {
-    const status = String(item.status ?? item.Status ?? '');
-
-    return status === 'confirmed'
-      || status === 'rescheduled'
-      || status === 'matched';
-    // return item.status === 'confirmed' || item.status === 'rescheduled';
+  canAddViewingToCalendar(item: LesseeViewingApplication): boolean {
+    return item.status === 'confirmed' || item.status === 'rescheduled';
   }
 
   openViewingGoogleCalendar(item: any): void {

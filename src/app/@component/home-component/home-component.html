@@ -1,1 +1,508 @@
-<p>home-component works!</p>
+<div #introRoot class="home-intro">
+
+  <!-- =====================================================
+       Hero Section
+       ===================================================== -->
+  <section class="home-hero" aria-label="厚厝味首頁主視覺">
+    <div class="home-hero__map js-taiwan-map" aria-hidden="true">
+      <img src="/images/taiwan_map.svg" alt="">
+    </div>
+
+    <div class="home-hero__title js-hero-title">
+      <h1 class="js-scroll-title-reveal" data-reveal-delay="2" style="display: flex; flex-direction: row;">
+        <span>尋找的不只是一個房間</span>
+        <span style="margin-top: 1.5em;">而是一段跨世代的好趣味</span>
+      </h1>
+    </div>
+
+    <div class="home-hero__swiper-shell js-hero-swiper">
+      <swiper-container #heroSwiper init="false" class="home-hero__swiper" aria-label="厚厝味服務輪播">
+        @for (slide of heroLoopSlides; track slide.loopId) {
+        <swiper-slide class="home-hero__swiper-slide">
+          <a class="home-hero__slide-card" [routerLink]="slide.routerLink">
+            <img [src]="slide.imageUrl" [alt]="slide.title">
+
+            <span class="home-hero__slide-label">
+              {{ slide.label }}
+            </span>
+
+            <strong class="home-hero__slide-title">
+              {{ slide.title }}
+            </strong>
+          </a>
+        </swiper-slide>
+        }
+      </swiper-container>
+    </div>
+  </section>
+
+
+  <!-- =====================================================
+       About Section
+       ===================================================== -->
+  <section class="home-about" aria-label="關於厚厝味">
+
+    <div class="home-first">
+      <div class="home-about__media js-about-media" aria-hidden="true">
+        <video #aboutVideo class="home-about__video" src="/videos/0_People_Asian_Grandmother_1280x672.mp4" autoplay
+          muted loop playsinline preload="auto"></video>
+      </div>
+
+      <div class="home-about__map" aria-hidden="true">
+        <img src="/images/home/taiwan_map.svg" alt="">
+      </div>
+
+      <div class="home-about__inner">
+
+        <!-- <div class="home-about__eyebrow">
+        About HomieFun
+      </div> -->
+
+        <div class="home-about__copy js-about-copy">
+          <div class="home-rental__heading" style="margin: 0 0 4em; text-align: unset;">
+            <p class="home__en-heading">About HomieFun</p>
+            <h2>關於厚厝味</h2>
+          </div>
+
+          <p class="home-about__lead js-scroll-title-reveal">
+            當<span
+              style="display: inline; font-size: clamp(1.75rem, 2.75vw, 3rem); color: var(--color-primary); margin-inline: .2rem;">少子化</span>與<span
+              style="display: inline; font-size: clamp(1.75rem, 2.75vw, 3rem); color: var(--color-primary); margin-inline: .2rem;">高齡化</span>，<br>
+            成為台灣正在面對的人口危機
+          </p>
+
+          <p class="home-about__text">
+            台灣正快速走向超高齡社會，新生兒數也持續探低。青年租屋壓力、高齡獨居、閒置房源與生活資源分散，已不只是個人生活問題，更是整個社會需要共同回應的挑戰。厚厝味希望從居住開始，串連房源、工具與技能共享，讓空間不只是被租出去，也成為跨世代互相支持的生活連結。
+          </p>
+
+          <a class="home-about__button learn-more" routerLink="/about-homiefun">
+            <span class="circle" aria-hidden="true">
+              <span class="icon arrow"></span>
+            </span>
+            <span class="button-text">關於厚厝味</span>
+          </a>
+        </div>
+
+        <!-- <div class="home-about__cards">
+        @for (card of aboutCards; track card.title) {
+        <article class="home-about__card js-about-card">
+          <span class="home-about__card-icon material-symbols-outlined">
+            {{ card.icon }}
+          </span>
+
+          <span class="home-about__card-label">
+            {{ card.label }}
+          </span>
+
+          <h3>{{ card.title }}</h3>
+          <p>{{ card.text }}</p>
+        </article>
+        }
+      </div> -->
+
+      </div>
+    </div>
+
+    <div class="home-second">
+      <section class="home-ai-match js-ai-match-section" aria-label="AI 跨世代共居媒合">
+        <div class="home-ai-match__stage js-ai-match-stage">
+          <div class="home-ai-match__heading js-ai-heading">
+            <h2 class="js-scroll-title-reveal">
+              AI 找出的不是條件相同，<br>
+              而是生活<span
+                style="display: inline; font-size: clamp(1.75rem, 2.75vw, 3rem); color: var(--color-primary); margin-left: .5rem;">剛好的交集</span>
+            </h2>
+            <span>
+              厚厝味會整理銀髮出租人的生活期待，也理解青年承租人的預算、作息與居住偏好，
+              透過 AI 契合度分析，讓雙方在開始溝通前，就更清楚彼此是否適合一起生活。
+            </span>
+          </div>
+
+          <div class="home-ai-match__arc" aria-hidden="true">
+            <svg viewBox="0 0 1200 420">
+              <path class="home-ai-match__arc-track" d="M 120 340 C 320 70, 880 70, 1080 340" />
+              <path class="home-ai-match__arc-flow js-ai-arc-flow" d="M 120 340 C 320 70, 880 70, 1080 340" />
+            </svg>
+          </div>
+
+          <div class="home-ai-match__orb js-ai-orb" data-target="95">
+            <svg class="home-ai-match__orb-svg" viewBox="0 0 220 220" aria-hidden="true">
+              <circle class="home-ai-match__orb-track" cx="110" cy="110" r="86"></circle>
+              <circle class="home-ai-match__orb-progress js-ai-progress" cx="110" cy="110" r="86"></circle>
+              <circle class="home-ai-match__orb-inner" cx="110" cy="110" r="58"></circle>
+            </svg>
+
+            <div class="home-ai-match__orb-content">
+              <span>AI 契合度</span>
+              <strong class="js-ai-number">0%</strong>
+              <!-- <em>Matching Score</em> -->
+            </div>
+          </div>
+
+          <div class="home-ai-match__tags">
+            <span class="home-ai-match__tag js-ai-tag" data-end-x="420" data-end-y="280">生活作息</span>
+            <span class="home-ai-match__tag js-ai-tag" data-end-x="480" data-end-y="350">互動期待</span>
+            <span class="home-ai-match__tag js-ai-tag" data-end-x="-420" data-end-y="280">預算符合</span>
+            <span class="home-ai-match__tag js-ai-tag" data-end-x="-480" data-end-y="350">空間偏好</span>
+          </div>
+
+          <div class="home-ai-match__speech home-ai-match__speech--young js-ai-speech-young">
+            <p>喜歡和長輩聊天，<br>但也需要自己的空間。</p>
+          </div>
+
+          <div class="home-ai-match__speech home-ai-match__speech--elder js-ai-speech-elder">
+            <p>我不只是想出租房間，<br>也希望住得安心。</p>
+          </div>
+
+          <div class="home-ai-match__people">
+            <img class="home-ai-match__person home-ai-match__person--young js-ai-young" src="/images/young_lessee.png"
+              alt="青年承租人">
+
+            <img class="home-ai-match__person home-ai-match__person--elder js-ai-elder" src="/images/old_lessor.png"
+              alt="銀髮出租人">
+          </div>
+
+          <div class="home-ai-match__result js-ai-result">
+            <span>推薦媒合</span>
+            <strong>高契合</strong>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </section>
+
+  <section class="home-rental">
+    <!-- <div class="home-rental__brush" aria-hidden="true"></div> -->
+
+
+    <div class="home-rental__heading">
+
+      <div style="margin-block: 5em 9em;">
+        <strong class="js-scroll-title-reveal">
+          每一份生活資源，<br>
+          都可能成為某個人<span
+            style="display: inline; font-size: clamp(1.75rem, 2.75vw, 3rem); color: var(--color-primary); margin-left: .5rem;">剛好的幫助</span>
+        </strong>
+
+        <p class="home-section-description">
+          從空房、工具到生活技能，厚厝味讓閒置資源被重新看見。
+          不只是單純租借，而是讓需要的人找到合適的支持，也讓分享的人延續生活中的價值。
+        </p>
+      </div>
+
+      <p class="home__en-heading">Rental Matching</p>
+      <h2>租賃物媒合</h2>
+
+
+    </div>
+
+    <!-- <div class="home-rental__heading">
+      <strong class="js-scroll-title-reveal">
+        每一份生活資源，<br>
+        都可能成為某個人<span
+          style="display: inline; font-size: clamp(1.75rem, 2.75vw, 3rem); color: var(--color-primary); margin-left: .5rem;">剛好的幫助</span>
+      </strong>
+
+      <p>Rental Matching</p>
+      <h2>租賃物媒合</h2>
+    </div> -->
+
+    <div class="home-rental__tabs" aria-label="租賃物分類">
+      @for (category of rentalCategories; track category.value) {
+      <button type="button" [class.is-active]="activeRentalCategory === category.value"
+        (click)="setRentalCategory(category.value)">
+        {{ category.label }}
+      </button>
+      }
+    </div>
+
+    <div class="home-rental__swiper-shell">
+      <swiper-container #rentalSwiper init="false" class="home-rental__swiper" aria-label="租賃物媒合輪播">
+        @for (item of filteredRentalLoopItems; track item.loopId) {
+        <swiper-slide class="home-rental__swiper-slide">
+          <article class="home-rental-card">
+            <a [routerLink]="item.routerLink">
+              <figure class="home-rental-card__image">
+                <img [src]="item.imageUrl" [alt]="item.title">
+              </figure>
+
+              <div class="home-rental-card__body">
+                <h3>{{ item.title }}</h3>
+
+                <p class="home-rental-card__price">
+                  {{ item.price }}
+                </p>
+
+                <p class="home-rental-card__meta">
+                  <span class="material-symbols-outlined">location_on</span>
+                  {{ item.meta }}
+                </p>
+
+                <span class="home-rental-card__tag">
+                  {{ item.tag }}
+                </span>
+
+                <span class="home-rental-card__button">
+                  查看詳情
+                </span>
+              </div>
+            </a>
+          </article>
+        </swiper-slide>
+        }
+      </swiper-container>
+
+      <!-- <button type="button" class="home-rental__nav home-rental__nav--prev" aria-label="上一張"
+        (click)="controlRentalSwiper('prev')">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+
+      <button type="button" class="home-rental__nav home-rental__nav--next" aria-label="下一張"
+        (click)="controlRentalSwiper('next')">
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </button> -->
+    </div>
+
+    <a class="home-section-link learn-more" routerLink="/rental-matching-component">
+      <span class="circle" aria-hidden="true">
+        <span class="icon arrow"></span>
+      </span>
+      <span class="button-text">查看更多</span>
+    </a>
+  </section>
+
+  <section class="home-user-center" aria-label="個人專區">
+    <div class="home-user-center__color-wash js-user-stack-bg" aria-hidden="true"></div>
+    <div class="home-user-center__lead">
+
+      <div class="home-rental__heading js-scroll-title-reveal">
+        <strong>
+          在這裡，管理你的空間、共享與預約，<br>
+          也慢慢累積每一段<span
+            style="display: inline; font-size: clamp(1.75rem, 2.75vw, 3rem); color: var(--color-primary); margin-left: .5rem;">安心的生活連結</span>
+        </strong>
+      </div>
+
+      <p class="home-section-description">
+        個人專區整合房源刊登、租賃管理、預約紀錄與會員資料，
+        讓每一次互動都有清楚的狀態，也讓使用者能安心追蹤自己的共享與媒合進度。
+      </p>
+
+    </div>
+
+    <div class="home-rental__heading" style="margin: 8em auto 0;">
+      <p class="home__en-heading">User Center</p>
+      <h2>個人專區</h2>
+    </div>
+
+    <div class="home-user-stack">
+      <div class="home-user-stack__copy-stage" aria-live="polite">
+        <div class="home-user-stack__copy js-user-stack-copy">
+          <span class="js-user-stack-copy-eyebrow">
+            {{ userCenterPages[0].eyebrow }}
+          </span>
+          <h3 class="js-user-stack-copy-title">
+            {{ userCenterPages[0].title }}
+          </h3>
+          <p class="js-user-stack-copy-text">
+            {{ userCenterPages[0].text }}
+          </p>
+        </div>
+      </div>
+      <div class="home-user-stack__cards">
+        @for (page of userCenterPages; track page.title; let i = $index) {
+        <article class="home-user-stack__card js-user-stack-card" [style.--stack-index]="i">
+          <div class="home-user-stack__body">
+            <!-- <div class="home-user-stack__copy">
+              <span>{{ page.eyebrow }}</span>
+              <h3>{{ page.title }}</h3>
+              <p>{{ page.text }}</p>
+            </div> -->
+
+            <div class="home-user-stack__screen">
+              @if (page.imageUrl) {
+              <img [src]="page.imageUrl" [alt]="page.title">
+              } @else {
+              <div class="home-user-stack__mock">
+                <span class="material-symbols-outlined">dashboard</span>
+                <strong>{{ page.mockLabel }}</strong>
+
+                <div class="home-user-stack__mock-grid">
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                </div>
+              </div>
+              }
+            </div>
+
+            <div class="home-user-stack__features">
+              @for (card of getUserCenterCards(page.featureKeys); track card.key) {
+              <a [class]="'home-user-card home-user-card--' + card.tone + ' home-user-stack__feature js-stack-feature home-user-stack__feature--' + card.key"
+                [routerLink]="card.routerLink" (mousemove)="moveUserCenterCard($event)"
+                (mouseleave)="resetUserCenterCard($event)">
+                <span class="home-user-card__decor home-user-card__decor--circle"></span>
+                <span class="home-user-card__decor home-user-card__decor--square"></span>
+                <span class="home-user-card__decor home-user-card__decor--dot"></span>
+
+                <span class="home-user-card__layer home-user-card__icon material-symbols-outlined">
+                  {{ card.icon }}
+                </span>
+
+                <h3 class="home-user-card__layer">{{ card.title }}</h3>
+                <p class="home-user-card__layer">{{ card.text }}</p>
+              </a>
+              }
+            </div>
+          </div>
+        </article>
+        }
+      </div>
+    </div>
+
+    <!-- <div class="home-user-center__cards">
+      @for (card of userCenterCards; track card.title; let i = $index) {
+      <a [class]="'home-user-card js-user-center-card home-user-card--' + card.tone" [style.--card-index]="i"
+        [routerLink]="card.routerLink" (mousemove)="moveUserCenterCard($event)"
+        (mouseleave)="resetUserCenterCard($event)">
+        <span class="home-user-card__decor home-user-card__decor--circle"></span>
+        <span class="home-user-card__decor home-user-card__decor--square"></span>
+        <span class="home-user-card__decor home-user-card__decor--dot"></span>
+
+        <span class="home-user-card__layer home-user-card__icon material-symbols-outlined">
+          {{ card.icon }}
+        </span>
+
+        <h3 class="home-user-card__layer">{{ card.title }}</h3>
+        <p class="home-user-card__layer">{{ card.text }}</p>
+      </a>
+      }
+    </div>
+
+    <figure class="home-user-center__preview">
+      <img src="/images/user-center-preview.jpg" alt="個人專區介面預覽">
+    </figure> -->
+  </section>
+
+  <section class="home-news">
+    <div class="home-news__inner">
+      <div class="home-news__side">
+        <p class="home__en-heading">News</p>
+        <h2>最新消息</h2>
+
+        <div class="home-news__categories">
+          @for (category of newsCategories; track category) {
+          <button type="button" [class.is-active]="activeNewsCategory === category" (click)="setNewsCategory(category)">
+            {{ category }}
+          </button>
+          }
+        </div>
+      </div>
+
+      <div class="home-news__list">
+        @for (item of filteredNewsItems; track item.id) {
+        <article class="home-news-item">
+          <a [routerLink]="item.routerLink">
+            <div class="home-news-item__meta">
+              <span>{{ item.category }}</span>
+              <time>{{ item.date }}</time>
+            </div>
+
+            <h3>{{ item.title }}</h3>
+
+            <span class="home-news-item__arrow material-symbols-outlined">
+              arrow_forward
+            </span>
+          </a>
+        </article>
+        }
+
+        <a class="home-news__more learn-more" routerLink="/news">
+          <span class="circle" aria-hidden="true">
+            <span class="icon arrow"></span>
+          </span>
+          <span class="button-text">查看更多</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-faq" aria-label="常見問題">
+    <div class="home-faq__inner">
+      <div class="home-faq__side">
+        <p>FAQ</p>
+        <h2>常見問題</h2>
+
+        <div class="home-faq__categories">
+          @for (category of faqCategories; track category) {
+          <button type="button" [class.is-active]="activeFaqCategory === category" (click)="setFaqCategory(category)">
+            {{ category }}
+          </button>
+          }
+        </div>
+      </div>
+
+      <div class="home-faq__list">
+        @for (item of filteredFaqItems; track item.id) {
+        <article class="home-faq-item">
+          <div class="home-faq-item__row">
+            <strong>問</strong>
+            <h3>{{ item.question }}</h3>
+          </div>
+
+          <div class="home-faq-item__row home-faq-item__row--answer">
+            <strong>答</strong>
+            <p>{{ item.answer }}</p>
+          </div>
+        </article>
+        }
+
+        <a class="home-faq__more learn-more" routerLink="/faq" style="margin-top: .75em !important;">
+          <span class="circle" aria-hidden="true">
+            <span class="icon arrow"></span>
+          </span>
+          <span class="button-text">查看更多</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-contact-cta js-contact-cta" aria-label="聯絡我們">
+    <div class="home-contact-cta__media" aria-hidden="true">
+      <video class="home-contact-cta__video js-contact-video" src="/videos/0_People_Asian_Grandmother_1280x672.mp4"
+        autoplay muted loop playsinline preload="auto">
+      </video>
+    </div>
+
+    <div class="home-contact-cta__inner">
+      <div class="home-contact-cta__side js-contact-side">
+        <p class="home__en-heading">Contact</p>
+        <h2>聯絡我們</h2>
+      </div>
+
+      <div class="home-contact-cta__content js-contact-content">
+        <h3 class="js-scroll-title-reveal">
+          有想分享的空間、工具、技能，<br>
+          或<span
+            style="display: inline; font-size: clamp(1.75rem, 2.75vw, 3rem); color: var(--color-primary); margin-inline: .2rem;">一起合作的想法</span>嗎？
+        </h3>
+
+        <p>
+          無論你想刊登房源、分享工具、提供技能、了解平台使用方式，
+          或洽談社區、機構與品牌合作，厚厝味都願意和你一起，
+          把生活裡的資源連向真正需要的人。
+        </p>
+
+        <a class="home-contact-cta__button learn-more" routerLink="/contact">
+          <span class="circle" aria-hidden="true">
+            <span class="icon arrow"></span>
+          </span>
+          <span class="button-text">聯絡我們</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>

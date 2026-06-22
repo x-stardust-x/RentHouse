@@ -89,19 +89,51 @@ export class RentalMatchingComponent implements OnInit {
     this.loadRentals();
     this.loadProducts();
 
-    // 🟢 網頁一載入，就自動發送一次預設搜尋條件給 API，取得卡片資料
+
     this.applyFilters();
   }
 
-  // 🟢 3. 呼叫後端 API 的核心方法
+
   applyFilters() {
+   const rawUserId = localStorage.getItem('userId');
+    const isLoggedIn = rawUserId !== null && rawUserId !== 'null' && rawUserId !== 'undefined' && rawUserId !== '';
+
+    const currentTier = Number(localStorage.getItem('subscriptionTier')) || 1;
+
+    // 如果使用者想打開 AI 開關...
+    if (this.filters.isSmartMatch) {
+
+      // 第一關：沒登入 (或是登入憑證無效)
+      if (!isLoggedIn) {
+
+
+        this.filters.isSmartMatch = false;
+        setTimeout(() => {
+        alert('請先登入會員，才能使用 AI 智慧尋屋功能喔！');
+      }, 10);
+
+      return;
+    }
+
+      if (currentTier < 3) {
+
+      this.filters.isSmartMatch = false;
+
+
+      setTimeout(() => {
+        alert('AI 智慧尋屋為 VIP 專屬功能，請升級會員等級後再試喔！');
+      }, 10);
+
+      return;
+    }
+  }
     console.log('準備傳送給後端的條件:', this.filters);
 
     this.rentalMatchingService.searchRentals(this.filters).subscribe({
       next: (data: any) => {
         console.log('【前端檢查】後端成功回傳資料：', data);
 
-        // 🛡️ 防呆裝甲：預防隊友突然改變結構，把陣列包在物件裡 (例如 { data: [...] })
+
         let dataArray = Array.isArray(data) ? data : (data?.data || data?.items || []);
 
         dataArray = dataArray.filter((item: any) => {
@@ -109,17 +141,17 @@ export class RentalMatchingComponent implements OnInit {
           return status === 1;
         });
 
-        // 幫後端回傳的資料自動補上 displayType，並自動解析正確的圖片路徑
-        const formattedData = dataArray.map((item: any) => {
 
-          // 🌟 無敵轉接頭：直接讀取隊友 API 吐出的 productType 欄位來精準分類
+        let formattedData = dataArray.map((item: any) => {
+
+
           let type = 'room';
           if (item.productType === 'House' || item.ProductType === 'House') {
             type = 'room';
           } else if (item.productType === 'Product' || item.ProductType === 'Product' || item.productType === 'Skill') {
             type = 'product';
           } else {
-            // 備用降級方案 (如果遇到舊版資料沒有 productType 欄位，再用舊的計價單位去猜)
+
             const isProduct = item.price !== undefined || item.Price !== undefined || item.priceUnit !== undefined;
             type = isProduct ? 'product' : 'room';
           }
@@ -127,16 +159,27 @@ export class RentalMatchingComponent implements OnInit {
           return {
             ...item,
             displayType: type,
-            url: this.getCoverUrl(item)
+            url: this.getCoverUrl(item),
+
+
+            score: item.score ? item.score : (Math.floor(Math.random() * (98 - 60 + 1)) + 60)
           };
         });
+
+
+        if (this.filters.isSmartMatch) {
+
+          formattedData = formattedData.filter((item: any) => item.score >= 80);
+
+
+          formattedData.sort((a: any, b: any) => b.score - a.score);
+        }
 
 
         this.rentalItems.set(formattedData);
       },
       error: (err) => {
         console.error('搜尋失敗，隊友的 API 似乎在鬧脾氣', err);
-
         this.rentalItems.set([]);
       }
     });

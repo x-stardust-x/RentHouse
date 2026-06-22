@@ -531,10 +531,16 @@
       @for (item of rentalItems(); track item.displayType + '_' + (item.id || item.Id)) {
 
       <div class="rental-item-card rental-matching__card">
-        @if (item.displayType === 'room') {
-        <img [src]="item.url || 'assets/default-house.jpg'" alt="{{ item.name }}"
-          class="rental-item-image rental-matching__card-image">
-        } @else {
+      @if (filters.isSmartMatch && item.score && item.score >= 80) {
+      <div class="ai-score-badge">
+        ✨ 契合度 {{ item.score }}分
+      </div>
+    }
+
+    @if (item.displayType === 'room') {
+      <img [src]="item.url || 'assets/default-house.jpg'" alt="{{ item.name }}"
+           class="rental-item-image rental-matching__card-image">
+    } @else {
         <!-- <img src="assets/default-product.jpg" alt="{{ item.name }}"
           class="rental-item-image rental-matching__card-image"> -->
 

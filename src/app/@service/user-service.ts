@@ -56,6 +56,15 @@ export class UserService {
   changePwd(userId : number | null , pwd: string) {
     return this.http.put(this.baseUrl + `update-pwd/${userId}`,{pwd});
   }
+
+  getProfileObservable(userId: number) {
+  return this.http.get<UserProfile>(this.baseUrl + `profile/${userId}`);
+  }
+
+
+  upgradeUserTier(userId: number, tier: number) {
+  return this.http.put(`${this.baseUrl}upgrade/${userId}/${tier}`, {});
+  }
   GetNotificationSetting(userId : number | null){
     return this.http.get<NotificationSetting>(this.baseUrl + `get-notification/${userId}`);
   }
@@ -63,3 +72,4 @@ export class UserService {
     return this.http.put(this.baseUrl + `update-notification/${userId}`,setting);
   }
 }
+

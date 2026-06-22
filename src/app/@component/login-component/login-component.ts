@@ -135,6 +135,7 @@ export class LoginComponent {
 
 
   clear() {
+    this.alert.toastInfo("已清除資料")
 
     this.loginForm.reset({
 

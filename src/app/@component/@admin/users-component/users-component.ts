@@ -4,6 +4,7 @@ import { DatePipe } from '@angular/common';
 import { Authservice } from '../../../@service/authservice';
 import { LogService } from '../../../@service/log-service';
 import { switchMap } from 'rxjs';
+import { AlertService } from '../../../@service/alert-service';
 
 @Component({
   selector: 'app-users-component',
@@ -17,6 +18,7 @@ export class UsersComponent {
   public userservice = inject(UserService);
   public authsev = inject(Authservice);
   private logsev = inject(LogService);
+  private alert = inject(AlertService);
 
   constructor() {
     this.userservice.loadAllUsers();
@@ -47,9 +49,12 @@ export class UsersComponent {
     this.currentPage.set(page);
   }
 
-  changeStatus(userId: number, status: boolean) {
+  async changeStatus(userId: number, status: boolean) {
     const userName = this.userservice.users().find(u => u.accountId === userId)?.realName ?? userId;
-    if (confirm(`確定要${status ? '停權' : '啟用'}嗎？`)) {
+
+    const res = await this.alert.confirm(`確定要${status ? '停權' : '啟用'}嗎？`);
+
+    if (res.isConfirmed) {
       const actionText = status
         ? `停權使用者: ${userName}`
         : `啟用使用者: ${userName}`;
@@ -66,19 +71,19 @@ export class UsersComponent {
         })
       ).subscribe({
         next: () => {
-          alert(`使用者已${status ? '停權' : '啟用'}`);
+          this.alert.successTime(`使用者已${status ? '停權' : '啟用'}`);
           this.userservice.loadAllUsers();
         },
         error: (err) => {
-          console.error(err);
-          alert("更新失敗");
+          this.alert.warning(`更新失敗`,err.error?.meesage);
         }
       });
     }
   }
-  deleteUser(userId: number) {
+  async deleteUser(userId: number) {
     const userName = this.userservice.users().find(u => u.accountId === userId)?.realName ?? userId;
-    if (confirm('確定要刪除嗎？')) {
+    const res = await this.alert.confirm(`確定要刪除嗎`);
+    if (res.isConfirmed) {
       this.userservice.deleteUser(userId).pipe(
         switchMap(() => this.authsev.getClientIPAddress()),
         switchMap(ip => {
@@ -91,7 +96,7 @@ export class UsersComponent {
         })
       ).subscribe({
         next: () => {
-          alert("使用者已刪除");
+          this.alert.successTime("使用者已刪除");
           this.userservice.loadAllUsers();
           this.currentPage.set(1);
           if (this.currentPage() > this.totalPages()) {
@@ -99,8 +104,7 @@ export class UsersComponent {
           }
         },
         error: (err) => {
-          console.error(err);
-          alert("刪除失敗");
+          this.alert.warning(`刪除失敗`,err.error?.meesage);
         }
       });
     }

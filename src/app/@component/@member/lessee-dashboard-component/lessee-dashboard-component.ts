@@ -137,7 +137,7 @@ export class LesseeDashboardComponent {
     status : application.status,
     address: application.roomAddress,
     expiryDate: expiryDate,
-    matchScore: application.matchScore,
+    matchScore: application.matchScore, //Math.floor(Math.random()*100)
     nextViewing: application.viewingDateTime
   };
 });

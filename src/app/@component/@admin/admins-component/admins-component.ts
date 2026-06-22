@@ -5,6 +5,7 @@ import { AdminDto } from '../../../@interface/admin';
 import { Authservice } from '../../../@service/authservice';
 import { LogService } from '../../../@service/log-service';
 import { switchMap } from 'rxjs';
+import { AlertService } from '../../../@service/alert-service';
 
 @Component({
   selector: 'app-admins-component',
@@ -16,6 +17,7 @@ export class AdminsComponent {
   public adminservice = inject(AdminService);
   public authsev = inject(Authservice);
   private logsev = inject(LogService);
+  private alert = inject(AlertService);
   newPwd = '';
   newPwd2 = '';
 
@@ -50,12 +52,11 @@ export class AdminsComponent {
       })
     ).subscribe({
       next: (res) => {
-        alert("管理員已新增");
+        this.alert.successTime("管理員已新增");
         this.loadAdmin();
       },
       error: (err) => {
-        console.error(err);
-        alert("新增失敗");
+        this.alert.warning(`新增失敗`,err.error?.meesage);
       }
     });
 
@@ -73,9 +74,12 @@ export class AdminsComponent {
     console.log(this.adminservice.admins());
 
   }
-  resetPwd(adminId: number) {
+  async resetPwd(adminId: number) {
     const adminName = this.adminservice.admins().find(a => a.id === adminId)?.username ?? adminId;
-    if (confirm("確定要重置密碼嗎？")) {
+
+    const res = await this.alert.confirm("確定要重置密碼嗎？");
+
+    if (res.isConfirmed) {
       const actionText = `重置管理員密碼: ${adminName}`;
       this.adminservice.resetpwd(adminId).pipe(
         switchMap(() => this.authsev.getClientIPAddress()),
@@ -89,18 +93,18 @@ export class AdminsComponent {
         })
       ).subscribe({
         next: (res) => {
-          alert("密碼已重置為預設密碼0000");
+          this.alert.successTime("密碼已重置為預設密碼0000");
         },
         error: (err) => {
-          console.error(err);
-          alert("重置失敗");
+          this.alert.warning(`密碼重置失敗`,err.error?.meesage);
         }
       });
     }
   }
-  deleteAdmin(adminId: number) {
+  async deleteAdmin(adminId: number) {
     const adminName = this.adminservice.admins().find(a => a.id === adminId)?.username ?? adminId;
-    if (confirm("確定要刪除該管理員嗎？")) {
+    const res = await this.alert.confirm("確定要刪除該管理員嗎？");
+    if (res.isConfirmed) {
       const actionText = `刪除管理員: ${adminName}`;
       this.adminservice.deleteAdmin(adminId).pipe(
         switchMap(() => this.authsev.getClientIPAddress()),
@@ -114,19 +118,19 @@ export class AdminsComponent {
         })
       ).subscribe({
         next: (res) => {
-          alert("管理員已刪除");
+          this.alert.successTime("管理員已刪除");
           this.loadAdmin();
         },
         error: (err) => {
-          console.error(err);
-          alert("刪除失敗");
+          this.alert.warning(`刪除失敗`,err.error?.meesage);
         }
       });
     }
   }
-  SuperChange(adminId:number){
+  async SuperChange(adminId:number){
     const adminName = this.adminservice.admins().find(a => a.id === adminId)?.username ?? adminId;
-    if (confirm("確定要變更管理員權限嗎？")) {
+    const res = await this.alert.confirm(`要讓此管理員變更為${this.isSuper() ? '一般' : '超級'}管理員嗎？`);
+    if (res.isConfirmed) {
       const actionText = `變更管理員權限: ${adminName}`;
       this.adminservice.SuperOc(adminId).pipe(
         switchMap(() => this.authsev.getClientIPAddress()),
@@ -140,12 +144,11 @@ export class AdminsComponent {
         })
       ).subscribe({
         next: (res) => {
+          this.alert.successTime(`管理員已變為${this.isSuper() ? '一般' : '超級'}管理員`);
           this.loadAdmin();
-          alert("管理員權限已變更");
         },
         error: (err) => {
-          console.error(err);
-          alert("變更失敗");
+          this.alert.warning(`變更失敗`,err.error?.meesage);
         }
       });
     }

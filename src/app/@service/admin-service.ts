@@ -12,7 +12,7 @@ export class AdminService {
 
   getAllAdmins(){
     this.http.get<Admin[]>(this.baseUrl).subscribe((res) => {
-      this.admins.set(res);
+      this.admins.set(res.filter(x => x.isDelete == false));
     });
   }
   getAdminById(adminId : number){

@@ -1,82 +1,87 @@
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-
 <nav class="admin-sidebar">
-
   <div class="admin-sidebar__brand">
-    <div class="admin-sidebar__logo">R</div>
+    <div class="admin-sidebar__logo">厚</div>
+
     <div>
-      <h2>RentHouse</h2>
+      <h2>厚厝味</h2>
       <p>後台管理</p>
-      <p>管理員名字:{{adminData()?.username}}</p>
-      <p>管理員角色:{{adminData()?.isSuper === true ? '超級管理員' : '一般管理員'}}</p>
     </div>
   </div>
 
-  <ul class="admin-sidebar__menu">
+  <div class="admin-sidebar__profile">
+    <p>
+      <span>管理員</span>
+      <strong>{{ adminData()?.username || '未命名管理員' }}</strong>
+    </p>
 
+    <p>
+      <span>權限角色</span>
+      <strong>{{ adminData()?.isSuper === true ? '超級管理員' : '一般管理員' }}</strong>
+    </p>
+  </div>
+
+  <ul class="admin-sidebar__menu">
     <li>
-      <a routerLink="dashboard" routerLinkActive="is-active" style="white-space: nowrap;">
+      <a routerLink="dashboard" routerLinkActive="is-active">
         <span class="material-symbols-outlined">dashboard</span>
         <span>儀錶板</span>
       </a>
     </li>
 
     <li>
-      <a routerLink="users" routerLinkActive="is-active" style="white-space: nowrap;">
+      <a routerLink="users" routerLinkActive="is-active">
         <span class="material-symbols-outlined">group</span>
         <span>使用者管理</span>
       </a>
     </li>
 
     <li>
-      <a routerLink="admins" routerLinkActive="is-active" style="white-space: nowrap;">
-        <span class="material-symbols-outlined">accessibility</span>
+      <a routerLink="admins" routerLinkActive="is-active">
+        <span class="material-symbols-outlined">shield_person</span>
         <span>管理員管理</span>
       </a>
     </li>
 
     <li>
-      <a routerLink="admin-review" routerLinkActive="is-active" style="white-space: nowrap;">
+      <a routerLink="admin-review" routerLinkActive="is-active">
         <span class="material-symbols-outlined">inventory_2</span>
         <span>租賃物管理</span>
       </a>
     </li>
 
     <li>
-      <a routerLink="news" routerLinkActive="is-active" style="white-space: nowrap;">
+      <a routerLink="news" routerLinkActive="is-active">
         <span class="material-symbols-outlined">newspaper</span>
-        <span>內容管理 (最新消息)</span>
+        <span>內容管理 最新消息</span>
       </a>
     </li>
 
     <li>
-      <a routerLink="faqs" routerLinkActive="is-active" style="white-space: nowrap;">
+      <a routerLink="faqs" routerLinkActive="is-active">
         <span class="material-symbols-outlined">help_center</span>
-        <span>內容管理 (FAQ)</span>
+        <span>內容管理 FAQ</span>
       </a>
     </li>
 
     <li>
-      <a routerLink="contact-messages" routerLinkActive="is-active" style="white-space: nowrap;">
+      <a routerLink="contact-messages" routerLinkActive="is-active">
         <span class="material-symbols-outlined">mail</span>
         <span>聯絡訊息管理</span>
       </a>
     </li>
 
     <li>
-      <a routerLink="logs" routerLinkActive="is-active" style="white-space: nowrap;">
+      <a routerLink="logs" routerLinkActive="is-active">
         <span class="material-symbols-outlined">history</span>
         <span>系統訊息</span>
       </a>
     </li>
-
   </ul>
 
-    <div class="admin-sidebar__footer">
-      <button class="btn btn-outline-secondary w-100" (click)="logout()">
-        <span class="material-symbols-outlined">logout</span>
-        <span>登出</span>
-      </button>
-    </div>
-
-  </nav>
+  <div class="admin-sidebar__footer">
+    <button type="button" class="logout-btn" (click)="logout()">
+      <span class="material-symbols-outlined">logout</span>
+      <span>登出</span>
+    </button>
+  </div>
+</nav>

@@ -1,10 +1,11 @@
 import { Component, AfterViewInit, ElementRef } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { PageHero } from '../../@layouts/page-hero/page-hero';
 
 @Component({
   selector: 'app-about-homiefun',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, PageHero],
   templateUrl: './about-homiefun-component.html',
   styleUrl: './about-homiefun-component.scss' // 備註：若您的 Angular 版本低於 17，請將 styleUrl 改為 styleUrls: ['./about-homiefun.component.scss']
 })

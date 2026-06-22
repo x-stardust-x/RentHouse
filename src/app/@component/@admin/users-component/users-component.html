@@ -1,68 +1,80 @@
-<div class="member-list">
-  <h2>使用者管理</h2>
-  @for (user of pagedUsers(); track user.id) {
-  @if (!user.isDelete) {
-  <div class="member-card">
-    <!-- Avatar -->
-    <div class="avatar-wrapper">
-      <img [src]="user.avatar == null ? 'https://placehold.co/150' : user.avatar" class="avatar" />
-
-      @if (user.identity === 0) {
-      <span class="badge-young">青年</span>
-      } @else {
-      <span class="badge-old">長者</span>
-      }
+<section class="admin-users-page">
+  <div class="users-header">
+    <div>
+      <p class="eyebrow">會員管理</p>
+      <h2>使用者管理</h2>
+      <p>查看會員基本資料、帳號狀態與登入紀錄。</p>
     </div>
+  </div>
 
-    <!-- Info -->
-    <div class="member-info">
-      <div class="top-row">
-        <h5>{{ user.realName == null ? '暫無名子' : user.realName }}</h5>
+  <div class="member-list">
+    @for (user of pagedUsers(); track user.id) {
+    @if (!user.isDelete) {
+    <article class="member-card">
+      <div class="avatar-wrapper">
+        <img [src]="user.avatar == null ? 'https://placehold.co/150' : user.avatar" class="avatar" alt="使用者頭像" />
 
-        <span class="time"> 註冊 {{ user.createAt | date: 'yyyy-MM-dd' }} </span>
-        <span class="time"> 最後登入 {{ user.lastLoginAt | date: 'yyyy-MM-dd' }} </span>
+        @if (user.identity === 0) {
+        <span class="identity-badge young">青年</span>
+        } @else {
+        <span class="identity-badge old">長者</span>
+        }
       </div>
 
-      <div class="bottom-row">
-        <span class="verify fs-5">
-          狀態:
+      <div class="member-info">
+        <div class="member-main">
+          <h5>{{ user.realName == null ? '暫無名字' : user.realName }}</h5>
+
+          <div class="member-dates">
+            <span>註冊 {{ user.createAt | date: 'yyyy-MM-dd' }}</span>
+            <span>最後登入 {{ user.lastLoginAt | date: 'yyyy-MM-dd' }}</span>
+          </div>
+        </div>
+
+        <div class="member-status">
+          <span class="label">狀態</span>
+
           @if (user.status) {
-          <i class="badge text-bg-success fs-6 m-auto">正常</i>
+          <span class="status-badge active">正常</span>
           } @else {
-          <i class="badge text-bg-danger fs-6 m-auto">停權</i>
+          <span class="status-badge suspended">停權</span>
           }
-        </span>
+        </div>
       </div>
-      <!-- Action -->
+
       <div class="action-area">
         @if (user.status) {
-        <button class="btn btn-danger btn-sm" (click)="changeStatus(user.accountId, user.status)">
+        <button type="button" class="action-btn danger" (click)="changeStatus(user.accountId, user.status)">
           停權
         </button>
         } @else {
-        <button class="btn btn-success btn-sm mx-3" (click)="changeStatus(user.accountId, user.status)">
+        <button type="button" class="action-btn success" (click)="changeStatus(user.accountId, user.status)">
           啟用
         </button>
-        <button class="btn btn-outline-danger btn-sm" (click)="deleteUser(user.accountId)">
+
+        <button type="button" class="action-btn danger-outline" (click)="deleteUser(user.accountId)">
           刪除
         </button>
         }
       </div>
-    </div>
-  </div>
-  }
-  }
-  <div class="pagination">
-    <button (click)="changePage(currentPage() - 1)">上一頁</button>
-
-    @for (p of pages(); track $index) {
-
-    <button (click)="changePage(p)" [class.active]="p === currentPage()">
-      {{ p }}
-    </button>
+    </article>
+    }
     }
 
-    <button (click)="changePage(currentPage() + 1)">下一頁</button>
-  </div>
+    <div class="pagination">
+      <button type="button" (click)="changePage(currentPage() - 1)" [disabled]="currentPage() === 1">
+        上一頁
+      </button>
 
-</div>
+      @for (p of pages(); track p) {
+      <button type="button" (click)="changePage(p)" [class.active]="p === currentPage()">
+        {{ p }}
+      </button>
+      }
+
+      <button type="button" (click)="changePage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">
+        下一頁
+      </button>
+    </div>
+  </div>
+</section>

@@ -1,207 +1,150 @@
-<div class="d-flex gap-2 mb-4 flex-wrap">
+<section class="admin-faq-page">
+  <div class="faq-header">
+    <div>
+      <p class="eyebrow">內容管理</p>
+      <h2>FAQ 管理</h2>
+      <p>管理常見問題、分類狀態與前台顯示內容。</p>
+    </div>
 
-  <h2 class="text-center d-flex align-self-center">FAQ管理</h2>
-
-  <!-- 全部 -->
-  <button class="btn" [class.btn-dark]="faqService.selectedCategoryId() === 0"
-    [class.btn-outline-dark]="faqService.selectedCategoryId() !== 0" (click)="changeCategory(0)">
-
-    全部
-
-    <span class="badge bg-secondary ms-1">
-      {{ faqService.faqItems().length }}
-    </span>
-
-  </button>
-
-  <!-- 分類 -->
-  @for(category of faqService.faqCategories(); track category.id){
-
-  <div class="category-group" [class.no-actions]="!showCategoryActions()">
-    <button class="btn category-name-btn" [class.btn-primary]="faqService.selectedCategoryId() === category.id"
-      [class.btn-outline-primary]="faqService.selectedCategoryId() !== category.id"
-      (click)="changeCategory(category.id)">
-
-      <span class="status-dot" [class.status-dot-active]="category.isActive"
-        [class.status-dot-inactive]="!category.isActive"></span>
-      {{ category.name }}
-
-      <span class="badge bg-light text-dark ms-1">
-        {{ faqService.faqCountMap().get(category.id) ?? 0 }}
-      </span>
-    </button>
-
-    @if(showCategoryActions()){
-    <div class="category-actions btn-group" role="group" aria-label="category actions">
-      <button class="btn btn-outline-secondary btn-sm category-action-btn" (click)="openEditCategoryModal(category)"
-        title="編輯分類">
-        <span class="material-symbols-outlined">edit</span>
+    <div class="faq-header__actions">
+      <button type="button" class="primary-btn ghost" (click)="openAddCategoryModal()">
+        <span class="material-symbols-outlined">create_new_folder</span>
+        新增分類
       </button>
-      <button class="btn btn-outline-danger btn-sm category-action-btn" (click)="deleteFAQCategory(category.id)"
-        title="刪除分類">
-        <span class="material-symbols-outlined">delete</span>
+
+      <button type="button" class="primary-btn" (click)="openAddModal()">
+        <span class="material-symbols-outlined">add</span>
+        新增 FAQ
       </button>
     </div>
-    }
   </div>
 
-  }
-  <div class="ms-auto d-flex align-items-center gap-2">
-    <button class="btn btn-success" (click)="openAddCategoryModal()">+ 新增分類</button>
+  <div class="faq-toolbar">
+    <div class="category-list">
+      <button type="button" class="category-chip" [class.is-active]="faqService.selectedCategoryId() === 0"
+        (click)="changeCategory(0)">
+        全部
+        <span>{{ faqService.faqItems().length }}</span>
+      </button>
 
-    <button class="btn btn-success" (click)="openAddModal()">+ 新增 FAQ</button>
+      @for (category of faqService.faqCategories(); track category.id) {
+      <div class="category-group" [class.no-actions]="!showCategoryActions()">
+        <button type="button" class="category-chip" [class.is-active]="faqService.selectedCategoryId() === category.id"
+          (click)="changeCategory(category.id)">
+          <i class="status-dot" [class.status-dot-active]="category.isActive"
+            [class.status-dot-inactive]="!category.isActive"></i>
 
-    <div class="form-check form-switch d-inline-block ms-2 align-middle mb-0">
+          {{ category.name }}
+
+          <span>
+            {{ faqService.faqCountMap().get(category.id) ?? 0 }}
+          </span>
+        </button>
+
+        @if (showCategoryActions()) {
+        <div class="category-actions" role="group" aria-label="category actions">
+          <button type="button" class="category-action-btn edit" (click)="openEditCategoryModal(category)" title="編輯分類">
+            <span class="material-symbols-outlined">edit</span>
+          </button>
+
+          <button type="button" class="category-action-btn delete" (click)="deleteFAQCategory(category.id)"
+            title="刪除分類">
+            <span class="material-symbols-outlined">delete</span>
+          </button>
+        </div>
+        }
+      </div>
+      }
+    </div>
+
+    <div class="edit-switch form-check form-switch">
       <input class="form-check-input" type="checkbox" id="toggleEdit" [checked]="showCategoryActions()"
-        (change)="toggleCategoryActions($any($event.target).checked)">
-      <label class="form-check-label small ms-1" for="toggleEdit">編輯開關</label>
+        (change)="toggleCategoryActions($any($event.target).checked)" />
+
+      <label class="form-check-label" for="toggleEdit">
+        分類編輯
+      </label>
     </div>
   </div>
 
-</div>
+  @if (pagedFAQ().length > 0) {
+  <div class="faq-list">
+    @for (item of pagedFAQ(); track item.id) {
+    <article class="faq-card">
+      <div class="faq-card__meta">
+        <div>
+          <span class="meta-label">分類</span>
 
-<!-- FAQ Items -->
-
-<div class="d-flex flex-column gap-3">
-
-  @for(item of pagedFAQ(); track item.id){
-
-  <div class="card shadow-sm border-0 rounded-4">
-
-    <div class="card-body p-4">
-
-      <!-- 第一列 -->
-      <div class="row mb-4">
-
-        <!-- 分類 -->
-        <div class="col-md-3">
-
-          <div class="text-secondary small mb-2">
-            分類
-          </div>
-
-          <span class="badge bg-primary px-3 py-2">
-
+          <span class="faq-category-badge">
             {{
             faqService.faqCategories()
             .find(c => c.id === item.categoryId)?.name
             }}
-
           </span>
-
         </div>
 
-        <!-- 主題 -->
-        <div class="col-md-9">
+        <div>
+          <span class="meta-label">狀態</span>
 
-          <div class="text-secondary small mb-2">
-            主題
-          </div>
-
-          <div class="fw-bold fs-5">
-
-            {{ item.question }}
-
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- 第二列 -->
-      <div class="row align-items-start">
-
-        <!-- 狀態 -->
-        <div class="col-md-3">
-
-          <div class="text-secondary small mb-2">
-            狀態
-          </div>
-
-          @if(item.status === 1){
-
-          <span class="badge bg-success px-3 py-2">
-            啟用
-          </span>
-
-          }@else {
-
-          <span class="badge bg-secondary px-3 py-2">
-            停用
-          </span>
-
+          @if (item.status === 1) {
+          <span class="status-badge active">啟用</span>
+          } @else {
+          <span class="status-badge inactive">停用</span>
           }
-
         </div>
-
-        <!-- 內容 -->
-        <div class="col-md-6">
-
-          <div class="text-secondary small mb-2">
-            答案
-          </div>
-
-          <div class="text-muted lh-lg">
-
-            {{ item.answer }}
-
-          </div>
-
-        </div>
-
-        <!-- 按鈕 -->
-        <div class="col-md-3">
-
-          <div class="d-flex justify-content-md-end gap-2 mt-3 mt-md-0">
-
-            <button class="btn btn-outline-warning btn-sm rounded-pill px-3" (click)="openEditModal(item)">
-
-              編輯
-
-            </button>
-
-            <button class="btn btn-outline-danger btn-sm rounded-pill px-3" (click)="deleteFAQ(item.id)">
-
-              刪除
-
-            </button>
-
-          </div>
-
-        </div>
-
       </div>
 
-    </div>
+      <div class="faq-card__content">
+        <span class="meta-label">主題</span>
+        <h3>{{ item.question }}</h3>
 
-  </div>
+        <span class="meta-label answer-label">答案</span>
+        <p>{{ item.answer }}</p>
+      </div>
 
-  }
+      <div class="faq-card__actions">
+        <button type="button" class="outline-btn edit" (click)="openEditModal(item)">
+          編輯
+        </button>
 
-  <div class="pagination">
-    <button (click)="changePage(currentPage() - 1)" [disabled]="currentPage() === 1">
-      上一頁
-    </button>
-
-    @for (p of pages(); track $index) {
-    <button (click)="changePage(p)" [class.active]="p === currentPage()">
-      {{ p }}
-    </button>
+        <button type="button" class="outline-btn delete" (click)="deleteFAQ(item.id)">
+          刪除
+        </button>
+      </div>
+    </article>
     }
 
-    <button (click)="changePage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">
-      下一頁
-    </button>
+    <div class="pagination">
+      <button type="button" (click)="changePage(currentPage() - 1)" [disabled]="currentPage() === 1">
+        上一頁
+      </button>
+
+      @for (p of pages(); track p) {
+      <button type="button" (click)="changePage(p)" [class.active]="p === currentPage()">
+        {{ p }}
+      </button>
+      }
+
+      <button type="button" (click)="changePage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">
+        下一頁
+      </button>
+    </div>
   </div>
-</div>
+  } @else {
+  <div class="empty-box">
+    <div class="empty-icon">
+      <span class="material-symbols-outlined">help_center</span>
+    </div>
 
+    <h4>目前沒有 FAQ 資料</h4>
+    <p>可以新增 FAQ，或切換其他分類查看內容。</p>
+  </div>
+  }
+</section>
 
-
-
-<div class="modal fade" id="faqModal" tabindex="-1">
-  <div class="modal-dialog modal-lg">
+<div class="modal fade faq-admin-modal" id="faqModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
-
       <div class="modal-header">
         <h5 class="modal-title">
           {{ editMode() ? '編輯 FAQ' : '新增 FAQ' }}
@@ -211,87 +154,66 @@
       </div>
 
       <div class="modal-body">
-
-        <!-- 分類 -->
-        <div class="mb-3">
-          <label class="form-label">分類<span class="text-danger">*</span></label>
+        <div class="form-field">
+          <label class="form-label">分類 <span>*</span></label>
 
           <select class="form-select" [(ngModel)]="form.categoryId">
-
             <option value="" disabled>請選擇分類</option>
 
-            @for(c of faqService.faqCategories(); track c.id){
-            <option [value]="c.id">
+            @for (c of faqService.faqCategories(); track c.id) {
+            <option [ngValue]="c.id">
               {{ c.name }}
             </option>
             }
-
           </select>
         </div>
 
-        <!-- 問題 -->
-        <div class="mb-3">
-          <label class="form-label">問題<span class="text-danger">*</span></label>
-          <input type="text" class="form-control" [(ngModel)]="form.question">
+        <div class="form-field">
+          <label class="form-label">問題 <span>*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="form.question" />
         </div>
 
-        <!-- 答案 -->
-        <div class="mb-3">
-          <label class="form-label">答案<span class="text-danger">*</span></label>
-          <textarea class="form-control" rows="4" [(ngModel)]="form.answer">
-          </textarea>
+        <div class="form-field">
+          <label class="form-label">答案 <span>*</span></label>
+          <textarea class="form-control" rows="4" [(ngModel)]="form.answer"></textarea>
         </div>
 
-        <!-- 排序 -->
-        <div class="mb-3">
+        <div class="form-field">
           <label class="form-label">排序</label>
-          <input type="number" class="form-control" [(ngModel)]="form.sortOrder">
+          <input type="number" class="form-control" [(ngModel)]="form.sortOrder" />
         </div>
 
-        <!-- 狀態 -->
-        <div class="form-check">
+        <div class="form-check modal-check">
+          <input class="form-check-input" type="checkbox" id="faqStatus" [checked]="form.status === 1"
+            (change)="form.status = $any($event.target).checked ? 1 : 0" />
 
-          <input class="form-check-input" type="checkbox" [checked]="form.status === 1"
-            (change)="form.status = $any($event.target).checked ? 1 : 0">
-
-          <label class="form-check-label">
+          <label class="form-check-label" for="faqStatus">
             啟用
           </label>
-
         </div>
-
       </div>
 
       <div class="modal-footer">
-
-        <button class="btn btn-secondary" data-bs-dismiss="modal">
+        <button type="button" class="modal-btn ghost" data-bs-dismiss="modal">
           取消
         </button>
 
-        <button
-          class="btn btn-primary"
-          (click)="saveFAQ()"
-          [disabled]="isSubmitting()"
-        >
+        <button type="button" class="modal-btn primary" (click)="saveFAQ()" [disabled]="isSubmitting()">
           @if (isSubmitting()) {
-            <span class="spinner-border spinner-border-sm me-2"></span>
-            儲存中...
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          儲存中...
           } @else {
-            {{ editMode() ? '更新' : '新增' }}
+          {{ editMode() ? '更新' : '新增' }}
           }
         </button>
-
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- 分類 Modal -->
-<div class="modal fade" id="categoryModal" tabindex="-1">
-  <div class="modal-dialog">
+<div class="modal fade faq-admin-modal" id="categoryModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-
       <div class="modal-header">
         <h5 class="modal-title">
           {{ categoryEditMode() ? '編輯分類' : '新增分類' }}
@@ -301,54 +223,40 @@
       </div>
 
       <div class="modal-body">
-
-        <!-- 分類名稱 -->
-        <div class="mb-3">
-          <label class="form-label">分類名稱<span class="text-danger">*</span></label>
-          <input type="text" class="form-control" [(ngModel)]="categoryForm.name">
+        <div class="form-field">
+          <label class="form-label">分類名稱 <span>*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="categoryForm.name" />
         </div>
 
-        <!-- 排序 -->
-        <div class="mb-3">
+        <div class="form-field">
           <label class="form-label">排序</label>
-          <input type="number" class="form-control" [(ngModel)]="categoryForm.sortOrder">
+          <input type="number" class="form-control" [(ngModel)]="categoryForm.sortOrder" />
         </div>
 
-        <!-- 啟用狀態 -->
-        <div class="form-check">
+        <div class="form-check modal-check">
+          <input class="form-check-input" type="checkbox" id="categoryStatus" [checked]="categoryForm.isActive"
+            (change)="categoryForm.isActive = $any($event.target).checked" />
 
-          <input class="form-check-input" type="checkbox" [checked]="categoryForm.isActive"
-            (change)="categoryForm.isActive = $any($event.target).checked">
-
-          <label class="form-check-label">
+          <label class="form-check-label" for="categoryStatus">
             啟用
           </label>
-
         </div>
-
       </div>
 
       <div class="modal-footer">
-
-        <button class="btn btn-secondary" data-bs-dismiss="modal">
+        <button type="button" class="modal-btn ghost" data-bs-dismiss="modal">
           取消
         </button>
 
-        <button
-          class="btn btn-primary"
-          (click)="saveCategoryFAQ()"
-          [disabled]="isSubmitting()"
-        >
+        <button type="button" class="modal-btn primary" (click)="saveCategoryFAQ()" [disabled]="isSubmitting()">
           @if (isSubmitting()) {
-            <span class="spinner-border spinner-border-sm me-2"></span>
-            儲存中...
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          儲存中...
           } @else {
-            {{ editMode() ? '更新' : '新增' }}
+          {{ categoryEditMode() ? '更新' : '新增' }}
           }
         </button>
-
       </div>
-
     </div>
   </div>
 </div>

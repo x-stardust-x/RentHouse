@@ -1,14 +1,24 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HouseViewingService } from '../../@service/house-viewing-service';
 import { FormsModule } from '@angular/forms';
 import { CalendarLinkService } from '../../@service/calendar-link-service';
 
+export type ReservationStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'rejected'
+  | 'rescheduled'
+  | 'matched'
+  | 'closed';
+
+type ReviewTabStatus = Exclude<ReservationStatus, 'matched'>;
+
 export interface Reservation {
   id: string;
   orderNumber: string;
-  status: 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'matched' | 'closed';
+  status: ReservationStatus;
   roomName: string;
   roomAddress?: string;
   applicant: {
@@ -69,11 +79,13 @@ export class HouseViewingApprovalComponent implements OnInit {
   // 預留給後續與 C# 後端 API 串接使用
   private viewingService = inject(HouseViewingService);
   private calendarLinkService = inject(CalendarLinkService);
+  private router = inject(Router);
 
   // ===================================================================
   // 狀態管理 (Signals)
   // ===================================================================
-  activeTab = signal<'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'matched' | 'closed'>('pending');
+  activeTab = signal<ReviewTabStatus>('pending');
+  // activeTab = signal<'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'matched' | 'closed'>('pending');
 
   // 模擬後端回傳的預約資料 (未來這裡會由 ngOnInit 呼叫 API 覆寫)
 
@@ -93,12 +105,8 @@ export class HouseViewingApprovalComponent implements OnInit {
     this.isSchedulePanelOpen.set(!this.isSchedulePanelOpen());
   }
 
-  canAddViewingToCalendar(item: any): boolean {
-    const status = String(item.status ?? item.Status ?? '');
-
-    return status === 'confirmed'
-      || status === 'rescheduled'
-      || status === 'matched';
+  canAddViewingToCalendar(item: Reservation): boolean {
+    return item.status === 'confirmed' || item.status === 'rescheduled';
   }
 
   openGoogleCalendar(item: any): void {
@@ -131,7 +139,10 @@ export class HouseViewingApprovalComponent implements OnInit {
 
   // 依據當前頁籤過濾出對應的預約清單
   filteredReservations = computed(() => {
-    return this.reservations().filter(r => r.status === this.activeTab());
+    return this.reservations().filter(r =>
+      r.status !== 'matched' &&
+      r.status === this.activeTab()
+    );
   });
 
   // 動態計算各狀態的數量，取代原本寫死的 count
@@ -145,11 +156,6 @@ export class HouseViewingApprovalComponent implements OnInit {
       id: 'confirmed' as const,
       label: '已確認',
       count: this.reservations().filter(r => r.status === 'confirmed').length
-    },
-    {
-      id: 'matched' as const,
-      label: '媒合成功',
-      count: this.reservations().filter(r => r.status === 'matched').length
     },
     {
       id: 'rejected' as const,
@@ -166,7 +172,7 @@ export class HouseViewingApprovalComponent implements OnInit {
       label: '已關閉',
       count: this.reservations().filter(r => r.status === 'closed').length
     }
-  ] as const);
+  ]);
 
   // ===================================================================
   // 生命週期與 API 讀取
@@ -328,7 +334,7 @@ export class HouseViewingApprovalComponent implements OnInit {
   // ===================================================================
 
   // 切換頁籤
-  selectTab(tabId: 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'matched' | 'closed') {
+  selectTab(tabId: ReviewTabStatus): void {
     this.activeTab.set(tabId);
   }
 
@@ -459,18 +465,16 @@ export class HouseViewingApprovalComponent implements OnInit {
     }
   }
 
-  getEmptyStateText() {
+  getEmptyStateText(): string {
     switch (this.activeTab()) {
       case 'pending':
         return '目前沒有待審核的預約紀錄。';
       case 'confirmed':
         return '目前沒有已確認的預約紀錄。';
       case 'rescheduled':
-        return '目前沒有已改期的預約紀錄。';
+        return '目前沒有待回覆改期的預約紀錄。';
       case 'rejected':
         return '目前沒有已婉拒的預約紀錄。';
-      case 'matched':
-        return '目前沒有媒合成功的預約紀錄。';
       case 'closed':
         return '目前沒有已關閉的預約紀錄。';
       default:
@@ -564,12 +568,11 @@ export class HouseViewingApprovalComponent implements OnInit {
       matchNote: this.matchNote().trim()
     }).subscribe({
       next: () => {
-        alert('已確認媒合成功');
+        alert('已確認媒合成功，這筆資料已移至「當前媒合名單」。');
 
         this.closeConfirmMatchModal();
 
-        this.activeTab.set('matched');
-        this.fetchReservations();
+        this.router.navigate(['/user-center/lessor-current-matches']);
       },
       error: (err) => {
         console.error('確認媒合失敗：', err);

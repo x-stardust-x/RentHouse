@@ -4,7 +4,17 @@ import { RouterLink } from '@angular/router';
 import { ProductBookingService } from '../../@service/product-booking-service';
 import { CalendarLinkService } from '../../@service/calendar-link-service';
 
-type BookingStatus = 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'closed';
+type BookingStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'rejected'
+  | 'rescheduled'
+  | 'matched'
+  | 'closed';
+
+type BookingTabStatus = Exclude<BookingStatus, 'matched'>;
+
+// type BookingStatus = 'pending' | 'confirmed' | 'rejected' | 'rescheduled' | 'closed';
 type BookingType = 'tool' | 'skill';
 
 interface ProductBookingApplication {
@@ -45,7 +55,7 @@ export class ProductBookingApplicationTrackingComponent implements OnInit {
   private bookingService = inject(ProductBookingService);
   private calendarLinkService = inject(CalendarLinkService);
 
-  activeTab = signal<BookingStatus>('pending');
+  activeTab = signal<BookingTabStatus>('pending');
 
   applications = signal<ProductBookingApplication[]>([]);
 
@@ -128,7 +138,7 @@ export class ProductBookingApplicationTrackingComponent implements OnInit {
     });
   }
 
-  selectTab(tabId: BookingStatus): void {
+  selectTab(tabId: BookingTabStatus): void {
     this.activeTab.set(tabId);
   }
 
@@ -238,6 +248,7 @@ export class ProductBookingApplicationTrackingComponent implements OnInit {
       status === 'confirmed' ||
       status === 'rejected' ||
       status === 'rescheduled' ||
+      status === 'matched' ||
       status === 'closed'
     ) {
       return status;
@@ -303,14 +314,13 @@ export class ProductBookingApplicationTrackingComponent implements OnInit {
 
   canAddToCalendar(item: ProductBookingApplication): boolean {
     return item.status === 'confirmed' || item.status === 'rescheduled';
-
-    //  return item.status === 'confirmed'
-    // || item.status === 'rescheduled'
-    // || item.status === 'matched';
   }
 
   filteredApplications = computed(() => {
-    return this.applications().filter(x => x.status === this.activeTab());
+    return this.applications().filter(x =>
+      x.status !== 'matched' &&
+      x.status === this.activeTab()
+    );
   });
 
   isSchedulePanelOpen = signal(false);

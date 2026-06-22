@@ -105,9 +105,9 @@ export class RentalMatchingComponent implements OnInit {
       if (!isLoggedIn) {
 
 
-        setTimeout(() => {
+       setTimeout(() => {
           this.filters.isSmartMatch = false;
-        });
+        }, 50);
 
 
         Swal.fire({
@@ -127,7 +127,8 @@ export class RentalMatchingComponent implements OnInit {
 
         setTimeout(() => {
           this.filters.isSmartMatch = false;
-        });
+        }, 50);
+
 
         Swal.fire({
           icon: 'info',

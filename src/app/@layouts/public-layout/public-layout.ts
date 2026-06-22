@@ -49,17 +49,18 @@ export class PublicLayout implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
+    this.destroyLenisSmoothScroll();
+
     this.lastScrollY = this.getScrollY();
     this.initLenisSmoothScroll();
 
     requestAnimationFrame(() => {
-      ScrollTrigger.refresh();
+      ScrollTrigger.clearScrollMemory();
+      ScrollTrigger.refresh(true);
     });
   }
 
-  ngOnDestroy(): void {
-    // this.removeScrollListener?.();
-
+  private destroyLenisSmoothScroll(): void {
     if (this.lenisTicker) {
       gsap.ticker.remove(this.lenisTicker);
       this.lenisTicker = undefined;
@@ -68,6 +69,38 @@ export class PublicLayout implements OnInit, AfterViewInit, OnDestroy {
     this.lenis?.destroy();
     this.lenis = undefined;
   }
+
+  // ngAfterViewInit(): void {
+  //   gsap.registerPlugin(ScrollTrigger);
+
+  //   if (!this.layoutHeader?.nativeElement) {
+  //     console.warn('找不到 .public-layout__header');
+  //     return;
+  //   }
+
+  //   this.lastScrollY = this.getScrollY();
+  //   this.initLenisSmoothScroll();
+
+  //   requestAnimationFrame(() => {
+  //     ScrollTrigger.refresh();
+  //   });
+  // }
+
+  ngOnDestroy(): void {
+    this.destroyLenisSmoothScroll();
+  }
+
+  // ngOnDestroy(): void {
+  //   // this.removeScrollListener?.();
+
+  //   if (this.lenisTicker) {
+  //     gsap.ticker.remove(this.lenisTicker);
+  //     this.lenisTicker = undefined;
+  //   }
+
+  //   this.lenis?.destroy();
+  //   this.lenis = undefined;
+  // }
 
   private initLenisSmoothScroll(): void {
     this.lenis = new Lenis({

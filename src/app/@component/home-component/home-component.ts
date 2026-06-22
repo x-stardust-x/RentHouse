@@ -99,6 +99,11 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   private zone = inject(NgZone);
   private heroSkipRafId = 0;
   private readonly rentalAutoSpeed = 10000;
+
+  private heroAutoplayWatchTimer = 0;
+  private heroVisibilityHandler?: () => void;
+  private aboutVideoLoadedHandler?: () => void;
+
   // private readonly rentalNavSpeed = 650;
   // private rentalNavRestartTimer = 0;
 
@@ -422,6 +427,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
+    this.removeAboutVideoListener();
+
     video.muted = true;
     video.defaultMuted = true;
     video.playsInline = true;
@@ -435,38 +442,54 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     if (video.readyState >= 2) {
       play();
     } else {
-      video.addEventListener('loadeddata', play, { once: true });
+      this.aboutVideoLoadedHandler = play;
+      video.addEventListener('loadeddata', this.aboutVideoLoadedHandler, { once: true });
       video.load();
     }
   }
 
+  private removeAboutVideoListener(): void {
+    const video = this.aboutVideo?.nativeElement;
+
+    if (video && this.aboutVideoLoadedHandler) {
+      video.removeEventListener('loadeddata', this.aboutVideoLoadedHandler);
+    }
+
+    this.aboutVideoLoadedHandler = undefined;
+  }
+
   ngOnDestroy(): void {
     this.stopHeroTitleSkipMotion();
+    this.stopHeroAutoplayWatch();
+    this.removeAboutVideoListener();
 
     this.mm?.revert();
-
-    const swiperInstance = this.heroSwiper?.nativeElement?.swiper;
-
-    if (swiperInstance) {
-      swiperInstance.destroy(true, true);
-    }
 
     if (this.rentalUpdateRafId) {
       cancelAnimationFrame(this.rentalUpdateRafId);
       this.rentalUpdateRafId = 0;
     }
 
-    const rentalSwiperInstance = this.rentalSwiper?.nativeElement?.swiper;
+    this.destroySwiper(this.heroSwiper?.nativeElement);
+    this.destroySwiper(this.rentalSwiper?.nativeElement);
+  }
 
-    if (rentalSwiperInstance) {
-      rentalSwiperInstance.destroy(true, true);
+  private destroySwiper(swiperEl?: any): void {
+    const swiper = swiperEl?.swiper;
+
+    if (!swiper || swiper.destroyed) {
+      return;
     }
 
-    // window.clearTimeout(this.rentalNavRestartTimer);
+    swiper.destroy(true, true);
+    swiperEl.swiper = undefined;
+    swiperEl.initialized = false;
   }
 
   private initHeroSwiper(): void {
     const swiperEl = this.heroSwiper.nativeElement;
+
+    this.destroySwiper(swiperEl);
 
     Object.assign(swiperEl, {
       slidesPerView: 'auto',
@@ -479,15 +502,15 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       watchSlidesProgress: true,
       observer: true,
       observeParents: true,
+
       autoplay: {
         delay: 2600,
         disableOnInteraction: false,
+        pauseOnMouseEnter: false,
+        stopOnLastSlide: false,
+        waitForTransition: true,
       },
 
-      /**
-       * 所有卡片本身仍然維持一般間距。
-       * H1 的跨越空間交給 initHeroTitleSkipMotion() 動態處理。
-       */
       spaceBetween: 36,
 
       breakpoints: {
@@ -510,7 +533,52 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     requestAnimationFrame(() => {
       swiperEl.swiper?.update();
+      swiperEl.swiper?.autoplay?.start();
+      this.startHeroAutoplayWatch();
     });
+  }
+
+  private startHeroAutoplayWatch(): void {
+    this.stopHeroAutoplayWatch();
+
+    this.heroAutoplayWatchTimer = window.setInterval(() => {
+      const swiper = this.heroSwiper?.nativeElement?.swiper;
+
+      if (!swiper || swiper.destroyed) {
+        return;
+      }
+
+      swiper.update();
+
+      if (!swiper.autoplay?.running) {
+        swiper.autoplay?.start();
+      }
+    }, 2000);
+
+    this.heroVisibilityHandler = () => {
+      if (document.hidden) {
+        return;
+      }
+
+      const swiper = this.heroSwiper?.nativeElement?.swiper;
+
+      swiper?.update();
+      swiper?.autoplay?.start();
+    };
+
+    document.addEventListener('visibilitychange', this.heroVisibilityHandler);
+  }
+
+  private stopHeroAutoplayWatch(): void {
+    if (this.heroAutoplayWatchTimer) {
+      window.clearInterval(this.heroAutoplayWatchTimer);
+      this.heroAutoplayWatchTimer = 0;
+    }
+
+    if (this.heroVisibilityHandler) {
+      document.removeEventListener('visibilitychange', this.heroVisibilityHandler);
+      this.heroVisibilityHandler = undefined;
+    }
   }
 
   private initRentalSwiper(): void {
@@ -675,7 +743,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
          * h1 到下方後的位置與大小。
          * TITLE_FINAL_Y 越大，h1 越往下。
          */
-        const TITLE_FINAL_Y = () => window.innerHeight * 0.85;
+        const TITLE_FINAL_Y = () => window.innerHeight * 0.98;
         const TITLE_FINAL_SCALE = 0.75;
         // const userCards = gsap.utils.toArray<HTMLElement>('.js-user-center-card');
 
@@ -1270,8 +1338,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         gsap.killTweensOf(stackBg);
         gsap.to(stackBg, {
           opacity: isActive ? 1 : 0,
-          duration: 0.16,
-          ease: 'power2.out',
+          duration: 0.56,
+          ease: 'power3.out',
         });
       };
 
@@ -1366,7 +1434,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const HOLD_DISTANCE = window.innerHeight * 1.2;
+    const HOLD_DISTANCE = window.innerHeight * 1.8;
 
     const getAiAnimationEnd = () => {
       const total = section.offsetHeight - window.innerHeight;
@@ -1385,10 +1453,30 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     const result = q<HTMLElement>('.js-ai-result')[0];
     const tags = q<HTMLElement>('.js-ai-tag');
     const speech = q<HTMLElement>('.js-ai-speech-young, .js-ai-speech-elder');
+    const youngSpeech = q<HTMLElement>('.js-ai-speech-young')[0];
+    const elderSpeech = q<HTMLElement>('.js-ai-speech-elder')[0];
+    const youngSpeechText = q<HTMLElement>('.js-ai-speech-young p')[0];
+    const elderSpeechText = q<HTMLElement>('.js-ai-speech-elder p')[0];
 
     if (!heading || !progress || !number || !orb || !young || !elder || !arcFlow || !result) {
       return;
     }
+
+    if (youngSpeechText) {
+      this.splitTextToRevealChars(youngSpeechText);
+    }
+
+    if (elderSpeechText) {
+      this.splitTextToRevealChars(elderSpeechText);
+    }
+
+    const youngSpeechChars = youngSpeechText
+      ? gsap.utils.toArray<HTMLElement>(youngSpeechText.querySelectorAll('.js-scroll-title-char'))
+      : [];
+
+    const elderSpeechChars = elderSpeechText
+      ? gsap.utils.toArray<HTMLElement>(elderSpeechText.querySelectorAll('.js-scroll-title-char'))
+      : [];
 
     const radius = 86;
     const circumference = 2 * Math.PI * radius;
@@ -1411,6 +1499,12 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     // gsap.set(orb, { scale: 0.86, transformOrigin: '50% 50%' });
     gsap.set(tags, { opacity: 0, y: 16, scale: 0.92, x: 0 });
     gsap.set(speech, { opacity: 0, y: 20 });
+    gsap.set([youngSpeechChars, elderSpeechChars], {
+      opacity: 0,
+      y: 14,
+      filter: 'blur(3px)',
+    });
+
     gsap.set(result, { opacity: 0, y: 20 });
     gsap.set(arcFlow, { opacity: 0, strokeDashoffset: 0 });
 
@@ -1447,13 +1541,37 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       0.04
     );
 
-    tl.to(speech, {
+    tl.to(youngSpeech, {
       opacity: 1,
       y: 0,
-      duration: 0.16,
-      stagger: 0.04,
+      duration: 0.18,
       ease: 'power2.out',
     }, 0.12);
+
+    tl.to(elderSpeech, {
+      opacity: 1,
+      y: 0,
+      duration: 0.18,
+      ease: 'power2.out',
+    }, 0.28);
+
+    tl.to(youngSpeechChars, {
+      opacity: 1,
+      y: 0,
+      filter: 'blur(0px)',
+      duration: 0.28,
+      stagger: 0.018,
+      ease: 'power3.out',
+    }, 0.30);
+
+    tl.to(elderSpeechChars, {
+      opacity: 1,
+      y: 0,
+      filter: 'blur(0px)',
+      duration: 0.28,
+      stagger: 0.018,
+      ease: 'power3.out',
+    }, 0.40);
 
     tl.to(tags, {
       opacity: 1,

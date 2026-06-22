@@ -6,8 +6,6 @@ export const loginGuard: CanActivateFn = () => {
   const auth = inject(Authservice);
   const router = inject(Router);
 
-  const token = auth.getToken();
-
   // 🔥 已登入 → 導走
   if (auth.isLoggedIn()) {
     const role = auth.getRole();

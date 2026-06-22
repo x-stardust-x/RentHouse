@@ -527,6 +527,23 @@
   }
 }
 
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  object-fit: cover;
+}
+
+/* 讓 dropdown 變漂亮卡片 */
+.profile-card {
+  width: 260px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  border: none;
+}
+
+
 /* ==========================================================================
    5. 響應式斷點 (RWD 導覽列優化)
    ========================================================================== */

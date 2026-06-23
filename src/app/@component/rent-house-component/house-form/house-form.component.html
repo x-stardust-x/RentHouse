@@ -409,9 +409,13 @@
 
   <div class="rental-form__actions">
     @if (isEditMode) {
-    <button type="button" class="rental-form__btn rental-form__btn--secondary" (click)="cancelEdit()">取消修改</button>
+    <button type="button" class="rental-form__btn rental-form__btn--secondary" (click)="cancelEdit()">
+      取消修改
+    </button>
     }
+
     <button type="button" class="rental-form__btn rental-form__btn--primary" (click)="submitForm()">
       {{ isEditMode ? '儲存修改' : '確認送出申請' }}
     </button>
   </div>
+</div>

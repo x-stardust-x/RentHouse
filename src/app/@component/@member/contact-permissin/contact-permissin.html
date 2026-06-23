@@ -1,215 +1,111 @@
-<div class="container py-5">
+<section class="contact-permission-page">
+  <div class="page-header">
+    <!-- <p class="eyebrow">隱私設定</p> -->
+    <h1>聯絡資訊授權設定</h1>
+    <p>管理您的聯絡方式隱私，確保在厚厝味社群中的安心互動。</p>
+  </div>
 
-  <h1 class="page-title">聯絡資訊授權設定</h1>
-
-  <p class="page-subtitle">
-    管理您的聯絡方式隱私，確保在「厚厝味」社群中的安心互動。
-  </p>
-
-  <!-- 提示 -->
   <div class="notice-box">
-
-    <div class="d-flex align-items-start gap-3">
-
-      <div class="notice-icon">
-        <mat-icon>shield</mat-icon>
-      </div>
-
-      <div>
-        <h5>隱私保護承諾：僅在媒合成功後授權</h5>
-
-        <p>
-          您的隱私安全是我們的首要考量。以下設定的聯絡資訊，
-          預設處於隱藏狀態。只有當您主動確認租屋申請、
-          同意看房預約，或在工具/技能共享中成功配對後，
-          系統才會向特定對象顯示您允許公開的聯絡方式。
-        </p>
-
-      </div>
-
+    <div class="notice-icon">
+      <mat-icon>shield</mat-icon>
     </div>
 
+    <div>
+      <h5>隱私保護承諾：僅在媒合成功後授權</h5>
+      <p>
+        您的隱私安全是我們的首要考量。以下設定的聯絡資訊預設處於隱藏狀態。
+        只有當您主動確認租屋申請、同意看房預約，或在工具 / 技能共享中成功配對後，
+        系統才會向特定對象顯示您允許公開的聯絡方式。
+      </p>
+    </div>
   </div>
 
-  <div class="row g-4 mt-2">
-
-    <!-- 手機 -->
-    <div class="col-lg-6">
-
-      <div class="info-card">
-
-        <div class="card-header-custom">
-
-          <div class="info-header">
-
-            <div class="circle-icon">
-              <mat-icon>smartphone</mat-icon>
-            </div>
-
-            <div>
-              <h3>手機號碼</h3>
-              <!-- <span>0912-345-678</span> -->
-            </div>
-
+  <div class="permission-grid">
+    <article class="permission-card">
+      <div class="card-header-custom">
+        <div class="info-header">
+          <div class="circle-icon">
+            <mat-icon>smartphone</mat-icon>
           </div>
 
-          <mat-slide-toggle
-            color="primary"
-            [(ngModel)]="setting().phone">
-          </mat-slide-toggle>
-
+          <div>
+            <h3>手機號碼</h3>
+            <p>看房當天與緊急情況使用</p>
+          </div>
         </div>
 
-        <p class="description">
-          允許配對成功的租客或房東查看您的手機號碼，以便進行即時聯絡。
-        </p>
-
-        <div class="tip-box">
-          <mat-icon>check_circle</mat-icon>
-          建議啟用：有利於看房當天的緊急聯絡。
-        </div>
-
+        <mat-slide-toggle color="primary" [(ngModel)]="setting().phone">
+        </mat-slide-toggle>
       </div>
 
-    </div>
+      <p class="description">
+        允許配對成功的租客或房東查看您的手機號碼，以便進行即時聯絡。
+      </p>
 
-    <!-- Email -->
-    <div class="col-lg-6">
+      <div class="tip-box">
+        <mat-icon>check_circle</mat-icon>
+        建議啟用：有利於看房當天的緊急聯絡。
+      </div>
+    </article>
 
-      <div class="info-card">
-
-        <div class="card-header-custom">
-
-          <div class="info-header">
-
-            <div class="circle-icon">
-              <mat-icon>mail</mat-icon>
-            </div>
-
-            <div>
-              <h3>電子信箱</h3>
-              <!-- <span>user@example.com</span> -->
-            </div>
-
+    <article class="permission-card">
+      <div class="card-header-custom">
+        <div class="info-header">
+          <div class="circle-icon">
+            <mat-icon>mail</mat-icon>
           </div>
 
-          <mat-slide-toggle
-            color="primary"
-            [(ngModel)]="setting().email">
-          </mat-slide-toggle>
-
+          <div>
+            <h3>電子信箱</h3>
+            <p>正式文件與合約通知使用</p>
+          </div>
         </div>
 
-        <p class="description">
-          允許傳送正式合約草稿、收據或詳細房屋規章至您的電子信箱。
-        </p>
-
-        <div class="tip-box">
-          <mat-icon>check_circle</mat-icon>
-          建議啟用：適合保存重要文件紀錄。
-        </div>
-
+        <mat-slide-toggle color="primary" [(ngModel)]="setting().email">
+        </mat-slide-toggle>
       </div>
 
-    </div>
+      <p class="description">
+        允許傳送正式合約草稿、收據或詳細房屋規章至您的電子信箱。
+      </p>
 
+      <div class="tip-box">
+        <mat-icon>check_circle</mat-icon>
+        建議啟用：適合保存重要文件紀錄。
+      </div>
+    </article>
   </div>
 
-  <!-- LINE -->
-
-  <div class="line-card mt-4">
-
+  <article class="permission-card line-card">
     <div class="card-header-custom">
-
       <div class="info-header">
-
         <div class="circle-icon">
           <mat-icon>forum</mat-icon>
         </div>
 
         <div>
-          <h3>通訊軟體 ID (Line)</h3>
-          <!-- <span>@homiefun_user</span> -->
+          <h3>通訊軟體 ID（Line）</h3>
+          <p>日常溝通與快速聯繫使用</p>
         </div>
-
       </div>
 
-      <mat-slide-toggle
-        color="primary"
-        [(ngModel)]="setting().line">
+      <mat-slide-toggle color="primary" [(ngModel)]="setting().line">
       </mat-slide-toggle>
-
     </div>
 
-    <div class="row mt-4">
-
-      <div class="col-lg-6">
-
-        <p class="description">
-          允許媒合成功的對象透過 Line 與您聯繫，這通常是台灣使用者最習慣的日常溝通方式。
-        </p>
-
-      </div>
-
-      <!-- <div class="col-lg-6">
-
-        <div class="line-setting">
-
-          <label>Line ID 設定</label>
-
-          <div class="d-flex gap-2">
-
-            <input
-              type="text"
-              class="form-control"
-              [(ngModel)]="lineId">
-
-            <button
-              type="button"
-              class="btn-update">
-
-              更新
-
-            </button>
-
-          </div>
-
-          <small>
-            * 確保您已在 Line 開啟「允許利用 ID 加入好友」。
-          </small>
-
-        </div>
-
-      </div> -->
-
-    </div>
-
-  </div>
-
-  <!-- Footer -->
+    <p class="description">
+      允許媒合成功的對象透過 Line 與您聯繫，這通常是台灣使用者最習慣的日常溝通方式。
+    </p>
+  </article>
 
   <div class="footer-action">
-
-    <button
-      type="button"
-      class="btn-cancel"
-      (click)="undoSetting()">
-
+    <button type="button" class="btn-cancel" (click)="undoSetting()">
       取消變更
-
     </button>
 
-    <button
-      type="button"
-      class="btn-save"
-      (click)="saveSetting()">
-
+    <button type="button" class="btn-save" (click)="saveSetting()">
       <mat-icon>save</mat-icon>
-
       儲存授權設定
-
     </button>
-
   </div>
-
-</div>
+</section>

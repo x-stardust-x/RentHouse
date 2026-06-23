@@ -4,7 +4,7 @@
 .rental-form {
   font-family: 'PingFang TC', 'Heiti TC', 'Microsoft JhengHei', sans-serif;
   color: var(--color-text-main);
-  max-width: 1120px; // 加寬以容納精緻的雙欄儀表板架構
+  // max-width: 1120px;
   margin: 0 auto;
   padding: 0 0.5rem;
 
@@ -592,225 +592,303 @@
   }
 }
 
+.rental-form {
+  // width: min(100%, 1120px);
+  // margin: 0 auto;
+  // padding: 2rem 1.5rem 4rem;
+  // color: #2f2926;
 
-// /* ============================
-//    左側：表單區塊樣式
-//    ============================ */
-// .form-section {
-//   flex: 1;
-//   border: 2px solid #ccc;
-//   padding: 20px;
-//   border-radius: 8px;
-//   min-width: 300px;
+  &__page-title {
+    margin-bottom: 1.5rem;
+    color: #2f2926;
+    font-size: 1.85rem;
+    font-weight: 800;
+  }
 
-//   .form-group {
-//     margin-bottom: 10px;
-//     input, select {
-//       width: 100%;
-//       padding: 5px;
-//       box-sizing: border-box;
-//       border: 1px solid #aaa;
-//       border-radius: 4px;
-//     }
-//   }
+  &__dashboard-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+    gap: 1.5rem;
+    align-items: start;
+  }
 
-//   .form-group-textarea {
-//     margin-bottom: 15px;
-//     textarea {
-//       width: 100%;
-//       padding: 5px;
-//       height: 80px;
-//       box-sizing: border-box;
-//       border: 1px solid #aaa;
-//       border-radius: 4px;
-//     }
-//   }
+  &__col-main,
+  &__col-side {
+    display: grid;
+    gap: 1.5rem;
+  }
 
-//   .details-block {
-//     margin-top: 15px;
-//     padding: 10px;
-//     background: #f8f9fa;
-//     border-radius: 5px;
-//     h4 { margin-top: 0; }
-//   }
+  &__panel,
+  &__metric-item {
+    border: 1px solid rgba(230, 111, 67, 0.12);
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 12px 32px rgba(64, 45, 36, 0.06);
+  }
 
-//   .included-items-block {
-//     margin-top: 15px;
-//     padding: 10px;
-//     background: #e3f2fd;
-//     border-radius: 5px;
-//     h4 { margin-top: 0; margin-bottom: 10px; }
-//     .checkbox-label {
-//       margin-right: 15px;
-//     }
-//   }
+  &__panel {
+    padding: 1.5rem;
 
-//   .form-actions {
-//     margin-top: 20px;
-//     .btn-submit {
-//       padding: 10px 20px;
-//       background-color: #28a745;
-//       color: white;
-//       border: none;
-//       cursor: pointer;
-//       border-radius: 4px;
-//     }
-//     .btn-cancel {
-//       padding: 10px 20px;
-//       margin-left: 10px;
-//       background-color: #6c757d;
-//       color: white;
-//       border: none;
-//       cursor: pointer;
-//       border-radius: 4px;
-//     }
-//   }
-// }
+    &--dashed {
+      border-style: dashed;
+      background: #fffaf7;
+    }
+  }
 
-// /* ============================
-//    右側：資料庫列表區塊樣式
-//    ============================ */
-// .list-section {
-//   flex: 2;
-//   border: 2px solid #007bff;
-//   padding: 20px;
-//   border-radius: 8px;
-//   min-width: 300px;
+  &__panel-title,
+  &__sub-title {
+    margin-bottom: 1.25rem;
+    color: #2f2926;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 800;
 
-//   .empty-text { color: gray; }
+    .material-symbols-outlined {
+      color: var(--color-primary, #e66f43);
+    }
+  }
 
-//   .house-card {
-//     border-bottom: 1px dashed #ccc;
-//     padding-bottom: 15px;
-//     margin-bottom: 15px;
+  &__hint,
+  &__field-hint {
+    color: #8a817c;
+    line-height: 1.65;
+  }
 
-//     .house-info-layout {
-//       display: flex;
-//       flex-direction: row;
-//       gap: 20px;
-//     }
+  &__address-grid,
+  &__side-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
 
-//     .house-text-info {
-//       flex: 1;
-//       h4 { margin: 0 0 5px 0; color: #007bff; }
-//       .info-text { margin: 0; font-size: 14px; }
-//       .desc-text { margin: 5px 0; font-size: 14px; color: #555; }
+  &__address-grid {
+    grid-template-columns: 180px minmax(0, 1fr);
+  }
 
-//       .tags-container {
-//         font-size: 14px;
-//         color: #555;
-//         margin-bottom: 8px;
-//         margin-top: 10px;
-//         .tag-badge {
-//           background: #e9ecef;
-//           padding: 4px 8px;
-//           border-radius: 12px;
-//           margin-right: 5px;
-//           display: inline-block;
-//           margin-bottom: 5px;
-//         }
-//       }
+  &__metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
 
-//       .included-container {
-//         font-size: 14px;
-//         color: #28a745;
-//         margin-bottom: 15px;
-//         font-weight: bold;
-//         span { margin-right: 5px; }
-//         .no-items { color: #999; font-weight: normal; }
-//       }
+  &__metric-item {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-left: 4px solid var(--color-primary, #e66f43);
+  }
 
-//       .action-buttons {
-//         margin-top: 10px;
-//         button { border-radius: 3px; }
-//         .btn-edit {
-//           padding: 5px 10px;
-//           margin-right: 5px;
-//           cursor: pointer;
-//           border: 1px solid #ccc;
-//           background: #fff;
-//         }
-//         .btn-delete {
-//           padding: 5px 10px;
-//           background-color: #dc3545;
-//           color: white;
-//           border: none;
-//           cursor: pointer;
-//         }
-//       }
-//     }
+  &__metric-icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: var(--color-primary-light, #fff2ee);
+    display: grid;
+    place-items: center;
+  }
 
-//     .house-cover {
-//       width: 180px;
-//       height: 135px;
-//       background-color: #f8f9fa;
-//       border: 1px solid #ddd;
-//       border-radius: 8px;
-//       display: flex;
-//       justify-content: center;
-//       align-items: center;
-//       overflow: hidden;
-//       flex-shrink: 0;
+  &__metric-label,
+  &__label {
+    color: #2f2926;
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
 
-//       img {
-//         width: 100%;
-//         height: 100%;
-//         object-fit: cover;
-//       }
-//       .no-cover { color: #999; font-size: 14px; }
-//     }
+  &__input,
+  &__select,
+  &__textarea,
+  &__metric-input,
+  &__metric-select {
+    width: 100%;
+    border: 1px solid rgba(64, 45, 36, 0.14);
+    border-radius: 12px;
+    background: #fffaf7;
+    color: #2f2926;
+    box-shadow: none;
 
-//     /* 藝廊小圖區塊 */
-//     .image-gallery {
-//       display: flex;
-//       gap: 10px;
-//       overflow-x: auto;
-//       padding: 10px;
-//       background: #f8f9fa;
-//       border-radius: 5px;
-//       margin-top: 15px;
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary, #e66f43);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(230, 111, 67, 0.12);
+    }
+  }
 
-//       .gallery-item {
-//         text-align: center;
-//         display: flex;
-//         flex-direction: column;
-//         align-items: center;
+  &__input,
+  &__select,
+  &__textarea {
+    padding: 0.8rem 1rem;
+  }
 
-//         img {
-//           width: 80px;
-//           height: 60px;
-//           object-fit: cover;
-//           border-radius: 4px;
-//           border: 1px solid #ccc;
+  &__metric-input,
+  &__metric-select {
+    padding: 0.45rem 0.65rem;
+    font-weight: 800;
+  }
 
-//           &.is-cover { border: 3px solid gold; }
-//         }
+  &__textarea {
+    resize: vertical;
+    line-height: 1.7;
+  }
 
-//         .btn-set-cover {
-//           font-size: 12px;
-//           margin-top: 5px;
-//           cursor: pointer;
-//           background: none;
-//           border: 1px solid #ccc;
-//           border-radius: 3px;
-//         }
-//         .crown-text {
-//           font-size: 12px;
-//           color: #b8860b;
-//           margin-top: 5px;
-//           font-weight: bold;
-//         }
-//         .btn-delete-img {
-//           font-size: 12px;
-//           background-color: #dc3545;
-//           color: white;
-//           border: none;
-//           cursor: pointer;
-//           border-radius: 3px;
-//           padding: 2px 5px;
-//           margin-top: 5px;
-//         }
-//       }
-//     }
-//   }
-// }
+  &__checkbox-wrapper--full,
+  &__tags-group,
+  &__radio-card-group {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  &__checkbox-label,
+  &__tag-checkbox,
+  &__radio-card {
+    border: 1px solid rgba(230, 111, 67, 0.14);
+    border-radius: 14px;
+    background: #fff;
+    cursor: pointer;
+  }
+
+  &__checkbox-label,
+  &__tag-checkbox {
+    padding: 0.85rem 1rem;
+    color: #5f5650;
+    font-weight: 800;
+  }
+
+  &__tag-checkbox:has(input:checked),
+  &__radio-card.is-active {
+    border-color: rgba(230, 111, 67, 0.36);
+    background: var(--color-primary-light, #fff2ee);
+    color: var(--color-primary, #e66f43);
+  }
+
+  &__radio-card {
+    padding: 1rem;
+    display: grid;
+    gap: 0.35rem;
+
+    input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+
+  &__radio-card-title {
+    color: #2f2926;
+    font-weight: 800;
+  }
+
+  &__radio-card-desc {
+    color: #8a817c;
+    line-height: 1.55;
+  }
+
+  &__upload-wrapper {
+    padding: 1rem;
+    border: 1px dashed rgba(230, 111, 67, 0.28);
+    border-radius: 14px;
+    background: #fffaf7;
+  }
+
+  &__gallery,
+  &__gallery-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+    gap: 1rem;
+  }
+
+  &__photo-card {
+    position: relative;
+    padding: 0.45rem;
+    border: 1px solid rgba(230, 111, 67, 0.12);
+    border-radius: 14px;
+    background: #fff;
+
+    &.is-cover {
+      border-color: var(--color-primary, #e66f43);
+      background: var(--color-primary-light, #fff2ee);
+    }
+  }
+
+  &__photo-img {
+    width: 100%;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  &__photo-delete {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 50%;
+    background: #c64545;
+    color: #fff;
+    display: grid;
+    place-items: center;
+  }
+
+  &__actions {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(230, 111, 67, 0.12);
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+
+  &__btn {
+    min-height: 44px;
+    padding: 0 1.35rem;
+    border-radius: 999px;
+    font-weight: 800;
+
+    &--primary {
+      border: 0;
+      background: var(--color-primary, #e66f43);
+      color: #fff;
+      box-shadow: 0 10px 22px rgba(230, 111, 67, 0.22);
+    }
+
+    &--secondary {
+      border: 1px solid rgba(230, 111, 67, 0.32);
+      background: #fff;
+      color: var(--color-primary, #e66f43);
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .rental-form__dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .rental-form {
+    padding: 1.5rem 1rem 3rem;
+
+    &__address-grid,
+    &__side-grid,
+    &__metrics-grid,
+    &__checkbox-wrapper--full,
+    &__tags-group,
+    &__radio-card-group {
+      grid-template-columns: 1fr;
+    }
+
+    &__actions {
+      flex-direction: column;
+    }
+
+    &__btn {
+      width: 100%;
+    }
+  }
+}

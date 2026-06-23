@@ -1,103 +1,113 @@
-<div class="dashboard-container p-4">
-  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+<section class="user-dashboard-page">
+  <div class="dashboard-header">
     <div>
-      <h1 class="welcome-title m-0">早安，{{ usersev.profile()?.realName }} <span class="role-badge">({{ role }})</span></h1>
-      <p class="subtitle text-muted m-0 mt-1">輕鬆管理您的房源空間、共享預約與智慧配對設定</p>
+      <!-- <p class="eyebrow">會員中心</p> -->
+      <h1>
+        早安，{{ usersev.profile()?.realName || '會員' }}
+        <span>{{ role }}</span>
+      </h1>
+      <p>輕鬆管理您的房源空間、共享預約與智慧配對設定。</p>
     </div>
 
-    <div class="d-flex gap-3">
-      <button mat-flat-button class="btn-custom-primary" routerLink="../rent">
-        <mat-icon class="me-1">home_work</mat-icon>發布新房源
+    <div class="header-actions">
+      <button mat-flat-button class="primary-action" routerLink="../rent">
+        <mat-icon>home_work</mat-icon>
+        發布新房源
       </button>
-      <button mat-stroked-button class="btn-custom-outline" routerLink="../product">
-        <mat-icon class="me-1">add_circle_outline</mat-icon>發布新工具
+
+      <button mat-stroked-button class="outline-action" routerLink="../product">
+        <mat-icon>add_circle_outline</mat-icon>
+        發布新工具
       </button>
     </div>
   </div>
 
-  <div class="row g-4 mb-4">
+  <div class="stats-grid">
     @for (stat of stats(); track stat.title) {
-      <div class="col-6 col-lg-3" [routerLink]="stat.link">
-        <div class="stat-card p-3 d-flex flex-column justify-content-between position-relative">
-          <div class="d-flex justify-content-between align-items-start">
-            <div class="icon-wrapper d-flex align-items-center justify-content-center">
-              <mat-icon>{{ stat.icon }}</mat-icon>
-            </div>
-
-            @if (stat.badge) {
-              <span class="badge-status">{{ stat.badge }}</span>
-            }
-
-            @if (stat.hasDot) {
-              <span class="red-dot"></span>
-            }
-          </div>
-          <div class="mt-4">
-            <div class="stat-title text-muted mb-1">{{ stat.title }}</div>
-            <div class="stat-count">{{ stat.count }}</div>
-          </div>
+    <article class="stat-card" [routerLink]="stat.link">
+      <div class="stat-card__top">
+        <div class="icon-wrapper">
+          <mat-icon>{{ stat.icon }}</mat-icon>
         </div>
+
+        @if (stat.badge) {
+        <span class="badge-status">{{ stat.badge }}</span>
+        }
+
+        @if (stat.hasDot) {
+        <span class="red-dot"></span>
+        }
       </div>
+
+      <div>
+        <div class="stat-title">{{ stat.title }}</div>
+        <div class="stat-count">{{ stat.count }}</div>
+      </div>
+    </article>
     }
   </div>
 
-  <div class="row g-4">
-    <div class="col-12 col-lg-8">
-      <div class="content-card p-4 h-100">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-          <h2 class="card-section-title m-0">
-            <mat-icon class="me-2 text-warning align-middle">notifications</mat-icon>近期動態與申請
-          </h2>
-          <a class="view-all-link text-decoration-none" routerLink="../house-viewing-approval">查看全部</a>
-        </div>
+  <div class="dashboard-layout">
+    <section class="content-card activity-panel">
+      <div class="card-header-row">
+        <h2>
+          <mat-icon>notifications</mat-icon>
+          近期動態與申請
+        </h2>
 
-        <div class="activity-list">
-          @for (activity of recentActivities(); track activity.title) {
-            <div class="activity-item d-flex py-3 border-bottom">
-              <div class="activity-icon-container me-3" [style.backgroundColor]="activity.iconBg">
-                <mat-icon class="activity-icon">{{ activity.icon }}</mat-icon>
-              </div>
-              <div class="flex-grow-1">
-                <div class="d-flex justify-content-between align-items-start mb-1">
-                  <h4 class="activity-title m-0">{{ activity.title }}</h4>
-                  <span class="activity-time text-muted fs-7">{{ activity.time }}</span>
-                </div>
-                <p class="activity-detail text-muted mb-3">{{ activity.detail }}</p>
-                <!-- <div class="action-buttons d-flex gap-2">
-                  <button mat-flat-button class="btn-approve btn-sm" (click)="onApprove(activity)">審核同意</button>
-                  <button mat-stroked-button class="btn-reject btn-sm" (click)="onReject(activity)">婉拒</button>
-                </div> -->
-              </div>
-            </div>
-          }
-        </div>
+        <a routerLink="../house-viewing-approval">查看全部</a>
       </div>
-    </div>
 
-    <div class="col-12 col-lg-4 d-flex flex-column gap-4">
-      <div class="content-card p-4">
-        <h3 class="system-title mb-3">系統提示</h3>
-        <div class="d-flex flex-column gap-3">
+      <div class="activity-list">
+        @for (activity of recentActivities(); track activity.title) {
+        <article class="activity-item">
+          <div class="activity-icon-container" [style.backgroundColor]="activity.iconBg">
+            <mat-icon>{{ activity.icon }}</mat-icon>
+          </div>
+
+          <div class="activity-content">
+            <div class="activity-title-row">
+              <h4>{{ activity.title }}</h4>
+              <span>{{ activity.time }}</span>
+            </div>
+
+            <p>{{ activity.detail }}</p>
+          </div>
+        </article>
+        }
+      </div>
+    </section>
+
+    <aside class="side-column">
+      <section class="content-card">
+        <h3 class="system-title">系統提示</h3>
+
+        <div class="notice-list">
           @for (notice of systemNotifications(); track notice.text) {
-            <div class="sys-notice-box p-3 d-flex align-items-start" [ngClass]="notice.type">
-              <mat-icon class="me-2 mt-1 fs-5 text-primary-custom">{{ notice.icon }}</mat-icon>
-              <div class="notice-text">{{ notice.text }}</div>
-            </div>
+          <article class="sys-notice-box" [class.notice-info]="notice.type === 'info'"
+            [class.notice-warning]="notice.type === 'warning'" [class.notice-success]="notice.type === 'success'"
+            [class.notice-danger]="notice.type === 'danger'">
+            <mat-icon>{{ notice.icon }}</mat-icon>
+            <span>{{ notice.text }}</span>
+          </article>
           }
         </div>
-      </div>
+      </section>
 
-      <div class="upgrade-card p-4 d-flex flex-column justify-content-between text-white flex-grow-1">
+      <section class="upgrade-card">
         <div>
-          <h3 class="upgrade-title mb-2 d-flex align-items-center">
-            <mat-icon class="me-2">auto_awesome</mat-icon>升級智慧管家
+          <h3>
+            <mat-icon>auto_awesome</mat-icon>
+            升級智慧管家
           </h3>
-          <p class="upgrade-desc opacity-75">解鎖自動化收租提醒與合約電子簽署功能。</p>
+          <p>解鎖自動化收租提醒與合約電子簽署功能。</p>
         </div>
-        <button mat-flat-button class="btn-upgrade mt-3 align-self-start">
-          了解更多 <mat-icon class="ms-1 fs-6">arrow_forward</mat-icon>
+
+        <button mat-flat-button class="upgrade-btn">
+          了解更多
+          <mat-icon>arrow_forward</mat-icon>
         </button>
-      </div>
-    </div>
+      </section>
+    </aside>
   </div>
-</div>
+</section>

@@ -1,388 +1,196 @@
-/* ========================================
-   頁面背景
-======================================== */
 .profile-page {
-  // background: #f5f6fa;
-  min-height: 100vh;
-  padding: 24px;
+  // width: min(100%, 1120px);
+  // margin: 0 auto;
+  // padding: 2rem 1.5rem 4rem;
 }
 
-/* ========================================
-   卡片區塊
-======================================== */
+.profile-header {
+  margin-bottom: 1.5rem;
+
+  .eyebrow {
+    margin-bottom: 0.35rem;
+    color: var(--color-primary, #e66f43);
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  h2 {
+    margin-bottom: 0.35rem;
+    color: #2f2926;
+    font-size: 1.85rem;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+    color: #8a817c;
+  }
+}
+
+.profile-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.profile-column {
+  display: grid;
+  gap: 1.5rem;
+}
+
 .profile-card {
+  padding: 1.5rem;
+  border: 1px solid rgba(230, 111, 67, 0.12);
+  border-radius: 16px;
   background: #fff;
-  border-radius: 24px;
-  padding: 28px;
-  margin-bottom: 24px;
-
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 12px 32px rgba(64, 45, 36, 0.06);
 }
 
-/* ========================================
-   區塊標題
-======================================== */
 .section-title {
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(230, 111, 67, 0.1);
+  color: #2f2926;
   display: flex;
   align-items: center;
-  gap: 10px;
-
-  font-size: 1.5rem;
-  font-weight: 700;
-
-  margin-bottom: 25px;
-  padding-bottom: 15px;
-
-  border-bottom: 1px solid #edf1f5;
+  gap: 0.55rem;
+  font-size: 1.15rem;
+  font-weight: 800;
 
   i {
-    color: #e98b2a;
+    color: var(--color-primary, #e66f43);
   }
 }
 
-/* ========================================
-   Label
-======================================== */
-label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: #444;
+.avatar-area {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
 }
 
-/* ========================================
-   Input / Textarea / Select
-======================================== */
-.custom-input,
-.custom-textarea,
-.custom-select {
-  width: 100%;
+.avatar-button {
+  border: 0;
+  background: transparent;
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
 
-  padding: 12px 16px;
-
-  border: 1px solid #e7d2c1;
-  border-radius: 18px;
-
-  background: #fff;
-
-  transition: all 0.3s ease;
-
-  &:focus {
-    outline: none;
-    border-color: #e98b2a;
-
-    box-shadow: 0 0 0 3px rgba(233, 139, 42, 0.15);
+  span {
+    color: var(--color-primary, #e66f43);
+    font-weight: 800;
   }
-}
-
-/* ========================================
-   Textarea
-======================================== */
-.custom-textarea {
-  min-height: 120px;
-  resize: vertical;
-}
-
-/* ========================================
-   頭像區塊
-======================================== */
-.avatar-wrapper {
-  text-align: center;
 }
 
 .avatar {
-  width: 140px;
-  height: 140px;
-
+  width: 132px;
+  height: 132px;
+  border: 4px solid #fff2ee;
+  border-radius: 22px;
   object-fit: cover;
-
-  border-radius: 20px;
-  border: 4px solid #fff;
-
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 28px rgba(64, 45, 36, 0.1);
 }
 
-/* ========================================
-   檔案上傳
-======================================== */
-.custom-file {
-  border-radius: 18px;
-  border: 1px solid #e7d2c1;
-}
-
-/* ========================================
-   Range Slider
-======================================== */
-.form-range {
-  margin-top: 10px;
-}
-
-.form-range::-webkit-slider-thumb {
-  background: #e98b2a;
-}
-
-.form-range::-moz-range-thumb {
-  background: #e98b2a;
-}
-
-.preference-helper {
-  display: block;
-  margin-top: 0.45rem;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: #8a7a70;
-}
-
-.profile-card select.custom-input {
-  cursor: pointer;
-  background-color: #fff;
-}
-
-.profile-card select.custom-input {
-  appearance: auto;
-  min-height: 3rem;
-}
-
-/* ========================================
-   Slider 數值顯示
-======================================== */
-.slider-value {
-  font-weight: 700;
-  color: #e98b2a;
-}
-
-/* ========================================
-   開關卡片
-======================================== */
-.switch-box {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 18px;
-
-  margin-bottom: 14px;
-
-  border: 1px solid #e7d2c1;
-  border-radius: 18px;
-
-  background: #fff;
-}
-
-.switch-box strong {
-  display: block;
-  margin-bottom: 4px;
-}
-
-.switch-box small {
-  color: #777;
-}
-
-/* ========================================
-   Bootstrap Switch 顏色
-======================================== */
-.form-check-input:checked {
-  background-color: #e98b2a;
-  border-color: #e98b2a;
-}
-
-/* ========================================
-   興趣 Tag
-======================================== */
-.tag-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.tag-item {
-  padding: 8px 14px;
-
-  border-radius: 999px;
-
-  background: #fff4e8;
-  color: #e98b2a;
-
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-/* ========================================
-   儲存按鈕
-======================================== */
-.btn-save {
-  border: none;
-  border-radius: 16px;
-
-  padding: 14px 40px;
-
-  background: #e98b2a;
-  color: white;
-
-  font-size: 1rem;
-  font-weight: 600;
-
-  transition: all 0.3s ease;
-
-  &:hover:not(:disabled) {
-    transform: translateY(-2px);
-
-    box-shadow: 0 8px 20px rgba(233, 139, 42, 0.3);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-
-.btn-back {
-  border: solid #e98b2a 2px;
-  border-radius: 16px;
-
-  padding: 14px 40px;
-
-  background: #ffffff;
-  color: #e98b2a;
-
-  font-size: 1rem;
-  font-weight: 600;
-
-  transition: all 0.3s ease;
-
-  &:hover:not(:disabled) {
-    transform: translateY(-2px);
-
-    box-shadow: 0 8px 20px rgba(233, 139, 42, 0.3);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-
-.interest-tag-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.875rem;
-}
-
-.interest-tag-hint {
-  margin: 0;
-  font-size: 0.875rem;
-  color: #8a7a70;
-}
-
-.interest-tag-list,
-.interest-preset-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.625rem;
-}
-
-.interest-tag-chip,
-.interest-preset-chip {
-  border: 0;
-  border-radius: 999px;
-  padding: 0.55rem 0.9rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.interest-tag-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  background: #fff1ec;
-  color: #e86b3f;
-  border: 1px solid rgba(232, 107, 63, 0.24);
-}
-
-.interest-tag-chip:hover {
-  background: #ffe5dc;
-}
-
-.interest-tag-chip__remove {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.1rem;
-  height: 1.1rem;
-  border-radius: 50%;
-  font-size: 1rem;
-  line-height: 1;
-  background: rgba(232, 107, 63, 0.12);
-}
-
-.interest-preset-chip {
-  background: #f6f6f6;
-  color: #5f534d;
-}
-
-.interest-preset-chip.is-active {
-  background: #fff1ec;
-  color: #e86b3f;
-  box-shadow: inset 0 0 0 1px rgba(232, 107, 63, 0.28);
-}
-
-.interest-add-row {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-}
-
-.interest-add-input {
-  flex: 1;
-}
-
-.interest-add-btn {
-  border: 0;
-  border-radius: 999px;
-  padding: 0.7rem 1.1rem;
-  font-weight: 800;
-  color: #7a4b34;
-  background: #f5f5f5;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-.interest-add-btn:hover {
-  background: #fff1ec;
-  color: #e86b3f;
-}
-
-.co-living-preference-list {
-  display: flex;
-  flex-direction: column;
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+}
+
+.form-field {
+  display: grid;
+  gap: 0.45rem;
+
+  &.full {
+    grid-column: 1 / -1;
+  }
+
+  &.mt {
+    margin-top: 1rem;
+  }
+
+  label {
+    color: #2f2926;
+    font-size: 0.92rem;
+    font-weight: 800;
+  }
+}
+
+.custom-input,
+.custom-textarea {
+  width: 100%;
+  border: 1px solid rgba(64, 45, 36, 0.14);
+  border-radius: 12px;
+  background: #fffaf7;
+  color: #2f2926;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+
+  &::placeholder {
+    color: #b6ada7;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary, #e66f43);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(230, 111, 67, 0.12);
+  }
+}
+
+.custom-input {
+  min-height: 46px;
+  padding: 0.75rem 1rem;
+}
+
+.custom-textarea {
+  min-height: 130px;
+  padding: 0.85rem 1rem;
+  resize: vertical;
+  line-height: 1.75;
+}
+
+.field-error {
+  color: #c64545;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.preference-helper,
+.interest-tag-hint {
+  color: #8a817c;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.co-living-preference-list,
+.interest-tag-section {
+  display: grid;
+  gap: 0.9rem;
 }
 
 .co-living-preference-card {
   position: relative;
+  padding: 1rem;
+  border: 1px solid rgba(230, 111, 67, 0.14);
+  border-radius: 14px;
+  background: #fff;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 1rem;
-  padding: 1rem 1.15rem;
-  border: 1px solid rgba(210, 180, 160, 0.75);
-  border-radius: 1rem;
-  background: #fff;
   cursor: pointer;
-  transition: 0.2s ease;
-}
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 
-.co-living-preference-card:hover {
-  border-color: #e98225;
-  background: #fff8f3;
-}
+  &:hover,
+  &.is-active {
+    border-color: rgba(230, 111, 67, 0.36);
+    background: #fffaf7;
+  }
 
-.co-living-preference-card.is-active {
-  border-color: #e98225;
-  background: #fff3ea;
-  box-shadow: 0 0 0 3px rgba(233, 130, 37, 0.08);
+  &.is-active {
+    box-shadow: 0 0 0 4px rgba(230, 111, 67, 0.08);
+  }
 }
 
 .co-living-preference-card__input {
@@ -392,52 +200,183 @@ label {
 }
 
 .co-living-preference-card__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.4rem;
-  height: 2.4rem;
-  border-radius: 999px;
-  background: #fff4ec;
-  font-size: 1.2rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--color-primary-light, #fff2ee);
+  display: grid;
+  place-items: center;
+  font-size: 1.25rem;
 }
 
 .co-living-preference-card__content {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: 0.25rem;
-  min-width: 0;
-}
 
-.co-living-preference-card__content strong {
-  font-size: 0.98rem;
-  color: #1f2937;
-}
+  strong {
+    color: #2f2926;
+    font-size: 0.95rem;
+  }
 
-.co-living-preference-card__content small {
-  font-size: 0.82rem;
-  line-height: 1.5;
-  color: #8a7a70;
+  small {
+    color: #8a817c;
+    line-height: 1.55;
+  }
 }
 
 .co-living-preference-card__status {
-  flex-shrink: 0;
   padding: 0.35rem 0.75rem;
   border-radius: 999px;
-  font-size: 0.82rem;
+  background: var(--color-primary-light, #fff2ee);
+  color: var(--color-primary, #e66f43);
+  font-size: 0.8rem;
   font-weight: 800;
-  color: #e98225;
-  background: rgba(233, 130, 37, 0.1);
+  white-space: nowrap;
+}
+
+.interest-tag-list,
+.interest-preset-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.interest-tag-chip,
+.interest-preset-chip,
+.interest-add-btn {
+  border-radius: 999px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.interest-tag-chip {
+  border: 1px solid rgba(230, 111, 67, 0.24);
+  background: var(--color-primary-light, #fff2ee);
+  color: var(--color-primary, #e66f43);
+  padding: 0.5rem 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.interest-tag-chip__remove {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  background: rgba(230, 111, 67, 0.14);
+  display: grid;
+  place-items: center;
+  line-height: 1;
+}
+
+.interest-preset-chip {
+  border: 0;
+  background: #f5f2ef;
+  color: #5f5650;
+  padding: 0.5rem 0.8rem;
+
+  &.is-active {
+    background: var(--color-primary-light, #fff2ee);
+    color: var(--color-primary, #e66f43);
+    box-shadow: inset 0 0 0 1px rgba(230, 111, 67, 0.28);
+  }
+}
+
+.interest-add-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.interest-add-input {
+  flex: 1;
+}
+
+.interest-add-btn {
+  border: 0;
+  padding: 0 1rem;
+  background: var(--color-primary, #e66f43);
+  color: #fff;
+  white-space: nowrap;
+}
+
+.profile-actions,
+.crop-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.btn-save,
+.btn-back {
+  min-height: 44px;
+  padding: 0 1.4rem;
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+.btn-save {
+  border: 0;
+  background: var(--color-primary, #e66f43);
+  color: #fff;
+  box-shadow: 0 10px 22px rgba(230, 111, 67, 0.22);
+
+  &:hover:not(:disabled) {
+    background: var(--color-primary-hover, #ce5b30);
+  }
+
+  &:disabled {
+    background: #d8d1cc;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+}
+
+.btn-back {
+  border: 1px solid rgba(230, 111, 67, 0.32);
+  background: #fff;
+  color: var(--color-primary, #e66f43);
+
+  &:hover {
+    background: #fffaf7;
+  }
+}
+
+.avatar-crop-modal {
+  z-index: 1060;
+
+  .modal-content {
+    border: 0;
+    border-radius: 18px;
+    box-shadow: 0 22px 60px rgba(64, 45, 36, 0.18);
+  }
+
+  h5 {
+    color: #2f2926;
+    font-weight: 800;
+  }
+}
+
+.crop-actions {
+  margin-top: 1rem;
+}
+
+@media (max-width: 992px) {
+  .profile-layout {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 576px) {
-  .interest-add-row {
-    flex-direction: column;
-    align-items: stretch;
+  .profile-page {
+    padding: 1.5rem 1rem 3rem;
   }
 
-  .interest-add-btn {
-    width: 100%;
+  .profile-card {
+    padding: 1.25rem;
+  }
+
+  .field-grid {
+    grid-template-columns: 1fr;
   }
 
   .co-living-preference-card {
@@ -448,37 +387,16 @@ label {
     grid-column: 2 / -1;
     width: fit-content;
   }
-}
 
-/* ========================================
-   雙欄 Dashboard 排版
-======================================== */
-.profile-layout {
-  display: grid;
-
-  grid-template-columns: 1fr 1fr;
-
-  gap: 24px;
-}
-
-/* ========================================
-   RWD
-======================================== */
-@media (max-width: 768px) {
-  .profile-layout {
-    grid-template-columns: 1fr;
+  .interest-add-row,
+  .profile-actions,
+  .crop-actions {
+    flex-direction: column;
   }
 
-  .profile-card {
-    padding: 20px;
-  }
-
-  .avatar {
-    width: 120px;
-    height: 120px;
-  }
-
-  .section-title {
-    font-size: 1.25rem;
+  .btn-save,
+  .btn-back,
+  .interest-add-btn {
+    width: 100%;
   }
 }

@@ -1,57 +1,96 @@
-:host {
-  display: block;
-  min-height: 100vh;
-  // background: #f8f5f1;
+.contact-permission-page {
+  // width: min(100%, 980px);
+  // margin: 0 auto;
+  // padding: 2rem 1.5rem 4rem;
 }
 
-.page-title {
-  font-size: 42px;
-  font-weight: 700;
-  color: #1f2937;
-}
+.page-header {
+  margin-bottom: 1.5rem;
 
-.page-subtitle {
-  color: #6b7280;
-  margin-bottom: 2rem;
-}
+  .eyebrow {
+    margin-bottom: 0.35rem;
+    color: var(--color-primary, #e66f43);
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
 
-/* =====================
-   提示區
-===================== */
+  h1 {
+    margin-bottom: 0.35rem;
+    color: #2f2926;
+    font-size: 1.85rem;
+    font-weight: 800;
+  }
 
-.notice-box {
-  background: #eef3fb;
-  border: 1px solid #d88a3a;
-  border-radius: 28px;
-  padding: 1.75rem;
-}
-
-.notice-icon {
-
-  mat-icon {
-    color: #a05a00;
-    font-size: 28px;
-    width: 28px;
-    height: 28px;
+  p {
+    margin: 0;
+    color: #8a817c;
   }
 }
 
-/* =====================
-   卡片
-===================== */
+.notice-box {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(230, 111, 67, 0.16);
+  border-radius: 16px;
+  background: #fffaf7;
+  display: flex;
+  gap: 1rem;
+  box-shadow: 0 12px 32px rgba(64, 45, 36, 0.06);
 
-.info-card,
+  h5 {
+    margin-bottom: 0.5rem;
+    color: #2f2926;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+    color: #6f6660;
+    line-height: 1.8;
+  }
+}
+
+.notice-icon,
+.circle-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--color-primary-light, #fff2ee);
+  color: var(--color-primary, #e66f43);
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  mat-icon {
+    width: 26px;
+    height: 26px;
+    font-size: 26px;
+  }
+}
+
+.permission-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.permission-card {
+  padding: 1.5rem;
+  border: 1px solid rgba(230, 111, 67, 0.12);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(64, 45, 36, 0.06);
+}
+
 .line-card {
-  background: white;
-  border-radius: 32px;
-  padding: 1.75rem;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, .05);
+  margin-top: 1.25rem;
 }
 
 .card-header-custom {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 1rem;
 }
 
 .info-header {
@@ -59,140 +98,120 @@
   gap: 1rem;
 
   h3 {
+    margin: 0 0 0.25rem;
+    color: #2f2926;
+    font-size: 1.15rem;
+    font-weight: 800;
+  }
+
+  p {
     margin: 0;
+    color: #9b928c;
+    font-size: 0.88rem;
     font-weight: 700;
-    font-size: 1.4rem;
-  }
-
-  span {
-    color: #8b8b8b;
-  }
-}
-
-.circle-icon {
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-
-  background: #eef3ff;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  flex-shrink: 0;
-
-  mat-icon {
-    color: #b86d14;
-    font-size: 28px;
-    width: 28px;
-    height: 28px;
   }
 }
 
 .description {
-  margin-top: 1.5rem;
+  margin: 1.25rem 0 0;
+  color: #6f6660;
   line-height: 1.8;
-  color: #555;
 }
 
 .tip-box {
   margin-top: 1rem;
-
-  border: 1px solid #ead3c1;
-  border-radius: 12px;
-
-  padding: 12px 16px;
-
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(230, 111, 67, 0.14);
+  border-radius: 14px;
+  background: #fffaf7;
+  color: #6f6660;
   display: flex;
   align-items: center;
-  gap: 8px;
-
-  color: #666;
+  gap: 0.5rem;
+  font-weight: 700;
 
   mat-icon {
-    font-size: 18px;
+    color: var(--color-primary, #e66f43);
     width: 18px;
     height: 18px;
-    color: #7a7a7a;
+    font-size: 18px;
   }
 }
-
-/* =====================
-   LINE
-===================== */
-
-.line-setting {
-  border: 1px solid #e5cdb8;
-  border-radius: 20px;
-
-  padding: 1rem;
-
-  background: #fafcff;
-
-  label {
-    font-weight: 600;
-    margin-bottom: .75rem;
-    display: block;
-  }
-
-  small {
-    color: #888;
-  }
-}
-
-.btn-update {
-  border: 1px solid #d9d9d9;
-  border-radius: 10px;
-  background: white;
-
-  padding: .5rem 1rem;
-}
-
-/* =====================
-   Footer
-===================== */
 
 .footer-action {
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   padding-top: 1.5rem;
-
-  border-top: 1px solid #e5d2c4;
-
+  border-top: 1px solid rgba(230, 111, 67, 0.12);
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
+  gap: 0.75rem;
+}
+
+.btn-cancel,
+.btn-save {
+  min-height: 42px;
+  padding: 0 1.25rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 800;
 }
 
 .btn-cancel {
-  background: transparent;
+  border: 1px solid rgba(230, 111, 67, 0.32);
+  background: #fff;
+  color: var(--color-primary, #e66f43);
 
-  border: 1px solid #b86d14;
-
-  color: #b86d14;
-
-  border-radius: 999px;
-
-  padding: .75rem 1.75rem;
+  &:hover {
+    background: #fffaf7;
+  }
 }
 
 .btn-save {
-  background: #b86d14;
-  color: white;
+  border: 0;
+  background: var(--color-primary, #e66f43);
+  color: #fff;
+  box-shadow: 0 10px 22px rgba(230, 111, 67, 0.22);
 
-  border: none;
-
-  border-radius: 999px;
-
-  padding: .75rem 1.75rem;
-
-  display: flex;
-  align-items: center;
-  gap: .5rem;
+  &:hover {
+    background: var(--color-primary-hover, #ce5b30);
+  }
 
   mat-icon {
-    font-size: 20px;
     width: 20px;
     height: 20px;
+    font-size: 20px;
+  }
+}
+
+::ng-deep .contact-permission-page .mat-mdc-slide-toggle.mat-primary {
+  --mdc-switch-selected-track-color: var(--color-primary, #e66f43);
+  --mdc-switch-selected-handle-color: #fff;
+  --mdc-switch-selected-hover-track-color: var(--color-primary-hover, #ce5b30);
+  --mdc-switch-selected-focus-track-color: var(--color-primary, #e66f43);
+  --mdc-switch-selected-pressed-track-color: var(--color-primary, #e66f43);
+}
+
+@media (max-width: 768px) {
+  .contact-permission-page {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .notice-box,
+  .card-header-custom,
+  .footer-action {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .permission-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-cancel,
+  .btn-save {
+    width: 100%;
+    justify-content: center;
   }
 }

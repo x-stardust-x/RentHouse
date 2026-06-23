@@ -529,6 +529,10 @@
   }
 }
 
+.dropdown {
+  border: var(--color-primary) 2px solid;
+  border-radius: 50em;
+}
 
 .avatar {
   width: 40px;

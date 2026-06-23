@@ -1,56 +1,55 @@
-<div class="container py-4">
-  <h3 class="mb-4 fw-bold">🏠 我的房源管理</h3>
+<div class="house-management__container">
+  <h3 class="house-management__title">🏠 我的房源管理</h3>
 
   @if (isLoading()) {
-    <div class="text-center p-5">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-      <p class="mt-3 text-muted fw-bold">資料載入中，請稍候...</p>
+    <div class="house-management__loading">
+      <div class="house-management__spinner"></div>
+      <p class="house-management__loading-text">資料載入中，請稍候...</p>
     </div>
   }
   @else if (myHouses().length === 0) {
-    <div class="empty-state text-center p-5 border rounded bg-light" style="border-style: dashed !important;">
-      <h4 class="text-secondary">目前沒有房源</h4>
-      <p class="text-muted">您還沒有發布任何房源，趕快點擊左側「發布新房源」吧！</p>
+    <div class="house-management__empty-state">
+      <h4 class="house-management__empty-title">目前沒有房源</h4>
+      <p class="house-management__empty-desc">您還沒有發布任何房源，趕快點擊左側「發布新房源」吧！</p>
     </div>
   }
   @else {
-    <div class="row">
+    <div class="house-management__grid">
       @for (house of myHouses(); track house.id) {
-        <div class="col-md-6 col-lg-4 mb-4">
-          <div class="card shadow-sm h-100">
+        <div class="house-management__card">
 
-            <img [src]="house.coverUrl ? ('https://localhost:7215' + house.coverUrl) : 'https://via.placeholder.com/300x200?text=No+Image'" class="card-img-top" style="height: 200px; object-fit: cover;" alt="房源圖片">
+          <img
+            [src]="house.coverUrl ? ('https://localhost:7215' + house.coverUrl) : 'https://via.placeholder.com/300x200?text=No+Image'"
+            class="house-management__card-image"
+            alt="房源圖片">
 
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title fw-bold text-primary">{{ house.name }}</h5>
+          <div class="house-management__card-body">
+            <h5 class="house-management__card-title">{{ house.name }}</h5>
 
-              <div class="mb-2">
-                @if (house.status === 0) {
-                  <span class="badge bg-warning text-dark">審核中</span>
-                } @else if (house.status === 1) {
-                  <span class="badge bg-success">已上架</span>
-                } @else if (house.status === 2) {
-                  <span class="badge bg-danger">遭下架</span>
-                } @else {
-                  <span class="badge bg-secondary">其他/已下架</span>
-                }
-              </div>
+            <div>
+              @if (house.status === 0) {
+                <span class="house-management__status-badge house-management__status-badge--pending">審核中</span>
+              } @else if (house.status === 1) {
+                <span class="house-management__status-badge house-management__status-badge--active">已上架</span>
+              } @else if (house.status === 2) {
+                <span class="house-management__status-badge house-management__status-badge--removed">遭下架</span>
+              } @else {
+                <span class="house-management__status-badge house-management__status-badge--other">其他/已下架</span>
+              }
+            </div>
 
-              <p class="card-text mb-4 text-muted">
-                <strong>📍 地點：</strong>{{ house.address || '尚未填寫地點' }} <br>
-                <strong>💰 租金：</strong>{{ house.rentPrice || 0 }} 元/月
-              </p>
+            <p class="house-management__card-info">
+              <strong>📍 地點：</strong>{{ house.address || '尚未填寫地點' }} <br>
+              <strong>💰 租金：</strong>{{ house.rentPrice || 0 }} 元/月
+            </p>
 
-              <div class="d-flex justify-content-end gap-2 mt-auto">
-                <button class="btn btn-outline-primary" (click)="editHouse(house.id)">
-                  <i class="bi bi-pencil-square"></i> 編輯
-                </button>
-                <button class="btn btn-outline-danger" (click)="deleteMyHouse(house.id)">
-                  <i class="bi bi-trash"></i> 刪除
-                </button>
-              </div>
+            <div class="house-management__card-actions">
+              <button class="house-management__btn house-management__btn--primary" (click)="editHouse(house.id)">
+                ✏️ 編輯
+              </button>
+              <button class="house-management__btn house-management__btn--danger" (click)="deleteMyHouse(house.id)">
+                🗑️ 刪除
+              </button>
             </div>
           </div>
         </div>

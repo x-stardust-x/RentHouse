@@ -15,13 +15,13 @@
 .page-title {
   font-size: 1.75rem;
   font-weight: 600;
-  color: var(--color-text-main, #2B2725);
+  color: var(--color-text-main);
   margin: 0 0 0.5rem 0;
 }
 
 .page-subtitle {
   font-size: 0.95rem;
-  color: var(--color-text-muted, #8E8680);
+  color: var(--color-text-muted);
   margin: 0;
 }
 
@@ -29,7 +29,7 @@
 .tabs-container {
   display: flex;
   gap: 2rem;
-  border-bottom: 1px solid var(--color-border, #EAE4DE);
+  border-bottom: 1px solid var(--color-border);
   margin-bottom: 2rem;
 }
 
@@ -38,19 +38,19 @@
   border: none;
   font-size: 1rem;
   font-weight: 500;
-  color: var(--color-text-muted, #8E8680);
+  color: var(--color-text-muted);
   padding: 0.75rem 0;
   cursor: pointer;
   position: relative;
-  transition: var(--transition-base, all 0.2s ease);
+  transition: var(--transition-base);
 }
 
 .tab-button:hover {
-  color: var(--color-text-main, #2B2725);
+  color: var(--color-text-main);
 }
 
 .tab-button.is-active {
-  color: var(--color-primary, #E66F43);
+  color: var(--color-primary);
   font-weight: 600;
 }
 
@@ -62,7 +62,7 @@
   left: 0;
   width: 100%;
   height: 3px;
-  background-color: var(--color-primary, #E66F43);
+  background-color: var(--color-primary);
   border-radius: 3px 3px 0 0;
 }
 
@@ -75,16 +75,16 @@
 
 /* 單一預約卡片 */
 .reservation-card {
-  background-color: var(--color-bg-card, #FFFFFF);
-  border: 1px solid var(--color-border, #EAE4DE);
-  border-radius: var(--radius-lg, 16px);
-  box-shadow: var(--shadow-base, 0 4px 15px rgba(43, 39, 37, 0.03));
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-base);
   overflow: hidden;
-  transition: var(--transition-card, box-shadow 0.2s);
+  transition: var(--transition-card);
 }
 
 .reservation-card:hover {
-  box-shadow: var(--shadow-hover, 0 10px 25px rgba(43, 39, 37, 0.08));
+  box-shadow: var(--shadow-hover);
 }
 
 /* 卡片頭部 */
@@ -93,7 +93,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid #f5f0ec;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .header-left {
@@ -110,12 +110,12 @@
 }
 
 .room-address-divider {
-  color: #c8a58d;
+  color: var(--color-text-muted);
   font-weight: 500;
 }
 
 .room-address {
-  color: #7a6f68;
+  color: var(--color-text-muted);
   font-size: 0.95rem;
   font-weight: 500;
 }
@@ -128,20 +128,19 @@
 }
 
 .status-pending {
-  background-color: var(--color-primary-light, #FFF2EE);
-  color: var(--color-primary-hover, #CE5B30);
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-hover);
 }
 
 .room-name {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #8C533E;
-  /* 對齊設計稿的咖啡橘字體 */
+  color: var(--color-primary-hover);
 }
 
 .order-number {
   font-size: 0.85rem;
-  color: #A09A96;
+  color: var(--color-text-muted);
 }
 
 /* 卡片主體 (網格雙欄) */
@@ -172,7 +171,7 @@
   margin: 0 0 0.5rem 0;
   font-size: 1.15rem;
   white-space: nowrap;
-  color: var(--color-text-main, #2B2725);
+  color: var(--color-text-main);
 }
 
 .profile-tags {
@@ -188,14 +187,14 @@
   /* 灰藍字體 */
   font-size: 0.75rem;
   padding: 0.2rem 0.75rem;
-  border-radius: var(--radius-pill, 30px);
+  border-radius: var(--radius-pill);
   font-weight: 500;
 }
 
 /* 聯絡資訊灰框 */
 .contact-info-box {
-  background-color: #F8F9FA;
-  border-radius: var(--radius-md, 12px);
+  background-color: var(--color-bg-main);
+  border-radius: var(--radius-md);
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
@@ -212,7 +211,7 @@
 
 .info-icon {
   font-size: 1.1rem;
-  color: #888;
+  color: var(--color-text-muted);
 }
 
 .text-muted {
@@ -222,7 +221,7 @@
 /* 右欄：看房細節 */
 .section-label {
   font-size: 0.85rem;
-  color: var(--color-text-muted, #8E8680);
+  color: var(--color-text-muted);
   margin: 0 0 0.5rem 0;
 }
 
@@ -230,26 +229,26 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  border: 1px solid var(--color-border, #EAE4DE);
+  border: 1px solid var(--color-border);
   border-radius: 30px;
   padding: 0.75rem 1.25rem;
-  color: #9D5B3A;
+  color: var(--color-primary-hover);
   /* 深焦糖字體 */
   font-weight: 600;
   font-size: 1.1rem;
   margin-bottom: 1.25rem;
-  background-color: #FAFAF9;
+  background-color: var(--color-bg-main);
 }
 
 .time-icon {
-  color: #C08D73;
+  color: var(--color-primary-hover);
 }
 
 /* 引言框 */
 .message-quote-box {
   background-color: #F4F7FB;
   /* 淺藍灰底色 */
-  border-radius: var(--radius-md, 12px);
+  border-radius: var(--radius-md);
   padding: 1.25rem 1.5rem;
   position: relative;
   overflow: hidden;
@@ -273,7 +272,7 @@
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.6;
-  color: #55606E;
+  color: var(--color-text-muted);
   /* 藍灰字體 */
 }
 
@@ -283,19 +282,19 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.25rem 1.5rem;
-  border-top: 1px solid #f5f0ec;
-  background-color: #FFFFFF;
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-bg-card);
 }
 
 .match-score-badge {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  background-color: var(--color-primary-light, #FFF2EE);
-  color: #A65C32;
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-hover);
   /* 對齊設計稿的深焦糖色 */
   padding: 0.4rem 0.85rem;
-  border-radius: var(--radius-pill, 30px);
+  border-radius: var(--radius-pill);
   font-weight: 600;
   font-size: 0.9rem;
 }
@@ -333,9 +332,9 @@
   gap: 0.45rem;
   padding: 0.75rem 1rem;
   border-radius: 999px;
-  background: #fff;
-  border: 1px solid rgba(180, 92, 42, 0.2);
-  color: #9a4b18;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  color: var(--color-primary-hover);
   font-weight: 700;
   white-space: nowrap;
 }
@@ -352,9 +351,9 @@
   align-items: center;
   padding: 0.65rem 0.9rem;
   border-radius: 999px;
-  background: rgba(255, 112, 45, 0.1);
-  color: #9a4b18;
-  border: 1px solid rgba(255, 112, 45, 0.22);
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  color: var(--color-primary-hover);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, transparent);
   font-weight: 700;
   line-height: 1;
   white-space: nowrap;
@@ -364,46 +363,47 @@
 .btn-text {
   background: transparent;
   border: none;
-  color: var(--color-text-muted, #8E8680);
+  color: var(--color-text-muted);
 }
 
 .btn-text:hover {
-  color: var(--color-text-main, #2B2725);
-  background-color: #f8f9fa;
+  color: var(--color-text-main);
+  background-color: var(--color-bg-main);
 }
 
 /* 提議改期 (空心框) */
 .btn-outline {
   background: transparent;
-  border: 1px solid #A65C32;
-  color: #A65C32;
+  border: 1px solid var(--color-primary-hover);
+  color: var(--color-primary-hover);
 }
 
 .btn-outline:hover {
-  background: #FFF9F5;
+  background: var(--color-primary-light);
 }
 
 /* 接受預約 (實心咖啡橘) */
 .btn-fill {
-  background-color: #B25D2B;
+  background-color: var(--color-primary-hover);
   /* 完美還原設計稿中的深橘/棕色 */
-  border: 1px solid #B25D2B;
-  color: #FFFFFF;
+  border: 1px solid var(--color-primary-hover);
+  color: white;
   font-weight: 600;
+  transition: var(--transition-base);
 }
 
 .btn-fill:hover {
-  background-color: #924B21;
+  background-color: color-mix(in srgb, var(--color-primary-hover) 85%, black);
 }
 
 /* 查無資料 */
 .empty-state {
   text-align: center;
   padding: 4rem 1rem;
-  color: var(--color-text-muted, #8E8680);
-  background-color: var(--color-bg-card, #FFFFFF);
-  border-radius: var(--radius-lg, 16px);
-  border: 1px dashed var(--color-border, #EAE4DE);
+  color: var(--color-text-muted);
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--color-border);
 }
 
 
@@ -421,7 +421,7 @@
   display: grid;
   place-items: center;
   padding: 1.5rem;
-  background: rgba(20, 18, 16, 0.58);
+  background: color-mix(in srgb, black 58%, transparent);
   backdrop-filter: blur(6px);
 }
 
@@ -430,10 +430,8 @@
   max-height: min(90vh, 48rem);
   overflow: auto;
   border-radius: 1.5rem;
-  background: #fffaf5;
-  box-shadow:
-    0 1.5rem 4rem rgba(70, 38, 18, 0.24),
-    0 0 0 1px rgba(138, 82, 43, 0.12);
+  background: var(--color-bg-card);
+  box-shadow: var(--shadow-hover), 0 0 0 1px color-mix(in srgb, var(--color-primary-hover) 12%, transparent);
   animation: rescheduleModalIn 0.22s ease-out;
 }
 
@@ -455,12 +453,12 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid rgba(138, 82, 43, 0.14);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-primary-hover) 14%, transparent);
 }
 
 .reschedule-modal__header h3 {
   margin: 0;
-  color: #2b211b;
+  color: var(--color-text-main);
   font-size: 1.35rem;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -473,16 +471,16 @@
   height: 2.35rem;
   border: 0;
   border-radius: 999px;
-  color: #8a4a24;
-  background: rgba(138, 82, 43, 0.1);
+  color: var(--color-primary-hover);
+  background: color-mix(in srgb, var(--color-primary-hover) 10%, transparent);
   font-size: 1.65rem;
   line-height: 1;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition: var(--transition-base);
 }
 
 .reschedule-modal__close:hover {
-  background: rgba(138, 82, 43, 0.18);
+  background: color-mix(in srgb, var(--color-primary-hover) 18%, transparent);
   transform: rotate(90deg);
 }
 
@@ -495,14 +493,14 @@
   margin: 0 0 0.75rem;
   padding: 0.8rem 1rem;
   border-radius: 1rem;
-  color: #5c4a3f;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(138, 82, 43, 0.12);
+  color: var(--color-text-muted);
+  background: color-mix(in srgb, white 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary-hover) 12%, transparent);
   font-size: 0.95rem;
 }
 
 .reschedule-modal__order strong {
-  color: #9a4b18;
+  color: var(--color-primary-hover);
   font-weight: 800;
 }
 
@@ -513,7 +511,7 @@
 }
 
 .reschedule-modal .form-group label {
-  color: #3b2d25;
+  color: var(--color-text-main);
   font-size: 0.95rem;
   font-weight: 700;
 }
@@ -527,17 +525,14 @@
 .reschedule-modal input,
 .reschedule-modal textarea {
   width: 100%;
-  border: 1px solid rgba(138, 82, 43, 0.22);
+  border: 1px solid color-mix(in srgb, var(--color-primary-hover) 22%, transparent);
   border-radius: 0.9rem;
   padding: 0.85rem 1rem;
-  color: #2b211b;
-  background: #fff;
+  color: var(--color-text-main);
+  background: var(--color-bg-card);
   font: inherit;
   outline: none;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background 0.2s ease;
+  transition: var(--transition-base);
 }
 
 .reschedule-modal textarea {
@@ -548,14 +543,14 @@
 
 .reschedule-modal input:focus,
 .reschedule-modal textarea:focus {
-  border-color: #b75b22;
-  box-shadow: 0 0 0 4px rgba(183, 91, 34, 0.14);
-  background: #fffefd;
+  border-color: var(--color-primary-hover);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary-hover) 14%, transparent);
+  background: white;
 }
 
 .reschedule-modal input::placeholder,
 .reschedule-modal textarea::placeholder {
-  color: #a9998e;
+  color: var(--color-text-muted);
 }
 
 .reschedule-modal__footer {
@@ -563,8 +558,8 @@
   justify-content: flex-end;
   gap: 0.75rem;
   padding: 1.25rem 1.5rem 1.5rem;
-  border-top: 1px solid rgba(138, 82, 43, 0.12);
-  background: rgba(255, 246, 238, 0.7);
+  border-top: 1px solid color-mix(in srgb, var(--color-primary-hover) 12%, transparent);
+  background: color-mix(in srgb, var(--color-primary-light) 70%, transparent);
 }
 
 .reschedule-modal__footer .action-btn {
@@ -573,20 +568,22 @@
 
 /* 若原本 action-btn 沒有完整樣式，可補這段 */
 .reschedule-modal .btn-text {
-  border: 1px solid rgba(138, 82, 43, 0.28);
-  color: #8a4a24;
+  border: 1px solid color-mix(in srgb, var(--color-primary-hover) 28%, transparent);
+  color: var(--color-primary-hover);
   background: transparent;
+  transition: var(--transition-base);
 }
 
 .reschedule-modal .btn-text:hover {
-  background: rgba(138, 82, 43, 0.08);
+  background: color-mix(in srgb, var(--color-primary-hover) 8%, transparent);
 }
 
 .reschedule-modal .btn-fill {
-  border: 1px solid #9a4b18;
-  color: #fff;
-  background: linear-gradient(135deg, #b75b22, #8f3f13);
-  box-shadow: 0 0.6rem 1.2rem rgba(143, 63, 19, 0.22);
+  border: 1px solid var(--color-primary-hover);
+  color: white;
+  background: linear-gradient(135deg, var(--color-primary-hover), color-mix(in srgb, var(--color-primary-hover) 75%, black));
+  box-shadow: var(--shadow-base);
+  transition: var(--transition-base);
 }
 
 .reschedule-modal .btn-fill:hover {
@@ -619,19 +616,19 @@
 }
 
 .application-meta-pill--info {
-  color: #8a4a24;
-  background: rgba(255, 112, 45, 0.1);
-  border: 1px solid rgba(255, 112, 45, 0.22);
+  color: var(--color-primary-hover);
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, transparent);
 }
 
 .application-meta-pill--warning {
-  color: #9a4b18;
-  background: rgba(255, 188, 102, 0.16);
-  border: 1px solid rgba(255, 158, 64, 0.26);
+  color: var(--color-primary-hover);
+  background: color-mix(in srgb, #ffbc66 16%, transparent);
+  border: 1px solid color-mix(in srgb, #ff9e40 26%, transparent);
 }
 
 .application-meta-note {
-  color: #8a817b;
+  color: var(--color-text-muted);
   font-size: 0.85rem;
 }
 
@@ -649,39 +646,45 @@
   gap: 0.75rem;
   min-width: 20rem;
   padding: 0.9rem 1rem;
-  border: 1px solid #efe1d9;
+  border: 1px solid var(--color-border);
   border-radius: 1rem;
-  background: #fffaf7;
-  box-shadow: 0 0.5rem 1.5rem rgba(43, 39, 37, 0.04);
+  background: white;
+  box-shadow: var(--shadow-base);
 }
 
 .schedule-actions__summary .material-symbols-outlined {
-  color: #e66f43;
+  color: var(--color-primary);
   font-size: 1.55rem;
 }
 
 .schedule-actions__summary strong {
   display: block;
-  color: #2b2725;
+  color: var(--color-text-main);
   font-size: 0.95rem;
   font-weight: 800;
 }
 
 .schedule-actions__summary p {
   margin: 0.15rem 0 0;
-  color: #9a928c;
+  color: var(--color-text-muted);
   font-size: 0.82rem;
 }
 
 .schedule-actions__button,
 .schedule-panel__button {
-  border: 1px solid #e66f43;
+  border: 1px solid var(--color-primary);
   border-radius: 999px;
-  background: #fff;
-  color: #e66f43;
+  background: var(--color-bg-card);
+  color: var(--color-primary);
   padding: 0.55rem 1rem;
   font-weight: 800;
   cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.schedule-actions__button:hover,
+.schedule-panel__button:hover {
+  background-color: var(--color-primary-light);
 }
 
 .schedule-panel {
@@ -689,9 +692,9 @@
   gap: 0.75rem;
   margin: -1rem 0 2rem;
   padding: 1rem;
-  border: 1px solid #efe1d9;
+  border: 1px solid var(--color-border);
   border-radius: 1rem;
-  background: #fff;
+  background: var(--color-bg-card);
 }
 
 .schedule-panel__item {
@@ -701,28 +704,28 @@
   gap: 1rem;
   padding: 0.85rem 1rem;
   border-radius: 0.85rem;
-  background: #f8f9fa;
+  background: var(--color-bg-main);
 }
 
 .schedule-panel__item strong {
-  color: #2b2725;
+  color: var(--color-text-main);
 }
 
 .schedule-panel__item p {
   margin: 0.25rem 0;
-  color: #7e4a32;
+  color: var(--color-primary-hover);
   font-weight: 700;
 }
 
 .schedule-panel__item small {
-  color: #9a928c;
+  color: var(--color-text-muted);
 }
 
 .schedule-panel__empty {
   margin: 0;
   padding: 1rem;
   text-align: center;
-  color: #9a928c;
+  color: var(--color-text-muted);
 }
 
 
@@ -732,16 +735,16 @@
 
 .status-rescheduled {
   color: #8057c2;
-  background: rgba(128, 87, 194, 0.12);
+  background: color-mix(in srgb, #8057c2 12%, transparent);
 }
 
 .reschedule-box {
-  border: 1px solid rgba(128, 87, 194, 0.18);
-  background: rgba(128, 87, 194, 0.08);
+  border: 1px solid color-mix(in srgb, #8057c2 18%, transparent);
+  background: color-mix(in srgb, #8057c2 8%, transparent);
 }
 
 .reschedule-box .quote-icon-bg {
-  color: rgba(128, 87, 194, 0.28);
+  color: color-mix(in srgb, #8057c2 28%, transparent);
 }
 
 

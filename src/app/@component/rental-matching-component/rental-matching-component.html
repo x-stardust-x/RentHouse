@@ -4,7 +4,7 @@
 
 <main class="rental-matching">
 
-  <div class="rental-item-filter rental-matching__filter-panel" [class.is-collapsed]="isFilterCollapsed()">
+  <div class="rental-matching__filter-panel" [class.is-collapsed]="isFilterCollapsed()">
     <div class="rental-matching__filter-topbar">
       <h2 class="rental-matching__filter-heading">篩選條件</h2>
 
@@ -22,8 +22,8 @@
 
     <div id="rentalFilterBody" class="rental-matching__filter-body" [attr.aria-hidden]="isFilterCollapsed()">
 
-      <div class="categories rental-matching__filter-section rental-matching__filter-section--categories">
-        <div class="filter-title rental-matching__filter-title">
+      <div class="rental-matching__filter-section rental-matching__filter-section--categories">
+        <div class="rental-matching__filter-title">
           <span class="material-symbols-outlined rental-matching__filter-icon">category</span>
           <h3 class="rental-matching__filter-title-text">類別</h3>
         </div>
@@ -64,8 +64,8 @@
 
       </div>
 
-      <div class="location rental-matching__filter-section rental-matching__filter-section--location">
-        <div class="filter-title rental-matching__filter-title">
+      <div class="rental-matching__filter-section rental-matching__filter-section--location">
+        <div class="rental-matching__filter-title">
           <span class="material-symbols-outlined rental-matching__filter-icon">location_on</span>
           <h3 class="rental-matching__filter-title-text">地點</h3>
         </div>
@@ -102,8 +102,8 @@
 
       </div>
 
-      <div class="price-range rental-matching__filter-section rental-matching__filter-section--price">
-        <div class="filter-title rental-matching__filter-title">
+      <div class="rental-matching__filter-section rental-matching__filter-section--price">
+        <div class="rental-matching__filter-title">
           <span class="material-symbols-outlined rental-matching__filter-icon">price_change</span>
           <h3 class="rental-matching__filter-title-text">價格範圍(台幣)</h3>
         </div>
@@ -522,7 +522,7 @@
         <p class="habit-tag">安靜</p>
       </div>
       <p>位於大安區的溫馨共居套房，提供舒適的住宿環境，適合尋求安靜生活的租客。套房內設有基本家具，並且禁止吸菸，確保室內空氣清新。周邊交通便利，生活機能完善，是您理想的居住選擇。</p>
-      <button (click)="navigateToDetail('1')" class="btn btn-primary">查看詳情</button>
+      <button (click)="navigateToDetail('1')" class="rental-matching__detail-button">查看詳情</button>
     </div> -->
 
 
@@ -555,19 +555,19 @@
           <h2 class="rental-matching__card-title">{{ item.name }}</h2>
 
           @if (item.displayType === 'room') {
-          <p class="price rental-matching__card-price">NT$ {{ item.rentPrice | number }}<span
+          <p class="rental-matching__card-price">NT$ {{ item.rentPrice | number }}<span
               class="rental-matching__price-unit"> / 月</span></p>
           } @else {
-          <p class="price rental-matching__card-price">NT$ {{ item.price | number }}<span
+          <p class="rental-matching__card-price">NT$ {{ item.price | number }}<span
               class="rental-matching__price-unit"> / {{ item.priceUnit }}</span></p>
           }
 
-          <p class="info rental-matching__card-info">
+          <p class="rental-matching__card-info">
             @if (item.displayType === 'room') {
             <span class="material-symbols-outlined rental-matching__card-info-icon">location_on</span>
             <span class="rental-matching__card-info-text">{{ item.address || '無地點資訊' }}</span>
             } @else {
-            <span class="category-badge rental-matching__category-badge">{{ item.category }}</span>
+            <span class="rental-matching__category-badge">{{ item.category }}</span>
             }
           </p>
 
@@ -579,26 +579,24 @@
           </p>
           } -->
 
-          <div class="habit-tags rental-matching__tags">
+          <div class="rental-matching__tags">
             @if (item.displayType === 'room') {
-            @if (item.pet) { <span class="tag rental-matching__tag">可養寵物</span> }
-            @if (item.smoke === false) { <span class="tag rental-matching__tag">禁菸</span> }
+            @if (item.pet) { <span class="rental-matching__tag">可養寵物</span> }
+            @if (item.smoke === false) { <span class="rental-matching__tag">禁菸</span> }
             }
 
             @if (item.displayType === 'product') {
             @if (item.ownTool) {
-            <span class="tag tool-tag rental-matching__tag rental-matching__tag--tool">需自備：{{ item.ownTool }}</span>
+            <span class="rental-matching__tag rental-matching__tag--tool">需自備：{{ item.ownTool }}</span>
             }
             @if (item.requiredKnowledge) {
-            <span class="tag knowledge-tag rental-matching__tag rental-matching__tag--knowledge">門檻：{{
-              item.requiredKnowledge }}</span>
+            <span class="rental-matching__tag rental-matching__tag--knowledge">門檻：{{ item.requiredKnowledge }}</span>
             }
             }
           </div>
 
           <a [routerLink]="['/rental-matching-detail/', item.displayType, item.id]" target="_blank"
-            class="btn btn-primary rental-matching__detail-button"
-            style="text-align: center; display: block; text-decoration: none;">
+            class="rental-matching__detail-button">
             查看詳情
           </a>
 
@@ -632,7 +630,7 @@
           @if (item.smoke === false) { <span class="tag">禁菸</span> }
         </div>
 
-        <button (click)="navigateToDetail(item.id)" class="btn btn-primary">查看詳情</button>
+        <button (click)="navigateToDetail(item.id)" class="rental-matching__detail-button">查看詳情</button>
       </div>
 
       } @empty {

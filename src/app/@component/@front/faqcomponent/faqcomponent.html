@@ -1,14 +1,9 @@
-<div class="faq-container">
-
-  <!-- 標題 -->
-  <div class="faq-header">
-
-    <h1>常見問答</h1>
-
-    <div class="category-tabs">
-
+<div class="faq">
+  <div class="faq__header">
+    <h1 class="faq__title">常見問答</h1>
+    <div class="faq__tabs">
       <button
-        class="tab-btn"
+        class="faq__tab"
         [class.active]="selectedCategory() === 0"
         (click)="changeCategory(0)"
       >
@@ -16,89 +11,64 @@
       </button>
 
       @for(category of categories(); track category.id){
-
       <button
-        class="tab-btn"
+        class="faq__tab"
         [class.active]="selectedCategory() === category.id"
         (click)="changeCategory(category.id)"
       >
         {{ category.name }}
-
-        <span class="count">
+        <span class="faq__tab-count">
           {{ categoryCountMap().get(category.id) ?? 0 }}
         </span>
       </button>
-
       }
-
     </div>
-
   </div>
 
-  <!-- FAQ -->
-
-  <div
-    class="accordion faq-accordion"
-    id="faqAccordion"
-  >
-
+  <div class="faq__accordion accordion" id="faqAccordion">
     @for(item of faqList(); track item.id){
-
-    <div class="accordion-item">
-
-      <h2 class="accordion-header">
-
+    <div class="faq__item accordion-item">
+      <h2 class="faq__item-header accordion-header">
         <button
-          class="accordion-button collapsed"
+          class="faq__item-toggle accordion-button collapsed"
           type="button"
           data-bs-toggle="collapse"
           [attr.data-bs-target]="'#faq'+item.id"
         >
           {{ item.question }}
         </button>
-
       </h2>
 
       <div
-        class="accordion-collapse collapse"
+        class="faq__item-panel accordion-collapse collapse"
         [id]="'faq'+item.id"
         data-bs-parent="#faqAccordion"
       >
-
-        <div class="accordion-body">
+        <div class="faq__item-body accordion-body">
           {{ item.answer }}
         </div>
-
       </div>
-
     </div>
-
     }
-
   </div>
 
-  <!-- 聯絡客服 -->
-
-  <div class="support-card">
-
-    <div class="support-icon">
+  <div class="faq__support support-card">
+    <div class="faq__support-icon support-icon">
       <i class="bi bi-headset"></i>
     </div>
 
-    <h3>需要更多協助？</h3>
+    <h3 class="faq__support-title">需要更多協助？</h3>
 
-    <p>
+    <p class="faq__support-copy">
       如果您在常見問答中找不到需要的解答，
       歡迎直接與我們的客服團隊聯繫。
     </p>
 
     <a
       routerLink="/contact"
-      class="support-btn"
+      class="faq__support-button support-btn"
     >
       聯絡我們
     </a>
-
   </div>
-
 </div>

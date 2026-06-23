@@ -199,7 +199,7 @@ export class RentalMatchingComponent implements OnInit {
     });
   }
 
-  // 處理複選框 (Checkbox) 的輔助函數
+
   // 處理複選框 (Checkbox) 的輔助函數
   toggleCheckbox(group: MultiFilterKey, value: string | number, event: Event) {
     const isChecked = (event.target as HTMLInputElement).checked;

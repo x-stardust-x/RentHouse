@@ -30,14 +30,24 @@
         }
       </label>
 
-  <select name="subject" [(ngModel)]="formData.subject">
-    <option value="" disabled>請選擇相關主旨</option>
-    <option value="租屋諮詢">租屋諮詢</option>
-    <option value="意見回饋">意見回饋</option>
-  </select>
+      <label class="form-field">
+        <span>相關主旨</span>
+        <select name="subject" [(ngModel)]="formData.subject">
+          <option value="" disabled>請選擇相關主旨</option>
+          <option value="租屋諮詢">租屋諮詢</option>
+          <option value="意見回饋">意見回饋</option>
+        </select>
+      </label>
 
-  <textarea name="content" [(ngModel)]="formData.content" placeholder="請詳細描述問題"></textarea>
+      <label class="form-field">
+        <span>訊息內容</span>
+        <textarea name="content" [(ngModel)]="formData.content" placeholder="請詳細描述您的問題或需求"></textarea>
+      </label>
 
-  <button (click)="onSubmit()">送出訊息</button>
+      <button class="submit-btn" type="button" (click)="onSubmit()">
+        送出訊息
+      </button>
+    </div>
+  </section>
 </div>
 

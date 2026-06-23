@@ -42,19 +42,17 @@
         </div>
       </div>
 
-     <div class="ai-analysis-card">
+    <div class="ai-analysis-card">
   <div class="score-header">
     <h5>💡 AI 講評</h5>
   </div>
 
-  <ul class="analysis-list">
-    <li><strong>評估基礎：</strong> 該物件為「獨立套房」，不涉及室友間的作息與習慣合規評估。</li>
-    <li><strong>隱含風險：</strong> 現有資料未規範「禁菸」或「禁寵」，且租客本身有養寵物與抽菸習慣。</li>
-    <li><strong>建議事項：</strong> 兩者在政策上目前無明確衝突，但建議簽約前務必與房東確認相關限制，避免後續居住糾紛。</li>
+  <ul class="analysis-list" style="padding: 10px; line-height: 1.8;">
+    <li><strong>評估基礎：</strong> {{ item.basis }}</li>
+    <li><strong>隱含風險：</strong> {{ item.risk }}</li>
+    <li><strong>建議事項：</strong> {{ item.suggestion }}</li>
   </ul>
 </div>
-
-    </div>
 
   </div>
 </div>

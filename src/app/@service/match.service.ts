@@ -5,7 +5,9 @@ import { Observable } from 'rxjs';
 // 📝 定義：一對一回傳的資料格式
 export interface MatchResult {
   score: number;
-  reason: string;
+  basis: string;
+  risk: string;
+  suggestion: string;
 }
 
 
@@ -15,7 +17,9 @@ export interface HouseMatchResult {
   rentPrice: number;
   houseType: string;
   score: number;
-  reason: string;
+  basis: string;
+  risk: string;
+  suggestion: string;
 }
 
 @Injectable({

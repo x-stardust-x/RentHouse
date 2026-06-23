@@ -2,7 +2,6 @@
 // Product / Assets Form Component Styles
 // ==========================================
 .product-form {
-  font-family: 'PingFang TC', 'Heiti TC', 'Microsoft JhengHei', sans-serif;
   color: var(--color-text-main);
   width: 100%;
 
@@ -11,10 +10,9 @@
   }
 
   &__page-title {
-    font-size: 1.5rem;
     font-weight: 800;
     color: var(--color-text-main);
-    margin-bottom: 0.5rem;
+    margin: 0 0 0.5rem 0;
   }
 
   &__subtitle {

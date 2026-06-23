@@ -27,7 +27,89 @@
     <app-rental-booking [data]="detailData()"></app-rental-booking>
   </div> -->
 
+@if (isDetailLoading()) {
 
+<div class="rental-detail-page-skeleton">
+
+  <section class="rental-detail-skeleton-hero">
+    <div class="rental-detail-skeleton-hero__image"></div>
+
+    <div class="rental-detail-skeleton-hero__content">
+      <div class="rental-detail-skeleton-line rental-detail-skeleton-line--title"></div>
+      <div class="rental-detail-skeleton-line rental-detail-skeleton-line--address"></div>
+    </div>
+
+    <div class="rental-detail-skeleton-hero__thumbs">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </section>
+
+  <div class="rental-detail-skeleton-layout">
+    <main class="rental-detail-skeleton-main">
+      <div class="rental-detail-skeleton-card">
+        <div class="rental-detail-skeleton-line rental-detail-skeleton-line--heading"></div>
+        <div class="rental-detail-skeleton-line"></div>
+        <div class="rental-detail-skeleton-line"></div>
+        <div class="rental-detail-skeleton-line rental-detail-skeleton-line--short"></div>
+      </div>
+
+      <div class="rental-detail-skeleton-card">
+        <div class="rental-detail-skeleton-line rental-detail-skeleton-line--heading"></div>
+        <div class="rental-detail-skeleton-grid">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <div class="rental-detail-skeleton-card">
+        <div class="rental-detail-skeleton-line rental-detail-skeleton-line--heading"></div>
+        <div class="rental-detail-skeleton-tags">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </main>
+
+    <aside class="rental-detail-skeleton-side">
+      <div class="rental-detail-skeleton-card">
+        <div class="rental-detail-skeleton-provider">
+          <span></span>
+          <div>
+            <div class="rental-detail-skeleton-line rental-detail-skeleton-line--name"></div>
+            <div class="rental-detail-skeleton-line rental-detail-skeleton-line--mini"></div>
+          </div>
+        </div>
+        <div class="rental-detail-skeleton-line"></div>
+        <div class="rental-detail-skeleton-line rental-detail-skeleton-line--short"></div>
+      </div>
+
+      <div class="rental-detail-skeleton-card">
+        <div class="rental-detail-skeleton-line rental-detail-skeleton-line--price"></div>
+        <div class="rental-detail-skeleton-button"></div>
+        <div class="rental-detail-skeleton-button rental-detail-skeleton-button--light"></div>
+      </div>
+    </aside>
+  </div>
+
+</div>
+
+} @else if (detailLoadError()) {
+
+<div class="rental-detail-load-error">
+  <span class="material-symbols-outlined rental-detail-load-error__icon">error</span>
+  <h2 class="rental-detail-load-error__title">詳情資料載入失敗</h2>
+  <p class="rental-detail-load-error__text">{{ detailLoadError() }}</p>
+  <a routerLink="/rental-matching-component" class="rental-detail-load-error__link">
+    返回租賃物媒合
+  </a>
+</div>
+
+} @else {
 
 <div class="top rental-hero">
 
@@ -114,6 +196,8 @@
 
   </div>
 </div>
+
+}
 
 
 <div class="rental-detail-layout">

@@ -1,11 +1,11 @@
 <section class="user-dashboard-page">
-  <div class="dashboard-header">
+  <header class="dashboard-header">
     <div>
       <!-- <p class="eyebrow">會員中心</p> -->
-      <h1>
+      <h2>
         早安，{{ usersev.profile()?.realName || '會員' }}
         <span>{{ role }}</span>
-      </h1>
+      </h2>
       <p>輕鬆管理您的房源空間、共享預約與智慧配對設定。</p>
     </div>
 
@@ -20,7 +20,7 @@
         發布新工具
       </button>
     </div>
-  </div>
+  </header>
 
   <div class="stats-grid">
     @for (stat of stats(); track stat.title) {

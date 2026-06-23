@@ -16,7 +16,8 @@ import { ActivatedRoute, Router, RouterModule, RouterLink } from '@angular/route
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { switchMap } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
+import { finalize, switchMap } from 'rxjs/operators';
 import { register } from 'swiper/element/bundle';
 import { faLine } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -158,6 +159,9 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit, OnD
   itemType = signal<string | null>(null);
   detailData = signal<any>(null);
   displayType = signal<string>('');
+
+  isDetailLoading = signal(true);
+  detailLoadError = signal('');
 
   matchAnalysisLoading = signal(false);
   matchAnalysis = signal<DemoMatchAnalysis | null>(null);
@@ -412,34 +416,48 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit, OnD
     this.route.params.pipe(
       switchMap(params => {
         const type = params['type'];
-
         const rawId = params['id'];
-        // 直接拔掉可能的冒號，再轉成數字
         const cleanIdString = typeof rawId === 'string' ? rawId.replace(':', '') : rawId;
         const itemId = Number(cleanIdString);
 
         console.log('📌 網址上的 rawId 是:', rawId);
         console.log('📌 轉換後的 itemId 是:', itemId);
 
+        this.isDetailLoading.set(true);
+        this.detailLoadError.set('');
+        this.detailData.set(null);
+        this.matchAnalysis.set(null);
+        this.matchDisplayScore.set(0);
+        this.parsedRules = {};
+        this.heroImages.set([]);
+        this.selectedHeroImage.set(null);
+
         if (isNaN(itemId) || itemId === 0) {
-          console.warn('⚠️ 無效的房屋 ID:', rawId);
-          return []; // 或者使用 import { EMPTY } from 'rxjs'; return EMPTY;
+          console.warn('⚠️ 無效的租賃物 ID:', rawId);
+          this.isDetailLoading.set(false);
+          this.detailLoadError.set('找不到這筆租賃物資料，請返回列表重新選擇。');
+          return EMPTY;
+        }
+
+        if (type !== 'room' && type !== 'product') {
+          console.warn('⚠️ 無效的租賃物類型:', type);
+          this.isDetailLoading.set(false);
+          this.detailLoadError.set('租賃物類型錯誤，請返回列表重新選擇。');
+          return EMPTY;
         }
 
         this.currentCleanId.set(itemId);
-
-        // const rawId = params['id'];
-        // const itemId = typeof rawId === 'string' && rawId.includes(':')
-        //   ? parseInt(rawId.split(':')[0], 10)
-        //   : parseInt(rawId, 10);
-
-        // if (isNaN(itemId)) return [];
-        // this.currentCleanId.set(itemId);
         this.displayType.set(type);
 
-        return type === 'room'
+        const detailRequest = type === 'room'
           ? this.rentalMatchingService.getRentalById(itemId)
           : this.rentalMatchingService.getProductById(itemId);
+
+        return detailRequest.pipe(
+          finalize(() => {
+            this.isDetailLoading.set(false);
+          })
+        );
       })
     ).subscribe({
       next: (data: any) => {
@@ -462,9 +480,6 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit, OnD
         if (cleanHouseId) {
           this.checkFavoriteStatus(cleanHouseId);
         }
-        setTimeout(() => {
-          this.detailData.set({ ...data, displayType: this.displayType() });
-        });
 
         let advancedRules: Record<string, string> = {};
 
@@ -496,12 +511,10 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit, OnD
         if (this.displayType() === 'room' && cleanHouseId) {
           this.http.get<any[]>(`https://localhost:7215/api/HouseFacility/${cleanHouseId}`).subscribe({
             next: (facilitiesList: any[]) => {
-              setTimeout(() => {
-                this.detailData.set({
-                  ...this.detailData(),
-                  facilities: facilitiesList
-                });
-              }, 0);
+              this.detailData.set({
+                ...this.detailData(),
+                facilities: facilitiesList
+              });
             },
             error: (err) => console.error('設施 API 失敗:', err)
           });
@@ -511,12 +524,14 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit, OnD
       error: (err) => {
         console.error('詳情頁資料載入失敗：', err);
 
+        this.detailData.set(null);
+
         if (err.status === 404) {
           this.router.navigate(['/404'], { replaceUrl: true });
           return;
         }
 
-        alert('載入資料失敗，請稍後再試。');
+        this.detailLoadError.set('資料載入失敗，請稍後再試。');
       }
     });
   }

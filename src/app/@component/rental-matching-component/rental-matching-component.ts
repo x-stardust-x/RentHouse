@@ -11,6 +11,7 @@ import { MatchProduct } from '../../@interface/match-product';
 import { RouterModule, Routes, RouterLink } from '@angular/router';
 import { MatchFilter } from '../../@interface/match-filter';
 import Swal from 'sweetalert2';
+import { finalize } from 'rxjs';
 import { PageHero } from '../../@layouts/page-hero/page-hero';
 
 
@@ -42,6 +43,11 @@ type MultiFilterKey =
 })
 export class RentalMatchingComponent implements OnInit {
 
+  isRentalLoading = signal(false);
+  rentalLoadError = signal('');
+  readonly loadingCards = Array.from({ length: 6 });
+
+  private rentalSearchRequestId = 0;
 
   // 🟢 1. 篩選條件 (統一唯一的狀態來源)
   filters: MatchFilter = {
@@ -98,7 +104,7 @@ export class RentalMatchingComponent implements OnInit {
   }
 
 
- applyFilters() {
+  applyFilters() {
     const rawUserId = localStorage.getItem('userId');
     const isLoggedIn = rawUserId !== null && rawUserId !== 'null' && rawUserId !== 'undefined' && rawUserId !== '';
     const currentTier = Number(localStorage.getItem('subscriptionTier')) || 1;
@@ -109,7 +115,7 @@ export class RentalMatchingComponent implements OnInit {
       if (!isLoggedIn) {
 
 
-       setTimeout(() => {
+        setTimeout(() => {
           this.filters.isSmartMatch = false;
         }, 50);
 
@@ -147,60 +153,75 @@ export class RentalMatchingComponent implements OnInit {
     }
     console.log('準備傳送給後端的條件:', this.filters);
 
-    this.rentalMatchingService.searchRentals(this.filters).subscribe({
-      next: (data: any) => {
-        console.log('【前端檢查】後端成功回傳資料：', data);
+    const requestId = ++this.rentalSearchRequestId;
 
+    this.isRentalLoading.set(true);
+    this.rentalLoadError.set('');
 
-        let dataArray = Array.isArray(data) ? data : (data?.data || data?.items || []);
+    this.rentalMatchingService.searchRentals(this.filters)
+      .pipe(
+        finalize(() => {
+          if (requestId === this.rentalSearchRequestId) {
+            this.isRentalLoading.set(false);
+          }
+        })
+      )
+      .subscribe({
+        next: (data: any) => {
+          if (requestId !== this.rentalSearchRequestId) return;
 
-        dataArray = dataArray.filter((item: any) => {
-          const status = Number(item.status ?? item.Status);
-          return status === 1;
-        });
+          console.log('【前端檢查】後端成功回傳資料：', data);
 
+          let dataArray = Array.isArray(data) ? data : (data?.data || data?.items || []);
 
-        let formattedData = dataArray.map((item: any) => {
+          dataArray = dataArray.filter((item: any) => {
+            const status = Number(item.status ?? item.Status);
+            return status === 1;
+          });
 
+          let formattedData = dataArray.map((item: any) => {
+            let type = 'room';
 
-          let type = 'room';
-          if (item.productType === 'House' || item.ProductType === 'House') {
-            type = 'room';
-          } else if (item.productType === 'Product' || item.ProductType === 'Product' || item.productType === 'Skill') {
-            type = 'product';
-          } else {
+            if (item.productType === 'House' || item.ProductType === 'House') {
+              type = 'room';
+            } else if (
+              item.productType === 'Product' ||
+              item.ProductType === 'Product' ||
+              item.productType === 'Skill'
+            ) {
+              type = 'product';
+            } else {
+              const isProduct =
+                item.price !== undefined ||
+                item.Price !== undefined ||
+                item.priceUnit !== undefined;
 
-            const isProduct = item.price !== undefined || item.Price !== undefined || item.priceUnit !== undefined;
-            type = isProduct ? 'product' : 'room';
+              type = isProduct ? 'product' : 'room';
+            }
+
+            return {
+              ...item,
+              displayType: type,
+              url: this.getCoverUrl(item),
+              score: item.score ? item.score : Math.floor(Math.random() * (98 - 60 + 1)) + 60
+            };
+          });
+
+          if (this.filters.isSmartMatch) {
+            formattedData = formattedData.filter((item: any) => item.score >= 80);
+            formattedData.sort((a: any, b: any) => b.score - a.score);
           }
 
-          return {
-            ...item,
-            displayType: type,
-            url: this.getCoverUrl(item),
+          this.rentalItems.set(formattedData);
+        },
+        error: (err) => {
+          if (requestId !== this.rentalSearchRequestId) return;
 
-
-            score: item.score ? item.score : (Math.floor(Math.random() * (98 - 60 + 1)) + 60)
-          };
-        });
-
-
-        if (this.filters.isSmartMatch) {
-
-          formattedData = formattedData.filter((item: any) => item.score >= 80);
-
-
-          formattedData.sort((a: any, b: any) => b.score - a.score);
+          console.error('搜尋失敗', err);
+          this.rentalItems.set([]);
+          this.rentalLoadError.set('資料載入失敗，請稍後再試。');
         }
-
-
-        this.rentalItems.set(formattedData);
-      },
-      error: (err) => {
-        console.error('搜尋失敗，隊友的 API 似乎在鬧脾氣', err);
-        this.rentalItems.set([]);
-      }
-    });
+      });
   }
 
 

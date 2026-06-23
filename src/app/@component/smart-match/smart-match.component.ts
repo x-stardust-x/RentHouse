@@ -11,7 +11,9 @@ export interface HouseMatchResult {
   rentPrice: number;
   houseType: string;
   score: number;
-  reason: string;
+  basis: string;
+  risk: string;
+  suggestion: string;
 }
 
 @Component({

@@ -20,7 +20,7 @@
       <p>啟動後，系統會依據您的偏好、生活習慣與房源條件進行一對多智慧配對。</p>
     </div>
 
-    <button (click)="startMultiMatch()" class="primary-action">
+    <button (click)="startMultiMatch()" class="primary-action" [disabled]="isLoading">
       <span class="material-symbols-outlined">neurology</span>
       啟動全台房源智慧配對
     </button>

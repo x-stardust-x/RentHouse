@@ -1,4 +1,16 @@
-import { Component, OnInit, inject, signal, computed, CUSTOM_ELEMENTS_SCHEMA, effect, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  signal,
+  computed,
+  CUSTOM_ELEMENTS_SCHEMA,
+  effect,
+  AfterViewInit,
+  ElementRef,
+  ViewChild,
+  OnDestroy
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router, RouterModule, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -19,7 +31,19 @@ import { HouseViewingService } from '../../@service/house-viewing-service';
 import { ProductBookingService } from '../../@service/product-booking-service';
 import { MatchHouseDto } from '../../@interface/match-house';
 import { AlertService } from '../../@service/alert-service';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+interface DemoMatchAnalysis {
+  score: number;
+  level: string;
+  tone: 'high' | 'medium' | 'low';
+  circleLength: number;
+  dashOffset: number;
+  basis: string[];
+  risks: string[];
+  suggestions: string[];
+}
 
 @Component({
   selector: 'app-rental-matching-detail-component',
@@ -29,7 +53,8 @@ import { AlertService } from '../../@service/alert-service';
   styleUrl: './rental-matching-detail-component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
+
+export class RentalMatchingDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
   currentCleanId = signal<number>(0);
   // ===================================================================
@@ -47,6 +72,11 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   private productBookingService = inject(ProductBookingService);
   private alert = inject(AlertService);
 
+  @ViewChild('matchAnalysisSection') matchAnalysisSection?: ElementRef<HTMLElement>;
+
+  private matchScrollTrigger?: ScrollTrigger;
+  private pendingMatchDetail: any = null;
+  private hasStartedMatchAnalysis = false;
   // ===================================================================
   // 靜態屬性與設定
   // ===================================================================
@@ -128,6 +158,14 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   itemType = signal<string | null>(null);
   detailData = signal<any>(null);
   displayType = signal<string>('');
+
+  matchAnalysisLoading = signal(false);
+  matchAnalysis = signal<DemoMatchAnalysis | null>(null);
+  matchDisplayScore = signal(0);
+
+  private readonly matchCircleLength = 276.46;
+  private matchAnalysisTimer: number | null = null;
+  private scoreAnimationTimer: number | null = null;
 
   isRoom = computed(() => this.displayType() === 'room' || this.detailData()?.displayType === 'room');
   isProduct = computed(() => this.displayType() === 'product' || this.detailData()?.displayType === 'product');
@@ -270,6 +308,11 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
     return Array.from(new Set(normalizedUrls));
   }
 
+  ngOnDestroy(): void {
+    this.clearMatchAnalysisTimers();
+    this.matchScrollTrigger?.kill();
+  }
+
   private syncHeroImages(data: any): void {
     const urls = this.extractImageUrls(data);
 
@@ -356,6 +399,7 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
   // ===================================================================
   constructor() {
     register();
+    gsap.registerPlugin(ScrollTrigger);
     effect(() => {
       console.log('當前 detailData 的狀態:', this.detailData());
       if (this.detailData() === null) {
@@ -446,6 +490,8 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
           noiseTolerance: this.noiseToleranceLabel(detail?.noiseTolerance ?? detail?.NoiseTolerance),
           ...advancedRules
         };
+
+        this.prepareDemoMatchAnalysis(detail);
 
         if (this.displayType() === 'room' && cleanHouseId) {
           this.http.get<any[]>(`https://localhost:7215/api/HouseFacility/${cleanHouseId}`).subscribe({
@@ -1371,6 +1417,175 @@ export class RentalMatchingDetailComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
 
     this.alert.warning(unavailableMessage);
+  }
+
+  private readonly matchAnalysisLoadingMs = 3000;
+
+  private startDemoMatchAnalysis(detail: any): void {
+    this.clearMatchAnalysisTimers();
+
+    if (this.displayType() !== 'room') {
+      this.matchAnalysisLoading.set(false);
+      this.matchAnalysis.set(null);
+      this.matchDisplayScore.set(0);
+      return;
+    }
+
+    this.matchAnalysisLoading.set(true);
+    this.matchAnalysis.set(null);
+    this.matchDisplayScore.set(0);
+
+    this.matchAnalysisTimer = window.setTimeout(() => {
+      const analysis = this.createDemoMatchAnalysis(detail);
+
+      this.matchAnalysis.set(analysis);
+      this.matchAnalysisLoading.set(false);
+      this.animateMatchScore(analysis.score);
+
+      this.detailData.update(current => current
+        ? { ...current, matchScore: analysis.score }
+        : current
+      );
+    }, this.matchAnalysisLoadingMs);
+  }
+
+  private createDemoMatchAnalysis(detail: any): DemoMatchAnalysis {
+    const seed = String(
+      detail?.id ??
+      detail?.Id ??
+      detail?.name ??
+      detail?.Name ??
+      'house'
+    );
+
+    const score = this.getStableDemoScore(seed, 55, 96);
+
+    return {
+      score,
+      level: this.getMatchLevel(score),
+      tone: this.getMatchTone(score),
+      circleLength: this.matchCircleLength,
+      dashOffset: this.matchCircleLength * (1 - score / 100),
+      basis: [
+        '位於使用者偏好的生活圈範圍內',
+        '租金落在可接受預算區間',
+        '房型與空間大小符合單人入住需求'
+      ],
+      risks: [
+        '房源尚未完整標註寵物規範',
+        '訪客與夜間噪音規範仍需確認',
+        '水電、網路與管理費是否包含於租金內仍需確認'
+      ],
+      suggestions: [
+        '預約看房時主動確認生活規範',
+        '確認租金是否包含水電、網路與管理費',
+        '事先溝通作息、清潔頻率與訪客規則'
+      ]
+    };
+  }
+
+  private getStableDemoScore(seed: string, min: number, max: number): number {
+    let hash = 0;
+
+    for (let i = 0; i < seed.length; i++) {
+      hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+      hash |= 0;
+    }
+
+    return min + (Math.abs(hash) % (max - min + 1));
+  }
+
+  private getMatchLevel(score: number): string {
+    if (score >= 85) return '高度契合';
+    if (score >= 70) return '良好契合';
+    return '尚可契合';
+  }
+
+  private getMatchTone(score: number): 'high' | 'medium' | 'low' {
+    if (score >= 85) return 'high';
+    if (score >= 70) return 'medium';
+    return 'low';
+  }
+
+  private animateMatchScore(targetScore: number): void {
+    if (this.scoreAnimationTimer !== null) {
+      window.clearInterval(this.scoreAnimationTimer);
+    }
+
+    const duration = 1500;
+    const startedAt = Date.now();
+
+    this.scoreAnimationTimer = window.setInterval(() => {
+      const progress = Math.min((Date.now() - startedAt) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      // const eased = 1 - Math.pow(1 - progress, 3);
+
+      this.matchDisplayScore.set(Math.round(targetScore * eased));
+
+      if (progress >= 1 && this.scoreAnimationTimer !== null) {
+        window.clearInterval(this.scoreAnimationTimer);
+        this.scoreAnimationTimer = null;
+        this.matchDisplayScore.set(targetScore);
+      }
+    }, 16);
+  }
+
+  private clearMatchAnalysisTimers(): void {
+    if (this.matchAnalysisTimer !== null) {
+      window.clearTimeout(this.matchAnalysisTimer);
+      this.matchAnalysisTimer = null;
+    }
+
+    if (this.scoreAnimationTimer !== null) {
+      window.clearInterval(this.scoreAnimationTimer);
+      this.scoreAnimationTimer = null;
+    }
+  }
+
+  private prepareDemoMatchAnalysis(detail: any): void {
+    this.clearMatchAnalysisTimers();
+
+    if (this.displayType() !== 'room') {
+      this.matchAnalysisLoading.set(false);
+      this.matchAnalysis.set(null);
+      this.matchDisplayScore.set(0);
+      this.pendingMatchDetail = null;
+      this.hasStartedMatchAnalysis = false;
+      this.matchScrollTrigger?.kill();
+      this.matchScrollTrigger = undefined;
+      return;
+    }
+
+    this.pendingMatchDetail = detail;
+    this.hasStartedMatchAnalysis = false;
+    this.matchAnalysisLoading.set(false);
+    this.matchAnalysis.set(null);
+    this.matchDisplayScore.set(0);
+
+    window.setTimeout(() => {
+      this.setupMatchAnalysisScrollTrigger();
+    }, 0);
+  }
+
+  private setupMatchAnalysisScrollTrigger(): void {
+    this.matchScrollTrigger?.kill();
+
+    const target = this.matchAnalysisSection?.nativeElement;
+    if (!target || !this.pendingMatchDetail) return;
+
+    this.matchScrollTrigger = ScrollTrigger.create({
+      trigger: target,
+      start: 'top 78%',
+      once: true,
+      onEnter: () => {
+        if (this.hasStartedMatchAnalysis || !this.pendingMatchDetail) return;
+
+        this.hasStartedMatchAnalysis = true;
+        this.startDemoMatchAnalysis(this.pendingMatchDetail);
+      }
+    });
+
+    ScrollTrigger.refresh();
   }
 }
 

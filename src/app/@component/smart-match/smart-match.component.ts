@@ -34,7 +34,7 @@ export class SmartMatchComponent implements OnInit {
     private matchService: MatchService,
     private userService: UserService, // 🌟 3. 注入 UserService
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
 
@@ -68,6 +68,8 @@ export class SmartMatchComponent implements OnInit {
 
   startMultiMatch() {
 
+    if (this.isLoading) return;
+
     if (!this.currentUserProfile) {
       Swal.fire({
         title: '資料不完整',
@@ -92,7 +94,12 @@ export class SmartMatchComponent implements OnInit {
       error: (err) => {
         console.error('一對多連線失敗：', err);
 
-        const errorMsg = err.error?.message || '系統目前較為擁擠，請稍後再呼叫 AI 秘書。';
+        const errorMsg =
+          err.error?.details ||
+          err.error?.message ||
+          '系統目前較為擁擠，請稍後再呼叫 AI 秘書。';
+
+        // const errorMsg = err.error?.message || '系統目前較為擁擠，請稍後再呼叫 AI 秘書。';
 
         Swal.fire({
           title: 'AI 媒合暫時無法使用',

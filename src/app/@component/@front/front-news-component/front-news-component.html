@@ -1,9 +1,14 @@
+<app-page-hero eyebrow="News" title="最新消息" [breadcrumbs]="[
+    { label: '首頁', link: '/home' },
+    { label: '最新消息' }
+  ]" />
+
 <section class="news-section">
   <div class="news-section__container container">
-    <div class="news-section__header">
+    <!-- <div class="news-section__header">
       <h2 class="news-section__title">最新消息</h2>
       <p class="news-section__description">發掘厚厝味的日常溫度與共居點滴</p>
-    </div>
+    </div> -->
 
     <div class="news-section__tabs news-tabs">
       @for(category of categories(); track category){

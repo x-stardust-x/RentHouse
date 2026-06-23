@@ -11,6 +11,9 @@ import { MatchProduct } from '../../@interface/match-product';
 import { RouterModule, Routes, RouterLink } from '@angular/router';
 import { MatchFilter } from '../../@interface/match-filter';
 import Swal from 'sweetalert2';
+import { PageHero } from '../../@layouts/page-hero/page-hero';
+
+
 type MultiFilterKey =
   | 'lifeStyle'
   | 'cleanLevels'
@@ -31,7 +34,8 @@ type MultiFilterKey =
     FormsModule,
     MatSlideToggleModule,
     MatExpansionModule,
-    RouterLink
+    RouterLink,
+    PageHero
   ],
   templateUrl: './rental-matching-component.html',
   styleUrl: './rental-matching-component.scss',

@@ -66,7 +66,7 @@
       writing-mode: vertical-rl;
       font-size: 5rem;
       font-weight: 900;
-      color: rgba(230, 111, 67, 0.04);
+      color: color-mix(in srgb, var(--color-primary) 4%, transparent);
       letter-spacing: 0.1em;
       pointer-events: none;
 
@@ -166,8 +166,8 @@
       background-repeat: no-repeat;
 
       border-radius: 40% 60% 60% 40% / 50% 50% 60% 50%;
-      box-shadow: 0 25px 50px rgba(230, 111, 67, 0.15);
-      border: 2px solid rgba(255, 255, 255, 0.6); // 增加一點白邊提升質感
+      box-shadow: var(--shadow-hover);
+      border: 2px solid color-mix(in srgb, white 60%, transparent);
 
       // 有機變形與浮動動畫
       animation: morph-blob 8s ease-in-out infinite alternate;
@@ -203,14 +203,14 @@
   gap: 1rem;
   padding: 0;
   letter-spacing: 0.1em;
-  transition: color 0.3s ease;
+  transition: var(--transition-base);
 
   &::after {
     content: '';
     width: 50px;
     height: 1px;
     background-color: var(--color-text-main);
-    transition: width 0.3s ease, background-color 0.3s ease;
+    transition: var(--transition-base);
   }
 
   &:hover {
@@ -230,7 +230,7 @@
   padding: 4rem 0;
 
   .cream-bg-block {
-    background-color: #F6F2EE;
+    background-color: var(--color-primary-light);
     padding: 6rem 0;
     width: 100%;
   }
@@ -249,10 +249,10 @@
   .philosophy-image-popout {
     flex: 1;
     min-height: 420px;
-    background-color: #ffffff;
+    background-color: var(--color-bg-card);
     border: 1px solid var(--color-border);
     margin-top: -10rem;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.03);
+    box-shadow: var(--shadow-base);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -346,7 +346,7 @@
 
       .row-visual-zone {
         flex: 1.1;
-        background-color: #ffffff;
+        background-color: var(--color-bg-card);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -379,7 +379,7 @@
         .row-num {
           font-size: 3.5rem;
           font-weight: 300;
-          color: rgba(230, 111, 67, 0.12);
+          color: color-mix(in srgb, var(--color-primary) 12%, transparent);
           font-family: 'Georgia', serif;
           line-height: 1;
           margin-bottom: 1rem;
@@ -409,7 +409,7 @@
           gap: 0.6rem;
 
           .cap-tag {
-            background-color: #ffffff;
+            background-color: var(--color-bg-card);
             border: 1px solid var(--color-border);
             padding: 6px 14px;
             border-radius: var(--radius-sm);
@@ -425,11 +425,11 @@
       }
 
       &.highlight-dark-row {
-        background-color: #1F1C1B;
+        background-color: #1F1F1F;
         border-top: none;
 
         .row-text-zone {
-          background-color: #1F1C1B;
+          background-color: #1F1F1F;
 
           .row-badge {
             color: var(--color-primary);
@@ -442,28 +442,28 @@
         }
 
         .row-visual-zone {
-          background-color: #151312;
+          background-color: #151515;
 
           .color-white-drawing {
-            color: rgba(255, 255, 255, 0.35);
+            color: color-mix(in srgb, white 35%, transparent);
           }
         }
 
         .text-white {
-          color: #ffffff;
+          color: white;
         }
 
         .text-light-muted {
-          color: rgba(255, 255, 255, 0.6);
+          color: color-mix(in srgb, white 60%, transparent);
         }
 
         .jp-editorial-card {
-          background-color: #ffffff;
+          background-color: var(--color-bg-card);
           border-left: 4px solid var(--color-primary);
           padding: 1.5rem;
           border-radius: var(--radius-md);
           margin-top: 2rem;
-          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+          box-shadow: var(--shadow-hover);
 
           .card-mini-tag {
             font-size: 0.7rem;
@@ -497,7 +497,7 @@
    ========================================= */
 .workflow-dynamic-section {
   padding: 6rem 0;
-  background-color: #ffffff;
+  background-color: var(--color-bg-card);
 
   .center-align {
     text-align: center;
@@ -515,46 +515,40 @@
       border-radius: var(--radius-lg);
       position: relative;
       border: 1px solid var(--color-border);
-      transition: transform 0.3s ease;
-
-      &:hover {
-        transform: translateY(-5px);
-      }
-
-      .huge-number {
-        position: absolute;
-        top: -2.2rem;
-        left: 2rem;
-        font-size: 3.8rem;
-        font-weight: 900;
-        color: var(--color-primary);
-        font-family: 'Impact', Arial, sans-serif;
-        opacity: 0.12;
-      }
-
-      h4 {
-        font-size: 1.2rem;
-        margin: 0 0 1rem 0;
-        font-weight: 600;
-      }
-
-      p {
-        margin: 0;
-        font-size: 0.9rem;
-        color: var(--color-text-muted);
-        line-height: 1.6;
-      }
+      transition: var(--transition-base);
+      position: absolute;
+      top: -2.2rem;
+      left: 2rem;
+      font-size: 3.8rem;
+      font-weight: 900;
+      color: var(--color-primary);
+      font-family: 'Impact', Arial, sans-serif;
+      opacity: 0.12;
     }
 
-    @media (min-width: 993px) {
+    h4 {
+      font-size: 1.2rem;
+      margin: 0 0 1rem 0;
+      font-weight: 600;
+    }
 
-      .card-y-2,
-      .card-y-4 {
-        margin-top: 40px;
-      }
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+    }
+  }
+
+  @media (min-width: 993px) {
+
+    .card-y-2,
+    .card-y-4 {
+      margin-top: 40px;
     }
   }
 }
+
 
 /* =========================================
    5. Bottom Full CTA
@@ -562,7 +556,7 @@
 .bottom-full-cta {
   width: 100%;
   padding: 8rem 2rem;
-  background: radial-gradient(circle at center, #FFF5F2 0%, #FAF7F4 100%);
+  background: radial-gradient(circle at center, var(--color-primary-light) 0%, var(--color-bg-main) 100%);
   text-align: center;
   display: flex;
   justify-content: center;
@@ -609,25 +603,28 @@
 
   &.primary {
     background-color: var(--color-text-main);
-    color: #ffffff;
+    color: var(--color-bg-card);
     border: none;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-base);
+    transition: var(--transition-base);
 
     &:hover {
       background-color: var(--color-primary);
       transform: translateY(-3px);
-      box-shadow: 0 12px 25px rgba(230, 111, 67, 0.2);
+      box-shadow: var(--shadow-hover);
     }
   }
 
   &.secondary {
-    background-color: #ffffff;
+    background-color: var(--color-bg-card);
     color: var(--color-text-main);
     border: 1px solid var(--color-border);
+    transition: var(--transition-base);
 
     &:hover {
       border-color: var(--color-text-main);
       transform: translateY(-3px);
+      box-shadow: var(--shadow-base);
     }
   }
 }

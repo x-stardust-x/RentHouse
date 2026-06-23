@@ -6,10 +6,8 @@
   grid-template-columns: 300px 1fr;
   gap: 2.5rem;
   align-items: start;
-  width: 100%;
-  max-width: 1400px;
+  width: min(100% - 2rem, 1400px);
   margin: 2rem auto;
-  font-family: 'PingFang TC', 'Heiti TC', 'Microsoft JhengHei', sans-serif;
   color: var(--color-text-main);
 }
 
@@ -17,16 +15,16 @@
    3. 左側篩選面板 (Filter Panel)
    ========================================================================== */
 .rental-matching__filter-panel {
-  background-color: var(--color-bg-card);
+  background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 1.5rem;
-  box-shadow: 0 4px 20px rgba(43, 39, 37, 0.02);
+  box-shadow: var(--shadow-base);
   position: sticky;
   top: 96px;
   max-height: calc(100vh - 130px);
   overflow-y: auto;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: var(--transition-base);
 }
 
 .rental-matching__filter-topbar {
@@ -35,7 +33,11 @@
   justify-content: space-between;
   margin-bottom: 1.5rem;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid var(--color-bg-main);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.rental-matching__filter-body {
+  display: block;
 }
 
 .rental-matching__filter-heading {
@@ -48,13 +50,19 @@
 .rental-matching__filter-toggle {
   display: none;
   align-items: center;
-  gap: 0.25rem;
-  background: none;
-  border: none;
+  gap: 0.35rem;
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-border);
   color: var(--color-primary);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.9rem;
+  padding: 0.65rem 0.95rem;
+  border-radius: var(--radius-pill);
   cursor: pointer;
+}
+
+.rental-matching__filter-toggle-icon {
+  font-size: 1.25rem;
 }
 
 .rental-matching__filter-section {
@@ -103,15 +111,15 @@
 
 .rental-matching__select {
   width: 100%;
-  padding: 0.65rem 1rem;
+  padding: 0.75rem 1rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
-  background-color: var(--color-bg-main);
+  background: var(--color-bg-card);
   color: var(--color-text-main);
   font-size: 0.95rem;
   outline: none;
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition: var(--transition-base);
 }
 
 .rental-matching__select:focus {
@@ -152,20 +160,22 @@
 
 .rental-matching__sort-button {
   flex: 1;
-  background-color: var(--color-bg-main);
+  background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   color: var(--color-text-muted);
-  padding: 0.5rem;
-  font-size: 0.85rem;
-  font-weight: 600;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 700;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: var(--transition-base);
 }
 
-.rental-matching__sort-button:hover {
+.rental-matching__sort-button:hover,
+.rental-matching__sort-button.active {
   border-color: var(--color-primary);
   color: var(--color-primary);
+  background: var(--color-primary-light);
 }
 
 /* ==========================================================================
@@ -215,7 +225,7 @@
 
 .rental-matching__expansion-panel {
   box-shadow: none !important;
-  background: transparent !important;
+  background: var(--color-bg-card) !important;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md) !important;
 }
@@ -282,29 +292,36 @@
 
 .rental-matching__view-toggle {
   display: flex;
-  background-color: #F5F1EC;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
   padding: 0.25rem;
-  border-radius: var(--radius-md);
-  gap: 0.15rem;
+  border-radius: var(--radius-lg);
+  gap: 0.25rem;
 }
 
 .rental-matching__view-button {
   background: none;
   border: none;
-  padding: 0.4rem 0.6rem;
-  border-radius: 8px;
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--radius-md);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--color-text-muted);
-  transition: all 0.2s ease;
+  transition: var(--transition-base);
+}
+
+.rental-matching__view-button.is-active,
+.rental-matching__view-button:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
 }
 
 .rental-matching__view-button--grid {
-  background-color: var(--color-bg-card);
+  background: var(--color-bg-card);
   color: var(--color-primary);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-base);
 }
 
 .rental-matching__view-icon {
@@ -314,51 +331,51 @@
 /* 網格核心 */
 .rental-matching__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  grid-template-columns: repeat(3, minmax(280px, 1fr));
   gap: 1.75rem;
   width: 100%;
 }
 
 .rental-matching__card {
-  background-color: var(--color-bg-card);
+  background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(43, 39, 37, 0.01);
-
+  box-shadow: var(--shadow-base);
   position: relative;
   display: flex;
   flex-direction: column;
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+  transition: var(--transition-card);
 }
 
 .ai-score-badge {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  background: linear-gradient(135deg, #4caf50, #2e7d32); /* 質感漸層綠 */
-  color: white;
-  padding: 6px 12px;
-  border-radius: 20px;
+  top: 1rem;
+  right: 1rem;
+  background: var(--color-bg-card);
+  color: var(--color-success);
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
   font-size: 0.85rem;
-  font-weight: bold;
-  box-shadow: 0 4px 10px rgba(76, 175, 80, 0.4);
-  z-index: 10; /* 確保它浮在圖片的最上面 */
-  display: flex;
+  font-weight: 700;
+  border: 1px solid var(--color-success);
+  box-shadow: var(--shadow-base);
+  z-index: 10;
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 0.4rem;
 }
 
 .rental-matching__card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(43, 39, 37, 0.05);
+  box-shadow: var(--shadow-hover);
 }
 
 .rental-matching__card-image {
   width: 100%;
   aspect-ratio: 16 / 11;
   object-fit: cover;
-  background-color: #EFEFEF;
+  background: var(--color-bg-main);
 }
 
 .rental-matching__card-body {
@@ -372,13 +389,13 @@
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--color-text-main);
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.75rem 0;
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  height: 2.08rem;
+  min-height: 3rem;
 }
 
 .rental-matching__card-price {
@@ -418,11 +435,11 @@
 }
 
 .rental-matching__category-badge {
-  background-color: #F5F1EC;
-  color: var(--color-text-main);
-  padding: 0.2rem 0.5rem;
-  border-radius: var(--radius-sm);
-  font-weight: 600;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
 }
 
 .rental-matching__tags {
@@ -445,27 +462,27 @@
 
 /* 技能標籤客製色 - 如果想連動橘色，也可以改用 var(--color-primary-light) 等 */
 .rental-matching__tag--tool {
-  color: #3A7D6F;
-  background-color: #EDF6F4;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
 }
 
 .rental-matching__tag--knowledge {
-  color: #4A6FA5;
-  background-color: #EEF3F8;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
 }
 
 .rental-matching__detail-button {
   width: 100%;
-  background-color: var(--color-primary);
-  color: #FFFFFF;
+  background: var(--color-primary);
+  color: var(--color-bg-card);
   border: none;
-  padding: 0.65rem;
-  font-size: 0.9rem;
+  padding: 0.75rem;
+  font-size: 0.95rem;
   font-weight: 700;
   border-radius: var(--radius-md);
   cursor: pointer;
   text-align: center;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition: var(--transition-base);
 }
 
 .rental-matching__detail-button:hover {

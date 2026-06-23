@@ -158,7 +158,7 @@
     justify-content: center;
     width: 44px;
     height: 44px;
-    background-color: var(--color-bg-main);
+    background-color: var(--color-primary-light);
     border-radius: var(--radius-md);
   }
 
@@ -276,7 +276,7 @@
     color: var(--color-text-main);
     cursor: pointer;
     transition: var(--transition-base);
-    box-shadow: 0 2px 6px rgba(43, 39, 37, 0.02);
+    box-shadow: var(--shadow-base);
 
     &:has(input:checked) {
       border-color: var(--color-primary);
@@ -291,7 +291,7 @@
 
   // --- 房屋相簿與上傳元件 (Gallery) ---
   &__upload-wrapper {
-    background-color: var(--color-bg-main);
+    background-color: var(--color-primary-light);
     border-radius: var(--radius-md);
     padding: 0.5rem;
   }
@@ -313,10 +313,37 @@
       transition: var(--transition-base);
 
       &:hover {
-        background-color: var(--color-primary-light);
+        background-color: white;
         border-color: var(--color-primary);
+        color: var(--color-primary);
       }
     }
+  }
+
+  // --- 相簿標籤區域 (Gallery Labels) ---
+  &__gallery-label {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  &__label--gallery-heading {
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .material-symbols-outlined {
+      font-size: 1.25rem;
+    }
+  }
+
+  &__label--new-photos {
+    color: var(--color-primary);
+  }
+
+  &__gallery-section {
+    border-bottom: 1px dashed var(--color-border);
+    padding-bottom: 1.25rem;
   }
 
   &__gallery {
@@ -324,6 +351,9 @@
     grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
     gap: 1rem;
     margin-top: 1.5rem;
+    padding: 0.75rem;
+    background-color: var(--color-bg-main);
+    border-radius: var(--radius-md);
   }
 
   &__photo-card {
@@ -333,11 +363,12 @@
     border-radius: var(--radius-md);
     padding: 0.4rem;
     box-shadow: var(--shadow-base);
+    transition: var(--transition-base);
 
     &.is-cover {
       border-color: var(--color-primary);
       background-color: var(--color-primary-light);
-      box-shadow: var(--shadow-primary);
+      box-shadow: var(--shadow-hover);
     }
   }
 
@@ -356,7 +387,7 @@
     width: 24px;
     height: 24px;
     background-color: var(--color-danger);
-    color: #fff;
+    color: white;
     border: none;
     border-radius: 50%;
     display: flex;
@@ -364,6 +395,11 @@
     justify-content: center;
     cursor: pointer;
     z-index: 5;
+    transition: var(--transition-base);
+
+    &:hover {
+      transform: scale(1.1);
+    }
 
     .material-symbols-outlined {
       font-size: 14px;
@@ -415,12 +451,14 @@
 
     &--primary {
       background-color: var(--color-primary);
-      color: #fff;
-      box-shadow: var(--shadow-primary);
+      color: white;
+      box-shadow: var(--shadow-base);
+      transition: var(--transition-base);
 
       &:hover {
         background-color: var(--color-primary-hover);
         transform: translateY(-2px);
+        box-shadow: var(--shadow-hover);
       }
     }
 
@@ -465,7 +503,7 @@
   &.is-active {
     border-color: var(--color-primary);
     background-color: var(--color-primary-light);
-    box-shadow: 0 0 0 3px rgba(232, 107, 63, 0.08);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 8%, transparent);
   }
 }
 
@@ -478,7 +516,7 @@
 .rental-form__radio-card-desc {
   font-size: 0.82rem;
   line-height: 1.5;
-  color: #8a7a70;
+  color: var(--color-text-muted);
 }
 
 .rental-form__radio-inline-group {
@@ -501,7 +539,7 @@
 .rental-form__divider {
   margin: 1.25rem 0;
   border: 0;
-  border-top: 1px solid rgba(120, 90, 70, 0.14);
+  border-top: 1px solid var(--color-border);
 }
 
 .rental-form__sub-title {
@@ -511,21 +549,21 @@
   margin: 0 0 0.75rem;
   font-size: 1rem;
   font-weight: 700;
-  color: #3f3028;
+  color: var(--color-text-main);
 }
 
 .rental-form__sub-title .material-symbols-outlined,
 .rental-form__label .material-symbols-outlined {
   font-size: 1.1rem;
   vertical-align: middle;
-  color: #d96f45;
+  color: var(--color-primary);
 }
 
 .rental-form__field-hint {
   margin: 0.45rem 0 0;
   font-size: 0.84rem;
   line-height: 1.5;
-  color: #8a7a70;
+  color: var(--color-text-muted);
 }
 
 .rental-form__side-grid>.rental-form__group--full,

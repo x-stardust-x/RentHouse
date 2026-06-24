@@ -13,11 +13,33 @@
   </div>
 
   @if (isLoading()) {
-  <div class="loading-state">
-    <div class="spinner-border" role="status">
-      <span class="visually-hidden">Loading...</span>
+  <div class="houses-grid houses-grid--loading" aria-busy="true">
+    @for (_ of loadingCards; track $index) {
+    <article class="house-card house-card--skeleton">
+      <div class="house-skeleton-image"></div>
+
+      <div class="house-card__body">
+        <div class="house-skeleton-line house-skeleton-line--title"></div>
+        <div class="house-skeleton-line"></div>
+        <div class="house-skeleton-line house-skeleton-line--short"></div>
+
+        <div class="house-skeleton-actions">
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </article>
+    }
+  </div>
+  }
+  @else if (loadError()) {
+  <div class="empty-state">
+    <div class="empty-icon">
+      <i class="bi bi-exclamation-circle"></i>
     </div>
-    <p>資料載入中，請稍候...</p>
+
+    <h4>資料載入失敗</h4>
+    <p>{{ loadError() }}</p>
   </div>
   }
   @else if (myHouses().length === 0) {

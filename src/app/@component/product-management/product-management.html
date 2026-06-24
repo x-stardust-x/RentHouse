@@ -15,7 +15,37 @@
     </button>
   </div>
 
-  @if (products().length === 0) {
+  @if (isLoading()) {
+  <div class="products-grid products-grid--loading" aria-busy="true">
+    @for (_ of loadingCards; track $index) {
+    <article class="product-card product-card--skeleton">
+      <div class="product-skeleton-image"></div>
+
+      <div class="product-card__body">
+        <div class="product-skeleton-line product-skeleton-line--title"></div>
+        <div class="product-skeleton-line"></div>
+        <div class="product-skeleton-line product-skeleton-line--short"></div>
+
+        <div class="product-skeleton-actions">
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </article>
+    }
+  </div>
+  }
+  @else if (loadError()) {
+  <div class="empty-state">
+    <div class="empty-icon">
+      <span class="material-symbols-outlined">error</span>
+    </div>
+
+    <h4>資料載入失敗</h4>
+    <p>{{ loadError() }}</p>
+  </div>
+  }
+  @else if (products().length === 0) {
   <div class="empty-state">
     <div class="empty-icon">
       <span class="material-symbols-outlined">handyman</span>

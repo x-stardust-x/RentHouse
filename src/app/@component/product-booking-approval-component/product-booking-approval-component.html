@@ -52,6 +52,75 @@
     }
   </div>
 
+  @if (isLoading()) {
+  <div class="reservation-list reservation-list--loading" aria-busy="true">
+
+    @for (_ of loadingCards; track $index) {
+    <div class="reservation-card reservation-card--skeleton">
+
+      <div class="card-header">
+        <div class="header-left">
+          <span class="skeleton-pill skeleton-pill--status"></span>
+          <span class="skeleton-pill skeleton-pill--type"></span>
+          <span class="skeleton-line skeleton-line--item"></span>
+        </div>
+
+        <div class="header-right">
+          <span class="skeleton-pill skeleton-pill--order"></span>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="applicant-section">
+          <div class="applicant-header">
+            <span class="skeleton-avatar"></span>
+
+            <div class="applicant-info">
+              <span class="skeleton-line skeleton-line--name"></span>
+
+              <div class="profile-tags">
+                <span class="skeleton-pill skeleton-pill--tag"></span>
+                <span class="skeleton-pill skeleton-pill--tag"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="skeleton-info-box">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+
+        <div class="viewing-section">
+          <span class="skeleton-line skeleton-line--label"></span>
+          <div class="skeleton-time-box"></div>
+
+          <span class="skeleton-line skeleton-line--label"></span>
+          <div class="skeleton-message"></div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <span class="skeleton-pill skeleton-pill--score"></span>
+
+        <div class="action-buttons">
+          <span class="skeleton-button"></span>
+          <span class="skeleton-button"></span>
+          <span class="skeleton-button skeleton-button--primary"></span>
+        </div>
+      </div>
+
+    </div>
+    }
+
+  </div>
+  } @else if (errorMessage()) {
+  <div class="empty-state">
+    <p>{{ errorMessage() }}</p>
+  </div>
+  } @else {
   <div class="reservation-list">
     @for (item of filteredReservations(); track item.id) {
     <div class="reservation-card">
@@ -153,5 +222,5 @@
     </div>
     }
   </div>
-
+  }
 </div>

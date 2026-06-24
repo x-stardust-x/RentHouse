@@ -59,6 +59,8 @@ export class LesseeCurrentMatchesComponent implements OnInit {
   isLoading = signal(false);
   errorMessage = signal('');
 
+  readonly loadingCards = Array.from({ length: 3 });
+
   toolMatches = computed(() =>
     this.productMatches().filter(item => item.type === 'tool')
   );

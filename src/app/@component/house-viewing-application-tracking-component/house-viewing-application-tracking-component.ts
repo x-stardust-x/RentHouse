@@ -37,6 +37,8 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
   applications = signal<LesseeViewingApplication[]>([]);
 
   isLoading = signal(false);
+  errorMessage = signal('');
+  readonly loadingCards = Array.from({ length: 3 });
 
   isReselectModalOpen = signal(false);
   selectedReselectApplication = signal<LesseeViewingApplication | null>(null);
@@ -130,11 +132,13 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
 
   fetchApplications(): void {
     this.isLoading.set(true);
+    this.errorMessage.set('');
 
     this.viewingService.getMyApplications().subscribe({
       next: (data: LesseeViewingApplication[]) => {
         console.log('看房申請追蹤 API 回傳：', data);
         console.table(data);
+
         const normalizedData = (data || []).map(item => ({
           ...item,
 
@@ -163,13 +167,16 @@ export class HouseViewingApplicationTrackingComponent implements OnInit {
         }));
 
         console.log('整理後的看房申請追蹤資料：', normalizedData);
+
         this.applications.set(normalizedData);
         this.isLoading.set(false);
       },
       error: (err: unknown) => {
         console.error('無法取得看房申請追蹤：', err);
+
+        this.applications.set([]);
+        this.errorMessage.set('無法取得看房申請追蹤資料，請稍後再試。');
         this.isLoading.set(false);
-        alert('無法取得看房申請追蹤資料');
       }
     });
   }

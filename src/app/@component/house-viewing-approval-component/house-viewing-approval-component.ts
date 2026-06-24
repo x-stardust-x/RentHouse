@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject, OnInit } from '@angular/core';
+import { Component, signal, computed, inject, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HouseViewingService } from '../../@service/house-viewing-service';
@@ -55,7 +55,7 @@ export interface Reservation {
   templateUrl: './house-viewing-approval-component.html',
   styleUrl: './house-viewing-approval-component.scss',
 })
-export class HouseViewingApprovalComponent implements OnInit {
+export class HouseViewingApprovalComponent implements OnInit, OnDestroy {
 
   isRescheduleModalOpen = signal(false);
   selectedReservation = signal<Reservation | null>(null);
@@ -90,6 +90,12 @@ export class HouseViewingApprovalComponent implements OnInit {
   // 模擬後端回傳的預約資料 (未來這裡會由 ngOnInit 呼叫 API 覆寫)
 
   reservations = signal<Reservation[]>([]);
+
+  isLoading = signal(true);
+  errorMessage = signal('');
+  readonly loadingCards = Array.from({ length: 3 });
+
+  private refreshTimerId: number | null = null;
 
   isSchedulePanelOpen = signal(false);
 
@@ -178,22 +184,42 @@ export class HouseViewingApprovalComponent implements OnInit {
   // 生命週期與 API 讀取
   // ===================================================================
   ngOnInit(): void {
-    this.fetchReservations();
+    this.fetchReservations(true);
 
-    window.setInterval(() => {
-      this.fetchReservations();
+    this.refreshTimerId = window.setInterval(() => {
+      this.fetchReservations(false);
     }, 30000);
   }
 
-  private fetchReservations() {
+  ngOnDestroy(): void {
+    if (this.refreshTimerId !== null) {
+      window.clearInterval(this.refreshTimerId);
+    }
+  }
+
+  private fetchReservations(showLoading = true) {
+    if (showLoading) {
+      this.isLoading.set(true);
+    }
+
+    this.errorMessage.set('');
+
     this.viewingService.getMyApprovals().subscribe({
       next: (data) => {
         console.log('看房預約審核 API 回傳：', data);
         console.table(data);
+
         this.reservations.set(data as unknown as Reservation[]);
+        this.isLoading.set(false);
       },
       error: (err) => {
         console.error('無法取得預約資料：', err);
+
+        this.isLoading.set(false);
+
+        if (this.reservations().length === 0) {
+          this.errorMessage.set('無法取得看房預約資料，請稍後再試。');
+        }
       }
     });
   }

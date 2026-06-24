@@ -1,4 +1,5 @@
 .admin-sidebar {
+  min-height: 100vh;
   height: 100%;
   padding: 24px 18px;
   background: #2b2522;
@@ -7,11 +8,18 @@
   flex-direction: column;
 }
 
+.admin-sidebar__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .admin-sidebar__brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 18px;
+  margin-bottom: 40px;
 
   h2 {
     margin: 0;
@@ -73,7 +81,7 @@
   margin: 0;
   display: grid;
   gap: 8px;
-  flex: 1 1 auto;
+  // flex: 1 1 auto;
 
   a {
     min-height: 46px;
@@ -105,8 +113,9 @@
 }
 
 .admin-sidebar__footer {
-  margin-top: 18px;
+  margin-top: auto;
   padding-top: 16px;
+  padding-bottom: 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 

@@ -31,6 +31,14 @@ export class AlertService {
       confirmButtonText: '確定',
     });
   }
+  info(title: string, text?: string){
+    return Swal.fire({
+      icon: 'info',
+      title,
+      text,
+      confirmButtonText: '確定'
+    })
+  }
 
   successTime(title: string, text?: string) {
     return Swal.fire({
@@ -79,6 +87,18 @@ export class AlertService {
       timer: 1000,
       timerProgressBar: true,
       background,
+    });
+  }
+
+  toastWarning(title: string){
+    return Swal.fire({
+      toast: true,
+      position: 'bottom-start',
+      icon: 'warning',
+      title,
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true,
     });
   }
 

@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { HouseService } from '../../@service/house.service';
+import { AlertService } from '../../@service/alert-service';
 
 @Component({
   selector: 'app-house-management',
@@ -22,8 +23,9 @@ export class HouseManagementComponent implements OnInit {
 
   constructor(
     private houseService: HouseService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private alert: AlertService
+  ) {}
 
   ngOnInit() {
     const token = localStorage.getItem('token');
@@ -80,14 +82,17 @@ export class HouseManagementComponent implements OnInit {
     this.router.navigate(['/user-center/rent'], { queryParams: { editId: id } });
   }
 
-  deleteMyHouse(id: number) {
-    if (confirm('確定要刪除這個房源嗎？這將無法復原喔！')) {
+  async deleteMyHouse(id: number) {
+
+    var res = await this.alert.confirm("確定要刪除這個房源嗎？","這將無法復原喔！");
+
+    if (res.isConfirmed) {
       this.houseService.deleteHouse(id).subscribe({
         next: () => {
-          alert('房源已成功刪除！');
+          this.alert.toastSuccess('房源已成功刪除！');
           this.loadMyHouses();
         },
-        error: () => alert('刪除失敗，請稍後再試')
+        error: (err) => this.alert.error('刪除失敗，請稍後再試')
       });
     }
   }

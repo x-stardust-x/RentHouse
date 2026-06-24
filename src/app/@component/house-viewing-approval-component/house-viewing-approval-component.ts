@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HouseViewingService } from '../../@service/house-viewing-service';
 import { FormsModule } from '@angular/forms';
 import { CalendarLinkService } from '../../@service/calendar-link-service';
+import { AlertService } from '../../@service/alert-service';
 
 export type ReservationStatus =
   | 'pending'
@@ -79,6 +80,7 @@ export class HouseViewingApprovalComponent implements OnInit, OnDestroy {
   // 預留給後續與 C# 後端 API 串接使用
   private viewingService = inject(HouseViewingService);
   private calendarLinkService = inject(CalendarLinkService);
+  private alert = inject(AlertService);
   private router = inject(Router);
 
   // ===================================================================
@@ -119,7 +121,7 @@ export class HouseViewingApprovalComponent implements OnInit, OnDestroy {
     const range = this.parseViewingCalendarTime(item);
 
     if (!range) {
-      alert('這筆看房預約缺少可加入日曆的日期時間');
+      this.alert.warning('這筆看房預約缺少可加入日曆的日期時間');
       return;
     }
 
@@ -372,7 +374,7 @@ export class HouseViewingApprovalComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: () => {
         this.updateReservationStatus(item.id, 'rejected');
-        alert(`已婉拒預約單號: ${item.orderNumber}`);
+        this.alert.success(`已婉拒預約單號: ${item.orderNumber}`);
       },
       error: (err) => {
         console.error('婉拒預約失敗：', err);
@@ -383,7 +385,7 @@ export class HouseViewingApprovalComponent implements OnInit, OnDestroy {
           err.message ||
           '未知錯誤';
 
-        alert(`婉拒預約失敗：${backendMessage}`);
+        this.alert.error(`婉拒預約失敗：${backendMessage}`);
       }
     });
   }
@@ -418,7 +420,7 @@ export class HouseViewingApprovalComponent implements OnInit, OnDestroy {
     }).subscribe({
       next: () => {
         this.updateReservationStatus(item.id, 'confirmed');
-        alert(`已接受預約單號: ${item.orderNumber}`);
+        this.alert.success(`已接受預約單號: ${item.orderNumber}`);
       },
       error: (err) => {
         console.error('接受預約失敗：', err);
@@ -429,7 +431,7 @@ export class HouseViewingApprovalComponent implements OnInit, OnDestroy {
           err.message ||
           '未知錯誤';
 
-        alert(`接受預約失敗：${backendMessage}`);
+        this.alert.error(`接受預約失敗：${backendMessage}`);
       }
     });
   }
@@ -438,7 +440,7 @@ export class HouseViewingApprovalComponent implements OnInit, OnDestroy {
     const range = this.parseViewingCalendarTime(item);
 
     if (!range) {
-      alert('這筆看房預約缺少可加入日曆的日期時間');
+      this.alert.warning('這筆看房預約缺少可加入日曆的日期時間');
       return;
     }
 
@@ -570,7 +572,7 @@ export class HouseViewingApprovalComponent implements OnInit, OnDestroy {
     this.isConfirmingMatch.set(false);
   }
 
-  confirmMatch(): void {
+  async confirmMatch(){
     const item = this.selectedMatchReservation();
 
     if (!item) return;
@@ -581,7 +583,9 @@ export class HouseViewingApprovalComponent implements OnInit, OnDestroy {
       `承租人：${item.applicant.name}\n` +
       `預約單號：${item.orderNumber}`;
 
-    if (!confirm(confirmMessage)) {
+    this.closeConfirmMatchModal();
+
+    if ((await this.alert.confirm(confirmMessage)).isDismissed) {
       return;
     }
 
@@ -594,10 +598,7 @@ export class HouseViewingApprovalComponent implements OnInit, OnDestroy {
       matchNote: this.matchNote().trim()
     }).subscribe({
       next: () => {
-        alert('已確認媒合成功，這筆資料已移至「當前媒合名單」。');
-
-        this.closeConfirmMatchModal();
-
+        this.alert.success('已確認媒合成功，這筆資料已移至「當前媒合名單」。');
         this.router.navigate(['/user-center/lessor-current-matches']);
       },
       error: (err) => {
@@ -609,7 +610,7 @@ export class HouseViewingApprovalComponent implements OnInit, OnDestroy {
           err.message ||
           '未知錯誤';
 
-        alert(`確認媒合失敗：${backendMessage}`);
+        this.alert.error(`確認媒合失敗：${backendMessage}`);
         this.isConfirmingMatch.set(false);
       }
     });
@@ -635,7 +636,7 @@ export class HouseViewingApprovalComponent implements OnInit, OnDestroy {
     const calendarRange = this.buildGoogleCalendarDateRange(item);
 
     if (!calendarRange) {
-      alert('目前缺少有效的看房時間，無法加入 Google 行事曆');
+      this.alert.warning('目前缺少有效的看房時間，無法加入 Google 行事曆');
       return;
     }
 
@@ -661,26 +662,24 @@ export class HouseViewingApprovalComponent implements OnInit, OnDestroy {
     window.open(url, '_blank');
   }
 
-  contactLesseeByLine(item: Reservation): void {
+  async contactLesseeByLine(item: Reservation): Promise<void> {
     if (!this.canShowFullContact(item)) {
-      alert('此預約尚未確認或改期，暫時不開放完整聯絡資訊');
+      this.alert.warning('此預約尚未確認或改期，暫時不開放完整聯絡資訊');
       return;
     }
 
     const lineId = item.applicant.lineId?.trim();
 
     if (!lineId || lineId === '未填寫') {
-      alert('承租人尚未提供 LINE ID，請改用電話或等待承租人更新聯絡資訊');
+      this.alert.info('承租人尚未提供 LINE ID，請改用電話或等待承租人更新聯絡資訊');
       return;
     }
 
     this.copyText(lineId);
 
-    const openLine = confirm(
-      `已複製承租人 LINE ID：${lineId}\n\n是否嘗試開啟 LINE？`
-    );
+    const openLine = await this.alert.confirm( `已複製承租人 LINE ID：${lineId}\n\n是否嘗試開啟 LINE？`);
 
-    if (openLine) {
+    if (openLine.isConfirmed) {
       window.open(`https://line.me/R/ti/p/~${encodeURIComponent(lineId)}`, '_blank');
     }
   }
@@ -692,27 +691,27 @@ export class HouseViewingApprovalComponent implements OnInit, OnDestroy {
     if (!item) return;
 
     if (!this.rescheduleDate()) {
-      alert('請選擇改期日期');
+      this.alert.warning('請選擇改期日期');
       return;
     }
 
     if (!this.rescheduleStartTime()) {
-      alert('請選擇開始時間');
+      this.alert.warning('請選擇開始時間');
       return;
     }
 
     if (!this.rescheduleEndTime()) {
-      alert('請選擇結束時間');
+      this.alert.warning('請選擇結束時間');
       return;
     }
 
     if (this.rescheduleEndTime() <= this.rescheduleStartTime()) {
-      alert('結束時間必須晚於開始時間');
+      this.alert.warning('結束時間必須晚於開始時間');
       return;
     }
 
     if (!this.rescheduleMessage().trim()) {
-      alert('請填寫給承租人的改期訊息');
+      this.alert.warning('請填寫給承租人的改期訊息');
       return;
     }
 
@@ -747,7 +746,7 @@ export class HouseViewingApprovalComponent implements OnInit, OnDestroy {
 
         this.activeTab.set('rescheduled');
 
-        alert(`已提出改期，預約單號：${item.orderNumber}`);
+        this.alert.success(`已提出改期，預約單號：${item.orderNumber}`);
 
         this.closeRescheduleModal();
       },
@@ -760,7 +759,7 @@ export class HouseViewingApprovalComponent implements OnInit, OnDestroy {
           err.message ||
           '未知錯誤';
 
-        alert(`提議改期失敗：${backendMessage}`);
+        this.alert.error(`提議改期失敗：${backendMessage}`);
       }
     });
   }

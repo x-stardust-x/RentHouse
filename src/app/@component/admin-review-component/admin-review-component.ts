@@ -5,6 +5,7 @@ import { ProductReviewComponent } from './product-review/product-review-componen
 import { Authservice } from '../../@service/authservice';
 import { LogService } from '../../@service/log-service';
 import { jwtDecode } from 'jwt-decode';
+import { AlertService } from '../../@service/alert-service';
 @Component({
   selector: 'app-admin-review-component',
   templateUrl: './admin-review-component.html',
@@ -16,6 +17,7 @@ export class AdminReviewComponent implements OnInit {
 
   private readonly authsev = inject(Authservice);
   private readonly logsev = inject(LogService);
+  private readonly alert = inject(AlertService);
   ipAddress = signal<string>('');
 
   selectedHouseDetails: any = null;
@@ -182,27 +184,31 @@ export class AdminReviewComponent implements OnInit {
   approveHouse(house: any) {
     this.http.put(`https://localhost:7215/api/RentHouse/Approve/${house.id}`, {}).subscribe({
       next: (res: any) => {
-        alert('房屋已核准上架！');
+        this.alert.success('房屋已核准上架！');
         this.logsev.postLog({
           userId: 1,
           action: `房屋核准上架: ${house.name} (ID: ${house.id})`,
           ipAddress: this.ipAddress()
         }).subscribe();
-        window.location.reload();
+        // window.location.reload();
+        this.loadPendingHouses();
       },
       error: (err: any) => {
         console.error(err);
-        alert('核准失敗！');
+        this.alert.error('核准失敗！');
       }
     });
   }
 
   // 強制下架功能
-  takeDownHouse(house: any) {
-    if (confirm('確定要將這間房屋強制下架，並移出列表嗎？')) {
+  async takeDownHouse(house: any) {
+
+    var oc = await this.alert.confirm("確定要將這間房屋強制下架，並移出列表嗎？");
+
+    if (oc.isConfirmed) {
       this.http.put(`https://localhost:7215/api/RentHouse/TakeDown/${house.id}`, {}).subscribe({
         next: (res: any) => {
-          alert('房屋已成功下架！');
+          this.alert.success('房屋已成功下架！');
           // 🌟 5. 下架時，更新原始資料庫
           this.logsev.postLog({
             userId: 1,
@@ -213,7 +219,7 @@ export class AdminReviewComponent implements OnInit {
         },
         error: (err: any) => {
           console.error(err);
-          alert('下架失敗！');
+          this.alert.error('下架失敗！');
         }
       });
 
@@ -221,11 +227,14 @@ export class AdminReviewComponent implements OnInit {
   }
 
   // 退回申請
-  rejectHouse(id: number) {
-    if (confirm('🚨 確定要「退回並刪除」這筆房屋申請嗎？資料將被銷毀！')) {
+  async rejectHouse(id: number) {
+
+    var oc = await this.alert.confirm('🚨 確定要「退回並刪除」這筆房屋申請嗎？資料將被銷毀！');
+
+    if (oc.isConfirmed) {
       this.houseService.deleteHouse(id).subscribe({
         next: () => {
-          alert('🗑️ 申請已退回並銷毀！');
+          this.alert.success('🗑️ 申請已退回並銷毀！');
           this.logsev.postLog({
             userId: 1,
             action: `房屋退回並銷毀: ID: ${id}`,
@@ -233,7 +242,7 @@ export class AdminReviewComponent implements OnInit {
           }).subscribe();
           this.loadPendingHouses();
         },
-        error: (err) => console.error('退回失敗', err)
+        error: (err) => this.alert.error(`退回失敗!${err.message}`)
       });
     }
   }

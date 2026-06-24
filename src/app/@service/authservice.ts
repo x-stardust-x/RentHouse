@@ -52,7 +52,7 @@ export class Authservice {
     localStorage.removeItem('userId');
     localStorage.removeItem('accountId');
     localStorage.removeItem('subscriptionTier');
-    this.alert.toastSuccess("登出成功");
+    this.alert.toastWarning("已登出，請重新登入");
     this.router.navigate(['/login']);
   }
 

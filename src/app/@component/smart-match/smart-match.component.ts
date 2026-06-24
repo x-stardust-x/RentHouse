@@ -89,7 +89,9 @@ export class SmartMatchComponent implements OnInit {
         console.log('成功撈回真實配對清單：', res);
         this.matchResults = res;
         this.isLoading = false;
-        this.cdr.detectChanges();
+        setTimeout(() => {
+          this.cdr.detectChanges();
+        },2000);
       },
       error: (err) => {
         console.error('一對多連線失敗：', err);

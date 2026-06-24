@@ -3057,7 +3057,7 @@ html.js-enabled .slide.is-active> :not(.slide-header):not(.slide-thesis):not(.sl
    Added slides unified with original HomieFun presentation
    ========================================================= */
 .slide-number::before {
-  content: counter(slide, decimal-leading-zero) " / 23";
+  content: counter(slide, decimal-leading-zero) " / 22";
 }
 
 .slide--agenda-unified {

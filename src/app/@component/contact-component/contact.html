@@ -1,50 +1,58 @@
+<app-page-hero eyebrow="Contact Us" title="聯絡我們" [breadcrumbs]="[
+    { label: '首頁', link: '/home' },
+    { label: '聯絡我們' }
+  ]" />
 
-<div class="contact-container">
-  <h2 class="contact-container__heading">傳送訊息</h2>
+<div class="contact-page">
+  <section class="contact-card">
+    <div class="contact-header">
+      <p class="eyebrow">聯絡我們</p>
+      <h2>傳送訊息</h2>
+      <p>有任何租屋諮詢、平台問題或意見回饋，都可以留下訊息給我們。</p>
+    </div>
 
-  <div class="contact-container__form-group">
-    <label class="contact-container__label">您的稱呼</label>
-    <input type="text" name="name" [(ngModel)]="formData.name" placeholder="請輸入您的稱呼"
-           class="contact-container__input">
-  </div>
+    <div class="contact-form">
+      <label class="form-field">
+        <span>您的稱呼</span>
+        <input type="text" name="name" [(ngModel)]="formData.name" placeholder="請輸入您的稱呼" />
+      </label>
 
-  <div class="contact-container__form-group">
-    <label class="contact-container__label">信箱</label>
-    <input type="email"
-           class="contact-container__input"
-           [(ngModel)]="formData.email"
-           name="email"
-           placeholder="example@email.com"
-           required
-           pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-           #emailCtrl="ngModel">
-    @if (emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)) {
-      <div class="contact-container__error">
-        @if (emailCtrl.errors?.['required']) {
-          <span>⚠️ 信箱是必填欄位喔！</span>
+      <label class="form-field">
+        <span>電子信箱</span>
+        <input type="email" name="email" [(ngModel)]="formData.email" placeholder="example@email.com" required
+          pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" #emailCtrl="ngModel" />
+
+        @if (emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)) {
+        <div class="field-error">
+          @if (emailCtrl.errors?.['required']) {
+          <span>信箱是必填欄位。</span>
+          }
+
+          @if (emailCtrl.errors?.['pattern']) {
+          <span>信箱格式不正確，請檢查是否有漏掉 @ 或網域。</span>
+          }
+        </div>
         }
-        @if (emailCtrl.errors?.['pattern']) {
-          <span>⚠️ 信箱格式不正確，請檢查是否有漏掉 @ 或 .com</span>
-        }
-      </div>
-    }
-  </div>
+      </label>
 
-  <div class="contact-container__form-group">
-    <label class="contact-container__label">主旨</label>
-    <select name="subject" [(ngModel)]="formData.subject" class="contact-container__select">
-      <option value="" disabled>請選擇相關主旨</option>
-      <option value="租屋諮詢">租屋諮詢</option>
-      <option value="意見回饋">意見回饋</option>
-    </select>
-  </div>
+      <label class="form-field">
+        <span>相關主旨</span>
+        <select name="subject" [(ngModel)]="formData.subject">
+          <option value="" disabled>請選擇相關主旨</option>
+          <option value="租屋諮詢">租屋諮詢</option>
+          <option value="意見回饋">意見回饋</option>
+        </select>
+      </label>
 
-  <div class="contact-container__form-group">
-    <label class="contact-container__label">訊息內容</label>
-    <textarea name="content" [(ngModel)]="formData.content" placeholder="請詳細描述您的問題或意見"
-              class="contact-container__textarea"></textarea>
-  </div>
+      <label class="form-field">
+        <span>訊息內容</span>
+        <textarea name="content" [(ngModel)]="formData.content" placeholder="請詳細描述您的問題或需求"></textarea>
+      </label>
 
-  <button (click)="onSubmit()" class="contact-container__submit">送出訊息</button>
+      <button class="submit-btn" type="button" (click)="onSubmit()">
+        送出訊息
+      </button>
+    </div>
+  </section>
 </div>
 

@@ -27,7 +27,89 @@
     <app-rental-booking [data]="detailData()"></app-rental-booking>
   </div> -->
 
+@if (isDetailLoading()) {
 
+<div class="rental-detail-page-skeleton">
+
+  <section class="rental-detail-skeleton-hero">
+    <div class="rental-detail-skeleton-hero__image"></div>
+
+    <div class="rental-detail-skeleton-hero__content">
+      <div class="rental-detail-skeleton-line rental-detail-skeleton-line--title"></div>
+      <div class="rental-detail-skeleton-line rental-detail-skeleton-line--address"></div>
+    </div>
+
+    <div class="rental-detail-skeleton-hero__thumbs">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </section>
+
+  <div class="rental-detail-skeleton-layout">
+    <main class="rental-detail-skeleton-main">
+      <div class="rental-detail-skeleton-card">
+        <div class="rental-detail-skeleton-line rental-detail-skeleton-line--heading"></div>
+        <div class="rental-detail-skeleton-line"></div>
+        <div class="rental-detail-skeleton-line"></div>
+        <div class="rental-detail-skeleton-line rental-detail-skeleton-line--short"></div>
+      </div>
+
+      <div class="rental-detail-skeleton-card">
+        <div class="rental-detail-skeleton-line rental-detail-skeleton-line--heading"></div>
+        <div class="rental-detail-skeleton-grid">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <div class="rental-detail-skeleton-card">
+        <div class="rental-detail-skeleton-line rental-detail-skeleton-line--heading"></div>
+        <div class="rental-detail-skeleton-tags">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </main>
+
+    <aside class="rental-detail-skeleton-side">
+      <div class="rental-detail-skeleton-card">
+        <div class="rental-detail-skeleton-provider">
+          <span></span>
+          <div>
+            <div class="rental-detail-skeleton-line rental-detail-skeleton-line--name"></div>
+            <div class="rental-detail-skeleton-line rental-detail-skeleton-line--mini"></div>
+          </div>
+        </div>
+        <div class="rental-detail-skeleton-line"></div>
+        <div class="rental-detail-skeleton-line rental-detail-skeleton-line--short"></div>
+      </div>
+
+      <div class="rental-detail-skeleton-card">
+        <div class="rental-detail-skeleton-line rental-detail-skeleton-line--price"></div>
+        <div class="rental-detail-skeleton-button"></div>
+        <div class="rental-detail-skeleton-button rental-detail-skeleton-button--light"></div>
+      </div>
+    </aside>
+  </div>
+
+</div>
+
+} @else if (detailLoadError()) {
+
+<div class="rental-detail-load-error">
+  <span class="material-symbols-outlined rental-detail-load-error__icon">error</span>
+  <h2 class="rental-detail-load-error__title">詳情資料載入失敗</h2>
+  <p class="rental-detail-load-error__text">{{ detailLoadError() }}</p>
+  <a routerLink="/rental-matching-component" class="rental-detail-load-error__link">
+    返回租賃物媒合
+  </a>
+</div>
+
+} @else {
 
 <div class="top rental-hero">
 
@@ -71,8 +153,7 @@
 
         <button type="button" class="favorite rental-hero__action-button" (click)="onToggleFavorite()">
 
-    <span class="material-symbols-outlined rental-hero__action-icon"
-          [ngClass]="{'text-danger': isFavorite()}"
+          <span class="material-symbols-outlined rental-hero__action-icon" [ngClass]="{'text-danger': isFavorite()}"
             [ngStyle]="{'font-variation-settings': isFavorite() ? '\'FILL\' 1' : '\'FILL\' 0'}"
             style="transition: all 0.3s ease;">
             favorite
@@ -115,6 +196,8 @@
 
   </div>
 </div>
+
+}
 
 
 <div class="rental-detail-layout">
@@ -498,10 +581,75 @@
     </div>
 
 
-    <div class="rental-detail-card rental-detail-booking-card">
+    @if (isRoom()) {
+    <div #matchAnalysisSection class="rental-detail-card rental-detail-booking-card rental-match-analysis-card">
       <h2 class="rental-detail-section-title">契合度分析</h2>
-      <!-- 從你前台 UI 看到的「契合度 85%」，點進詳情頁後，可以具體呈現為什麼契合（例：「生活風格皆喜愛安靜」、「共同興趣：手作工藝」）。 -->
+
+      @if (matchAnalysisLoading()) {
+      <div class="rental-match-loading">
+        <div class="rental-match-loading__orb">
+          <span></span>
+        </div>
+
+        <p class="rental-match-loading__title">正在模擬分析房源契合度</p>
+        <p class="rental-match-loading__text">系統正在比對生活習慣、房源條件與入住需求...</p>
+
+        <div class="rental-match-loading__steps">
+          <span>生活圈</span>
+          <span>預算</span>
+          <span>規範</span>
+        </div>
+      </div>
+      } @else if (matchAnalysis(); as analysis) {
+      <div class="rental-match-summary">
+        <div class="rental-match-orb" [class]="'is-' + analysis.tone"
+          [style.--match-circle-length]="analysis.circleLength" [style.--match-dash-end]="analysis.dashOffset">
+          <svg class="rental-match-orb__svg" viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="rental-match-orb__track" cx="60" cy="60" r="44"></circle>
+            <circle class="rental-match-orb__progress" cx="60" cy="60" r="44"></circle>
+            <circle class="rental-match-orb__inner" cx="60" cy="60" r="30"></circle>
+          </svg>
+
+          <div class="rental-match-orb__content">
+            <span>AI 契合度</span>
+            <strong>{{ matchDisplayScore() }}%</strong>
+          </div>
+        </div>
+
+        <p class="rental-match-level">{{ analysis.level }}</p>
+      </div>
+
+      <div class="rental-match-analysis-list">
+        <section class="rental-match-analysis-group">
+          <h3>評估基礎</h3>
+          <ul>
+            @for (text of analysis.basis; track text) {
+            <li>{{ text }}</li>
+            }
+          </ul>
+        </section>
+
+        <section class="rental-match-analysis-group">
+          <h3>隱含風險</h3>
+          <ul>
+            @for (text of analysis.risks; track text) {
+            <li>{{ text }}</li>
+            }
+          </ul>
+        </section>
+
+        <section class="rental-match-analysis-group">
+          <h3>建議事項</h3>
+          <ul>
+            @for (text of analysis.suggestions; track text) {
+            <li>{{ text }}</li>
+            }
+          </ul>
+        </section>
+      </div>
+      }
     </div>
+    }
 
 
     <div class="rental-detail-card rental-detail-booking-card">
@@ -565,7 +713,8 @@
 
       <p class="rental-detail-price">
         NT$<span class="rental-detail-price__number"> {{ detailData()?.price ?? detailData()?.Price }} </span>
-        <span class="rental-detail-price__unit">/{{ detailData()?.priceUnit ?? detailData()?.PriceUnit ?? '次' }}</span>
+        <span class="rental-detail-price__unit">/{{ detailData()?.priceUnit ?? detailData()?.PriceUnit ?? '次'
+          }}</span>
       </p>
 
       @if (detailData()?.category === '工具共享' || detailData()?.Category === '工具共享') {
@@ -574,7 +723,8 @@
       }
 
       @if (detailData()?.category === '專業諮詢' || detailData()?.Category === '專業諮詢') {
-      <p class="rental-detail-booking-note">授課形式：{{ (detailData()?.isOnline ?? detailData()?.IsOnline) ? '線上諮詢' : '實體面授'
+      <p class="rental-detail-booking-note">授課形式：{{ (detailData()?.isOnline ?? detailData()?.IsOnline) ? '線上諮詢' :
+        '實體面授'
         }}</p>
       }
 
@@ -690,7 +840,8 @@
 
             費用：
             <strong class="highlight-text">
-              NT$ {{ (detailData()?.price ?? detailData()?.Price ?? 0) | number:'1.0-0' }}/{{ detailData()?.priceUnit ||
+              NT$ {{ (detailData()?.price ?? detailData()?.Price ?? 0) | number:'1.0-0' }}/{{ detailData()?.priceUnit
+              ||
               detailData()?.PriceUnit || '次' }}
             </strong>
             }
@@ -702,7 +853,8 @@
 
             租金：
             <strong class="highlight-text">
-              NT$ {{ (detailData()?.price ?? detailData()?.Price ?? 0) | number:'1.0-0' }}/{{ detailData()?.priceUnit ||
+              NT$ {{ (detailData()?.price ?? detailData()?.Price ?? 0) | number:'1.0-0' }}/{{ detailData()?.priceUnit
+              ||
               detailData()?.PriceUnit || '天' }}
             </strong>
 

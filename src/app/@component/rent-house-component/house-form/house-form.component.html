@@ -1,5 +1,11 @@
 <div class="rental-form">
-  <h3 class="rental-form__page-title">{{ isEditMode ? '修改草稿' : '新增房屋申請' }}</h3>
+
+  <div class="page-header">
+    <h2 class="page-title">新增房屋申請</h2>
+    <p>把閒置空間整理成安心房源，讓合適的承租人找到你。</p>
+  </div>
+
+  <!-- <h3 class="rental-form__page-title">{{ isEditMode ? '修改草稿' : '新增房屋申請' }}</h3> -->
 
   <div class="rental-form__dashboard-layout">
 
@@ -409,9 +415,13 @@
 
   <div class="rental-form__actions">
     @if (isEditMode) {
-    <button type="button" class="rental-form__btn rental-form__btn--secondary" (click)="cancelEdit()">取消修改</button>
+    <button type="button" class="rental-form__btn rental-form__btn--secondary" (click)="cancelEdit()">
+      取消修改
+    </button>
     }
+
     <button type="button" class="rental-form__btn rental-form__btn--primary" (click)="submitForm()">
       {{ isEditMode ? '儲存修改' : '確認送出申請' }}
     </button>
   </div>
+</div>

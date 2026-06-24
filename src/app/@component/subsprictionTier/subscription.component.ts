@@ -10,11 +10,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserService } from '../../@service/user-service';
 import Swal from 'sweetalert2';
+import { PageHero } from '../../@layouts/page-hero/page-hero';
+
 @Component({
   selector: 'app-subscription',
   standalone: true,
 
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatTabsModule],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatTabsModule, PageHero],
 
   templateUrl: './subscription.component.html',
   styleUrls: ['./subscription.component.scss']

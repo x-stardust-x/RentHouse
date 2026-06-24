@@ -70,7 +70,7 @@ export class LessorDashboardComponent {
   // computed 自動同步
   // 模擬資料，便於未來與 API 對接
   // userName = this.usersev.profile()?.realName;
-  role = '房東';
+  role = '出租人';
 
   stats = computed(() => [
     { title: '活躍房源', count: this.myHouses().filter(x=>x.status === 1).length, icon: 'home', badge: '上架中', link: '../houses' },

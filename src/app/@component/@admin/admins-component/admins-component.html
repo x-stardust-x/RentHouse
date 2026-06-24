@@ -1,168 +1,170 @@
-<div class="container mt-4">
+<section class="admin-admins-page">
+  <div class="admins-header">
+    <div>
+      <p class="eyebrow">權限管理</p>
+      <h2>管理員管理</h2>
+      <p>管理後台帳號、權限角色與密碼維護。</p>
+    </div>
 
-  <!-- Header -->
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3 class="mb-0">管理員 管理</h3>
-
-    <!-- 新增按鈕 -->
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createAdminModal">
-      + 新增管理員
+    <button type="button" class="primary-btn" data-bs-toggle="modal" data-bs-target="#createAdminModal">
+      <span class="material-symbols-outlined">person_add</span>
+      新增管理員
     </button>
   </div>
 
-  <!-- 表格 -->
   @if (adminservice.admins() && adminservice.admins().length > 0) {
+  <div class="admins-card">
+    <div class="table-responsive">
+      <table class="table admins-table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>權限</th>
+            <th>名字</th>
+            <th>信箱</th>
+            <th>電話</th>
+            <th class="text-end">操作</th>
+          </tr>
+        </thead>
 
-  <div class="card shadow-sm">
-    <div class="card-body p-0">
+        <tbody>
+          @for (admin of adminservice.admins(); track admin.id) {
+          <tr>
+            <td>
+              <span class="role-badge" [class.super]="admin.isSuper" [class.normal]="!admin.isSuper">
+                {{ admin.isSuper ? '超級管理員' : '一般管理員' }}
+              </span>
+            </td>
 
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
+            <td class="admin-name">
+              {{ admin.username || '未命名管理員' }}
+            </td>
 
-          <thead class="table-dark">
-            <tr>
-              <th>權限</th>
-              <th>名子</th>
-              <th>信箱</th>
-              <th>電話</th>
-              <th class="text-end">操作</th>
-            </tr>
-          </thead>
+            <td class="admin-email">
+              {{ admin.email || '尚未填寫' }}
+            </td>
 
-          <tbody>
+            <td>
+              {{ admin.phone || '尚未填寫' }}
+            </td>
 
-            @for (admin of adminservice.admins(); track admin.id) {
-            <tr>
-
-              <td>
-                <span
-                  class="badge rounded-pill py-2"
-                  [class.text-bg-warning]="admin.isSuper"
-                  [class.text-bg-info]="!admin.isSuper"
-                >
-                  {{ admin.isSuper ? '超級管理員' : '一般管理員' }}
-                </span>
-              </td>
-              <td>{{ admin.username }}</td>
-              <td>{{ admin.email }}</td>
-              <td>{{ admin.phone }}</td>
-
-              <td class="text-end">
-                @if(admin.id != now_adminid){
-                  @if(isSuper()){
-                  <button class="btn btn-sm me-2" [class.btn-primary]="!admin.isSuper" [class.btn-secondary]="admin.isSuper" (click)="SuperChange(admin.id)">
-                    {{admin.isSuper ? '取消超級管理員' : '變為超級管理員'}}
-                  </button>
-                  }
-                  <button class="btn btn-warning btn-sm me-2" (click)="resetPwd(admin.id)">
-                    重製密碼
-                  </button>
-                  @if(isSuper()){
-                    <button class="btn btn-danger btn-sm me-2" (click)="deleteAdmin(admin.id)">
-                      刪除
-                    </button>
-                  }
+            <td class="text-end">
+              <div class="row-actions">
+                @if (admin.id != now_adminid) {
+                @if (isSuper()) {
+                <button type="button" class="action-btn" [class.primary]="!admin.isSuper" [class.muted]="admin.isSuper"
+                  (click)="SuperChange(admin.id)">
+                  {{ admin.isSuper ? '取消超級管理員' : '設為超級管理員' }}
+                </button>
                 }
-                @else {
-                  <!-- <button class="btn btn-warning btn-sm " (click)="changePwd(admin.id)">
-                    更改密碼
-                  </button> -->
-                  <!-- <button class="btn btn-warning btn-sm me-2" data-bs-toggle="modal" data-bs-target="#PwdModal">修改密碼</button> -->
+
+                <button type="button" class="action-btn warning" (click)="resetPwd(admin.id)">
+                  重設密碼
+                </button>
+
+                @if (isSuper()) {
+                <button type="button" class="action-btn danger" (click)="deleteAdmin(admin.id)">
+                  刪除
+                </button>
                 }
-              </td>
-
-            </tr>
-            }
-
-          </tbody>
-
-        </table>
-      </div>
-
+                } @else {
+                <span class="self-badge">目前登入帳號</span>
+                }
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
     </div>
   </div>
-
   } @else {
-  <div class="alert alert-info">
-    目前沒有 Admin
+  <div class="empty-box">
+    <div class="empty-icon">
+      <span class="material-symbols-outlined">admin_panel_settings</span>
+    </div>
+
+    <h4>目前沒有管理員資料</h4>
+    <p>可以點擊右上角新增第一位管理員。</p>
   </div>
   }
+</section>
 
-</div>
-
-<!-- ================= MODAL ================= -->
-
-<div class="modal fade" id="createAdminModal" tabindex="-1">
-  <div class="modal-dialog">
-
+<div class="modal fade admin-modal" id="createAdminModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-
       <div class="modal-header">
         <h5 class="modal-title">新增管理員</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
-
-        <div class="mb-2">
-          <label>名子</label>
-          <input class="form-control" [(ngModel)]="newAdmin.username">
+        <div class="form-field">
+          <label>名字</label>
+          <input class="form-control" [(ngModel)]="newAdmin.username" />
         </div>
 
-        <div class="mb-2">
+        <div class="form-field">
           <label>信箱</label>
-          <input class="form-control" [(ngModel)]="newAdmin.email">
+          <input class="form-control" [(ngModel)]="newAdmin.email" />
         </div>
 
-        <div class="mb-2">
+        <div class="form-field">
           <label>電話</label>
-          <input class="form-control" [(ngModel)]="newAdmin.phone">
+          <input class="form-control" [(ngModel)]="newAdmin.phone" />
         </div>
 
-        <div class="mb-2">
+        <div class="form-field">
           <label>密碼</label>
-          <input type="password" class="form-control" [(ngModel)]="newAdmin.pwd">
+          <input type="password" class="form-control" [(ngModel)]="newAdmin.pwd" />
         </div>
-
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">
+        <button type="button" class="modal-btn ghost" data-bs-dismiss="modal">
           取消
         </button>
 
-        <button class="btn btn-primary" (click)="createAdmin()" data-bs-dismiss="modal">
+        <button type="button" class="modal-btn primary" (click)="createAdmin()" data-bs-dismiss="modal">
           新增
         </button>
       </div>
-
     </div>
-
   </div>
 </div>
 
-<div class="modal fade" id="PwdModal" tabindex="-1">
-  <div class="modal-dialog">
+<div class="modal fade admin-modal" id="PwdModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-
       <div class="modal-header">
-        <h5 class="modal-title">更改密碼<small class="text-danger">(完成後會登出)</small></h5>
+        <div>
+          <h5 class="modal-title">更改密碼</h5>
+          <p class="modal-note">完成後會登出。</p>
+        </div>
+
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
-        <label>新密碼</label>
-        <input class="form-control" [(ngModel)]="newPwd" />
-        <label>確定密碼</label>
-        <input class="form-control" [(ngModel)]="newPwd2" />
+        <div class="form-field">
+          <label>新密碼</label>
+          <input type="password" class="form-control" [(ngModel)]="newPwd" />
+        </div>
+
+        <div class="form-field">
+          <label>確認密碼</label>
+          <input type="password" class="form-control" [(ngModel)]="newPwd2" />
+        </div>
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-        <button class="btn btn-primary" (click)="changePwd(now_adminid)">確認</button>
-      </div>
+        <button type="button" class="modal-btn ghost" data-bs-dismiss="modal">
+          取消
+        </button>
 
+        <button type="button" class="modal-btn primary" (click)="changePwd(now_adminid)">
+          確認
+        </button>
+      </div>
     </div>
   </div>
 </div>
-

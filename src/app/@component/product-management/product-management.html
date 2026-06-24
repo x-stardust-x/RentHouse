@@ -1,44 +1,114 @@
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h3 class="fw-bold"><span class="material-symbols-outlined align-middle">build</span> 我的技能與工具管理</h3>
-    <button class="btn btn-primary" routerLink="/user-center/product">
-      <span class="material-symbols-outlined align-middle">add</span> 發布新技能
+<div class="my-products-page">
+  <div class="page-heading">
+    <div>
+      <!-- <p class="eyebrow">工具 / 技能共享</p> -->
+      <h2 class="page-title">
+        <!-- <span class="material-symbols-outlined">build</span> -->
+        我的技能與工具管理
+      </h2>
+      <p>查看已發布的技能與工具狀態，並快速編輯或刪除項目。</p>
+    </div>
+
+    <button class="add-product-btn" routerLink="/user-center/product">
+      <span class="material-symbols-outlined">add</span>
+      發布新技能
     </button>
   </div>
 
-  <div class="row">
-    @for (item of products(); track item.id) {
-      <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow-sm">
+  @if (isLoading()) {
+  <div class="products-grid products-grid--loading" aria-busy="true">
+    @for (_ of loadingCards; track $index) {
+    <article class="product-card product-card--skeleton">
+      <div class="product-skeleton-image"></div>
 
-          <div style="height: 200px; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center;">
-           @if (item.coverUrl) {
-  <img [src]="'https://localhost:7215/' + item.coverUrl" class="w-100 h-100" style="object-fit: cover;" alt="技能圖片">
-} @else {
-  <span class="material-symbols-outlined" style="font-size: 4rem; color: #dee2e6;">handyman</span>
-}
-          </div>
+      <div class="product-card__body">
+        <div class="product-skeleton-line product-skeleton-line--title"></div>
+        <div class="product-skeleton-line"></div>
+        <div class="product-skeleton-line product-skeleton-line--short"></div>
 
-          <div class="card-body">
-            <h5 class="card-title text-primary fw-bold">{{ item.name }}</h5>
-
-            <span class="badge" [ngClass]="{'bg-success': item.status === 1, 'bg-warning text-dark': item.status === 0}">
-              {{ item.status === 1 ? '已上架' : '審核中' }}
-            </span>
-
-            <ul class="list-unstyled mt-3 mb-0">
-              <li><small class="text-muted">📍 服務地區：{{ item.address }}</small></li>
-              <li><small class="text-muted">💰 費用：{{ item.price }} 元/次</small></li>
-            </ul>
-          </div>
-
-          <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2 pb-3">
-            <button class="btn btn-outline-primary btn-sm" (click)="editProduct(item.id)">編輯</button>
-            <button class="btn btn-outline-danger btn-sm" (click)="deleteProduct(item.id)">刪除</button>
-          </div>
-
+        <div class="product-skeleton-actions">
+          <span></span>
+          <span></span>
         </div>
       </div>
+    </article>
     }
   </div>
+  }
+  @else if (loadError()) {
+  <div class="empty-state">
+    <div class="empty-icon">
+      <span class="material-symbols-outlined">error</span>
+    </div>
+
+    <h4>資料載入失敗</h4>
+    <p>{{ loadError() }}</p>
+  </div>
+  }
+  @else if (products().length === 0) {
+  <div class="empty-state">
+    <div class="empty-icon">
+      <span class="material-symbols-outlined">handyman</span>
+    </div>
+
+    <h4>目前沒有技能或工具</h4>
+    <p>您還沒有發布任何共享項目，趕快建立第一筆技能或工具吧。</p>
+
+    <button class="add-product-btn" routerLink="/user-center/product">
+      <span class="material-symbols-outlined">add</span>
+      發布新技能
+    </button>
+  </div>
+  }
+  @else {
+  <div class="products-grid">
+    @for (item of products(); track item.id) {
+    <article class="product-card">
+      <div class="product-card__image">
+        @if (item.coverUrl) {
+        <img [src]="'https://localhost:7215/' + item.coverUrl" alt="技能圖片" />
+        } @else {
+        <div class="product-placeholder">
+          <span class="material-symbols-outlined">handyman</span>
+        </div>
+        }
+
+        @if (item.status === 1) {
+        <span class="status-badge active">已上架</span>
+        } @else {
+        <span class="status-badge pending">審核中</span>
+        }
+      </div>
+
+      <div class="product-card__body">
+        <h5>{{ item.name }}</h5>
+
+        <div class="product-meta">
+          <span>
+            <span class="material-symbols-outlined">location_on</span>
+            {{ item.address || '尚未填寫服務地區' }}
+          </span>
+
+          <span>
+            <span class="material-symbols-outlined">payments</span>
+            NT$ {{ item.price || 0 }} / 次
+          </span>
+        </div>
+
+        <div class="product-card__actions">
+          <button class="action-btn edit" (click)="editProduct(item.id)">
+            <span class="material-symbols-outlined">edit_square</span>
+            編輯
+          </button>
+
+          <button class="action-btn delete" (click)="deleteProduct(item.id)">
+            <span class="material-symbols-outlined">delete</span>
+            刪除
+          </button>
+        </div>
+      </div>
+    </article>
+    }
+  </div>
+  }
 </div>

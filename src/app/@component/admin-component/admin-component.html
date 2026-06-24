@@ -1,107 +1,62 @@
-<div class="dashboard">
-
-  <!-- Header -->
+<section class="admin-dashboard-page">
   <div class="dashboard__header">
-    <h2>儀錶板<br></h2>
+    <p class="eyebrow">後台總覽</p>
+    <h2>儀錶板</h2>
     <p>掌握平台即時動態與關鍵指標。</p>
   </div>
 
-  <!-- Stats -->
-  <div class="row g-3">
-
+  <div class="stats-grid">
     @for (card of stats(); track card.title) {
-      <div class="col-12 col-md-4">
+    <article class="stat-card" [class.default]="card.type === 'default'" [class.warning]="card.type === 'warning'"
+      [class.success]="card.type === 'success'">
+      <div>
+        <div class="stat-card__title">{{ card.title }}</div>
+        <div class="stat-card__value">{{ card.value | number }}</div>
 
-        <div class="stat-card" [ngClass]="card.type">
+        @if (card.trend) {
+        <div class="stat-card__trend">{{ card.trend }}</div>
+        }
 
-          <div class="stat-card__content">
+        @if (card.subText) {
+        <div class="stat-card__sub">{{ card.subText }}</div>
+        }
+      </div>
 
-            <div>
-              <div class="stat-card__title">{{ card.title }}</div>
-              <div class="stat-card__value">{{ card.value | number }}</div>
+      <div class="stat-card__icon">
+        <mat-icon>{{ card.icon }}</mat-icon>
+      </div>
+    </article>
+    }
+  </div>
 
-              @if (card.trend) {
-                <div class="stat-card__trend">{{ card.trend }}</div>
-              }
+  <div class="dashboard-content">
+    <section class="panel">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Activity</p>
+          <h3>系統即時動態</h3>
+        </div>
 
-              @if (card.subText) {
-                <div class="stat-card__sub">{{ card.subText }}</div>
-              }
+        <a routerLink="../logs">查看全部</a>
+      </div>
 
-            </div>
-
-            <div class="stat-card__icon">
-              <mat-icon>{{ card.icon }}</mat-icon>
-            </div>
-
+      <div class="activity-list">
+        @for (item of activities(); track item.id) {
+        <article class="activity">
+          <div class="activity__icon" [class.default]="item.type === 'default'" [class.info]="item.type === 'info'"
+            [class.success]="item.type === 'success'" [class.warning]="item.type === 'warning'"
+            [class.error]="item.type === 'error'">
+            <mat-icon>{{ item.icon }}</mat-icon>
           </div>
 
-        </div>
-
+          <div class="activity__content">
+            <div class="activity__title">{{ item.title }}</div>
+            <div class="activity__desc">{{ item.desc }}</div>
+            <div class="activity__time">{{ item.time }}</div>
+          </div>
+        </article>
+        }
       </div>
-    }
-
+    </section>
   </div>
-
-  <!-- Content -->
-  <div class="row g-3 mt-2">
-
-    <!-- Chart -->
-    <!-- <div class="col-12 col-lg-7">
-
-      <div class="panel">
-
-        <div class="panel__header">
-          <h3>媒合成功趨勢分析</h3>
-          <span class="badge bg-light text-dark">最近 6 個月</span>
-        </div>
-
-        <div class="chart-placeholder">
-          <div class="bar" style="height: 40%"></div>
-          <div class="bar" style="height: 55%"></div>
-          <div class="bar" style="height: 35%"></div>
-          <div class="bar highlight" style="height: 70%"></div>
-          <div class="bar" style="height: 80%"></div>
-        </div>
-
-      </div>
-
-    </div> -->
-
-    <!-- Activity -->
-    <div class="col-12 col-lg-12">
-
-      <div class="panel">
-
-        <div class="panel__header">
-          <h3>系統即時動態</h3>
-          <a routerLink="../logs">查看全部</a>
-        </div>
-
-        <div class="activity-list">
-
-          @for (item of activities(); track item.id) {
-            <div class="activity">
-
-              <div class="activity__icon" [ngClass]="item.type">
-                <mat-icon>{{ item.icon }}</mat-icon>
-              </div>
-
-              <div class="activity__content">
-                <div class="activity__title">{{ item.title }}</div>
-                <div class="activity__desc">{{ item.desc }}</div>
-                <div class="activity__time">{{ item.time }}</div>
-              </div>
-
-            </div>
-          }
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
+</section>

@@ -2,10 +2,11 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FAQService } from '../../../@service/faqservice';
 import { RouterLink } from "@angular/router";
+import { PageHero } from '../../../@layouts/page-hero/page-hero';
 
 @Component({
   selector: 'app-faqcomponent',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, PageHero],
   templateUrl: './faqcomponent.html',
   styleUrl: './faqcomponent.scss',
 })

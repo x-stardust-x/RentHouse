@@ -1,0 +1,45 @@
+<section class="page-hero" [attr.aria-label]="title + '頁面標頭'">
+  <div class="page-hero__inner">
+
+    <nav class="page-hero__breadcrumb" aria-label="麵包屑">
+      @for (item of breadcrumbs; track item.label; let last = $last) {
+      @if (item.link && !last) {
+      <a [routerLink]="item.link">{{ item.label }}</a>
+      } @else {
+      <span>{{ item.label }}</span>
+      }
+
+      @if (!last) {
+      <span class="material-symbols-outlined">
+        arrow_right
+      </span>
+      <!-- <span class="page-hero__separator" aria-hidden="true">›</span> -->
+      }
+      }
+    </nav>
+
+    <div class="page-hero__content">
+      @if (eyebrow) {
+      <p class="page-hero__eyebrow">{{ eyebrow }}</p>
+      }
+
+      <h1>{{ title }}</h1>
+    </div>
+
+    <div class="page-hero__mark" aria-hidden="true">
+      <svg viewBox="0 0 519 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M503.109 376.662C503.109 410.076 492.569 438.855 471.503 463.007C450.424 487.168 423.441 499.237 390.556 499.237H128.444C95.0289 499.237 67.9281 487.168 47.1125 463.007C26.299 438.855 15.8906 410.075 15.8906 376.662V260.576H108.4V376.662C108.4 396.705 115.099 406.73 128.492 406.73H391.28C404.155 406.73 410.601 396.705 410.601 376.662V260.576H503.11V376.662H503.109Z"
+          fill="currentColor" />
+        <path
+          d="M346.622 39.2742C322.995 15.6473 295.267 2.64541 263.484 0.315341C231.702 -2.01473 204.021 8.56374 180.394 32.1906L0 212.585H130.857L245.776 97.6657C255.236 88.2056 267.026 90.5357 281.193 104.702L389.075 212.585H518.068L519 211.653L346.622 39.2742Z"
+          fill="currentColor" />
+        <path d="M252.518 260.576H213.741V299.352H252.518V260.576Z" fill="currentColor" />
+        <path d="M305.26 260.576H266.484V299.352H305.26V260.576Z" fill="currentColor" />
+        <path d="M305.26 313.319H266.484V352.096H305.26V313.319Z" fill="currentColor" />
+        <path d="M252.518 313.32H213.741V352.096H252.518V313.32Z" fill="currentColor" />
+      </svg>
+    </div>
+
+  </div>
+</section>

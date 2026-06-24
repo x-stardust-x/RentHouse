@@ -2,10 +2,11 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { NewsService } from '../../../@service/news-service';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from "@angular/router";
+import { PageHero } from '../../../@layouts/page-hero/page-hero';
 
 @Component({
   selector: 'app-front-news-component',
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, PageHero],
   templateUrl: './front-news-component.html',
   styleUrl: './front-news-component.scss',
 })

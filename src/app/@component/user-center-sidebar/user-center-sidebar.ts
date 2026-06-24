@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-user-center-sidebar',
@@ -9,11 +9,19 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class UserCenterSidebar {
 
-  // 🟢 用來記錄目前的身分：'lessor' (出租人) 或 'lessee' (承租人)
+  private router = inject(Router);
+
   currentRole = signal<'lessor' | 'lessee'>('lessor');
 
-  switchRole(role: 'lessor' | 'lessee') {
+  switchRole(role: 'lessor' | 'lessee'): void {
     this.currentRole.set(role);
+
+    const dashboardUrl =
+      role === 'lessor'
+        ? '/user-center/lessor_dashboard'
+        : '/user-center/lessee_dashboard';
+
+    this.router.navigateByUrl(dashboardUrl);
   }
 
 }

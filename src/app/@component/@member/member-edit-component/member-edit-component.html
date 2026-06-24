@@ -1,119 +1,89 @@
 <form [formGroup]="userProfileForm" (ngSubmit)="onSubmit()" class="profile-page">
-
-  <h2 class="mb-4 fw-bold">個人資料設定</h2>
+  <div class="profile-header">
+    <!-- <p class="eyebrow">會員中心</p> -->
+    <h2>個人資料設定</h2>
+    <p>更新您的基本資料、生活偏好與公開個人介紹。</p>
+  </div>
 
   <div class="profile-layout">
-
-    <!-- 左側 -->
-    <div>
-
-      <!-- 基本資料 -->
-      <div class="profile-card">
-
+    <div class="profile-column">
+      <section class="profile-card">
         <div class="section-title">
           <i class="bi bi-person-circle"></i>
           基本資料
         </div>
 
-        <div class="avatar-wrapper mb-4">
+        <div class="avatar-area">
+          <input #fileInput type="file" accept="image/*" hidden (change)="onFileChange($event)" />
 
-          <input
-            #fileInput
-            type="file"
-            accept="image/*"
-            hidden
-            (change)="onFileChange($event)"
-          >
-
-          <div class="avatar-wrapper mb-4">
-
-            <img
-              [src]="imagePreview() || 'https://placehold.co/150'"
-              class="avatar"
-              (click)="fileInput.click()"
-              style="cursor:pointer"
-            >
-          </div>
-
+          <button type="button" class="avatar-button" (click)="fileInput.click()">
+            <img [src]="imagePreview() || 'https://placehold.co/150'" class="avatar" alt="會員頭像" />
+            <span>更換頭像</span>
+          </button>
         </div>
 
-        <div class="row">
-
-          <div class="col-md-6 mb-3">
+        <div class="field-grid">
+          <div class="form-field">
             <label>真實姓名</label>
-            <input type="text" class="custom-input" formControlName="realName">
+            <input type="text" class="custom-input" formControlName="realName" />
           </div>
 
-          <div class="col-md-6 mb-3">
+          <div class="form-field">
             <label>英文名字</label>
-            <input type="text" class="custom-input" formControlName="englishName">
+            <input type="text" class="custom-input" formControlName="englishName" />
           </div>
 
-          <div class="col-12 mb-3">
+          <div class="form-field full">
             <label>電話</label>
             <input type="text" class="custom-input" placeholder="請輸入手機 09xxxxxxxx" formControlName="phone"
-              inputmode="numeric" pattern="[0-9]*" (input)="onNumberInput($event)">
-          </div>
-          <!-- 錯誤提示 -->
-          @if (userProfileForm.get('phone')?.touched && userProfileForm.get('phone')?.invalid) {
-          <div class="text-danger">
+              inputmode="numeric" pattern="[0-9]*" (input)="onNumberInput($event)" />
 
-            @if (userProfileForm.get('phone')?.errors?.['required']) {
-            <small>電話必填</small>
+            @if (userProfileForm.get('phone')?.touched && userProfileForm.get('phone')?.invalid) {
+            <div class="field-error">
+              @if (userProfileForm.get('phone')?.errors?.['required']) {
+              <small>電話必填</small>
+              }
+
+              @if (userProfileForm.get('phone')?.errors?.['pattern']) {
+              <small>格式錯誤，需 09 開頭 10 碼</small>
+              }
+            </div>
             }
-
-            @if (userProfileForm.get('phone')?.errors?.['pattern']) {
-            <small>格式錯誤（需 09 開頭 10 碼）</small>
-            }
-
           </div>
 
-          }
-
-          <div class="col-12 mb-3">
+          <div class="form-field full">
             <label>LINE ID</label>
-            <input type="text" class="custom-input" formControlName="lineId">
+            <input type="text" class="custom-input" formControlName="lineId" />
           </div>
-
-
         </div>
+      </section>
 
-      </div>
-
-      <!-- 生活作息 -->
-      <div class="profile-card">
-
+      <section class="profile-card">
         <div class="section-title">
           <i class="bi bi-clock"></i>
           生活作息
         </div>
 
-        <div class="mb-4">
+        <div class="field-grid">
+          <div class="form-field">
+            <label>睡眠時間</label>
+            <input type="time" class="custom-input" formControlName="sleepTime" />
+          </div>
 
-          <label>睡眠時間</label>
-
-          <input type="time" class="custom-input" formControlName="sleepTime">
+          <div class="form-field">
+            <label>起床時間</label>
+            <input type="time" class="custom-input" formControlName="wakeTime" />
+          </div>
         </div>
+      </section>
 
-        <div>
-
-          <label>起床時間</label>
-
-          <input type="time" class="custom-input" formControlName="wakeTime">
-
-        </div>
-
-      </div>
-
-      <!-- 環境偏好 -->
-      <div class="profile-card">
-
+      <section class="profile-card">
         <div class="section-title">
           <i class="bi bi-house-heart"></i>
           環境偏好
         </div>
 
-        <div class="mb-4">
+        <div class="form-field">
           <label>我的整潔習慣</label>
 
           <select class="custom-input" formControlName="cleanLevel">
@@ -129,7 +99,7 @@
           </small>
         </div>
 
-        <div>
+        <div class="form-field mt">
           <label>我對聲音的接受度</label>
 
           <select class="custom-input" formControlName="noiseTolerance">
@@ -144,35 +114,25 @@
             {{ getNoiseToleranceDescription() }}
           </small>
         </div>
-
-      </div>
-
+      </section>
     </div>
 
-    <!-- 右側 -->
-    <div>
-
-      <!-- 生活習慣 -->
-      <div class="profile-card">
-
+    <div class="profile-column">
+      <section class="profile-card">
         <div class="section-title">
           <i class="bi bi-heart"></i>
           個人共居偏好
         </div>
 
         <div class="co-living-preference-list">
-
           <label class="co-living-preference-card" [class.is-active]="userProfileForm.get('pet')?.value">
-
-            <input type="checkbox" class="co-living-preference-card__input" formControlName="pet">
+            <input type="checkbox" class="co-living-preference-card__input" formControlName="pet" />
 
             <div class="co-living-preference-card__icon">🐾</div>
 
             <div class="co-living-preference-card__content">
               <strong>可接受共居環境中有寵物</strong>
-              <small>
-                勾選後，出租人公開頁會顯示「寵物：可接受寵物」。
-              </small>
+              <small>勾選後，出租人公開頁會顯示「寵物：可接受寵物」。</small>
             </div>
 
             <span class="co-living-preference-card__status">
@@ -181,191 +141,137 @@
           </label>
 
           <label class="co-living-preference-card" [class.is-active]="userProfileForm.get('smoke')?.value">
-
-            <input type="checkbox" class="co-living-preference-card__input" formControlName="smoke">
+            <input type="checkbox" class="co-living-preference-card__input" formControlName="smoke" />
 
             <div class="co-living-preference-card__icon">🚭</div>
 
             <div class="co-living-preference-card__content">
               <strong>可接受共居者有吸菸習慣</strong>
-              <small>
-                這不是表示你本人會吸菸，而是你能否接受共居環境中有人吸菸。
-              </small>
+              <small>這不是表示你本人會吸菸，而是你能否接受共居環境中有人吸菸。</small>
             </div>
 
             <span class="co-living-preference-card__status">
               {{ userProfileForm.get('smoke')?.value ? '可接受' : '不接受' }}
             </span>
           </label>
+        </div>
+      </section>
 
+      <section class="profile-card">
+        <div class="section-title">
+          <i class="bi bi-geo-alt"></i>
+          地址資訊
         </div>
 
-        <!-- 地址 -->
-        <div class="profile-card">
-
-          <div class="section-title">
-            <i class="bi bi-geo-alt"></i>
-            地址資訊
-          </div>
-
-          <label>地址</label>
+        <div class="form-field">
+          <label>縣市與區域</label>
 
           <app-location-select [districtId]="selectedDistrictId()" (districtSelected)="onDistrictSelected($event)">
           </app-location-select>
-
-          <div class="my-3">
-            <input type="text" class="custom-input" formControlName="address">
-          </div>
-
         </div>
 
-        <!-- 興趣與自介 -->
-        <div class="profile-card">
+        <div class="form-field mt">
+          <label>詳細地址</label>
+          <input type="text" class="custom-input" formControlName="address" />
+        </div>
+      </section>
 
-          <div class="section-title">
-            <i class="bi bi-stars"></i>
-            興趣與自我介紹
-          </div>
+      <section class="profile-card">
+        <div class="section-title">
+          <i class="bi bi-stars"></i>
+          興趣與自我介紹
+        </div>
 
-          <div class="mb-3">
+        <div class="form-field">
+          <label>興趣標籤</label>
 
-            <label>興趣標籤</label>
+          <div class="interest-tag-section">
+            <p class="interest-tag-hint">
+              可選擇常用興趣，也可以自行新增，這些資料會顯示在出租人公開個人頁。
+            </p>
 
-            <div class="interest-tag-section">
-
-              <p class="interest-tag-hint">
-                可選擇常用興趣，也可以自行新增，這些資料會顯示在出租人公開個人頁。
-              </p>
-
-              <div class="interest-tag-list">
-                @for (tag of interestTags(); track tag) {
-                <button type="button" class="interest-tag-chip is-selected" (click)="removeInterestTag(tag)">
-                  <span>{{ tag }}</span>
-                  <span class="interest-tag-chip__remove">×</span>
-                </button>
-                }
-              </div>
-
-              <div class="interest-preset-list">
-                @for (tag of presetInterestTags; track tag) {
-                <button type="button" class="interest-preset-chip" [class.is-active]="isInterestSelected(tag)"
-                  (click)="togglePresetInterest(tag)">
-                  {{ tag }}
-                </button>
-                }
-              </div>
-
-              <div class="interest-add-row">
-                <input type="text" class="custom-input interest-add-input" placeholder="輸入更多興趣，例如：烘焙、攝影"
-                  [value]="customInterestInput()" (input)="customInterestInput.set($any($event.target).value)"
-                  (keydown.enter)="addCustomInterest(); $event.preventDefault()">
-
-                <button type="button" class="interest-add-btn" (click)="addCustomInterest()">
-                  ＋ 新增
-                </button>
-              </div>
-
+            <div class="interest-tag-list">
+              @for (tag of interestTags(); track tag) {
+              <button type="button" class="interest-tag-chip is-selected" (click)="removeInterestTag(tag)">
+                <span>{{ tag }}</span>
+                <span class="interest-tag-chip__remove">×</span>
+              </button>
+              }
             </div>
 
+            <div class="interest-preset-list">
+              @for (tag of presetInterestTags; track tag) {
+              <button type="button" class="interest-preset-chip" [class.is-active]="isInterestSelected(tag)"
+                (click)="togglePresetInterest(tag)">
+                {{ tag }}
+              </button>
+              }
+            </div>
+
+            <div class="interest-add-row">
+              <input type="text" class="custom-input interest-add-input" placeholder="輸入更多興趣，例如：烘焙、攝影"
+                [value]="customInterestInput()" (input)="customInterestInput.set($any($event.target).value)"
+                (keydown.enter)="addCustomInterest(); $event.preventDefault()" />
+
+              <button type="button" class="interest-add-btn" (click)="addCustomInterest()">
+                新增
+              </button>
+            </div>
           </div>
-
-          <div>
-
-            <label>自我介紹</label>
-
-            <textarea rows="5" class="custom-textarea" formControlName="bio">
-          </textarea>
-
-          </div>
-
         </div>
 
-        <!-- 按鈕 -->
-        <div class="text-end">
-          <button type="button" class="btn-back me-4" routerLink="../">
-            返回
-          </button>
-
-          <button type="submit" class="btn-save" [disabled]="!userProfileForm.valid || isSubmitting()">
-            @if(isSubmitting()){
-              <span class="spinner-border spinner-border-sm me-2"></span>修改中
-            }
-            @else{
-              儲存修改
-            }
-          </button>
-
+        <div class="form-field mt">
+          <label>自我介紹</label>
+          <textarea rows="5" class="custom-textarea" formControlName="bio"></textarea>
         </div>
+      </section>
 
+      <div class="profile-actions">
+        <button type="button" class="btn-back" routerLink="../">
+          返回
+        </button>
+
+        <button type="submit" class="btn-save" [disabled]="!userProfileForm.valid || isSubmitting()">
+          @if (isSubmitting()) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          修改中
+          } @else {
+          儲存修改
+          }
+        </button>
       </div>
-
     </div>
   </div>
-
 </form>
+
 @if (isOpen) {
-
-<div class="modal fade show d-block">
-
-  <div class="modal-dialog  modal-xl modal-dialog-centered">
-
+<div class="modal fade show d-block avatar-crop-modal">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content p-3">
-
       <h5>裁切頭像</h5>
 
-      <image-cropper
-
-        [imageChangedEvent]="imageChangedEvent"
-
-        [maintainAspectRatio]="true"
-
-        [aspectRatio]="1"
-
-        [resizeToWidth]="200"
-        [resizeToHeight]="200"
-
-        [cropperMinWidth]="50"
-        [cropperMinHeight]="50"
-
-        format="png"
-
+      <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="1"
+        [resizeToWidth]="200" [resizeToHeight]="200" [cropperMinWidth]="50" [cropperMinHeight]="50" format="png"
         (imageCropped)="imageCropped($event)">
-
       </image-cropper>
 
-      <div class="mt-3 text-end">
-
-        <button
-          class="btn btn-secondary mx-3"
-          (click)="closeModal()"
-          [disabled]="isUploading()">
-
+      <div class="crop-actions">
+        <button type="button" class="btn-back" (click)="closeModal()" [disabled]="isUploading()">
           取消
-
         </button>
 
-        <button
-          class="btn btn-primary"
-          (click)="confirmCrop()"
-          [disabled]="isUploading()">
-
+        <button type="button" class="btn-save" (click)="confirmCrop()" [disabled]="isUploading()">
           @if (isUploading()) {
-            <span class="spinner-border spinner-border-sm me-2"></span>
-            上傳中...
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          上傳中...
           } @else {
-            確認
+          確認
           }
-
         </button>
-
       </div>
-
     </div>
-
   </div>
-
 </div>
 
 <div class="modal-backdrop fade show"></div>
-
 }

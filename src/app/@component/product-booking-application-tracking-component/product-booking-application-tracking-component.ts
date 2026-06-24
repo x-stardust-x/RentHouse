@@ -60,6 +60,8 @@ export class ProductBookingApplicationTrackingComponent implements OnInit {
   applications = signal<ProductBookingApplication[]>([]);
 
   isLoading = signal(false);
+  errorMessage = signal('');
+  readonly loadingCards = Array.from({ length: 3 });
 
   tabs = computed(() => [
     {
@@ -95,6 +97,7 @@ export class ProductBookingApplicationTrackingComponent implements OnInit {
 
   fetchApplications(): void {
     this.isLoading.set(true);
+    this.errorMessage.set('');
 
     this.bookingService.getMyApplications().subscribe({
       next: (data: any[]) => {
@@ -132,8 +135,9 @@ export class ProductBookingApplicationTrackingComponent implements OnInit {
       },
       error: (err) => {
         console.error('無法取得工具 / 技能預約紀錄：', err);
+        this.applications.set([]);
+        this.errorMessage.set('無法取得工具 / 技能預約紀錄，請稍後再試。');
         this.isLoading.set(false);
-        alert('無法取得工具 / 技能預約紀錄');
       }
     });
   }

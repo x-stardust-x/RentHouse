@@ -1,208 +1,118 @@
-<div class="page">
-
-  <!-- 標題 -->
-  <div class="header">
-    <h1>帳號與安全設定</h1>
-    <p class="sub">管理您的個人資料與帳號安全層級</p>
+<section class="account-security-page">
+  <div class="page-header">
+    <!-- <p class="eyebrow">會員中心</p> -->
+    <h2 class="page-title">帳號與安全設定</h2>
+    <p>管理您的個人資料與帳號安全層級。</p>
   </div>
 
-  <!-- 帳號資訊 -->
-  <section class="card">
+  <section class="setting-card">
     <div class="card-title">
       <mat-icon>account_circle</mat-icon>
-      帳號資訊
+      <span>帳號資訊</span>
     </div>
 
-    <div class="row">
-      <div class="col-9">
+    <div class="setting-row">
+      <div>
         <div class="label">登入信箱</div>
         <div class="value">{{ data().email }}</div>
       </div>
-      <button class="col-2 btn" data-bs-toggle="modal" data-bs-target="#emailModal" (click)="openEmailModal()">
+
+      <button type="button" class="action-btn" data-bs-toggle="modal" data-bs-target="#emailModal"
+        (click)="openEmailModal()">
         變更信箱
       </button>
     </div>
 
-    <!-- <div class="row">
-      <div class="col-9">
-        <div class="label">綁定手機</div>
-        <div class="value">{{ data().phone }}</div>
-      </div>
-      <button class="col-2 btn" data-bs-toggle="modal" data-bs-target="#phoneModal" (click)="openPhoneModal()">
-        變更號碼
-      </button>
-    </div> -->
-
-    <div class="row">
-      <div class="col-9">
+    <div class="setting-row">
+      <div>
         <div class="label">密碼</div>
-        <div class="value muted" >上次修改：{{changedat()}}</div>
+        <div class="value muted">上次修改：{{ changedat() }}</div>
       </div>
-      <button class="col-2 btn primary" data-bs-toggle="modal" data-bs-target="#PwdModal">修改密碼</button>
+
+      <button type="button" class="action-btn primary" data-bs-toggle="modal" data-bs-target="#PwdModal">
+        修改密碼
+      </button>
     </div>
   </section>
 
-  <!-- 安全驗證 -->
-  <!-- <section class="card">
-    <div class="card-title">
-      <mat-icon>security</mat-icon>
-      安全驗證
-    </div>
-
-    <div class="row">
-      <div>
-        <div class="label">
-          雙重驗證 (2FA)
-          <span class="tag">推薦</span>
-        </div>
-        <div class="value muted">
-          登入時需輸入手機驗證碼，提高安全性
-        </div>
-      </div>
-
-      <label class="switch">
-        <input type="checkbox" checked />
-        <span></span>
-      </label>
-    </div>
-
-    <div class="login-log-title">近期登入紀錄</div>
-
-    <div class="login-item">
-      <mat-icon>laptop</mat-icon>
-      <div>
-        <div>MacBook Pro · Chrome</div>
-        <div class="muted">台北市，目前作用中</div>
-      </div>
-      <span class="status online">在線</span>
-    </div>
-
-    <div class="login-item">
-      <mat-icon>phone_iphone</mat-icon>
-      <div>
-        <div>iPhone 13 · Safari</div>
-        <div class="muted">台北市，2 小時前</div>
-      </div>
-    </div>
-  </section> -->
-
-  <!-- 危險操作 -->
-  <section class="danger">
+  <section class="setting-card danger-card">
     <div class="card-title danger-title">
       <mat-icon>warning</mat-icon>
-      危險操作區
+      <span>危險操作區</span>
     </div>
 
-    <!-- <div class="row">
+    <div class="setting-row">
       <div>
-        <div class="label">登出所有裝置</div>
-        <div class="value muted">強制所有已登入裝置登出</div>
-      </div>
-      <button class="btn warn">登出所有裝置</button>
-    </div> -->
-
-    <div class="row">
-      <div class="col-9">
         <div class="label">註銷帳號</div>
-        <div class="value muted">此操作無法復原</div>
+        <div class="value muted">此操作無法復原，請謹慎確認。</div>
       </div>
-      <button class="col-2 btn danger-btn" (click)="confirmDelete()">
+
+      <button type="button" class="action-btn danger" (click)="confirmDelete()">
         註銷帳號
       </button>
     </div>
   </section>
+</section>
 
-</div>
-
-<div class="modal fade" id="emailModal" tabindex="-1">
-  <div class="modal-dialog">
+<div class="modal fade account-modal" id="emailModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-
       <div class="modal-header">
-        <h5 class="modal-title">更改信箱<small class="text-danger">(完成後會登出)</small></h5>
+        <div>
+          <h5 class="modal-title">更改信箱</h5>
+          <p class="modal-note">完成後會登出。</p>
+        </div>
+
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
-        <label>新信箱</label>
+        <label class="form-label">新信箱</label>
         <input class="form-control" [(ngModel)]="tempEmail" />
       </div>
 
       <div class="modal-footer">
-        <button class="btn secondary" data-bs-dismiss="modal">取消</button>
-        <button class="btn primary" (click)="saveEmail()">確認</button>
-      </div>
+        <button type="button" class="modal-btn ghost" data-bs-dismiss="modal">
+          取消
+        </button>
 
+        <button type="button" class="modal-btn primary" (click)="saveEmail()">
+          確認
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- <div class="modal fade" id="phoneModal" tabindex="-1">
-  <div class="modal-dialog">
+<div class="modal fade account-modal" id="PwdModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-
       <div class="modal-header">
-        <h5 class="modal-title">更改手機</h5>
+        <div>
+          <h5 class="modal-title">更改密碼</h5>
+          <p class="modal-note">完成後會登出。</p>
+        </div>
+
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
-        <label>手機號碼</label>
-        <input class="form-control" [(ngModel)]="tempPhone" />
+        <label class="form-label">新密碼</label>
+        <input type="password" class="form-control" [(ngModel)]="newPwd" />
+
+        <label class="form-label mt-3">確認密碼</label>
+        <input type="password" class="form-control" [(ngModel)]="newPwd2" />
       </div>
 
       <div class="modal-footer">
-        <button class="btn secondary" data-bs-dismiss="modal">取消</button>
-        <button class="btn primary" (click)="savePhone()">確認</button>
+        <button type="button" class="modal-btn ghost" data-bs-dismiss="modal">
+          取消
+        </button>
+
+        <button type="button" class="modal-btn primary" (click)="savePwd()">
+          確認
+        </button>
       </div>
-
-    </div>
-  </div>
-</div> -->
-
-<div class="modal fade" id="PwdModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h5 class="modal-title">更改密碼<small class="text-danger">(完成後會登出)</small></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body">
-        <label>新密碼</label>
-        <input class="form-control" [(ngModel)]="newPwd" />
-        <label>確定密碼</label>
-        <input class="form-control" [(ngModel)]="newPwd2" />
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn secondary" data-bs-dismiss="modal">取消</button>
-        <button class="btn primary" (click)="savePwd()">確認</button>
-      </div>
-
     </div>
   </div>
 </div>
-
-<!-- <div class="modal fade" id="deleteModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content border-danger">
-
-      <div class="modal-header">
-        <h5 class="modal-title text-danger">危險操作</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body">
-        確定要註銷帳號嗎？此操作無法復原。
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn warn" data-bs-dismiss="modal">取消</button>
-        <button class="btn danger-btn" (click)="confirmDelete()">確認刪除</button>
-      </div>
-
-    </div>
-  </div>
-</div> -->

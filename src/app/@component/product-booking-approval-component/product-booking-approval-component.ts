@@ -64,6 +64,10 @@ export class ProductBookingApprovalComponent implements OnInit {
 
   reservations = signal<SharingReservation[]>([]);
 
+  isLoading = signal(true);
+  errorMessage = signal('');
+  readonly loadingCards = Array.from({ length: 3 });
+
   tabs = computed(() => [
     {
       id: 'pending' as const,
@@ -104,6 +108,9 @@ export class ProductBookingApprovalComponent implements OnInit {
   }
 
   fetchReservations(): void {
+    this.isLoading.set(true);
+    this.errorMessage.set('');
+
     this.bookingService.getMyApprovals().subscribe({
       next: (data: any[]) => {
         console.log('工具 / 技能預約審核 API 回傳：', data);
@@ -126,9 +133,13 @@ export class ProductBookingApprovalComponent implements OnInit {
         }));
 
         this.reservations.set(normalizedData);
+        this.isLoading.set(false);
       },
       error: (err) => {
         console.error('無法取得工具 / 技能預約審核資料：', err);
+        this.reservations.set([]);
+        this.errorMessage.set('無法取得工具 / 技能預約資料，請稍後再試。');
+        this.isLoading.set(false);
       }
     });
   }

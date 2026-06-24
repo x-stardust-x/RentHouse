@@ -1,47 +1,78 @@
-<div class="container py-5">
-  <h2 class="fw-bold mb-4">❤️ 我的收藏清單</h2>
+<div class="favorites-page">
+  <div class="page-heading">
+    <div>
+      <!-- <p class="eyebrow">我的收藏</p> -->
+      <h2>
+        <i class="bi bi-heart-fill"></i>
+        我的收藏清單
+      </h2>
+      <p>集中查看您感興趣的共享房源，方便之後快速比較與預約。</p>
+    </div>
+  </div>
 
   @if (isLoading()) {
-    <div class="text-center py-5">
-      <div class="spinner-border text-danger" role="status"></div>
-      <p class="mt-2 text-muted">正在尋找您的心儀好房...</p>
+  <div class="loading-state">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
     </div>
+    <p>正在尋找您的心儀好房...</p>
+  </div>
   } @else {
+  @if (favoriteHouses().length === 0) {
+  <div class="empty-state">
+    <div class="empty-icon">
+      <i class="bi bi-house-heart"></i>
+    </div>
 
-    @if (favoriteHouses().length === 0) {
-      <div class="text-center py-5 bg-light rounded-3" style="border: 2px dashed #ccc;">
-        <i class="bi bi-house-heart text-secondary mb-3" style="font-size: 3rem;"></i>
-        <h4 class="text-secondary">目前還沒有收藏任何房屋喔！</h4>
-        <p class="text-muted">趕快去租賃媒合區逛逛，把喜歡的房子加進來吧！</p>
+    <h4>目前還沒有收藏任何房屋喔！</h4>
+    <p>趕快去租賃媒合區逛逛，把喜歡的房子加進來吧。</p>
+
+    <button class="browse-btn" routerLink="/rental-matching-component">
+      <i class="bi bi-search"></i>
+      前往租賃媒合
+    </button>
+  </div>
+  } @else {
+  <div class="favorites-grid">
+    @for (house of favoriteHouses(); track house.id) {
+    <article class="favorite-card">
+      <div class="favorite-card__image">
+        <img
+          [src]="house.coverUrl ? ('https://localhost:7215' + house.coverUrl) : 'images/placeholder/house-placeholder.jpg'"
+          alt="房屋圖片" />
+
+
+        <span class="favorite-badge">
+          <!-- <i class="bi bi-heart-fill"></i> -->
+          <i class="material-symbols-outlined" style="font-size: 1rem;">
+            favorite
+          </i>
+          已收藏
+        </span>
       </div>
-    } @else {
 
-      <div class="row">
-        @for (house of favoriteHouses(); track house.id) {
-          <div class="col-md-4 mb-4">
-            <div class="card shadow-sm h-100 border-0 rounded-3 overflow-hidden">
-<img [src]="'https://localhost:7215' + house.coverUrl"
-     class="card-img-top"
-     style="height: 200px; object-fit: cover;"
-     alt="房屋圖片"
-     onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/999999?text=No+Image';"> <div class="card-body d-flex flex-column">
-                <h5 class="card-title fw-bold">{{ house.name }}</h5>
-                <p class="text-muted small mb-2">
-                  <i class="bi bi-geo-alt-fill text-danger"></i>
-                  {{ house.cityName }}{{ house.districtName }} {{ house.address }}
-                </p>
-                <h4 class="text-danger fw-bold mb-3">
-                  NT$ {{ house.rentPrice }} <span class="fs-6 text-muted">/ 月</span>
-                </h4>
+      <div class="favorite-card__body">
+        <h5>{{ house.name }}</h5>
 
-                <button class="btn btn-outline-primary w-100"
-                 [routerLink]="['/rental-matching-detail', 'room', house.id]">查看詳情
-              </button>
-              </div>
-            </div>
-          </div>
-        }
+        <div class="house-location">
+          <i class="bi bi-geo-alt"></i>
+          <span>
+            {{ house.cityName }}{{ house.districtName }} {{ house.address || '尚未填寫地址' }}
+          </span>
+        </div>
+
+        <div class="house-price">
+          NT$ {{ house.rentPrice || 0 }}
+          <span>/ 月</span>
+        </div>
+
+        <button class="detail-btn" [routerLink]="['/rental-matching-detail', 'room', house.id]">
+          查看詳情
+        </button>
       </div>
+    </article>
     }
+  </div>
+  }
   }
 </div>

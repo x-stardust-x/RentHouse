@@ -1,6 +1,7 @@
-<link class="rental-matching__font-link" rel="stylesheet"
-  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-
+<app-page-hero eyebrow="Rental Matches" title="租賃物媒合" [breadcrumbs]="[
+    { label: '首頁', link: '/home' },
+    { label: '租賃物媒合' }
+  ]" />
 
 <main class="rental-matching">
 
@@ -489,29 +490,25 @@
 
   <div class="rental-matching__content">
 
-    <div class="rental-matching__content-header">
+    <!-- <div class="rental-matching__content-header">
       <div class="rental-matching__headline-group">
         <p class="rental-matching__eyebrow">共享居住與技能互助</p>
         <h1 class="rental-matching__page-title">探索共享資源</h1>
       </div>
-      <!-- <p>在 {{ item.city }} 發現 {{ item.rentalItemCount }} 個優質共居與技能共享空間</p>
-      <p>在 {{ item.city }} 發現 {{ item.rentalItemCount }} 個優質共居與技能共享空間</p> -->
 
       <div class="layout rental-matching__view-toggle">
 
         <button class="grid rental-matching__view-button rental-matching__view-button--grid" (click)="viewMode = 'grid'"
           type="button" title="依卡片排列顯示">
           <span class="material-symbols-outlined rental-matching__view-icon">grid_view</span>
-          <!-- <span class="material-icons">grid_view</span> -->
         </button>
 
         <button class="stack rental-matching__view-button rental-matching__view-button--map" (click)="viewMode = 'map'"
           type="button" title="依所在地點排列顯示">
-          <!-- <span class="material-icons">grid_view</span> -->
           <span class="material-symbols-outlined rental-matching__view-icon">map</span>
         </button>
       </div>
-    </div>
+    </div> -->
 
     <!-- <div class="rental-item-card">
       <img src="images/daan_cozy_shared_suite.jpg" alt="共享資源圖片" class="img-fluid mb-4">
@@ -528,74 +525,113 @@
 
     <div class="rental-matching__grid">
 
+      @if (isRentalLoading()) {
+
+      @for (_ of loadingCards; track $index) {
+      <div class="rental-item-card rental-matching__card rental-matching__skeleton-card" aria-hidden="true">
+        <div class="rental-matching__skeleton-image"></div>
+
+        <div class="rental-matching__card-body">
+          <div class="rental-matching__skeleton-line rental-matching__skeleton-line--title"></div>
+          <div class="rental-matching__skeleton-line rental-matching__skeleton-line--price"></div>
+          <div class="rental-matching__skeleton-line rental-matching__skeleton-line--short"></div>
+
+          <div class="rental-matching__skeleton-tags">
+            <span></span>
+            <span></span>
+          </div>
+
+          <div class="rental-matching__skeleton-button"></div>
+        </div>
+      </div>
+      }
+
+      } @else if (rentalLoadError()) {
+
+      <div class="empty-state rental-matching__empty-state">
+        <p class="rental-matching__empty-text">{{ rentalLoadError() }}</p>
+      </div>
+
+      } @else {
+
       @for (item of rentalItems(); track item.displayType + '_' + (item.id || item.Id)) {
 
       <div class="rental-item-card rental-matching__card">
-      @if (filters.isSmartMatch && item.score && item.score >= 80) {
-      <div class="ai-score-badge">
-        ✨ 契合度 {{ item.score }}分
-      </div>
-    }
 
-    @if (item.displayType === 'room') {
-      <img [src]="item.url || 'assets/default-house.jpg'" alt="{{ item.name }}"
-           class="rental-item-image rental-matching__card-image">
-    } @else {
-        <!-- <img src="assets/default-product.jpg" alt="{{ item.name }}"
-          class="rental-item-image rental-matching__card-image"> -->
+        @if (filters.isSmartMatch && item.score && item.score >= 80) {
+        <div class="ai-score-badge">
+          ✨ 契合度 {{ item.score }}分
+        </div>
+        }
 
-        <img [src]="item.url || 'assets/default-product.jpg'" alt="{{ item.name }}"
+        @if (item.displayType === 'room') {
+        <img [src]="item.url || 'assets/default-house.jpg'" [alt]="item.name || item.Name || '租賃物圖片'"
+          class="rental-item-image rental-matching__card-image">
+        } @else {
+        <img [src]="item.url || 'assets/default-product.jpg'" [alt]="item.name || item.Name || '租賃物圖片'"
           class="rental-item-image rental-matching__card-image">
         }
 
         <div class="rental-matching__card-body">
 
-          <!-- <pre style="background: #333; color: #fff; padding: 10px; font-size: 12px;">{{ item | json }}</pre> -->
-
-          <h2 class="rental-matching__card-title">{{ item.name }}</h2>
+          <h2 class="rental-matching__card-title">
+            {{ item.name || item.Name }}
+          </h2>
 
           @if (item.displayType === 'room') {
-          <p class="rental-matching__card-price">NT$ {{ item.rentPrice | number }}<span
-              class="rental-matching__price-unit"> / 月</span></p>
+          <p class="rental-matching__card-price">
+            NT$ {{ item.rentPrice || item.RentPrice | number }}
+            <span class="rental-matching__price-unit"> / 月</span>
+          </p>
           } @else {
-          <p class="rental-matching__card-price">NT$ {{ item.price | number }}<span
-              class="rental-matching__price-unit"> / {{ item.priceUnit }}</span></p>
+          <p class="rental-matching__card-price">
+            NT$ {{ item.price || item.Price | number }}
+            <span class="rental-matching__price-unit">
+              / {{ item.priceUnit || item.PriceUnit || '次' }}
+            </span>
+          </p>
           }
 
           <p class="rental-matching__card-info">
             @if (item.displayType === 'room') {
             <span class="material-symbols-outlined rental-matching__card-info-icon">location_on</span>
-            <span class="rental-matching__card-info-text">{{ item.address || '無地點資訊' }}</span>
+            <span class="rental-matching__card-info-text">
+              {{ item.address || item.Address || '無地點資訊' }}
+            </span>
             } @else {
-            <span class="rental-matching__category-badge">{{ item.category }}</span>
+            <span class="rental-matching__category-badge">
+              {{ item.category || item.Category || '共享項目' }}
+            </span>
             }
           </p>
-
-          <!-- @if (item.displayType === 'room') {
-          {{ item.address }} · {{ item.floorInfo }}</p>
-          } @else {
-          <p class="info">
-            <span class="category-badge">{{ item.category }}</span> · {{ item.description }}
-          </p>
-          } -->
 
           <div class="rental-matching__tags">
             @if (item.displayType === 'room') {
-            @if (item.pet) { <span class="rental-matching__tag">可養寵物</span> }
-            @if (item.smoke === false) { <span class="rental-matching__tag">禁菸</span> }
+            @if (item.pet || item.Pet) {
+            <span class="rental-matching__tag">可養寵物</span>
+            }
+
+            @if (item.smoke === false || item.Smoke === false) {
+            <span class="rental-matching__tag">禁菸</span>
+            }
             }
 
             @if (item.displayType === 'product') {
-            @if (item.ownTool) {
-            <span class="rental-matching__tag rental-matching__tag--tool">需自備：{{ item.ownTool }}</span>
+            @if (item.ownTool || item.OwnTool) {
+            <span class="rental-matching__tag rental-matching__tag--tool">
+              需自備：{{ item.ownTool || item.OwnTool }}
+            </span>
             }
-            @if (item.requiredKnowledge) {
-            <span class="rental-matching__tag rental-matching__tag--knowledge">門檻：{{ item.requiredKnowledge }}</span>
+
+            @if (item.requiredKnowledge || item.RequiredKnowledge) {
+            <span class="rental-matching__tag rental-matching__tag--knowledge">
+              門檻：{{ item.requiredKnowledge || item.RequiredKnowledge }}
+            </span>
             }
             }
           </div>
 
-          <a [routerLink]="['/rental-matching-detail/', item.displayType, item.id]" target="_blank"
+          <a [routerLink]="['/rental-matching-detail', item.displayType, item.id || item.Id]" target="_blank"
             class="rental-matching__detail-button">
             查看詳情
           </a>
@@ -604,10 +640,10 @@
       </div>
 
       } @empty {
-
       <div class="empty-state rental-matching__empty-state">
         <p class="rental-matching__empty-text">目前沒有可用的共居或技能共享空間，請稍後再試。</p>
       </div>
+      }
 
       }
 

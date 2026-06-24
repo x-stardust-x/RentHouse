@@ -1,168 +1,166 @@
-<div class="dashboard-wrapper p-4">
-  <header class="mb-4">
-    <h1 class="welcome-text m-0">早安，{{ usersev.profile()?.realName  }} <span class="role-badge">({{ role }})</span></h1>
-    <p class="subtitle text-muted">歡迎回到您的專屬空間，我們為您準備了最新的房源推薦與共居資訊。</p>
+<section class="tenant-dashboard-page">
+  <header class="tenant-header">
+    <div>
+      <!-- <p class="eyebrow">會員中心</p> -->
+      <h2>
+        早安，{{ usersev.profile()?.realName || '會員' }}
+        <span>{{ role }}</span>
+      </h2>
+      <p>歡迎回到您的專屬空間，我們為您準備了最新的房源推薦與共居資訊。</p>
+    </div>
   </header>
 
-  <div class="row g-4 mb-5">
-    <div class="col-12 col-xl-8">
-      <div class="status-card h-100 p-4">
-        <div class="d-flex align-items-center mb-4">
-          <mat-icon class="status-icon me-2">location_on</mat-icon>
-          <h2 class="section-title mx-2 my-0">目前媒合狀態</h2>
-            @if (!currentMatch()) {
-              <small class="badge bg-secondary">暫無</small>
-            }
-            @if(currentMatch()?.status == 'pending'){
-              <small class="badge bg-danger">審核中</small>
-            }
-            @else if(currentMatch()?.status == 'confirmed'){
-              <small class="badge bg-warning text-black">已確認</small>
-            }
-            @else if(currentMatch()?.status == 'matched'){
-              <small class="badge bg-success">已媒合</small>
-            }
+  <div class="dashboard-layout">
+    <section class="status-card">
+      <div class="status-card__header">
+        <div class="section-heading">
+          <mat-icon>location_on</mat-icon>
+          <h2>目前媒合狀態</h2>
         </div>
 
-        <div class="status-content p-3 rounded-4 mb-3">
-          <div class="row align-items-center">
-            <div class="col-md-7">
-              <div class="row align-items-center">
-                <div class="col">
-                  <div class="address-label text-muted fs-7">租賃房源名子</div>
-                  <div class="address-value fs-5 fw-bold">{{ currentMatch()?.name || "無" }}</div>
-                </div>
-                <div class="col">
-                  <div class="address-label text-muted fs-7">租賃房源位置</div>
-                  <div class="address-value fs-5 fw-bold">{{ currentMatch()?.address || "無" }}</div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-5 text-md-end mt-3 mt-md-0">
-              @if(currentMatch()?.status == "matched"){
-                <div class="expiry-label text-muted fs-7">合約到期日</div>
-                <div class="expiry-value fw-bold text-danger">{{ currentMatch()?.expiryDate  }}</div>
-              }
-            </div>
-          </div>
+        @if (!currentMatch()) {
+        <span class="status-badge muted">暫無</span>
+        }
+
+        @if (currentMatch()?.status === 'pending') {
+        <span class="status-badge pending">審核中</span>
+        } @else if (currentMatch()?.status === 'confirmed') {
+        <span class="status-badge confirmed">已確認</span>
+        } @else if (currentMatch()?.status === 'matched') {
+        <span class="status-badge matched">已媒合</span>
+        }
+      </div>
+
+      <div class="match-summary">
+        <div>
+          <span class="summary-label">租賃房源名字</span>
+          <strong>{{ currentMatch()?.name || '無' }}</strong>
         </div>
 
-        <div class="row g-3">
-          <div class="col-6">
-            <div class="ai-match-box p-3 d-flex align-items-center">
-              <div class="score-circle me-3">{{ currentMatch()?.matchScore  || 0 }}%</div>
-              <div>
-                <div class="fs-7 text-muted">AI 精準配對</div>
-                <div class="fw-bold">
-                  @if(currentMatch(); as match){
-                    @if(match.matchScore > 66){
-                      高
-                    }
-                    @else if(match.matchScore <= 66 && match.matchScore > 33){
-                      中
-                    }
-                    @else if(match.matchScore <= 33 && match.matchScore >= 0){
-                      低
-                    }
-                    契合度
-                  }
-                  </div>
-              </div>
-            </div>
+        <div>
+          <span class="summary-label">租賃房源位置</span>
+          <strong>{{ currentMatch()?.address || '無' }}</strong>
+        </div>
+
+        @if (currentMatch()?.status === 'matched') {
+        <div class="expiry-block">
+          <span class="summary-label">合約到期日</span>
+          <strong>{{ currentMatch()?.expiryDate }}</strong>
+        </div>
+        }
+      </div>
+
+      <div class="match-info-grid">
+        <div class="ai-match-box">
+          <div class="score-circle">
+            {{ currentMatch()?.matchScore || 0 }}%
           </div>
-          <div class="col-6">
-            <div class="viewing-box p-3 d-flex align-items-center">
-              <mat-icon class="me-3 text-warning">event</mat-icon>
-              <div>
-                @if (currentMatch()?.status == "confirmed" || "pending") {
-                  <div class="fs-7 text-muted">下一次看房/約訪預約</div>
-                  <div class="fw-bold">{{ currentMatch()?.nextViewing}}</div>
+
+          <div>
+            <span>AI 精準配對</span>
+            <strong>
+              @if (currentMatch(); as match) {
+              @if (match.matchScore > 66) {
+              高
+              } @else if (match.matchScore <= 66 && match.matchScore> 33) {
+                中
+                } @else {
+                低
                 }
-              </div>
-            </div>
+                契合度
+                } @else {
+                尚無資料
+                }
+            </strong>
+          </div>
+        </div>
+
+        <div class="viewing-box">
+          <mat-icon>event</mat-icon>
+
+          <div>
+            @if (currentMatch()?.status === 'confirmed' || currentMatch()?.status === 'pending') {
+            <span>下一次看房 / 約訪預約</span>
+            <strong>{{ currentMatch()?.nextViewing || '尚未安排' }}</strong>
+            } @else {
+            <span>看房 / 約訪狀態</span>
+            <strong>尚無預約</strong>
+            }
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="col-12 col-xl-4 d-flex flex-column gap-3">
-      <div class="nav-card search-card p-4 d-flex align-items-center justify-content-between cursor-pointer">
-        <div class="nav-content" routerLink="/rental-matching-component">
-          <mat-icon class="nav-icon mb-2">search</mat-icon>
-          <h3 class="m-0">探索推薦房源</h3>
-          <p class="fs-7 m-0 opacity-75">根據您的偏好為您媒合</p>
+    <aside class="quick-actions">
+      <article class="nav-card search-card" routerLink="/rental-matching-component">
+        <div>
+          <mat-icon>search</mat-icon>
+          <h3>探索推薦房源</h3>
+          <p>根據您的偏好為您媒合</p>
         </div>
-        <mat-icon>chevron_right</mat-icon>
-      </div>
 
-      <div class="nav-card exchange-card p-4 d-flex align-items-center justify-content-between cursor-pointer">
-        <div class="nav-content" routerLink="/rental-matching-component">
-          <mat-icon class="nav-icon mb-2">swap_horiz</mat-icon>
-          <h3 class="m-0">探索技能交換</h3>
-          <p class="fs-7 m-0 opacity-75">尋找社區內互助機會</p>
-        </div>
         <mat-icon>chevron_right</mat-icon>
-      </div>
-    </div>
+      </article>
+
+      <article class="nav-card exchange-card" routerLink="/rental-matching-component">
+        <div>
+          <mat-icon>swap_horiz</mat-icon>
+          <h3>探索技能交換</h3>
+          <p>尋找社區內互助機會</p>
+        </div>
+
+        <mat-icon>chevron_right</mat-icon>
+      </article>
+    </aside>
   </div>
 
   <section class="recommendations">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2 class="section-title m-0">
-        <mat-icon class="me-2 text-warning align-middle">auto_awesome</mat-icon>為您精選的共居空間
-      </h2>
-      <a routerLink="/rental-matching-component" class="view-all">查看全部 &gt;</a>
+    <div class="recommendations__header">
+      <div class="section-heading">
+        <mat-icon>auto_awesome</mat-icon>
+        <h2>為您精選的共居空間</h2>
+      </div>
+
+      <a routerLink="/rental-matching-component">查看全部</a>
     </div>
 
-    <div class="row g-4">
+    <div class="recommendation-grid">
       @for (item of recommendations(); track item.id) {
-        <div class="col-12 col-md-6 col-lg-4">
-          <div class="house-card" (click)="openDetail(item.link)"  style="cursor: pointer;">
-            <div class="image-wrapper position-relative">
-              <img [src]="item.imageUrl" [alt]="item.title" class="w-100 house-img">
-              <div class="match-badge">
-                <mat-icon class="fs-6 me-1">trending_up</mat-icon>{{ item.matchScore }}%
-              </div>
-            </div>
-            <div class="p-3">
-              <h3 class="house-title mb-1">{{ item.title }}</h3>
-              <div class="location d-flex align-items-center text-muted fs-7 mb-3">
-                <mat-icon class="fs-6 me-1">location_on</mat-icon>{{ item.location }}
-              </div>
+      <article class="house-card" (click)="openDetail(item.link)">
+        <div class="image-wrapper">
+          <img [src]="item.imageUrl" [alt]="item.title" class="house-img" />
 
-              <div class="tags-container d-flex flex-wrap gap-2 mb-3">
-                @for (tag of item.tags; track tag.text) {
-                  <span class="house-tag">
-                    <mat-icon class="fs-6 me-1">{{ tag.icon }}</mat-icon>{{ tag.text }}
-                  </span>
-                }
-              </div>
-
-              <div class="d-flex justify-content-between align-items-center border-top pt-3">
-                <div class="price">
-                  <span class="currency">$</span>
-                  <span class="amount">{{ item.price | number }}</span>
-                  <span class="unit"> / 月</span>
-                </div>
-              </div>
-            </div>
+          <div class="match-badge">
+            <mat-icon>trending_up</mat-icon>
+            {{ item.matchScore }}%
           </div>
         </div>
+
+        <div class="house-card__body">
+          <h3>{{ item.title }}</h3>
+
+          <div class="location">
+            <mat-icon>location_on</mat-icon>
+            {{ item.location }}
+          </div>
+
+          <div class="tags-container">
+            @for (tag of item.tags; track tag.text) {
+            <span class="house-tag">
+              <mat-icon>{{ tag.icon }}</mat-icon>
+              {{ tag.text }}
+            </span>
+            }
+          </div>
+
+          <div class="price">
+            <span class="currency">$</span>
+            <span class="amount">{{ item.price | number }}</span>
+            <span class="unit"> / 月</span>
+          </div>
+        </div>
+      </article>
       }
-
-      <!-- <div class="col-12 col-md-6 col-lg-4">
-        <div class="exchange-promo-card h-100 p-4 d-flex flex-column text-center">
-          <div class="promo-tag mb-3 align-self-end">熱門技能交換</div>
-          <div class="flex-grow-1 d-flex flex-column justify-content-center">
-            <mat-icon class="promo-icon mb-3">translate</mat-icon>
-            <h3 class="promo-title">週末大家教英文</h3>
-            <p class="promo-desc fs-7 text-muted px-3">由同社區的王媽媽提供，交換您的電腦文書處理技術。</p>
-          </div>
-          <button mat-flat-button class="btn-exchange-action w-100">
-            <mat-icon class="me-2">edit_square</mat-icon>提出交換確認
-          </button>
-        </div>
-      </div> -->
     </div>
   </section>
-</div>
+</section>

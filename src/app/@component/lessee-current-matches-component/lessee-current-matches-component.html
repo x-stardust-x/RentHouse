@@ -16,8 +16,58 @@
   </div>
 
   @if (isLoading()) {
-  <div class="empty-state">
-    <p>正在載入當前媒合資料...</p>
+  <div class="reservation-list application-list current-match-skeleton-list" aria-busy="true">
+
+    @for (_ of loadingCards; track $index) {
+    <article class="reservation-card application-card current-match-card current-match-card--skeleton">
+
+      <div class="card-header">
+        <div class="header-left">
+          <span class="skeleton-pill skeleton-pill--status"></span>
+          <span class="skeleton-line skeleton-line--room"></span>
+        </div>
+
+        <div class="header-right">
+          <span class="skeleton-pill skeleton-pill--order"></span>
+        </div>
+      </div>
+
+      <div class="card-body application-card-body">
+
+        <div class="tracking-room-section">
+          <div class="skeleton-image-box"></div>
+        </div>
+
+        <div class="viewing-section">
+          <span class="skeleton-line skeleton-line--label"></span>
+
+          <div class="skeleton-info-box skeleton-info-box--wide">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <div class="skeleton-message"></div>
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <span class="skeleton-pill skeleton-pill--score"></span>
+
+        <div class="action-buttons">
+          <span class="skeleton-button"></span>
+          <span class="skeleton-button"></span>
+          <span class="skeleton-button skeleton-button--primary"></span>
+        </div>
+      </div>
+
+    </article>
+    }
+
   </div>
   } @else if (errorMessage()) {
   <div class="empty-state">

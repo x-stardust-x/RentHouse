@@ -5,10 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 // 🌟 引入美美的彈窗套件
 import Swal from 'sweetalert2';
+import { PageHero } from '../../@layouts/page-hero/page-hero';
+
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, PageHero],
   templateUrl: './contact.html',
   styleUrls: ['./contact.scss']
 })

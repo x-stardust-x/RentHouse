@@ -1238,7 +1238,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       title: '房源與共享資源管理',
       text: '集中管理房源、工具與技能，讓刊登與維護流程更清楚。',
       mockLabel: '房源 / 工具 / 技能管理畫面',
-      imageUrl: '/images/user-center-management.png',
+      imageUrl: '/images/user-center-management.jpg',
       featureKeys: ['resource'],
     },
     {
@@ -1246,7 +1246,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       title: '媒合與聯繫追蹤',
       text: '媒合成立後，集中追蹤聯繫、狀態與後續提醒。',
       mockLabel: '當前媒合與聯繫管理畫面',
-      imageUrl: '/images/user-center-matches.png',
+      imageUrl: '/images/user-center-matches.jpg',
       featureKeys: ['match', 'smart'],
     },
     {
@@ -1254,7 +1254,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       title: '預約審核與近期動態',
       text: '看房、工具與技能預約都能集中審核，重要動態即時提示。',
       mockLabel: '預約審核與近期動態畫面',
-      imageUrl: '/images/user-center-booking.png',
+      imageUrl: '/images/user-center-booking.jpg',
       featureKeys: ['activity', 'smart'],
     },
   ];

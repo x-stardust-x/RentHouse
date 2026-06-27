@@ -1,0 +1,111 @@
+<div class="my-houses-page">
+  <div class="page-heading">
+    <div>
+      <!-- <p class="eyebrow">租屋空間管理</p> -->
+      <h2 class="page-title">房源管理</h2>
+      <p>查看已發布的房源狀態，並快速編輯或刪除房源。</p>
+    </div>
+
+    <button class="add-house-btn" routerLink="/user-center/rent">
+      <i class="bi bi-plus-lg"></i>
+      發布新房源
+    </button>
+  </div>
+
+  @if (isLoading()) {
+  <div class="houses-grid houses-grid--loading" aria-busy="true">
+    @for (_ of loadingCards; track $index) {
+    <article class="house-card house-card--skeleton">
+      <div class="house-skeleton-image"></div>
+
+      <div class="house-card__body">
+        <div class="house-skeleton-line house-skeleton-line--title"></div>
+        <div class="house-skeleton-line"></div>
+        <div class="house-skeleton-line house-skeleton-line--short"></div>
+
+        <div class="house-skeleton-actions">
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </article>
+    }
+  </div>
+  }
+  @else if (loadError()) {
+  <div class="empty-state">
+    <div class="empty-icon">
+      <i class="bi bi-exclamation-circle"></i>
+    </div>
+
+    <h4>資料載入失敗</h4>
+    <p>{{ loadError() }}</p>
+  </div>
+  }
+  @else if (myHouses().length === 0) {
+  <div class="empty-state">
+    <div class="empty-icon">
+      <i class="bi bi-house-add"></i>
+    </div>
+
+    <h4>目前沒有房源</h4>
+    <p>您還沒有發布任何房源，趕快建立第一筆共享空間吧。</p>
+
+    <button class="add-house-btn" routerLink="/user-center/rent">
+      <i class="bi bi-plus-lg"></i>
+      發布新房源
+    </button>
+  </div>
+  }
+  @else {
+  <div class="houses-grid">
+    @for (house of myHouses(); track house.id) {
+    <article class="house-card">
+      <div class="house-card__image">
+        <img
+          [src]="house.coverUrl ? ('https://localhost:7215' + house.coverUrl) : 'images/placeholder/house-placeholder.jpg'"
+          alt="房源圖片" />
+
+        @if (house.status === 0) {
+        <span class="status-badge pending">審核中</span>
+        } @else if (house.status === 1) {
+        <span class="status-badge active">已上架</span>
+        } @else if (house.status === 2) {
+        <span class="status-badge rejected">遭下架</span>
+        } @else {
+        <span class="status-badge muted">其他 / 已下架</span>
+        }
+      </div>
+
+      <div class="house-card__body">
+        <h5>{{ house.name }}</h5>
+
+        <div class="house-meta">
+          <span>
+            <i class="bi bi-geo-alt"></i>
+            {{ house.address || '尚未填寫地點' }}
+          </span>
+
+          <span>
+            <i class="bi bi-cash-coin"></i>
+            NT$ {{ house.rentPrice || 0 }} / 月
+          </span>
+        </div>
+
+        <div class="house-card__actions">
+          <button class="action-btn edit" (click)="editHouse(house.id)">
+            <i class="bi bi-pencil-square"></i>
+            編輯
+          </button>
+
+          <button class="action-btn delete" (click)="deleteMyHouse(house.id)">
+            <i class="bi bi-trash"></i>
+            刪除
+          </button>
+        </div>
+      </div>
+    </article>
+    }
+  </div>
+  }
+</div>

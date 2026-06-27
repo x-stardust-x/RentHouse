@@ -1,0 +1,1406 @@
+/* 外層容器 */
+.review-page-container {
+  // max-width: 1000px;
+  /* 控制版面寬度，避免在大螢幕過度延展 */
+  margin: 0 auto;
+  // padding: 2rem 1rem;
+  font-family: inherit;
+}
+
+/* 頁面標題 */
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-weight: 800;
+  color: var(--color-text-main, #2B2725);
+  margin: 0 0 0.5rem 0;
+}
+
+.page-subtitle {
+  font-size: 0.95rem;
+  color: var(--color-text-muted, #8E8680);
+  margin: 0;
+}
+
+/* 頁籤區塊 */
+.tabs-container {
+  display: flex;
+  gap: 2rem;
+  border-bottom: 1px solid var(--color-border, #EAE4DE);
+  margin-bottom: 2rem;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text-muted, #8E8680);
+  padding: 0.75rem 0;
+  cursor: pointer;
+  position: relative;
+  transition: var(--transition-base, all 0.2s ease);
+}
+
+.tab-button:hover {
+  color: var(--color-text-main, #2B2725);
+}
+
+.tab-button.is-active {
+  color: var(--color-primary, #E66F43);
+  font-weight: 600;
+}
+
+/* 活躍頁籤下方的底線 */
+.tab-button.is-active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--color-primary, #E66F43);
+  border-radius: 3px 3px 0 0;
+}
+
+/* 預約列表清單 */
+.reservation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 單一預約卡片 */
+.reservation-card {
+  background-color: var(--color-bg-card, #FFFFFF);
+  border: 1px solid var(--color-border, #EAE4DE);
+  border-radius: var(--radius-lg, 16px);
+  box-shadow: var(--shadow-base, 0 4px 15px rgba(43, 39, 37, 0.03));
+  overflow: hidden;
+  transition: var(--transition-card, box-shadow 0.2s);
+}
+
+.reservation-card:hover {
+  box-shadow: var(--shadow-hover, 0 10px 25px rgba(43, 39, 37, 0.08));
+}
+
+/* 卡片頭部 */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f5f0ec;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.room-name {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.room-address-divider {
+  color: #c8a58d;
+  font-weight: 500;
+}
+
+.room-address {
+  color: #7a6f68;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.status-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+}
+
+.status-pending {
+  background-color: var(--color-primary-light, #FFF2EE);
+  color: var(--color-primary-hover, #CE5B30);
+}
+
+.room-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #8C533E;
+  /* 對齊設計稿的咖啡橘字體 */
+}
+
+.order-number {
+  font-size: 0.85rem;
+  color: #A09A96;
+}
+
+/* 卡片主體 (網格雙欄) */
+.card-body {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 2rem;
+  padding: 1.5rem;
+}
+
+/* 左欄：申請人 */
+.applicant-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.applicant-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #eee;
+}
+
+.applicant-name {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.15rem;
+  color: var(--color-text-main, #2B2725);
+}
+
+.profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.profile-pill {
+  background-color: #EBF1FA;
+  /* 淺藍底色對齊設計稿 */
+  color: #55728C;
+  /* 灰藍字體 */
+  font-size: 0.75rem;
+  padding: 0.2rem 0.75rem;
+  border-radius: var(--radius-pill, 30px);
+  font-weight: 500;
+}
+
+/* 聯絡資訊灰框 */
+.contact-info-box {
+  background-color: #F8F9FA;
+  border-radius: var(--radius-md, 12px);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  color: #4A4A4A;
+}
+
+.info-icon {
+  font-size: 1.1rem;
+  color: #888;
+}
+
+.text-muted {
+  color: var(--color-text-muted, #8E8680);
+}
+
+/* 右欄：看房細節 */
+.section-label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted, #8E8680);
+  margin: 0 0 0.5rem 0;
+}
+
+.viewing-time-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--color-border, #EAE4DE);
+  border-radius: 30px;
+  padding: 0.75rem 1.25rem;
+  color: #9D5B3A;
+  /* 深焦糖字體 */
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 1.25rem;
+  background-color: #FAFAF9;
+}
+
+.time-icon {
+  color: #C08D73;
+}
+
+/* 引言框 */
+.message-quote-box {
+  background-color: #F4F7FB;
+  /* 淺藍灰底色 */
+  border-radius: var(--radius-md, 12px);
+  padding: 1.25rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+  min-height: 100px;
+}
+
+.quote-icon-bg {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  font-size: 4rem;
+  color: #E2EAF4;
+  /* 浮水印般的超大引號 */
+  z-index: 0;
+  transform: rotate(180deg);
+}
+
+.message-text {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #55606E;
+  /* 藍灰字體 */
+}
+
+/* 卡片底部 (操作區) */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid #f5f0ec;
+  background-color: #FFFFFF;
+}
+
+.match-score-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: var(--color-primary-light, #FFF2EE);
+  color: #A65C32;
+  /* 對齊設計稿的深焦糖色 */
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-pill, 30px);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.sparkle-icon {
+  font-size: 1rem;
+}
+
+/* 底部按鈕群 */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.action-btn {
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-pill, 30px);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.viewing-time-box--slots {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.viewing-date-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(180, 92, 42, 0.2);
+  color: #9a4b18;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.viewing-slot-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.viewing-slot-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.65rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(255, 112, 45, 0.1);
+  color: #9a4b18;
+  border: 1px solid rgba(255, 112, 45, 0.22);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* 婉拒 (純文字) */
+.btn-text {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted, #8E8680);
+}
+
+.btn-text:hover {
+  color: var(--color-text-main, #2B2725);
+  background-color: #f8f9fa;
+}
+
+/* 提議改期 (空心框) */
+.btn-outline {
+  background: transparent;
+  border: 1px solid #A65C32;
+  color: #A65C32;
+}
+
+.btn-outline:hover {
+  background: #FFF9F5;
+}
+
+/* 接受預約 (實心咖啡橘) */
+.btn-fill {
+  background-color: #B25D2B;
+  /* 完美還原設計稿中的深橘/棕色 */
+  border: 1px solid #B25D2B;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.btn-fill:hover {
+  background-color: #924B21;
+}
+
+/* 查無資料 */
+.empty-state {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: var(--color-text-muted, #8E8680);
+  background-color: var(--color-bg-card, #FFFFFF);
+  border-radius: var(--radius-lg, 16px);
+  border: 1px dashed var(--color-border, #EAE4DE);
+}
+
+
+
+
+
+/* =========================================================
+   提議改期 Modal
+   ========================================================= */
+
+.reschedule-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(20, 18, 16, 0.58);
+  backdrop-filter: blur(6px);
+}
+
+.reschedule-modal {
+  width: min(34rem, 100%);
+  max-height: min(90vh, 48rem);
+  overflow: auto;
+  border-radius: 1.5rem;
+  background: #fffaf5;
+  box-shadow:
+    0 1.5rem 4rem rgba(70, 38, 18, 0.24),
+    0 0 0 1px rgba(138, 82, 43, 0.12);
+  animation: rescheduleModalIn 0.22s ease-out;
+}
+
+@keyframes rescheduleModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.reschedule-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(138, 82, 43, 0.14);
+}
+
+.reschedule-modal__header h3 {
+  margin: 0;
+  color: #2b211b;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.reschedule-modal__close {
+  display: grid;
+  place-items: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border: 0;
+  border-radius: 999px;
+  color: #8a4a24;
+  background: rgba(138, 82, 43, 0.1);
+  font-size: 1.65rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.reschedule-modal__close:hover {
+  background: rgba(138, 82, 43, 0.18);
+  transform: rotate(90deg);
+}
+
+.reschedule-modal__body {
+  padding: 1.5rem;
+}
+
+.reschedule-modal__order,
+.reschedule-modal__original {
+  margin: 0 0 0.75rem;
+  padding: 0.8rem 1rem;
+  border-radius: 1rem;
+  color: #5c4a3f;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(138, 82, 43, 0.12);
+  font-size: 0.95rem;
+}
+
+.reschedule-modal__order strong {
+  color: #9a4b18;
+  font-weight: 800;
+}
+
+.reschedule-modal .form-group {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 1rem;
+}
+
+.reschedule-modal .form-group label {
+  color: #3b2d25;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.reschedule-modal .form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.reschedule-modal input,
+.reschedule-modal textarea {
+  width: 100%;
+  border: 1px solid rgba(138, 82, 43, 0.22);
+  border-radius: 0.9rem;
+  padding: 0.85rem 1rem;
+  color: #2b211b;
+  background: #fff;
+  font: inherit;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.reschedule-modal textarea {
+  resize: vertical;
+  min-height: 7rem;
+  line-height: 1.7;
+}
+
+.reschedule-modal input:focus,
+.reschedule-modal textarea:focus {
+  border-color: #b75b22;
+  box-shadow: 0 0 0 4px rgba(183, 91, 34, 0.14);
+  background: #fffefd;
+}
+
+.reschedule-modal input::placeholder,
+.reschedule-modal textarea::placeholder {
+  color: #a9998e;
+}
+
+.reschedule-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem 1.5rem;
+  border-top: 1px solid rgba(138, 82, 43, 0.12);
+  background: rgba(255, 246, 238, 0.7);
+}
+
+.reschedule-modal__footer .action-btn {
+  min-width: 7.5rem;
+}
+
+/* 若原本 action-btn 沒有完整樣式，可補這段 */
+.reschedule-modal .btn-text {
+  border: 1px solid rgba(138, 82, 43, 0.28);
+  color: #8a4a24;
+  background: transparent;
+}
+
+.reschedule-modal .btn-text:hover {
+  background: rgba(138, 82, 43, 0.08);
+}
+
+.reschedule-modal .btn-fill {
+  border: 1px solid #9a4b18;
+  color: #fff;
+  background: linear-gradient(135deg, #b75b22, #8f3f13);
+  box-shadow: 0 0.6rem 1.2rem rgba(143, 63, 19, 0.22);
+}
+
+.reschedule-modal .btn-fill:hover {
+  filter: brightness(1.04);
+  transform: translateY(-1px);
+}
+
+
+
+/* =========================================================
+   改期狀態顯示
+   ========================================================= */
+
+.status-rescheduled {
+  color: #8057c2;
+  background: rgba(128, 87, 194, 0.12);
+}
+
+.reschedule-box {
+  border: 1px solid rgba(128, 87, 194, 0.18);
+  background: rgba(128, 87, 194, 0.08);
+}
+
+.reschedule-box .quote-icon-bg {
+  color: rgba(128, 87, 194, 0.28);
+}
+
+/* =========================================================
+   RWD
+   ========================================================= */
+
+@media (max-width: 640px) {
+  .reschedule-modal-overlay {
+    align-items: end;
+    padding: 0;
+  }
+
+  .reschedule-modal {
+    width: 100%;
+    max-height: 88vh;
+    border-radius: 1.25rem 1.25rem 0 0;
+  }
+
+  .reschedule-modal__header,
+  .reschedule-modal__body,
+  .reschedule-modal__footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .reschedule-modal .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .reschedule-modal__footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .reschedule-modal__footer .action-btn {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* 響應式：手機版時切換為單欄排列 */
+@media (max-width: 768px) {
+  .card-body {
+    grid-template-columns: 1fr;
+    /* 切換為單欄 */
+    gap: 1.5rem;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .card-footer {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .action-buttons {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+
+
+
+
+/* =========================================================
+   承租人：看房申請追蹤頁專用補強
+   需搭配 house-viewing-approval-component.scss 的主樣式
+   ========================================================= */
+
+.application-tracking-page {
+  font-family: inherit;
+}
+
+.application-card {
+  overflow: hidden;
+}
+
+.application-card-body {
+  display: grid;
+  grid-template-columns: minmax(22rem, 0.95fr) minmax(0, 1.25fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.tracking-room-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tracking-room-image-wrap {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: #f4f1ed;
+  border: 1px solid #ece5df;
+}
+
+.tracking-room-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 把紅框資訊移到右邊後的樣式 */
+.tracking-room-info--moved {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.tracking-room-info--moved .info-row+.info-row {
+  margin-top: 0.75rem;
+}
+
+.tracking-price {
+  color: #9a4b18;
+  font-weight: 800;
+}
+
+.status-confirmed {
+  color: #2f9e68;
+  background: rgba(47, 158, 104, 0.12);
+}
+
+.status-rejected {
+  color: #777;
+  background: rgba(120, 120, 120, 0.13);
+}
+
+.status-rescheduled {
+  color: #8057c2;
+  background: rgba(128, 87, 194, 0.12);
+}
+
+.application-card.is-rejected {
+  background: #f8fbff;
+}
+
+.application-card.is-rejected .tracking-room-image {
+  filter: grayscale(0.65) brightness(0.78);
+}
+
+.application-card.is-rejected .room-name,
+.application-card.is-rejected .room-address,
+.application-card.is-rejected .order-number {
+  color: #777;
+}
+
+.rejected-box {
+  background: #f7f8fa;
+  border: 1px solid rgba(120, 120, 120, 0.16);
+}
+
+.rejected-box .quote-icon-bg {
+  color: rgba(120, 120, 120, 0.22);
+}
+
+.danger-text {
+  color: #bf3f35;
+}
+
+.danger-text:hover {
+  color: #a83229;
+  background: #fff1ef;
+}
+
+.card-footer .btn-outline,
+.card-footer .btn-fill,
+.card-footer .btn-text {
+  min-width: 7rem;
+  text-align: center;
+}
+
+.application-card .message-quote-box+.message-quote-box {
+  margin-top: 1rem;
+}
+
+
+
+.tracking-lessor-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding-bottom: 0.85rem;
+  margin-bottom: 0.85rem;
+  border-bottom: 1px solid rgba(128, 86, 58, 0.12);
+}
+
+.tracking-lessor-avatar {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 999px;
+  object-fit: cover;
+  background: #f5f0ec;
+  border: 1px solid rgba(128, 86, 58, 0.16);
+}
+
+.tracking-lessor-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.tracking-lessor-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.tracking-lessor-name {
+  color: #2f2723;
+  font-weight: 800;
+}
+
+.tracking-lessor-role {
+  margin: 0.15rem 0 0;
+  color: #8a817b;
+  font-size: 0.9rem;
+}
+
+.tracking-lessor-profile-link {
+  color: #9a4b18;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 112, 45, 0.08);
+  border: 1px solid rgba(255, 112, 45, 0.18);
+}
+
+.tracking-lessor-profile-link:hover {
+  background: rgba(255, 112, 45, 0.14);
+}
+
+.tracking-profile-tags-block {
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(128, 86, 58, 0.12);
+}
+
+.tracking-profile-tags-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 0.65rem;
+  color: #6f6761;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.tracking-profile-tags-title .material-symbols-outlined {
+  color: #b15b1f;
+  font-size: 1.15rem;
+}
+
+.tracking-profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.reselect-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(20, 18, 16, 0.58);
+  backdrop-filter: blur(6px);
+}
+
+.reselect-modal-container {
+  width: min(46rem, 100%);
+  max-height: min(92vh, 56rem);
+  overflow: auto;
+  border-radius: 1.5rem;
+  background: #fffaf5;
+  box-shadow: 0 1.5rem 4rem rgba(70, 38, 18, 0.28);
+}
+
+.contact-modal-header,
+.reselect-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(128, 86, 58, 0.12);
+}
+
+.reselect-modal-footer {
+  border-top: 1px solid rgba(128, 86, 58, 0.12);
+  border-bottom: 0;
+}
+
+.contact-modal-title {
+  margin: 0;
+  color: #2f2723;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.contact-modal-close-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(128, 86, 58, 0.08);
+  color: #7a4d32;
+  cursor: pointer;
+}
+
+.contact-modal-body {
+  padding: 1.5rem;
+}
+
+.contact-provider-summary {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+  border-radius: 1rem;
+  background: #fff;
+  border: 1px solid rgba(128, 86, 58, 0.12);
+}
+
+.contact-provider-summary__avatar {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 1rem;
+  object-fit: cover;
+  background: #f3eee9;
+}
+
+.contact-provider-summary__name {
+  margin: 0 0 0.35rem;
+  font-weight: 800;
+  color: #2f2723;
+}
+
+.contact-provider-summary__item-name {
+  color: #6f6761;
+  line-height: 1.6;
+}
+
+.provider-role-badge {
+  display: inline-flex;
+  margin-left: 0.5rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(255, 112, 45, 0.1);
+  color: #9a4b18;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.highlight-text {
+  color: #9a4b18;
+}
+
+.badge-divider {
+  margin: 0 0.5rem;
+  color: #c8a58d;
+}
+
+.contact-form-group {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.form-spacing-large {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.section-title-label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #2f2723;
+  font-weight: 800;
+}
+
+.label-hint,
+.textarea-hint {
+  color: #8a817b;
+  font-size: 0.92rem;
+}
+
+.warning-text {
+  color: #b45309;
+}
+
+.form-col {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.sub-label {
+  color: #6f6761;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.date-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.9rem;
+  background: #fff;
+  border: 1px solid rgba(128, 86, 58, 0.16);
+}
+
+.contact-form-input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+}
+
+.time-slot-group,
+.move-in-group,
+.tenant-profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.time-slot-pill,
+.move-in-btn,
+.profile-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(166, 92, 50, 0.24);
+  background: #fff;
+  color: #8a4a24;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.time-slot-pill.is-active,
+.move-in-btn.is-active,
+.profile-tag.is-active {
+  background: rgba(255, 112, 45, 0.12);
+  border-color: rgba(255, 112, 45, 0.45);
+  color: #9a4b18;
+}
+
+.profile-tag-input {
+  border-radius: 999px;
+  outline: 0;
+}
+
+.modal-hidden-input {
+  display: none;
+}
+
+.contact-form-textarea {
+  width: 100%;
+  min-height: 7rem;
+  resize: vertical;
+  padding: 0.9rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(128, 86, 58, 0.16);
+  background: #fff;
+  font: inherit;
+  outline: 0;
+}
+
+.modal-divider {
+  border: 0;
+  border-top: 1px solid rgba(128, 86, 58, 0.12);
+}
+
+.icon-orange,
+.date-icon,
+.tag-icon {
+  color: #b15b1f;
+}
+
+.schedule-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  margin: -3.25rem 0 2rem;
+}
+
+.schedule-actions__summary {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 20rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #efe1d9;
+  border-radius: 1rem;
+  background: #fffaf7;
+  box-shadow: 0 0.5rem 1.5rem rgba(43, 39, 37, 0.04);
+}
+
+.schedule-actions__summary .material-symbols-outlined {
+  color: #e66f43;
+  font-size: 1.55rem;
+}
+
+.schedule-actions__summary strong {
+  display: block;
+  color: #2b2725;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.schedule-actions__summary p {
+  margin: 0.15rem 0 0;
+  color: #9a928c;
+  font-size: 0.82rem;
+}
+
+.schedule-actions__button,
+.schedule-panel__button {
+  border: 1px solid #e66f43;
+  border-radius: 999px;
+  background: #fff;
+  color: #e66f43;
+  padding: 0.55rem 1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.schedule-panel {
+  display: grid;
+  gap: 0.75rem;
+  margin: -1rem 0 2rem;
+  padding: 1rem;
+  border: 1px solid #efe1d9;
+  border-radius: 1rem;
+  background: #fff;
+}
+
+.schedule-panel__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.85rem;
+  background: #f8f9fa;
+}
+
+.schedule-panel__item strong {
+  color: #2b2725;
+}
+
+.schedule-panel__item p {
+  margin: 0.25rem 0;
+  color: #7e4a32;
+  font-weight: 700;
+}
+
+.schedule-panel__item small {
+  color: #9a928c;
+}
+
+.schedule-panel__empty {
+  margin: 0;
+  padding: 1rem;
+  text-align: center;
+  color: #9a928c;
+}
+
+.application-card--skeleton {
+  pointer-events: none;
+}
+
+.application-card--skeleton:hover {
+  box-shadow: var(--shadow-base, 0 4px 15px rgba(43, 39, 37, 0.03));
+}
+
+.skeleton-line,
+.skeleton-pill,
+.skeleton-image-box,
+.skeleton-info-box span,
+.skeleton-time-box,
+.skeleton-message,
+.skeleton-button {
+  background: linear-gradient(90deg,
+      #f1ece7 0%,
+      #faf7f3 45%,
+      #f1ece7 100%);
+  background-size: 220% 100%;
+  animation: applicationSkeletonLoading 1.15s ease-in-out infinite;
+}
+
+.skeleton-line {
+  display: block;
+  height: 0.9rem;
+  border-radius: 999px;
+}
+
+.skeleton-line--room {
+  width: min(340px, 44vw);
+  height: 1.1rem;
+}
+
+.skeleton-line--label {
+  width: 8rem;
+  margin-bottom: 0.75rem;
+}
+
+.skeleton-pill {
+  display: inline-block;
+  border-radius: 999px;
+}
+
+.skeleton-pill--status {
+  width: 5.25rem;
+  height: 1.75rem;
+}
+
+.skeleton-pill--order {
+  width: 9.5rem;
+  height: 1.5rem;
+}
+
+.skeleton-pill--score {
+  width: 8.5rem;
+  height: 2.1rem;
+}
+
+.skeleton-image-box {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-md, 12px);
+}
+
+.skeleton-time-box {
+  width: 100%;
+  height: 3.25rem;
+  margin-bottom: 1.25rem;
+  border-radius: 999px;
+}
+
+.skeleton-message {
+  width: 100%;
+  height: 6.25rem;
+  margin-bottom: 1.25rem;
+  border-radius: var(--radius-md, 12px);
+}
+
+.skeleton-info-box {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border-radius: var(--radius-md, 12px);
+  background: #f8f9fa;
+}
+
+.skeleton-info-box span {
+  height: 1rem;
+  border-radius: 999px;
+}
+
+.skeleton-button {
+  display: inline-block;
+  width: 6.5rem;
+  height: 2.55rem;
+  border-radius: 999px;
+}
+
+.skeleton-button--primary {
+  width: 8.5rem;
+}
+
+@keyframes applicationSkeletonLoading {
+  0% {
+    background-position: 120% 0;
+  }
+
+  100% {
+    background-position: -120% 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .skeleton-line--room {
+    width: 100%;
+  }
+
+  .application-card--skeleton .header-right {
+    width: 100%;
+  }
+
+  .skeleton-pill--order {
+    width: 100%;
+  }
+
+  .skeleton-info-box {
+    grid-template-columns: 1fr;
+  }
+
+  .skeleton-button {
+    flex: 1 1 120px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .skeleton-line,
+  .skeleton-pill,
+  .skeleton-image-box,
+  .skeleton-info-box span,
+  .skeleton-time-box,
+  .skeleton-message,
+  .skeleton-button {
+    animation: none;
+  }
+}
+
+/* 響應式 */
+@media (max-width: 900px) {
+  .application-card-body {
+    grid-template-columns: 1fr;
+  }
+
+  .tracking-room-image-wrap {
+    aspect-ratio: 16 / 10;
+  }
+
+  .schedule-actions {
+    justify-content: stretch;
+    align-items: stretch;
+    flex-direction: column;
+    margin: 0 0 1.5rem;
+  }
+
+  .schedule-actions__summary {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .schedule-panel__item {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 769px) {
+  .tracking-room-section .contact-info-box {
+    min-height: 9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .application-card-body {
+    grid-template-columns: 1fr;
+  }
+
+  .tracking-room-image-wrap {
+    aspect-ratio: 16 / 9;
+  }
+
+  .action-buttons {
+    width: 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .card-footer .btn-outline,
+  .card-footer .btn-fill,
+  .card-footer .btn-text {
+    flex: 1;
+    min-width: 8rem;
+  }
+}

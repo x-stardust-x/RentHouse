@@ -1,0 +1,409 @@
+<div class="review-page-container current-matches-page">
+
+  <div class="page-header">
+    <h2 class="page-title">當前媒合名單</h2>
+    <p class="page-subtitle">
+      查看目前已媒合成功或正在進行中的租客、工具借用者與技能預約者。
+    </p>
+  </div>
+
+  <div class="tabs-container">
+    @for (tab of tabs(); track tab.id) {
+    <button type="button" class="tab-button" [class.is-active]="activeTab() === tab.id" (click)="selectTab(tab.id)">
+      {{ tab.label }} ({{ tab.count }})
+    </button>
+    }
+  </div>
+
+  @if (isLoading()) {
+  <div class="reservation-list application-list current-match-skeleton-list" aria-busy="true">
+
+    @for (_ of loadingCards; track $index) {
+    <article class="reservation-card application-card current-match-card current-match-card--skeleton">
+
+      <div class="card-header">
+        <div class="header-left">
+          <span class="skeleton-pill skeleton-pill--status"></span>
+          <span class="skeleton-line skeleton-line--room"></span>
+        </div>
+
+        <div class="header-right">
+          <span class="skeleton-pill skeleton-pill--order"></span>
+        </div>
+      </div>
+
+      <div class="card-body application-card-body">
+
+        <div class="applicant-section">
+          <div class="applicant-header">
+            <span class="skeleton-avatar"></span>
+
+            <div class="applicant-info">
+              <span class="skeleton-line skeleton-line--name"></span>
+
+              <div class="profile-tags">
+                <span class="skeleton-pill skeleton-pill--tag"></span>
+                <span class="skeleton-pill skeleton-pill--tag"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="skeleton-info-box">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+
+        <div class="viewing-section">
+          <span class="skeleton-line skeleton-line--label"></span>
+
+          <div class="skeleton-info-box skeleton-info-box--wide">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <div class="skeleton-message"></div>
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <span class="skeleton-pill skeleton-pill--score"></span>
+
+        <div class="action-buttons">
+          <span class="skeleton-button"></span>
+          <span class="skeleton-button skeleton-button--primary"></span>
+        </div>
+      </div>
+
+    </article>
+    }
+
+  </div>
+  } @else if (errorMessage()) {
+  <div class="empty-state">
+    <p>{{ errorMessage() }}</p>
+    <button type="button" class="action-btn btn-outline" (click)="fetchCurrentMatches()">
+      重新載入
+    </button>
+  </div>
+  } @else {
+
+  @if (activeTab() === 'house') {
+  <div class="reservation-list application-list">
+
+    @for (item of houseMatches(); track item.id) {
+    <article class="reservation-card application-card current-match-card">
+
+      <div class="card-header">
+        <div class="header-left">
+          <span class="status-badge status-confirmed">
+            {{ getStatusLabel(item.status) }}
+          </span>
+
+          <span class="room-name">
+            {{ item.roomName }}
+
+            @if (item.roomAddress) {
+            <span class="room-address-divider">｜</span>
+            <span class="room-address">{{ item.roomAddress }}</span>
+            }
+          </span>
+        </div>
+
+        <div class="header-right">
+          <span class="order-number">媒合單號: {{ item.orderNumber }}</span>
+        </div>
+      </div>
+
+      <div class="card-body application-card-body">
+
+        <div class="applicant-section">
+          <div class="applicant-header">
+            <img class="applicant-avatar" [src]="item.applicant.avatar" [alt]="item.applicant.name">
+
+            <div class="applicant-info">
+              <h4 class="applicant-name">{{ item.applicant.name }}</h4>
+
+              <div class="profile-tags">
+                @for (profile of item.applicant.profiles; track profile) {
+                <span class="profile-pill">{{ profile }}</span>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-info-box">
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">home_work</span>
+              <span>預計入住：{{ item.applicant.moveInDate }}</span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">phone_iphone</span>
+              <span>聯絡電話：{{ item.applicant.phone }}</span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">chat</span>
+              <span>LINE ID：{{ item.applicant.lineId }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="viewing-section">
+          <p class="section-label">房源媒合資訊</p>
+
+          <div class="contact-info-box tracking-room-info tracking-room-info--moved">
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">event_available</span>
+              <span>看房時間：<strong>{{ item.viewingDateTime || '尚未填寫' }}</strong></span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">auto_awesome</span>
+              <span>契合度：<strong>{{ item.matchScore }}%</strong></span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">verified</span>
+              <span>媒合時間：<strong>{{ item.matchedAt || '尚未記錄' }}</strong></span>
+            </div>
+          </div>
+
+          @if (item.matchNote || item.message) {
+          <div class="message-quote-box">
+            <span class="material-symbols-outlined quote-icon-bg">format_quote</span>
+            <p class="message-text">{{ item.matchNote || item.message }}</p>
+          </div>
+          }
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <div class="match-score-badge">
+          <span class="material-symbols-outlined sparkle-icon">auto_awesome</span>
+          <span>契合度 {{ item.matchScore }}%</span>
+        </div>
+
+        <div class="action-buttons">
+          <button type="button" class="action-btn btn-outline" (click)="openGoogleCalendarForHouse(item)">
+            加入 Google 日曆
+          </button>
+
+          <button type="button" class="action-btn btn-fill" (click)="contactByLine(item.applicant.lineId)">
+            LINE 聯絡租客
+          </button>
+        </div>
+      </div>
+
+    </article>
+    }
+
+    @if (houseMatches().length === 0) {
+    <div class="empty-state">
+      <p>{{ getEmptyStateText() }}</p>
+    </div>
+    }
+
+  </div>
+  }
+
+  @if (activeTab() === 'tool') {
+  <div class="reservation-list application-list">
+
+    @for (item of toolMatches(); track item.id) {
+    <article class="reservation-card application-card current-match-card">
+
+      <div class="card-header">
+        <div class="header-left">
+          <span class="status-badge status-confirmed">
+            {{ getStatusLabel(item.status) }}
+          </span>
+
+          <span class="type-badge badge-tool">工具借用</span>
+          <span class="room-name">{{ item.itemName }}</span>
+        </div>
+
+        <div class="header-right">
+          <span class="order-number">預約單號: {{ item.orderNumber }}</span>
+        </div>
+      </div>
+
+      <div class="card-body application-card-body">
+
+        <div class="tracking-room-section">
+          <div class="tracking-room-image-wrap">
+            <img class="tracking-room-image" [src]="item.coverUrl" [alt]="item.itemName">
+          </div>
+        </div>
+
+        <div class="viewing-section">
+          <p class="section-label">工具借用資訊</p>
+
+          <div class="contact-info-box tracking-room-info tracking-room-info--moved">
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">person</span>
+              <span>借用者：<strong>{{ item.applicant.name }}</strong></span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">date_range</span>
+              <span>借用期間：<strong>{{ item.bookingPeriod }}</strong></span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">payments</span>
+              <span>費用：<strong>{{ item.priceInfo }}</strong></span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">local_shipping</span>
+              <span>取件方式：<strong>{{ item.method }}</strong></span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">phone_iphone</span>
+              <span>電話：{{ item.applicant.phone }}</span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">chat</span>
+              <span>LINE ID：{{ item.applicant.lineId }}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <div class="match-score-badge">
+          <span class="material-symbols-outlined sparkle-icon">construction</span>
+          <span>工具媒合中</span>
+        </div>
+
+        <div class="action-buttons">
+          <button type="button" class="action-btn btn-outline" (click)="viewProduct(item)">
+            查看工具
+          </button>
+
+          <button type="button" class="action-btn btn-fill" (click)="contactByLine(item.applicant.lineId)">
+            LINE 聯絡借用者
+          </button>
+        </div>
+      </div>
+
+    </article>
+    }
+
+    @if (toolMatches().length === 0) {
+    <div class="empty-state">
+      <p>{{ getEmptyStateText() }}</p>
+    </div>
+    }
+
+  </div>
+  }
+
+  @if (activeTab() === 'skill') {
+  <div class="reservation-list application-list">
+
+    @for (item of skillMatches(); track item.id) {
+    <article class="reservation-card application-card current-match-card">
+
+      <div class="card-header">
+        <div class="header-left">
+          <span class="status-badge status-confirmed">
+            {{ getStatusLabel(item.status) }}
+          </span>
+
+          <span class="type-badge badge-skill">技能學習</span>
+          <span class="room-name">{{ item.itemName }}</span>
+        </div>
+
+        <div class="header-right">
+          <span class="order-number">預約單號: {{ item.orderNumber }}</span>
+        </div>
+      </div>
+
+      <div class="card-body application-card-body">
+
+        <div class="tracking-room-section">
+          <div class="tracking-room-image-wrap">
+            <img class="tracking-room-image" [src]="item.coverUrl" [alt]="item.itemName">
+          </div>
+        </div>
+
+        <div class="viewing-section">
+          <p class="section-label">技能預約資訊</p>
+
+          <div class="contact-info-box tracking-room-info tracking-room-info--moved">
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">person</span>
+              <span>預約者：<strong>{{ item.applicant.name }}</strong></span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">date_range</span>
+              <span>預約時間：<strong>{{ item.bookingPeriod }}</strong></span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">payments</span>
+              <span>費用：<strong>{{ item.priceInfo }}</strong></span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">video_camera_front</span>
+              <span>授課形式：<strong>{{ item.method }}</strong></span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">phone_iphone</span>
+              <span>電話：{{ item.applicant.phone }}</span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">chat</span>
+              <span>LINE ID：{{ item.applicant.lineId }}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <div class="match-score-badge">
+          <span class="material-symbols-outlined sparkle-icon">school</span>
+          <span>技能媒合中</span>
+        </div>
+
+        <div class="action-buttons">
+          <button type="button" class="action-btn btn-outline" (click)="viewProduct(item)">
+            查看技能
+          </button>
+
+          <button type="button" class="action-btn btn-fill" (click)="contactByLine(item.applicant.lineId)">
+            LINE 聯絡預約者
+          </button>
+        </div>
+      </div>
+
+    </article>
+    }
+
+    @if (skillMatches().length === 0) {
+    <div class="empty-state">
+      <p>{{ getEmptyStateText() }}</p>
+    </div>
+    }
+
+  </div>
+  }
+
+  }
+</div>

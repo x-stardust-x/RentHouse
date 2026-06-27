@@ -1,0 +1,223 @@
+@if (profileData(); as profile) {
+<div class="profile-layout">
+
+  <!-- <header class="hero-banner"
+    [style.backgroundImage]="'url(' + (profile.bannerUrl || 'assets/default-banner.jpg') + ')'" > -->
+  <header class="hero-banner" style="background-image: url('images/default_banner.jpg')">
+    <div class="hero-container">
+      <img class="avatar-img" src="images/mr_chen.jpg" alt="提供者">
+      <!-- <img [src]="profile?.avatarUrl || '/images/mr_chen.jpg'" class="avatar-img" alt="頭像"> -->
+      <div class="meta-info">
+        <div class="name-badge-row">
+          <h1>{{ profile.realName }}</h1>
+
+          @if (profile.isVerified) {
+          <span class="status-badge verified">已認證</span>
+          }
+
+          @if (profile.identity === 0) {
+          <span class="status-badge mentor">Mentor</span>
+          }
+        </div>
+        <p class="titles">{{ profile.profileTitle }} ‧ {{ profile.profileSubTitle }}</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-grid">
+
+    <div class="left-panel">
+
+      <section class="metrics-card">
+        <div class="metric"><strong>{{ profile.rating }} ★</strong><span>平均評分</span></div>
+        <div class="metric"><strong>{{ profile.reviewCount }}</strong><span>評價則數</span></div>
+        <div class="metric"><strong>{{ profile.joinYears }} 年</strong><span>加入時間</span></div>
+      </section>
+
+      <section class="info-section">
+        <h2>關於我</h2>
+        <p class="bio-text">{{ profile.bio || '尚未填寫自我介紹' }}</p>
+      </section>
+
+      <section class="info-section">
+        <div class="section-heading-row">
+          <h2>出租人個人共居偏好</h2>
+
+          <p class="section-note">
+            ※ 實際入住規範仍以各房源頁面設定為準
+          </p>
+        </div>
+
+        <div class="lessor-preference-list">
+
+          <div class="lessor-preference-item">
+            <div class="lessor-preference-item__label-wrap">
+              <span class="lessor-preference-item__icon">✨</span>
+              <span class="lessor-preference-item__label">整潔</span>
+            </div>
+
+            <span class="lessor-preference-item__colon">：</span>
+
+            <span class="lessor-preference-item__value">
+              {{ cleanLevelLabel(profile.cleanLevel) }}
+            </span>
+          </div>
+
+          <div class="lessor-preference-item">
+            <div class="lessor-preference-item__label-wrap">
+              <span class="lessor-preference-item__icon">🔊</span>
+              <span class="lessor-preference-item__label">噪音</span>
+            </div>
+
+            <span class="lessor-preference-item__colon">：</span>
+
+            <span class="lessor-preference-item__value">
+              {{ noiseToleranceLabel(profile.noiseTolerance) }}
+            </span>
+          </div>
+
+          <div class="lessor-preference-item">
+            <div class="lessor-preference-item__label-wrap">
+              <span class="lessor-preference-item__icon">🐾</span>
+              <span class="lessor-preference-item__label">寵物</span>
+            </div>
+
+            <span class="lessor-preference-item__colon">：</span>
+
+            <span class="lessor-preference-item__value">
+              {{ petPreferenceLabel(profile.pet) }}
+            </span>
+          </div>
+
+          <div class="lessor-preference-item">
+            <div class="lessor-preference-item__label-wrap">
+              <span class="lessor-preference-item__icon">🚭</span>
+              <span class="lessor-preference-item__label">吸菸</span>
+            </div>
+
+            <span class="lessor-preference-item__colon">：</span>
+
+            <span class="lessor-preference-item__value">
+              {{ smokePreferenceLabel(profile.smoke) }}
+            </span>
+          </div>
+
+          <div class="lessor-preference-item">
+            <div class="lessor-preference-item__label-wrap">
+              <span class="lessor-preference-item__icon">🌙</span>
+              <span class="lessor-preference-item__label">作息</span>
+            </div>
+
+            <span class="lessor-preference-item__colon">：</span>
+
+            <span class="lessor-preference-item__value">
+              {{ routinePreferenceLabel(profile.sleepTime) }}
+            </span>
+          </div>
+
+        </div>
+
+      </section>
+
+      <section class="info-section">
+        <h2>興趣標籤</h2>
+
+        @if (getInterestsArray(profile.interests).length > 0) {
+        <div class="interest-tags-container">
+
+          @for (interest of getInterestsArray(profile.interests); track interest) {
+          <span class="interest-tag">
+            # {{ interest }}
+          </span>
+          }
+
+        </div>
+        } @else {
+        <p class="empty-msg">此會員尚未填寫興趣。</p>
+        }
+      </section>
+
+      <section class="info-section">
+        <h2>目前提供的空間與資源</h2>
+
+        @if (getProvidedResources(profile).length > 0) {
+        <div class="resource-list">
+
+          @for (resource of getProvidedResources(profile); track resource.displayType + '-' + resource.id) {
+          <div class="resource-card" [routerLink]="['/rental-matching-detail', resource.displayType, resource.id]">
+
+            <div class="resource-card__image-wrap">
+              <img [src]="normalizeResourceImageUrl(resource.mainImageUrl)" [alt]="resource.name">
+
+              <span class="resource-card__badge">
+                {{ resourceTypeLabel(resource) }}
+              </span>
+            </div>
+
+            <h3>{{ resource.name }}</h3>
+
+            <p class="price">
+              NT$ {{ resource.price | number }}
+              <span>/ {{ resource.priceUnit }}</span>
+            </p>
+          </div>
+          }
+
+        </div>
+        } @else {
+        <p class="empty-msg">此會員目前尚未提供任何房源、工具或技能。</p>
+        }
+      </section>
+
+      <section class="info-section">
+        <h2>來自年輕房客的評價</h2>
+        <div class="review-flow">
+          @for (review of profile.reviews; track review.reviewerName) {
+          <div class="review-card">
+            <img [src]="review.reviewerAvatarUrl || 'assets/default-avatar.png'" class="rev-avatar">
+            <div class="rev-content">
+              <h4>{{ review.reviewerName }} <span class="occupation">({{ review.reviewerOccupation || 'Learner'
+                  }})</span></h4>
+              <div class="stars">得分：{{ review.score }} ★</div>
+              <p class="comment">{{ review.comment }}</p>
+            </div>
+          </div>
+          } @empty {
+          <p class="empty-msg">目前尚無評價。</p>
+          }
+        </div>
+      </section>
+
+    </div>
+
+    <div class="right-sidebar">
+      <div class="sticky-box">
+        <h3>有興趣交流嗎？</h3>
+        <p>可透過電話或 LINE 與提供者聯繫，進一步討論共居或資源共享需求。</p>
+
+        <div class="links-group rental-detail-links-group">
+
+          <a class="rental-detail-button rental-detail-button--primary" [class.is-disabled]="!getPhoneHref(profile)"
+            [attr.href]="getPhoneHref(profile)"
+            (click)="handleContactClick($event, getPhoneHref(profile), '此出租人尚未提供電話號碼')">
+
+            <span class="material-symbols-outlined rental-hero__location-icon">mobile_2</span>
+            <span>電話洽詢</span>
+          </a>
+
+          <a class="rental-detail-button rental-detail-button--secondary" [class.is-disabled]="!getLineHref(profile)"
+            [attr.href]="getLineHref(profile)" target="_blank" rel="noopener noreferrer"
+            (click)="handleContactClick($event, getLineHref(profile), '此出租人尚未提供 LINE ID')">
+
+            <fa-icon [icon]="faLine"></fa-icon>
+            <span>LINE洽詢</span>
+          </a>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+}

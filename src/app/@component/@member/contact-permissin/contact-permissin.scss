@@ -1,0 +1,216 @@
+.contact-permission-page {
+  // width: min(100%, 980px);
+  // margin: 0 auto;
+  // padding: 2rem 1.5rem 4rem;
+}
+
+.page-header {
+  margin-bottom: 1.5rem;
+
+  .eyebrow {
+    margin-bottom: 0.35rem;
+    color: var(--color-primary, #e66f43);
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+    color: #8a817c;
+  }
+}
+
+.page-title {
+  margin-bottom: 0.35rem;
+  color: #2f2926;
+  font-weight: 800;
+}
+
+.notice-box {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(230, 111, 67, 0.16);
+  border-radius: 16px;
+  background: #fffaf7;
+  display: flex;
+  gap: 1rem;
+  box-shadow: 0 12px 32px rgba(64, 45, 36, 0.06);
+
+  h5 {
+    margin-bottom: 0.5rem;
+    color: #2f2926;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+    color: #6f6660;
+    line-height: 1.8;
+  }
+}
+
+.notice-icon,
+.circle-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--color-primary-light, #fff2ee);
+  color: var(--color-primary, #e66f43);
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  mat-icon {
+    width: 26px;
+    height: 26px;
+    font-size: 26px;
+  }
+}
+
+.permission-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.permission-card {
+  padding: 1.5rem;
+  border: 1px solid rgba(230, 111, 67, 0.12);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(64, 45, 36, 0.06);
+}
+
+.line-card {
+  margin-top: 1.25rem;
+}
+
+.card-header-custom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.info-header {
+  display: flex;
+  gap: 1rem;
+
+  h3 {
+    margin: 0 0 0.25rem;
+    color: #2f2926;
+    font-size: 1.15rem;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+    color: #9b928c;
+    font-size: 0.88rem;
+    font-weight: 700;
+  }
+}
+
+.description {
+  margin: 1.25rem 0 0;
+  color: #6f6660;
+  line-height: 1.8;
+}
+
+.tip-box {
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(230, 111, 67, 0.14);
+  border-radius: 14px;
+  background: #fffaf7;
+  color: #6f6660;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+
+  mat-icon {
+    color: var(--color-primary, #e66f43);
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+}
+
+.footer-action {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(230, 111, 67, 0.12);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.btn-cancel,
+.btn-save {
+  min-height: 42px;
+  padding: 0 1.25rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 800;
+}
+
+.btn-cancel {
+  border: 1px solid rgba(230, 111, 67, 0.32);
+  background: #fff;
+  color: var(--color-primary, #e66f43);
+
+  &:hover {
+    background: #fffaf7;
+  }
+}
+
+.btn-save {
+  border: 0;
+  background: var(--color-primary, #e66f43);
+  color: #fff;
+  box-shadow: 0 10px 22px rgba(230, 111, 67, 0.22);
+
+  &:hover {
+    background: var(--color-primary-hover, #ce5b30);
+  }
+
+  mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+}
+
+::ng-deep .contact-permission-page .mat-mdc-slide-toggle.mat-primary {
+  --mdc-switch-selected-track-color: var(--color-primary, #e66f43);
+  --mdc-switch-selected-handle-color: #fff;
+  --mdc-switch-selected-hover-track-color: var(--color-primary-hover, #ce5b30);
+  --mdc-switch-selected-focus-track-color: var(--color-primary, #e66f43);
+  --mdc-switch-selected-pressed-track-color: var(--color-primary, #e66f43);
+}
+
+@media (max-width: 768px) {
+  .contact-permission-page {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .notice-box,
+  .card-header-custom,
+  .footer-action {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .permission-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-cancel,
+  .btn-save {
+    width: 100%;
+    justify-content: center;
+  }
+}

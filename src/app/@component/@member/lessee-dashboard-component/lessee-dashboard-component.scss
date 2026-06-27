@@ -1,0 +1,384 @@
+.tenant-dashboard-page {
+  // width: min(100%, 1120px);
+  // margin: 0 auto;
+  // padding: 2rem 1.5rem 4rem;
+}
+
+.tenant-header {
+  margin-bottom: 1.5rem;
+
+  .eyebrow {
+    margin-bottom: 0.35rem;
+    color: var(--color-primary, #e66f43);
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  h2 {
+    margin-bottom: 0.35rem;
+    color: #2f2926;
+    font-weight: 800;
+
+    span {
+      color: #8a817c;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+  }
+
+  p {
+    margin: 0;
+    color: #8a817c;
+  }
+}
+
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(300px, 0.8fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.status-card,
+.nav-card,
+.house-card {
+  border: 1px solid rgba(230, 111, 67, 0.12);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(64, 45, 36, 0.06);
+}
+
+.status-card {
+  padding: 1.5rem;
+}
+
+.status-card__header,
+.recommendations__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  mat-icon {
+    color: var(--color-primary, #e66f43);
+  }
+
+  h2 {
+    margin: 0;
+    color: #2f2926;
+    font-size: 1.2rem;
+    font-weight: 800;
+  }
+}
+
+.status-badge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+
+  &.muted {
+    background: #f1efed;
+    color: #7a6f69;
+  }
+
+  &.pending {
+    background: #fff4dc;
+    color: #a26300;
+  }
+
+  &.confirmed {
+    background: var(--color-primary-light, #fff2ee);
+    color: var(--color-primary, #e66f43);
+  }
+
+  &.matched {
+    background: #e8f7ed;
+    color: #2f8a4d;
+  }
+}
+
+.match-summary {
+  padding: 1rem;
+  border: 1px dashed rgba(230, 111, 67, 0.28);
+  border-radius: 14px;
+  background: #fffaf7;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  strong {
+    color: #2f2926;
+    display: block;
+    font-size: 1rem;
+  }
+}
+
+.summary-label {
+  margin-bottom: 0.35rem;
+  color: #9b928c;
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.expiry-block strong {
+  color: #c64545;
+}
+
+.match-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.ai-match-box,
+.viewing-box {
+  padding: 1rem;
+  border-radius: 14px;
+  background: var(--color-primary-light, #fff2ee);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+
+  span {
+    color: #8a817c;
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  strong {
+    color: #2f2926;
+  }
+
+  mat-icon {
+    color: var(--color-primary, #e66f43);
+  }
+}
+
+.score-circle {
+  width: 54px;
+  height: 54px;
+  border: 3px solid var(--color-primary, #e66f43);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--color-primary, #e66f43);
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  font-weight: 900;
+}
+
+.quick-actions {
+  display: grid;
+  gap: 1rem;
+}
+
+.nav-card {
+  padding: 1.5rem;
+  color: #2f2926;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 42px rgba(64, 45, 36, 0.1);
+  }
+
+  mat-icon {
+    color: var(--color-primary, #e66f43);
+  }
+
+  h3 {
+    margin: 0.55rem 0 0.25rem;
+    font-size: 1.1rem;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+    color: #8a817c;
+    font-size: 0.88rem;
+  }
+}
+
+.search-card {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(230, 111, 67, 0.18), transparent 34%),
+    #2b2522;
+  color: #fff;
+
+  mat-icon,
+  p {
+    color: rgba(255, 255, 255, 0.82);
+  }
+}
+
+.recommendations__header {
+  a {
+    color: var(--color-primary, #e66f43);
+    font-weight: 800;
+    text-decoration: none;
+  }
+}
+
+.recommendation-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.house-card {
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 42px rgba(64, 45, 36, 0.1);
+  }
+}
+
+.image-wrapper {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: #f5f2ef;
+}
+
+.house-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.match-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(43, 37, 34, 0.72);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+
+  mat-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+  }
+}
+
+.house-card__body {
+  padding: 1.25rem;
+
+  h3 {
+    margin-bottom: 0.6rem;
+    color: #2f2926;
+    font-size: 1.1rem;
+    font-weight: 800;
+  }
+}
+
+.location {
+  margin-bottom: 1rem;
+  color: #8a817c;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+
+  mat-icon {
+    color: var(--color-primary, #e66f43);
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+}
+
+.tags-container {
+  min-height: 34px;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.house-tag {
+  padding: 0.32rem 0.6rem;
+  border-radius: 999px;
+  background: var(--color-primary-light, #fff2ee);
+  color: var(--color-primary, #e66f43);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+
+  mat-icon {
+    width: 15px;
+    height: 15px;
+    font-size: 15px;
+  }
+}
+
+.price {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(230, 111, 67, 0.1);
+  color: var(--color-primary, #e66f43);
+
+  .currency {
+    font-size: 0.95rem;
+  }
+
+  .amount {
+    font-size: 1.45rem;
+    font-weight: 900;
+  }
+
+  .unit {
+    color: #8a817c;
+    font-size: 0.86rem;
+    font-weight: 700;
+  }
+}
+
+@media (max-width: 992px) {
+
+  .dashboard-layout,
+  .recommendation-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .match-summary,
+  .match-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .tenant-dashboard-page {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .status-card__header,
+  .recommendations__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

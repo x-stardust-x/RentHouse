@@ -1,0 +1,128 @@
+/* ==========================================================================
+   個人專區頂部導覽列 (User Center Topbar)
+   ========================================================================== */
+.user-topbar {
+  min-height: 76px;
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  background-color: var(--color-bg-card);
+  /* 容器純白基底 (#FFFFFF) */
+  border-bottom: 1px solid var(--color-border);
+  /* 溫潤細線條下邊框 */
+  box-sizing: border-box;
+  margin-top: 70px;
+
+  // 左側標題資訊
+  h1 {
+    margin: 0;
+    font-size: 1.35rem;
+    color: var(--color-text-main);
+    /* 深炭焦黑 */
+    font-weight: 700;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: var(--color-text-muted);
+    /* 煙燻暖灰 */
+    font-size: 0.9rem;
+  }
+}
+
+// 右側操作區
+.user-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  // 膠囊功能按鈕基礎樣式
+  .user-topbar__btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-card);
+    color: var(--color-text-main);
+    border-radius: 999px;
+    /* 完美圓角膠囊 */
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    // 按鈕內圖示
+    .material-symbols-outlined {
+      font-size: 20px;
+      color: var(--color-text-muted);
+      transition: color 0.2s ease;
+    }
+
+    // 預留未來功能啟用時的 Hover 狀態
+    &:hover:not(.is-disabled) {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      background-color: var(--color-primary-light);
+      /* 淺焦糖底色 */
+
+      .material-symbols-outlined {
+        color: var(--color-primary);
+      }
+    }
+
+    // 獨立圖示按鈕樣式微調（如：通知按鈕）
+    &--icon {
+      padding: 0;
+      width: 42px;
+      height: 42px;
+      justify-content: center;
+      position: relative;
+    }
+
+    // 會員頭像按鈕樣式微調
+    &--profile {
+      padding: 5px 16px 5px 5px;
+      /* 左側留給圓形頭像，縮減內距 */
+      gap: 10px;
+    }
+  }
+
+  // 通知未讀小紅點（使用主打色：溫暖焦糖橘）
+  .user-topbar__badge {
+    position: absolute;
+    top: 9px;
+    right: 9px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-primary);
+    border-radius: 50%;
+    border: 1.5px solid var(--color-bg-card);
+    /* 用純白邊框把紅點與圖示隔開 */
+  }
+
+  // 按鈕內部的微型圓形頭像
+  .user-topbar__avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: var(--color-primary-light);
+    color: var(--color-primary);
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  // 🟢 核心：控制目前「還不能點擊」的虛擬禁用狀態
+  .is-disabled {
+    opacity: 0.5;
+    /* 半透明淡出 */
+    pointer-events: none;
+    /* 徹底封鎖滑鼠點擊與 Hover 事件 */
+    cursor: not-allowed;
+    user-select: none;
+  }
+}

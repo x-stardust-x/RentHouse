@@ -1,0 +1,79 @@
+<div class="rental-dashboard">
+
+  <header class="rental-dashboard__header">
+    <h2 class="rental-dashboard__title">
+      <span class="material-symbols-outlined">dashboard_customize</span>
+      房東專區：發布上架申請
+    </h2>
+
+    <div class="rental-dashboard__toggle-wrapper">
+      <div class="rental-dashboard__toggle-group">
+
+        <button type="button" class="rental-dashboard__toggle-btn" [class.is-active]="currentTab() === 'rooms'"
+          (click)="setTab('rooms')">
+          <span class="rental-dashboard__toggle-icon">🏠</span>
+          <span class="rental-dashboard__toggle-text">共居空間 (Rooms)</span>
+        </button>
+
+        <button type="button" class="rental-dashboard__toggle-btn" [class.is-active]="currentTab() === 'assets'"
+          (click)="setTab('assets')">
+          <span class="rental-dashboard__toggle-icon">🛠️</span>
+          <span class="rental-dashboard__toggle-text">資產 / 技能 (Assets & Skills)</span>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <main class="rental-dashboard__content">
+    @if (currentTab() === 'rooms') {
+    <app-house-form></app-house-form>
+    }
+    @if (currentTab() === 'assets') {
+    <app-product-form></app-product-form>
+    }
+  </main>
+
+</div>
+
+
+
+
+
+<!-- <div class="dashboard-container">
+
+  <div class="header-section text-center mb-4 mt-3">
+    <h2 class="fw-bold mb-3" style="color: #1e293b;">房東專區：發布上架申請</h2>
+
+    <div class="segment-toggle-wrapper" style="display: flex; justify-content: center;">
+      <div class="segment-toggle" style="display: inline-flex; background: #f1f5f9; border-radius: 30px; padding: 6px;">
+        <button class="btn border-0"
+                style="padding: 10px 24px; border-radius: 24px; font-weight: 700; transition: all 0.3s ease;"
+                [style.background]="currentTab() === 'rooms' ? 'white' : 'transparent'"
+                [style.color]="currentTab() === 'rooms' ? '#0f172a' : '#64748b'"
+                [style.box-shadow]="currentTab() === 'rooms' ? '0 4px 10px rgba(0,0,0,0.06)' : 'none'"
+                (click)="setTab('rooms')">
+          🏠 共居空間 (Rooms)
+        </button>
+        <button class="btn border-0"
+                style="padding: 10px 24px; border-radius: 24px; font-weight: 700; transition: all 0.3s ease;"
+                [style.background]="currentTab() === 'assets' ? 'white' : 'transparent'"
+                [style.color]="currentTab() === 'assets' ? '#0f172a' : '#64748b'"
+                [style.box-shadow]="currentTab() === 'assets' ? '0 4px 10px rgba(0,0,0,0.06)' : 'none'"
+                (click)="setTab('assets')">
+          🛠️ 資產 / 技能 (Assets & Skills)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-layout">
+    @if (currentTab() === 'rooms') {
+      <app-house-form></app-house-form>
+    }
+    @if (currentTab() === 'assets') {
+      <app-product-form></app-product-form>
+    }
+  </div>
+
+</div> -->

@@ -1,71 +1,94 @@
-<a href="register" class="btn btn-info link-underline-opacity-0 link-dark">register</a>
+<div class="login-page">
+  <div class="login-shell">
+    <section class="brand-panel">
+      <p class="eyebrow">HomieFun</p>
+      <h1>厚厝味</h1>
 
+      <h3>找到最適合的共居夥伴</h3>
 
-<div class="container d-flex justify-content-center align-items-center min-vh-100">
-  <div class="row w-100 justify-content-center">
+      <p>
+        透過生活習慣、作息時間、興趣愛好與居住偏好，
+        幫助你找到最契合的共居夥伴。
+      </p>
 
-    <div class="col-12 col-md-6">
-      <h1>歡迎回家</h1>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda<p>
-      <div class="d-flex justify-content-start mb-3">
-        <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-outline-primary" (click)="changeMember()">會員</button>
-        <button type="button" class="btn btn-outline-primary" (click)="changeAdmin()">管理員</button>
+      <div class="feature-list">
+        <div>
+          <span>房源媒合</span>
+          <small>依據需求探索合適空間</small>
+        </div>
+
+        <div>
+          <span>室友配對</span>
+          <small>以生活習慣提升契合度</small>
+        </div>
+
+        <div>
+          <span>信用評價</span>
+          <small>讓共享關係更透明</small>
+        </div>
+
+        <div>
+          <span>安全保障</span>
+          <small>保護您的資料與互動</small>
         </div>
       </div>
-      @if (!is_admin) {
-      <h1 class="text-center">會員登入</h1>
-      <form [formGroup]="loginForm" (ngSubmit)="onSumbit()">
-        <div class="mb-3">
-          <label class="form-label w-100">帳號:
-            <input class="form-control" formControlName="username" placeholder="請填入帳號">
-          </label>
-        </div>
+    </section>
 
-        <div class="mb-3">
-          <label class="form-label w-100">密碼:
-            <input class="form-control" formControlName="password" placeholder="請填入密碼">
-          </label>
-        </div>
+    <section class="login-card">
+      <div class="login-card__header">
+        <p class="eyebrow">{{ isAdmin ? 'Admin Login' : 'Member Login' }}</p>
 
-        <button class="btn btn-warning" type="button" (click)="clear()">清除</button>
-        <button class="btn btn-info ms-5" type="submit" [disabled]="!loginForm.valid">登入</button>
+        <h2>
+          {{ isAdmin ? '管理員登入' : '會員登入' }}
+        </h2>
+
+        <p>歡迎回到厚厝味</p>
+      </div>
+
+      <div class="user-type" [class.is-member]="role === 'member'" [class.is-admin]="role === 'admin'">
+        <button type="button" class="type-btn" [class.active]="role === 'member'" (click)="setRole('member')">
+          會員
+        </button>
+
+        <button type="button" class="type-btn" [class.active]="role === 'admin'" (click)="setRole('admin')">
+          管理員
+        </button>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSumbit()" class="login-form">
+        <label class="form-field">
+          <span>電子郵件</span>
+          <input class="custom-input" formControlName="email" placeholder="請輸入 Email" />
+        </label>
+
+        <label class="form-field">
+          <span>密碼</span>
+          <input type="password" class="custom-input" formControlName="pwd" placeholder="請輸入密碼" />
+        </label>
+
+        <div class="button-row">
+          <button type="button" class="btn-secondary-custom" (click)="clear()">
+            清除
+          </button>
+
+          <button type="submit" class="btn-primary-custom" [disabled]="isSubmitting()">
+            @if (isSubmitting()) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            登入中...
+            } @else {
+            登入
+            }
+          </button>
+        </div>
       </form>
-      }
-      @else {
-      <h1 class="text-center">管理員登入</h1>
-      <form [formGroup]="loginForm" (ngSubmit)="onSumbit()">
-        <div class="mb-3">
-          <label class="form-label w-100">帳號:
-            <input class="form-control" formControlName="username" placeholder="請填入帳號">
-          </label>
-        </div>
 
-        <div class="mb-3">
-          <label class="form-label w-100">密碼:
-            <input class="form-control" formControlName="password" placeholder="請填入密碼">
-          </label>
-        </div>
-
-        <button class="btn btn-warning" type="button" (click)="clear()">清除</button>
-        <button class="btn btn-info ms-5" type="submit" [disabled]="!loginForm.valid">登入</button>
-      </form>
-      }
-
-      @if(Message() == "登入成功"){
-      <div class="alert alert-success mt-3 text-center">
-        {{Message()}}
+      @if (!isAdmin) {
+      <div class="register-row">
+        <a routerLink="/register" class="register-link">
+          還沒有帳號？立即註冊
+        </a>
       </div>
       }
-      @else if (Message()) {
-      <div class="alert alert-danger mt-3 text-center">
-        {{ Message() }}
-      </div>
-      }
-    </div>
-    <div class="col-12 col-md-6"></div>
-
+    </section>
   </div>
 </div>
-
-<!-- <button class="btn btn-danger" (click)="test()">test</button> -->

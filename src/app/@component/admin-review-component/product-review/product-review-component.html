@@ -1,0 +1,199 @@
+@if (filteredFullProducts().length === 0) {
+  <div class="empty-state text-center p-5 border rounded bg-light" style="border-style: dashed !important;">
+    <h4 class="text-secondary">☕ 辦公桌空空如也</h4>
+    <p class="text-muted">目前沒有符合此狀態的「資產與技能」申請，管理員太清閒啦！</p>
+  </div>
+} @else {
+
+  @if (viewMode === 'grid') {
+    <div class="row">
+      @for (product of pagedProducts(); track product.id) {
+        <div class="col-md-6 mb-4">
+          <div class="card shadow-sm h-100">
+
+            @if (product.coverUrl) {
+              <img [src]="'https://localhost:7215' + product.coverUrl"
+                   class="card-img-top"
+                   style="height: 200px; object-fit: cover; cursor: pointer; transition: opacity 0.3s;"
+                   alt="資產圖片"
+                   title="點擊放大檢查圖片"
+                   (click)="openFullImage(product.coverUrl)">
+            } @else {
+              <div class="bg-secondary text-white d-flex justify-content-center align-items-center" style="height: 200px;">
+                <span>無圖片</span>
+              </div>
+            }
+
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title fw-bold text-primary">{{ product.name }}</h5>
+
+              <div class="landlord-info d-flex align-items-center mb-3 mt-2">
+                @if (product.userAvatar) {
+                  <img [src]="'https://localhost:7215' + product.userAvatar"
+                       class="rounded-circle me-2 shadow-sm"
+                       style="width: 32px; height: 32px; object-fit: cover;"
+                       alt="頭像">
+                } @else {
+                  <div class="rounded-circle bg-secondary d-flex justify-content-center align-items-center me-2 text-white shadow-sm"
+                       style="width: 32px; height: 32px;">
+                    <i class="bi bi-person-fill"></i>
+                  </div>
+                }
+                <span class="text-muted" style="font-size: 0.95rem;">
+                  提供者：<strong class="text-dark">{{ product.userName || '神祕會員' }}</strong>
+                </span>
+              </div>
+
+              <p class="card-text mb-4">
+                @if (product.status === 0) {
+                  <span class="badge bg-warning text-dark me-2 mb-2">待審核</span>
+                } @else if (product.status === 1) {
+                  <span class="badge bg-success me-2 mb-2">上架中</span>
+                } @else if (product.status === 2) {
+                  <span class="badge bg-danger me-2 mb-2">強制下架</span>
+                }
+
+                <span class="badge bg-info text-dark mb-2">{{ product.category }}</span><br>
+
+                <strong>💰 計價：</strong>{{ product.price }} / {{ product.priceUnit }} <br>
+                <strong>📍 地點：</strong>{{ product.address || '無地點資訊' }} <br>
+                <strong>📝 描述：</strong>{{ product.description }}
+              </p>
+
+              <div class="d-flex justify-content-end gap-2 mt-auto">
+                @if (product.status === 0) {
+                  <button class="btn btn-outline-danger" (click)="rejectProduct(product.id)">退回申請</button>
+                  <button class="btn btn-success" (click)="approveProduct(product.id)">核准上架</button>
+                } @else if (product.status === 2) {
+                  <button class="btn btn-success w-100" (click)="approveProduct(product.id)">重新核准上架</button>
+                } @else if (product.status === 1) {
+                  <button class="btn btn-danger w-100" (click)="takeDownProduct(product)">強制下架</button>
+                }
+              </div>
+
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+  @else {
+    <div class="table-responsive bg-white rounded shadow-sm p-3">
+      <table class="table table-hover align-middle mb-0" style="font-size: 0.95rem;">
+        <thead class="table-light text-secondary">
+          <tr>
+            <th style="width: 80px;">圖片</th>
+            <th style="width: 120px;">狀態 / 類別</th>
+            <th>資產技能 / 地點</th>
+            <th>提供者</th> <th>計價方式</th>
+            <th style="width: 200px; text-align: center;">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of pagedProducts(); track product.id) {
+            <tr>
+              <td>
+                @if (product.coverUrl) {
+                  <img [src]="'https://localhost:7215' + product.coverUrl"
+                       style="width: 60px; height: 60px; object-fit: cover; cursor: pointer; border-radius: 6px;"
+                       (click)="openFullImage(product.coverUrl)">
+                } @else {
+                  <div class="bg-secondary text-white d-flex justify-content-center align-items-center" style="width: 60px; height: 60px; border-radius: 6px; font-size: 12px;">
+                    無圖
+                  </div>
+                }
+              </td>
+
+              <td>
+                <div class="d-flex flex-column gap-1 align-items-start">
+                  @if (product.status === 0) {
+                    <span class="badge bg-warning text-dark">待審核</span>
+                  } @else if (product.status === 1) {
+                    <span class="badge bg-success">上架中</span>
+                  } @else if (product.status === 2) {
+                    <span class="badge bg-danger">強制下架</span>
+                  }
+                  <span class="badge bg-info text-dark">{{ product.category }}</span>
+                </div>
+              </td>
+
+              <td>
+                <div class="fw-bold text-primary" style="font-size: 1.05rem;">{{ product.name }}</div>
+                <small class="text-muted">📍 {{ product.address || '無地點資訊' }}</small>
+              </td>
+
+              <td>
+                <div class="d-flex align-items-center">
+                  @if (product.userAvatar) {
+                    <img [src]="'https://localhost:7215' + product.userAvatar"
+                         class="rounded-circle me-2 shadow-sm"
+                         style="width: 28px; height: 28px; object-fit: cover;">
+                  } @else {
+                    <div class="rounded-circle bg-secondary d-flex justify-content-center align-items-center me-2 text-white"
+                         style="width: 28px; height: 28px; font-size: 12px;">
+                      <i class="bi bi-person-fill"></i>
+                    </div>
+                  }
+                  <span class="text-dark">{{ product.userName || '神祕會員' }}</span>
+                </div>
+              </td>
+
+              <td>
+                <span class="fw-bold text-dark">${{ product.price }}</span>
+                <span class="text-muted">/ {{ product.priceUnit }}</span>
+              </td>
+
+              <td>
+                <div class="d-flex justify-content-center gap-2">
+                  @if (product.status === 0) {
+                    <button class="btn btn-sm btn-outline-danger px-2" (click)="rejectProduct(product.id)">退回</button>
+                    <button class="btn btn-sm btn-success px-2" (click)="approveProduct(product.id)">核准</button>
+                  } @else if (product.status === 2) {
+                    <button class="btn btn-sm btn-success w-100" (click)="approveProduct(product.id)">重新核准</button>
+                  } @else if (product.status === 1) {
+                    <button class="btn btn-sm btn-danger w-100" (click)="takeDownProduct(product)">強制下架</button>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (totalPages > 1) {
+    <nav aria-label="Page navigation" class="mt-5 d-flex justify-content-center">
+      <ul class="pagination pagination-lg">
+
+        <li class="page-item" [class.disabled]="currentPage() === 1">
+          <button class="page-link" (click)="changePage(currentPage() - 1)">上一頁</button>
+        </li>
+
+        @for (empty of totalPagesArray; track $index) {
+          <li class="page-item" [class.active]="currentPage() === ($index + 1)">
+            <button class="page-link" (click)="changePage($index + 1)">
+              {{ $index + 1 }}
+            </button>
+          </li>
+        }
+
+        <li class="page-item" [class.disabled]="currentPage() === totalPages">
+          <button class="page-link" (click)="changePage(currentPage() + 1)">下一頁</button>
+        </li>
+
+      </ul>
+    </nav>
+  }
+}
+
+@if (showImageModal) {
+  <div class="custom-lightbox-overlay" (click)="closeFullImage()">
+    <div class="custom-lightbox-content" (click)="$event.stopPropagation()">
+      <button class="btn-close-lightbox" (click)="closeFullImage()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+      <img [src]="fullImageUrl" alt="完整圖片" class="img-fluid lightbox-img">
+    </div>
+  </div>
+}

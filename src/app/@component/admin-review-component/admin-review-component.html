@@ -1,0 +1,428 @@
+@if (isAdmin()) {
+<div class="dashboard-container rental-review-page">
+
+  <div class="admin-top-bar">
+
+    <div class="admin-header-row">
+      <div class="header-titles">
+        <h2>租賃物管理</h2>
+        <p>審核與管理平台上的共居空間與資產技能。</p>
+      </div>
+
+      <div class="segment-toggle">
+        <button class="segment-btn" [class.active]="currentTab() === 'rooms'" (click)="setTab('rooms')">
+          共居空間 (Rooms)
+        </button>
+        <button class="segment-btn" [class.active]="currentTab() === 'assets'" (click)="setTab('assets')">
+          資產 / 技能 (Assets & Skills)
+        </button>
+      </div>
+    </div>
+
+    <div class="admin-filter-row mt-3">
+      <div class="filter-group">
+        <div class="custom-select-wrapper">
+          <i class="bi bi-filter select-icon"></i>
+          <select class="modern-select" (change)="onStatusChange($event)">
+            <option value="all">所有狀態 (All Status)</option>
+            <option value="pending">待審核 (Pending)</option>
+            <option value="active">已上架 (Active)</option>
+          </select>
+        </div>
+
+        <div class="custom-select-wrapper">
+          <i class="bi bi-boxes select-icon"></i>
+
+          @if (currentTab() === 'rooms') {
+          <select class="modern-select">
+            <option value="all">所有空間類別</option>
+            <option value="suite">獨立套房</option>
+            <option value="room">雅房</option>
+          </select>
+          } @else {
+          <select class="modern-select">
+            <option value="all">所有資產類別</option>
+            <option value="工具">🛠️ 實體工具</option>
+            <option value="技能">🧠 專業技能</option>
+            <option value="勞務">💪 勞務協助</option>
+          </select>
+          }
+        </div>
+
+        <div class="custom-select-wrapper">
+          <i class="bi bi-sort-down select-icon"></i>
+
+          <select class="modern-select" (change)="onSortChange($event)">
+            <option value="newToOld">由新到舊</option>
+            <option value="oldToNew">由舊到新</option>
+          </select>
+        </div>
+
+        <div class="view-mode-toggle" role="group" aria-label="view mode">
+          <button type="button" class="view-mode-btn" [class.active]="viewMode() === 'grid'"
+            (click)="changeViewMode('grid')">
+            <i class="bi bi-grid-3x3-gap-fill"></i>
+            網格
+          </button>
+
+          <button type="button" class="view-mode-btn" [class.active]="viewMode() === 'list'"
+            (click)="changeViewMode('list')">
+            <i class="bi bi-list-task"></i>
+            條列
+          </button>
+        </div>
+      </div>
+
+      <button class="btn-batch">
+        <i class="bi bi-check2-all"></i> 批次管理
+      </button>
+    </div>
+
+  </div>
+
+  <div class="content-area mt-4">
+
+    @if (currentTab() === 'rooms') {
+
+    @if (pendingHouses().length === 0) {
+    <div class="empty-state">
+      <h3>☕ 辦公桌空空如也</h3>
+      <p>目前沒有待審核的房屋申請，管理員可以喝杯咖啡休息啦！</p>
+    </div>
+    }
+
+    @if (viewMode() === 'grid') {
+    <div class="modern-house-grid">
+      @for (house of pagedHouses; track house.id) {
+      <div class="modern-card">
+
+        <div class="card-cover-wrapper">
+          @if (getCoverUrl(house)) {
+          <img class="cover-img" [src]="'https://localhost:7215' + getCoverUrl(house)" alt="首圖">
+          } @else {
+          <div class="no-cover-placeholder">房東未設定首圖</div>
+          }
+
+          @if (house.status === 2 || house.status === 0) {
+          <span class="status-badge badge-pending"><i class="bi bi-clipboard-check"></i> 待審核</span>
+          }
+          @if (house.status === 1) {
+          <span class="status-badge badge-active"><i class="bi bi-check-circle"></i> 上架中</span>
+          }
+          @if (house.status === 3) {
+          <span class="status-badge badge-offline">已下架</span>
+          }
+        </div>
+
+        <div class="card-body">
+          <h3 class="house-title">{{ house.name }}</h3>
+          <p class="house-location mb-2">📍 {{ house.cityName }} {{ house.districtName }} {{ house.address }}</p>
+
+          <div class="landlord-info d-flex align-items-center mb-3">
+            @if (house.userAvatar) {
+            <img [src]="'https://localhost:7215' + house.userAvatar" class="rounded-circle me-2 shadow-sm"
+              style="width: 36px; height: 36px; object-fit: cover;" alt="房東頭像">
+            } @else {
+            <div
+              class="rounded-circle bg-secondary d-flex justify-content-center align-items-center me-2 text-white shadow-sm"
+              style="width: 36px; height: 36px;">
+              <i class="bi bi-person-fill"></i>
+            </div>
+            }
+
+            <span class="text-muted" style="font-size: 0.95rem;">
+              出租人：<strong class="text-dark">{{ house.userName || '厚厝味房東' }}</strong>
+            </span>
+          </div>
+
+          <div class="price-row">
+            <span class="price-label">租金</span>
+            <div class="price-box">
+              <span class="currency">$</span><span class="amount">{{ house.rentPrice }}</span><span class="unit">/
+                月</span>
+            </div>
+          </div>
+
+          <button type="button" class="detail-toggle-btn" (click)="toggleDetails(house)">
+            {{ house.showDetails ? '收起詳細內容' : '顯示完整資料與照片' }}
+          </button>
+
+          @if (house.showDetails) {
+          <div class="expanded-content pt-2">
+
+            <p class="desc-text text-truncate-2">{{ house.description }}</p>
+
+            <div class="tag-row">
+              <span class="tag">🏢 {{ house.houseType || '未提供房型' }}</span>
+              <span class="tag">📏 {{ house.areaSize ? house.areaSize + ' 坪' : '未提供坪數' }}</span>
+              <span class="tag">🪜 {{ house.floorInfo || '未提供樓層' }}</span>
+            </div>
+
+            <div class="included-compact mt-2">
+              <span class="info-label">租金包含：</span>
+              @if(house.includeUtilities) { <span class="text-success fw-bold ms-1">💧水電</span> }
+              @if(house.includeWifi) { <span class="text-success fw-bold ms-1">📶網路</span> }
+              @if(house.includeManagememtFee) { <span class="text-success fw-bold ms-1">🛡️管理費</span> }
+              @if(!house.includeUtilities && !house.includeWifi && !house.includeManagememtFee) {
+              <span class="text-muted ms-1">無附加項目</span>
+              }
+            </div>
+
+            <div class="habit-compact-box mt-3">
+              <h6 class="box-title">🛋️ 房東規定</h6>
+              <div class="habit-mini-grid">
+                <div class="habit-item"><span>就寢:</span> <strong>{{ house.sleepTime }}</strong></div>
+                <div class="habit-item"><span>起床:</span> <strong>{{ house.wakeTime }}</strong></div>
+                <div class="habit-item"><span>潔癖:</span> <strong>{{ house.cleanLevel }}/5</strong></div>
+                <div class="habit-item"><span>噪音容忍:</span> <strong>{{ house.noiseTolerance }}/5</strong></div>
+                <div class="habit-item" [class]="house.pet ? 'text-success' : 'text-danger'">{{ house.pet ? '🐾 允許寵物' :
+                  '🚫 禁寵' }}</div>
+                <div class="habit-item" [class]="house.smoke ? 'text-success' : 'text-danger'">{{ house.smoke ? '🚬
+                  允許抽菸' : '🚫 禁菸' }}</div>
+              </div>
+              @if (house.interests) {
+              <div class="habit-interests mt-1"><span>標籤:</span> {{ house.interests }}</div>
+              }
+            </div>
+
+            <div class="admin-gallery-check mt-3">
+              <h6 class="box-title">📸 房東上傳照片 (請滑動檢查)</h6>
+              <div class="gallery-scroll">
+                @for (img of house.images; track img.id) {
+                <div class="thumb-wrapper">
+                  <img [src]="'https://localhost:7215' + img.url" [class.is-cover-img]="img.isCover" alt="審核圖片"
+                    style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imagePreviewModal"
+                    (click)="openImageModal('https://localhost:7215' + img.url)">
+                  @if (img.isCover) {
+                  <span class="crown-badge">👑</span>
+                  }
+                </div>
+                }
+                @if(house.images.length === 0) {
+                <span class="text-muted" style="font-size: 0.85rem;">無上傳其他照片</span>
+                }
+              </div>
+            </div>
+
+          </div>
+          }
+        </div>
+
+        <div class="card-footer">
+          @if (house.status === 2 || house.status === 0) {
+          <button class="btn-modern btn-reject" (click)="rejectHouse(house.id)">
+            <i class="bi bi-x-lg"></i> 退回
+          </button>
+          <button class="btn-modern btn-approve" (click)="approveHouse(house)">
+            <i class="bi bi-check2-square"></i> 核准上架
+          </button>
+          }
+          @if (house.status === 1) {
+          <button class="btn-modern btn-full btn-warning" (click)="takeDownHouse(house)">
+            強制下架
+          </button>
+          }
+        </div>
+
+      </div>
+      }
+    </div>
+    }
+    @else {
+    <div class="modern-list-view table-responsive">
+      <table class="table table-hover align-middle mb-0" style="font-size: 0.95rem;">
+        <thead class="table-light text-secondary">
+          <tr>
+
+            <th style="width: 80px;">首圖</th>
+            <th style="width: 100px;">狀態</th>
+            <th>房源名稱 / 地點資訊</th>
+            <th>出租人</th>
+            <th>月租金</th>
+            <th style="width: 220px; text-align: center;">審核操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (house of pagedHouses; track house.id) {
+          <tr style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#houseFullDetailModal"
+            (click)="openHouseDetails(house)">
+
+            <td>
+              @if (getCoverUrl(house)) {
+              <img [src]="'https://localhost:7215' + getCoverUrl(house)"
+                style="width: 60px; height: 60px; object-fit: cover; cursor: pointer; border-radius: 6px;"
+                (click)="openImageModal('https://localhost:7215' + getCoverUrl(house)); $event.stopPropagation()">
+              } @else {
+              <div class="bg-secondary text-white d-flex justify-content-center align-items-center"
+                style="width: 60px; height: 60px; border-radius: 6px; font-size: 12px;">
+                無圖
+              </div>
+              }
+            </td>
+
+            <td>
+              @if (house.status === 2 || house.status === 0) {
+              <span class="badge bg-danger p-2"><i class="bi bi-clipboard-check"></i> 待審核</span>
+              }
+              @if (house.status === 1) {
+              <span class="badge bg-success p-2"><i class="bi bi-check-circle"></i> 上架中</span>
+              }
+              @if (house.status === 3) {
+              <span class="badge bg-secondary p-2">已下架</span>
+              }
+            </td>
+
+            <td>
+              <div class="fw-bold text-dark" style="font-size: 1.05rem;">{{ house.name }}</div>
+              <small class="text-muted">📍 {{ house.cityName }} {{ house.districtName }} {{ house.address }}</small>
+            </td>
+
+            <td>
+              <div class="d-flex align-items-center">
+                @if (house.userAvatar) {
+                <img [src]="'https://localhost:7215' + house.userAvatar" class="rounded-circle me-2 shadow-sm"
+                  style="width: 28px; height: 28px; object-fit: cover;">
+                } @else {
+                <div
+                  class="rounded-circle bg-secondary d-flex justify-content-center align-items-center me-2 text-white"
+                  style="width: 28px; height: 28px; font-size: 12px;">
+                  <i class="bi bi-person-fill"></i>
+                </div>
+                }
+                <span class="text-dark">{{ house.userName || '厚厝味房東' }}</span>
+              </div>
+            </td>
+
+            <td class="fw-bold text-primary" style="font-size: 1.05rem;">
+              ${{ house.rentPrice }} <span class="text-muted" style="font-size: 0.8rem; font-weight: normal;">/ 月</span>
+            </td>
+
+            <td>
+              <div class="d-flex justify-content-center gap-2">
+                @if (house.status === 2 || house.status === 0) {
+                <button class="btn btn-sm btn-outline-danger px-3"
+                  (click)="rejectHouse(house.id); $event.stopPropagation()">
+                  <i class="bi bi-x-lg"></i> 退回
+                </button>
+                <button class="btn btn-sm btn-success px-3" (click)="approveHouse(house); $event.stopPropagation()">
+                  <i class="bi bi-check2-square"></i> 核准上架
+                </button>
+                }
+                @if (house.status === 1) {
+                <button class="btn btn-sm btn-warning w-100" (click)="takeDownHouse(house); $event.stopPropagation()">
+                  強制下架
+                </button>
+                }
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+
+    @if (totalPages > 1) {
+    <nav aria-label="Page navigation" class="mt-5 d-flex justify-content-center">
+      <ul class="pagination pagination-lg">
+
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <button class="page-link" (click)="changePage(currentPage - 1)">上一頁</button>
+        </li>
+
+        @for (empty of totalPagesArray; track $index) {
+        <li class="page-item" [class.active]="currentPage === ($index + 1)">
+          <button class="page-link" (click)="changePage($index + 1)">
+            {{ $index + 1 }}
+          </button>
+        </li>
+        }
+
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <button class="page-link" (click)="changePage(currentPage + 1)">下一頁</button>
+        </li>
+
+      </ul>
+    </nav>
+    }
+    } @if (currentTab() === 'assets') {
+    <app-product-review [filterStatus]="currentStatus()" [viewMode]="viewMode()" [currentSort]="currentSort()">
+    </app-product-review>
+    }
+
+  </div>
+</div>
+}
+
+<div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content bg-transparent border-0">
+      <div class="modal-header border-0 pb-0 d-flex justify-content-end">
+        <button type="button" class="btn-close btn-close-white" style="background-color: white;" data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center pt-2">
+        <img [src]="selectedImageUrl" class="img-fluid rounded shadow" alt="放大預覽圖">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="houseFullDetailModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg">
+
+      @if (selectedHouseDetails) {
+      <div class="modal-header bg-light border-bottom-0 pb-3">
+        <h4 class="modal-title fw-bold text-dark mb-0">
+          {{ selectedHouseDetails.name }}
+        </h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body pt-0 px-4 pb-4">
+        @if (getCoverUrl(selectedHouseDetails)) {
+        <div class="mb-4 text-center">
+          <img [src]="'https://localhost:7215' + getCoverUrl(selectedHouseDetails)" class="img-fluid rounded shadow-sm"
+            style="width: 100%; height: 280px; object-fit: cover;" alt="房屋首圖">
+        </div>
+        }
+        <p class="text-muted mb-3" style="font-size: 1.1rem;">
+          📍 {{ selectedHouseDetails.cityName }} {{ selectedHouseDetails.districtName }} {{ selectedHouseDetails.address
+          }}
+        </p>
+
+        <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
+          <span class="fs-5 me-3">出租人：<strong>{{ selectedHouseDetails.userName || '厚厝味房東' }}</strong></span>
+          <span class="fs-5 text-danger fw-bold ms-auto">${{ selectedHouseDetails.rentPrice }} / 月</span>
+        </div>
+
+        <p class="mb-4">{{ selectedHouseDetails.description }}</p>
+
+        <div class="tag-row mb-4">
+          <span class="tag">🏢 {{ selectedHouseDetails.houseType || '未提供房型' }}</span>
+          <span class="tag">📏 {{ selectedHouseDetails.areaSize ? selectedHouseDetails.areaSize + ' 坪' : '未提供坪數'
+            }}</span>
+          <span class="tag">🪜 {{ selectedHouseDetails.floorInfo || '未提供樓層' }}</span>
+        </div>
+
+        <div class="habit-compact-box mt-3 bg-light p-3 rounded">
+          <h6 class="box-title text-dark">🛋️ 房東規定</h6>
+          <div class="habit-mini-grid">
+            <div class="habit-item"><span>就寢:</span> <strong>{{ selectedHouseDetails.sleepTime }}</strong></div>
+            <div class="habit-item"><span>起床:</span> <strong>{{ selectedHouseDetails.wakeTime }}</strong></div>
+            <div class="habit-item"><span>潔癖:</span> <strong>{{ selectedHouseDetails.cleanLevel }}/5</strong></div>
+            <div class="habit-item"><span>噪音容忍:</span> <strong>{{ selectedHouseDetails.noiseTolerance }}/5</strong>
+            </div>
+            <div class="habit-item" [class]="selectedHouseDetails.pet ? 'text-success' : 'text-danger'">{{
+              selectedHouseDetails.pet ? '🐾 允許寵物' : '🚫 禁寵' }}</div>
+            <div class="habit-item" [class]="selectedHouseDetails.smoke ? 'text-success' : 'text-danger'">{{
+              selectedHouseDetails.smoke ? '🚬 允許抽菸' : '🚫 禁菸' }}</div>
+          </div>
+        </div>
+      </div>
+      }
+
+    </div>
+  </div>
+</div>

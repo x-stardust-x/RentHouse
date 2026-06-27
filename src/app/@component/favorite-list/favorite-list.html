@@ -1,0 +1,78 @@
+<div class="favorites-page">
+  <div class="page-heading">
+    <div>
+      <!-- <p class="eyebrow">我的收藏</p> -->
+      <h2>
+        <i class="bi bi-heart-fill"></i>
+        我的收藏清單
+      </h2>
+      <p>集中查看您感興趣的共享房源，方便之後快速比較與預約。</p>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+  <div class="loading-state">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p>正在尋找您的心儀好房...</p>
+  </div>
+  } @else {
+  @if (favoriteHouses().length === 0) {
+  <div class="empty-state">
+    <div class="empty-icon">
+      <i class="bi bi-house-heart"></i>
+    </div>
+
+    <h4>目前還沒有收藏任何房屋喔！</h4>
+    <p>趕快去租賃媒合區逛逛，把喜歡的房子加進來吧。</p>
+
+    <button class="browse-btn" routerLink="/rental-matching-component">
+      <i class="bi bi-search"></i>
+      前往租賃媒合
+    </button>
+  </div>
+  } @else {
+  <div class="favorites-grid">
+    @for (house of favoriteHouses(); track house.id) {
+    <article class="favorite-card">
+      <div class="favorite-card__image">
+        <img
+          [src]="house.coverUrl ? ('https://localhost:7215' + house.coverUrl) : 'images/placeholder/house-placeholder.jpg'"
+          alt="房屋圖片" />
+
+
+        <span class="favorite-badge">
+          <!-- <i class="bi bi-heart-fill"></i> -->
+          <i class="material-symbols-outlined" style="font-size: 1rem;">
+            favorite
+          </i>
+          已收藏
+        </span>
+      </div>
+
+      <div class="favorite-card__body">
+        <h5>{{ house.name }}</h5>
+
+        <div class="house-location">
+          <i class="bi bi-geo-alt"></i>
+          <span>
+            {{ house.cityName }}{{ house.districtName }} {{ house.address || '尚未填寫地址' }}
+          </span>
+        </div>
+
+        <div class="house-price">
+          NT$ {{ house.rentPrice || 0 }}
+          <span>/ 月</span>
+        </div>
+
+        <button class="detail-btn" [routerLink]="['/rental-matching-detail', 'room', house.id]">
+          查看詳情
+        </button>
+      </div>
+    </article>
+    }
+  </div>
+  }
+  }
+</div>

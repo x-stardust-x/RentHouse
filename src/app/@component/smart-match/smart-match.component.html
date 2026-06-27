@@ -1,0 +1,108 @@
+<div class="ai-match-page">
+  <section class="match-hero">
+    <!-- <p class="eyebrow">AI 智慧配房</p> -->
+
+    <h2>
+      <!-- <span class="material-symbols-outlined">auto_awesome</span> -->
+      AI 智慧尋屋
+    </h2>
+
+    <p class="subtitle">
+      系統將分析資料庫中所有待租房源，為您嚴選最契合生活習慣與居住需求的共享空間。
+    </p>
+  </section>
+
+  @if (isVip || currentUserProfile?.subscriptionTier === 3) {
+  <section class="vip-panel">
+    <div>
+      <span class="panel-badge">VIP 專屬</span>
+      <h3>您的專屬 AI 房產秘書已就緒</h3>
+      <p>啟動後，系統會依據您的偏好、生活習慣與房源條件進行一對多智慧配對。</p>
+    </div>
+
+    <button (click)="startMultiMatch()" class="primary-action" [disabled]="isLoading">
+      <span class="material-symbols-outlined">neurology</span>
+      啟動全台房源智慧配對
+    </button>
+  </section>
+  }
+
+  @if (!isVip && currentUserProfile?.subscriptionTier !== 3) {
+  <section class="upgrade-banner">
+    <div class="lock-icon">
+      <span class="material-symbols-outlined">lock</span>
+    </div>
+
+    <div>
+      <h3>AI 智慧尋屋為 VIP 專屬功能</h3>
+      <p>升級後即可使用 AI 房源分析、契合度評分與生活習慣風險提醒。</p>
+    </div>
+
+    <button class="upgrade-btn">
+      <span class="material-symbols-outlined">workspace_premium</span>
+      升級 VIP 方案
+    </button>
+  </section>
+  }
+
+  @if (isLoading) {
+  <section class="loading-state">
+    <div class="spinner"></div>
+    <h4>AI 正在分析房源資料</h4>
+    <p>掃描中，並逐一評估房源條件與生活習慣契合度...</p>
+  </section>
+  }
+
+  @if (matchResults.length > 0 && !isLoading) {
+  <section class="results-section">
+    <div class="results-heading">
+      <div>
+        <p class="eyebrow">配對結果</p>
+        <h3>為您找到 {{ matchResults.length }} 筆推薦房源</h3>
+      </div>
+    </div>
+
+    <div class="results-list">
+      @for (item of matchResults; track item.houseId; let i = $index) {
+      <article class="house-match-card" [class.top-match]="i === 0" [class.low-match]="item.score < 60">
+        @if (i === 0) {
+        <div class="badge-recommend">
+          <span class="material-symbols-outlined">emoji_events</span>
+          最佳契合首選
+        </div>
+        }
+
+        <div class="match-card-header">
+          <div class="house-info">
+            <h3>{{ item.name }}</h3>
+
+            <div class="house-tags">
+              <span class="tag-type">{{ item.houseType }}</span>
+              <span class="price">NT$ {{ item.rentPrice }} / 月</span>
+            </div>
+          </div>
+
+          <div class="score-badge" [class.high]="item.score >= 80" [class.medium]="item.score >= 60 && item.score < 80"
+            [class.low]="item.score < 60">
+            {{ item.score }}
+            <span>分</span>
+          </div>
+        </div>
+
+        <div class="ai-analysis-card">
+          <div class="score-header">
+            <h5>💡 AI 講評</h5>
+          </div>
+
+          <ul class="analysis-list" style="padding: 10px; line-height: 1.8;">
+            <li><strong>評估基礎：</strong> {{ item.basis }}</li>
+            <li><strong>隱含風險：</strong> {{ item.risk }}</li>
+            <li><strong>建議事項：</strong> {{ item.suggestion }}</li>
+          </ul>
+        </div>
+      </article>
+      }
+    </div>
+  </section>
+  }
+</div>

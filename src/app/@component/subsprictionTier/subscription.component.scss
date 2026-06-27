@@ -1,0 +1,216 @@
+.pricing-page {
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 56px 0 88px;
+}
+
+.pricing-header {
+  margin-bottom: 28px;
+  text-align: center;
+
+  .eyebrow {
+    margin-bottom: 0.4rem;
+    color: var(--color-primary, #e66f43);
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
+
+  h2 {
+    margin-bottom: 0.75rem;
+    color: #2f2926;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+    color: #8a817c;
+    line-height: 1.8;
+  }
+}
+
+.custom-tab-group {
+  margin-top: 24px;
+}
+
+.cards-wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  padding: 36px 0 12px;
+}
+
+.cards-wrapper--lessor {
+  max-width: 760px;
+  margin: 0 auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pricing-card {
+  position: relative;
+  min-height: 420px;
+  padding: 1.25rem;
+  border: 1px solid rgba(230, 111, 67, 0.14);
+  border-radius: 16px !important;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(64, 45, 36, 0.06);
+  display: flex !important;
+  flex-direction: column;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba(230, 111, 67, 0.32);
+    box-shadow: 0 18px 42px rgba(64, 45, 36, 0.1);
+  }
+}
+
+.pro-card,
+.vip-card,
+.merchant-card {
+  border-color: rgba(230, 111, 67, 0.38);
+  background: linear-gradient(180deg, #fffaf7 0%, #fff 100%);
+}
+
+.vip-card {
+  transform: translateY(-8px);
+  box-shadow: 0 18px 42px rgba(230, 111, 67, 0.14);
+
+  &:hover {
+    transform: translateY(-12px);
+  }
+}
+
+.plan-badge {
+  position: absolute;
+  top: -13px;
+  right: 20px;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  background: var(--color-primary, #e66f43);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 800;
+  box-shadow: 0 10px 22px rgba(230, 111, 67, 0.24);
+}
+
+mat-card-header {
+  margin-bottom: 1rem;
+}
+
+mat-card-title {
+  color: #2f2926;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+mat-card-subtitle {
+  color: var(--color-primary, #e66f43);
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+mat-card-content {
+  flex: 1;
+}
+
+.feature-list {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  text-align: left;
+  display: grid;
+  gap: 0.9rem;
+
+  li {
+    position: relative;
+    padding-left: 1.65rem;
+    color: #5f5650;
+    line-height: 1.65;
+
+    &::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--color-primary, #e66f43);
+      font-weight: 900;
+    }
+  }
+
+  .locked {
+    color: #aaa19b;
+    text-decoration: line-through;
+
+    &::before {
+      content: '×';
+      color: #aaa19b;
+    }
+  }
+
+  .highlight {
+    color: #b75a2f;
+    font-weight: 800;
+  }
+}
+
+.card-action {
+  padding-top: 1.5rem;
+}
+
+.upgrade-btn {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 999px;
+  background: var(--color-primary, #e66f43) !important;
+  color: #fff !important;
+  font-weight: 800;
+  box-shadow: 0 10px 22px rgba(230, 111, 67, 0.22);
+
+  &:hover {
+    background: var(--color-primary-hover, #ce5b30) !important;
+  }
+}
+
+::ng-deep .mat-mdc-tab-labels {
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+::ng-deep .mat-mdc-tab .mdc-tab__text-label {
+  color: #7a6f69;
+  font-weight: 800;
+}
+
+::ng-deep .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+  color: var(--color-primary, #e66f43);
+}
+
+::ng-deep .mat-mdc-tab-group.mat-primary .mat-mdc-tab-header-pagination,
+::ng-deep .mat-mdc-tab-group.mat-primary .mdc-tab-indicator__content--underline {
+  border-color: var(--color-primary, #e66f43);
+}
+
+@media (max-width: 992px) {
+
+  .cards-wrapper,
+  .cards-wrapper--lessor {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+  }
+
+  .vip-card {
+    transform: none;
+
+    &:hover {
+      transform: translateY(-4px);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .pricing-page {
+    width: min(100% - 32px, 1120px);
+    padding: 40px 0 64px;
+  }
+}

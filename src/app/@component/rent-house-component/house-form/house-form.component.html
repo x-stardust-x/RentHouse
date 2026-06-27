@@ -1,0 +1,427 @@
+<div class="rental-form">
+
+  <div class="page-header">
+    <h2 class="page-title">發布新房源</h2>
+    <p>把閒置空間整理成安心房源，讓合適的承租人找到你。</p>
+  </div>
+
+  <!-- <h3 class="rental-form__page-title">{{ isEditMode ? '修改草稿' : '新增房屋申請' }}</h3> -->
+
+  <div class="rental-form__dashboard-layout">
+
+    <div class="rental-form__col-main">
+
+      <div class="rental-form__panel">
+        <h4 class="rental-form__panel-title">
+          <span class="material-symbols-outlined">info</span> 房屋基本資料
+        </h4>
+
+        <div class="rental-form__group">
+          <label class="rental-form__label">房屋名稱</label>
+          <input type="text" class="rental-form__input" [(ngModel)]="formData.name" placeholder="請輸入吸睛的房屋標題">
+        </div>
+
+        <div class="rental-form__group">
+          <label class="rental-form__label">房屋地址</label>
+          <div class="rental-form__address-grid">
+            <app-location-select class="rental-form__location-select" [districtId]="formData.districtId ?? null"
+              (districtSelected)="onDistrictSelected($event)">
+            </app-location-select>
+            <input type="text" class="rental-form__input" [(ngModel)]="formData.address"
+              placeholder="請輸入路名、巷弄與門牌 (例如：九如一路100號)">
+          </div>
+        </div>
+      </div>
+
+      <div class="rental-form__metrics-grid">
+
+        <div class="rental-form__metric-item rental-form__metric-item--rent">
+          <div class="rental-form__metric-icon-box">💰</div>
+          <div class="rental-form__metric-body">
+            <label class="rental-form__metric-label">租金 (元/月)</label>
+            <input type="number" class="rental-form__metric-input" [(ngModel)]="formData.rentPrice"
+              placeholder="例如: 8500">
+          </div>
+        </div>
+
+        <div class="rental-form__metric-item rental-form__metric-item--type">
+          <div class="rental-form__metric-icon-box">🏢</div>
+          <div class="rental-form__metric-body">
+            <label class="rental-form__metric-label">房屋類型</label>
+            <select class="rental-form__metric-select" [(ngModel)]="formData.houseType">
+              <option value="獨立套房">獨立套房</option>
+              <option value="分租套房">分租套房</option>
+              <option value="雅房">雅房</option>
+              <option value="整層住家">整層住家</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="rental-form__metric-item rental-form__metric-item--size">
+          <div class="rental-form__metric-icon-box">📐</div>
+          <div class="rental-form__metric-body">
+            <label class="rental-form__metric-label">坪數 (坪)</label>
+            <input type="number" class="rental-form__metric-input" [(ngModel)]="formData.areaSize" placeholder="例如: 8">
+          </div>
+        </div>
+
+        <div class="rental-form__metric-item rental-form__metric-item--floor">
+          <div class="rental-form__metric-icon-box">🪜</div>
+          <div class="rental-form__metric-body">
+            <label class="rental-form__metric-label">樓層資訊</label>
+            <input type="text" class="rental-form__metric-input" [(ngModel)]="formData.floorInfo"
+              placeholder="例如: 5F / 12F">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="rental-form__panel">
+        <h4 class="rental-form__panel-title">
+          <span class="material-symbols-outlined">event_available</span>
+          可預約看房時段
+        </h4>
+
+        <p class="rental-form__hint">
+          設定承租人可以選擇的看房時間，會顯示在前台「線上預約看房」彈窗中。
+        </p>
+
+        <div class="viewing-slot-list">
+          @for (slot of viewingSlots(); track $index; let i = $index) {
+          <div class="viewing-slot-item">
+
+            <!-- <div class="rental-form__group">
+              <label class="rental-form__label">日期</label>
+              <input type="date" class="rental-form__input" [(ngModel)]="slot.availableDate"
+                name="availableDate_{{ i }}">
+            </div> -->
+
+            <div class="rental-form__side-grid">
+              <div class="rental-form__group">
+                <label class="rental-form__label">開始時間</label>
+                <input type="time" class="rental-form__input" [(ngModel)]="slot.startTime" name="startTime_{{ i }}">
+              </div>
+
+              <div class="rental-form__group">
+                <label class="rental-form__label">結束時間</label>
+                <input type="time" class="rental-form__input" [(ngModel)]="slot.endTime" name="endTime_{{ i }}">
+              </div>
+            </div>
+
+            <label class="rental-form__checkbox-label">
+              <input type="checkbox" class="rental-form__checkbox" [(ngModel)]="slot.isEnabled"
+                name="slotEnabled_{{ i }}">
+              開放此時段
+            </label>
+
+            @if (viewingSlots().length > 1) {
+            <button type="button" class="rental-form__btn rental-form__btn--secondary" (click)="removeViewingSlot(i)">
+              移除此時段
+            </button>
+            }
+
+          </div>
+          }
+        </div>
+
+        <button type="button" class="rental-form__btn rental-form__btn--secondary" (click)="addViewingSlot()">
+          ＋ 新增可看房時段
+        </button>
+      </div>
+
+      <!-- <div class="rental-form__panel">
+        <h4 class="rental-form__panel-title">
+          <span class="material-symbols-outlined">description</span> 房屋詳細描述
+        </h4>
+        <div class="rental-form__group">
+          <textarea class="rental-form__textarea" rows="5" [(ngModel)]="formData.description"
+            placeholder="介紹一下這個空間的特色與氛圍..."></textarea>
+        </div>
+      </div> -->
+
+      <div class="rental-form__panel rental-form__panel--dashed">
+        <h4 class="rental-form__panel-title">
+          <span class="material-symbols-outlined">photo_library</span> 房屋相簿與首圖設定
+        </h4>
+
+        <div class="rental-form__upload-wrapper">
+          <input type="file" class="rental-form__file-input" multiple (change)="onFilesSelected($event)"
+            accept="image/*">
+        </div>
+
+        @if (isEditMode && existingPhotos && existingPhotos.length > 0) {
+        <div class="rental-form__gallery-label">
+          <h5 class="rental-form__label rental-form__label--gallery-heading">
+            <span class="material-symbols-outlined">imagesmode</span> 📸 目前已儲存的相片
+          </h5>
+        </div>
+        <div class="rental-form__gallery-section">
+          @for (photo of existingPhotos; track photo.id; let i = $index) {
+          <div class="rental-form__photo-card" [class.is-cover]="photo.isCover">
+            <button type="button" class="rental-form__photo-delete" (click)="deleteExistingPhoto(photo.id, i)">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+            <img [src]="'https://localhost:7215' + photo.url" class="rental-form__photo-img" alt="資料庫舊圖">
+            <div class="rental-form__photo-action">
+              <label class="rental-form__radio-label" [class.is-active]="photo.isCover">
+                {{ photo.isCover ? '⭐ 封面首圖' : '已上傳相片' }}
+              </label>
+            </div>
+          </div>
+          }
+        </div>
+        }
+
+        @if (pendingPhotos && pendingPhotos.length > 0) {
+        <div class="rental-form__gallery-label">
+          <h5 class="rental-form__label rental-form__label--gallery-heading rental-form__label--new-photos">
+            <span class="material-symbols-outlined">add_photo_alternate</span> 🚀 本次新增的預覽相片
+          </h5>
+        </div>
+        <div class="rental-form__gallery">
+          @for (photo of pendingPhotos; track $index) {
+          <div class="rental-form__photo-card" [class.is-cover]="photo.isCover">
+            <button type="button" class="rental-form__photo-delete" (click)="removePendingPhoto($index)">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+            <img [src]="photo.previewUrl" class="rental-form__photo-img" alt="新圖預覽圖">
+            <div class="rental-form__photo-action">
+              <label class="rental-form__radio-label" [class.is-active]="photo.isCover">
+                <input type="radio" class="rental-form__radio" name="coverRadio_{{$index}}" [checked]="photo.isCover"
+                  (change)="setPendingCover($index)">
+                {{ photo.isCover ? '⭐ 封面首圖' : '設為首圖' }}
+              </label>
+            </div>
+          </div>
+          }
+        </div>
+        }
+      </div>
+
+    </div>
+
+    <div class="rental-form__col-side">
+
+      <div class="rental-form__panel">
+        <h4 class="rental-form__panel-title">
+          <span class="material-symbols-outlined">weekend</span> 生活習慣與共居規定
+        </h4>
+
+        <div class="rental-form__side-grid">
+          <div class="rental-form__group">
+            <label class="rental-form__label">就寢時間</label>
+            <input type="time" class="rental-form__input" [(ngModel)]="formData.sleepTime">
+          </div>
+
+          <div class="rental-form__group">
+            <label class="rental-form__label">起床時間</label>
+            <input type="time" class="rental-form__input" [(ngModel)]="formData.wakeTime">
+          </div>
+          <div class="rental-form__group">
+            <label class="rental-form__label">公共空間整潔要求</label>
+
+            <select class="rental-form__select" [(ngModel)]="formData.cleanLevel">
+              <option [ngValue]="1">1｜基本整潔即可</option>
+              <option [ngValue]="2">2｜偶爾整理</option>
+              <option [ngValue]="3">3｜一般乾淨</option>
+              <option [ngValue]="4">4｜需保持整潔</option>
+              <option [ngValue]="5">5｜高度重視整潔</option>
+            </select>
+
+            <p class="rental-form__field-hint">
+              用來描述這間房對公共空間整潔程度的要求，會顯示在房源詳情與篩選條件中。
+            </p>
+          </div>
+
+          <div class="rental-form__group">
+            <label class="rental-form__label">居住安靜要求</label>
+
+            <select class="rental-form__select" [(ngModel)]="formData.noiseTolerance">
+              <option [ngValue]="1">1｜非常重視安靜</option>
+              <option [ngValue]="2">2｜偏好安靜</option>
+              <option [ngValue]="3">3｜一般生活音可接受</option>
+              <option [ngValue]="4">4｜可接受偶爾吵雜</option>
+              <option [ngValue]="5">5｜可接受熱鬧環境</option>
+            </select>
+
+            <p class="rental-form__field-hint">
+              用來描述這間房對聲音與生活音量的接受程度，會影響承租人媒合與列表篩選。
+            </p>
+          </div>
+
+          <div class="rental-form__group rental-form__group--full">
+            <label class="rental-form__label">是否與出租人同住？</label>
+
+            <!-- Select 顯示方式 -->
+            <!-- <select class="rental-form__select" name="livingWithLessor" [(ngModel)]="formData.livingWithLessor">
+
+              <option [ngValue]="true">是，與出租人同住</option>
+              <option [ngValue]="false">否，不與出租人同住</option>
+
+            </select>
+
+            <p class="rental-form__field-hint">
+              這會顯示在房源詳情頁，也可作為承租人篩選與媒合條件。
+            </p> -->
+
+
+            <!-- Label + Radio 顯示方式 -->
+            <div class="rental-form__radio-card-group">
+              <label class="rental-form__radio-card" [class.is-active]="formData.livingWithLessor === true">
+                <input type="radio" name="livingWithLessor" [(ngModel)]="formData.livingWithLessor" [value]="true">
+                <span class="rental-form__radio-card-title">⭕ 是，會與出租人同住</span>
+                <span class="rental-form__radio-card-desc">承租人會與出租人共享部分生活空間。</span>
+              </label>
+
+              <label class="rental-form__radio-card" [class.is-active]="formData.livingWithLessor === false">
+                <input type="radio" name="livingWithLessor" [(ngModel)]="formData.livingWithLessor" [value]="false">
+                <span class="rental-form__radio-card-title">❌ 否，不與出租人同住</span>
+                <span class="rental-form__radio-card-desc">出租人不住在同一個居住空間。</span>
+              </label>
+            </div>
+
+
+          </div>
+
+          <div class="rental-form__group rental-form__group--full mt-4">
+            <label class="rental-form__label">基本守則限制</label>
+
+            <div class="rental-form__checkbox-wrapper rental-form__checkbox-wrapper--full">
+              <label class="rental-form__checkbox-label">
+                <input type="checkbox" class="rental-form__checkbox" [(ngModel)]="formData.pet">
+                🐾 允許養寵物
+              </label>
+
+              <label class="rental-form__checkbox-label">
+                <input type="checkbox" class="rental-form__checkbox" [(ngModel)]="formData.smoke">
+                🚬 允許抽菸
+              </label>
+            </div>
+          </div>
+
+          <hr class="rental-form__divider">
+
+          <h5 class="rental-form__sub-title">
+            <span class="material-symbols-outlined">tune</span>
+            進階共居條件
+          </h5>
+
+          <div class="rental-form__group mt-4">
+            <label class="rental-form__label">
+              <span class="material-symbols-outlined">routine</span>
+              作息型態
+            </label>
+            <select class="rental-form__select" [(ngModel)]="formData.routineType">
+              <option value="早睡早起">早睡早起</option>
+              <option value="正常作息">正常作息</option>
+              <option value="夜貓子">夜貓子</option>
+            </select>
+          </div>
+
+          <div class="rental-form__group mt-4">
+            <label class="rental-form__label">
+              <span class="material-symbols-outlined">do_not_disturb_on</span>
+              深夜洗衣 / 洗澡限制
+            </label>
+            <select class="rental-form__select" [(ngModel)]="formData.showerRestriction">
+              <option value="無限制">無限制</option>
+              <option value="22:00後禁止">22:00 後禁止</option>
+              <option value="23:00後禁止">23:00 後禁止</option>
+            </select>
+          </div>
+
+          <div class="rental-form__group mt-4">
+            <label class="rental-form__label">
+              <span class="material-symbols-outlined">groups</span>
+              訪客留宿規範
+            </label>
+            <select class="rental-form__select" [(ngModel)]="formData.visitorPolicy">
+              <option value="完全謝絕訪客">完全謝絕訪客</option>
+              <option value="僅限白天拜訪">僅限白天拜訪</option>
+              <option value="可帶異性或同性過夜">可帶異性或同性過夜</option>
+            </select>
+          </div>
+
+          <div class="rental-form__group mt-4">
+            <label class="rental-form__label">
+              <span class="material-symbols-outlined">skillet</span>
+              廚房與飲食文化
+            </label>
+            <select class="rental-form__select" [(ngModel)]="formData.cookingHabit">
+              <option value="可大火快炒">可大火快炒</option>
+              <option value="僅限輕食微波">僅限輕食微波</option>
+              <option value="禁開伙">禁開伙</option>
+            </select>
+          </div>
+
+          <div class="rental-form__group mt-4">
+            <label class="rental-form__label">
+              <span class="material-symbols-outlined">kitchen</span>
+              冰箱使用分配
+            </label>
+            <select class="rental-form__select" [(ngModel)]="formData.fridgeAllocation">
+              <option value="各自獨立分層">各自獨立分層</option>
+              <option value="貼標籤即可">貼標籤即可</option>
+              <option value="共同分享">共同分享</option>
+            </select>
+          </div>
+
+          <div class="rental-form__group mt-4">
+            <label class="rental-form__label">
+              <span class="material-symbols-outlined">conversation</span>
+              期望交流頻率
+            </label>
+            <select class="rental-form__select" [(ngModel)]="formData.interactionFrequency">
+              <option value="純租屋互不打擾">純租屋互不打擾</option>
+              <option value="願意每週共餐聊天">願意每週共餐聊天</option>
+              <option value="期待技能傳承交流">期待技能傳承交流</option>
+            </select>
+          </div>
+
+          <!-- <div class="rental-form__group mt-4">
+          <label class="rental-form__label">房東偏好興趣標籤</label>
+          <input type="text" class="rental-form__input" [(ngModel)]="formData.interests" placeholder="例如：看電影、打電動、爬山...">
+        </div> -->
+
+          <div class="rental-form__group mt-4">
+            <label class="rental-form__label">📜 補充生活規範公約</label>
+            <textarea class="rental-form__textarea" rows="3" [(ngModel)]="formData.advancedRulesNote"
+              placeholder="例如：公共區域請勿堆放私人物品、每週日輪流倒垃圾..."></textarea>
+          </div>
+        </div>
+
+
+        <div class="rental-form__panel">
+          <h4 class="rental-form__panel-title">
+            <span class="material-symbols-outlined">stars</span> 租金內含雜費項目
+          </h4>
+          <div class="rental-form__tags-group">
+            <label class="rental-form__tag-checkbox">
+              <input type="checkbox" [(ngModel)]="formData.includeUtilities"> 💧 包水電
+            </label>
+            <label class="rental-form__tag-checkbox">
+              <input type="checkbox" [(ngModel)]="formData.includeWifi"> 📶 包網路
+            </label>
+            <label class="rental-form__tag-checkbox">
+              <input type="checkbox" [(ngModel)]="formData.includeManagementFee"> 🏢 包管理費
+            </label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="rental-form__actions">
+    @if (isEditMode) {
+    <button type="button" class="rental-form__btn rental-form__btn--secondary" (click)="cancelEdit()">
+      取消修改
+    </button>
+    }
+
+    <button type="button" class="rental-form__btn rental-form__btn--primary" (click)="submitForm()">
+      {{ isEditMode ? '儲存修改' : '確認送出申請' }}
+    </button>
+  </div>
+</div>

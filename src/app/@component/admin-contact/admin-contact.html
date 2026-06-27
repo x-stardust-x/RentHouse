@@ -1,0 +1,149 @@
+<section class="admin-messages-page">
+  <div class="messages-header">
+    <div>
+      <p class="eyebrow">訊息管理</p>
+      <h2>前台聯絡訊息</h2>
+      <p>查看前台表單送出的訊息，並進行回覆或刪除。</p>
+    </div>
+
+    <div class="messages-actions">
+      <button type="button" class="outline-btn" (click)="toggleBatchMode()">
+        {{ isBatchMode ? '取消批次管理' : '批次管理' }}
+      </button>
+
+      @if (isBatchMode) {
+      <button type="button" class="danger-btn" [class.is-disabled]="selectedIds.length === 0"
+        [disabled]="selectedIds.length === 0" (click)="batchDelete()">
+        <span class="material-symbols-outlined">delete</span>
+        批次刪除 {{ selectedIds.length }} 筆
+      </button>
+      }
+    </div>
+  </div>
+
+  <div class="messages-card">
+    <div class="table-responsive">
+      <table class="table messages-table align-middle mb-0">
+        <thead>
+          <tr>
+            @if (isBatchMode) {
+            <th class="check-cell">
+              <input type="checkbox" class="form-check-input" (change)="toggleAll($event)"
+                [checked]="selectedIds.length === messages().length && messages().length > 0" />
+            </th>
+            }
+
+            <th>時間</th>
+            <th>姓名</th>
+            <th>主旨</th>
+            <th>內容</th>
+            <th>狀態</th>
+            <th class="text-end">操作</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (msg of messages(); track msg.id) {
+          <tr>
+            @if (isBatchMode) {
+            <td class="check-cell">
+              <input type="checkbox" class="form-check-input" [checked]="isSelected(msg.id)"
+                (change)="toggleSelection(msg.id, $event)" />
+            </td>
+            }
+
+            <td class="time-cell">
+              {{ msg.createAt | date:'MM/dd HH:mm' }}
+            </td>
+
+            <td class="name-cell">
+              {{ msg.contactName || '未填寫姓名' }}
+            </td>
+
+            <td>
+              <span class="subject-pill">
+                {{ msg.subject || '未填寫主旨' }}
+              </span>
+            </td>
+
+            <td class="content-cell">
+              @if (msg.content.length > 15) {
+              {{ msg.content | slice:0:15 }}...
+              } @else {
+              {{ msg.content }}
+              }
+            </td>
+
+            <td>
+              @if (msg.status === 0) {
+              <span class="status-badge pending">未處理</span>
+              } @else {
+              <span class="status-badge done">已處理</span>
+              }
+            </td>
+
+            <td class="text-end">
+              <div class="row-actions">
+                <button type="button" class="action-btn view" data-bs-toggle="modal" data-bs-target="#messageModal"
+                  (click)="openModal(msg)">
+                  查看
+                </button>
+
+                <button type="button" class="action-btn delete" (click)="deleteMessage(msg.id)">
+                  刪除
+                </button>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade admin-message-modal" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <p class="modal-eyebrow">聯絡訊息</p>
+          <h5 class="modal-title" id="messageModalLabel">
+            來自 {{ selectedMsg?.contactName || '未填寫姓名' }} 的訊息
+          </h5>
+        </div>
+
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="message-detail-list">
+          <p><strong>時間</strong>{{ selectedMsg?.createAt | date:'yyyy/MM/dd HH:mm' }}</p>
+          <p><strong>Email</strong>{{ selectedMsg?.email }}</p>
+          <p><strong>主旨</strong>{{ selectedMsg?.subject }}</p>
+        </div>
+
+        <div class="message-content-box">
+          {{ selectedMsg?.content }}
+        </div>
+
+        <div class="reply-box">
+          <label class="form-label">回覆給客人</label>
+          <textarea class="form-control" rows="4" placeholder="請輸入您的回覆內容..." [(ngModel)]="replyText"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="modal-btn ghost" data-bs-dismiss="modal">
+          取消
+        </button>
+
+        <button type="button" class="modal-btn primary" (click)="sendReply()" data-bs-dismiss="modal">
+          <span class="material-symbols-outlined">mail</span>
+          發送回信
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

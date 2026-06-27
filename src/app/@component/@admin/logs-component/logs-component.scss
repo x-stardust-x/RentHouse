@@ -1,0 +1,182 @@
+// .logs-page {
+//   width: min(100%, 1120px);
+//   margin: 0 auto;
+//   padding: 2rem 1.5rem 4rem;
+// }
+
+.logs-card {
+  overflow: hidden;
+  border: 1px solid rgba(230, 111, 67, 0.12);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(64, 45, 36, 0.06);
+}
+
+.logs-header {
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid rgba(230, 111, 67, 0.1);
+
+  .eyebrow {
+    margin-bottom: 0.35rem;
+    color: var(--color-primary, #e66f43);
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  h2 {
+    margin: 0 0 0.35rem;
+    color: #2f2926;
+    font-size: 1.6rem;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+    color: #8a817c;
+  }
+}
+
+.logs-toolbar {
+  padding: 1.25rem 1.5rem 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: start;
+}
+
+.search-field {
+  width: 100%;
+}
+
+.date-filter {
+  display: flex;
+  gap: 0.75rem;
+
+  mat-form-field {
+    width: 180px;
+  }
+}
+
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  padding: 0 1.5rem 1rem;
+}
+
+.logs-table {
+  width: 100%;
+  min-width: 760px;
+  background: transparent;
+}
+
+.logs-table .mat-mdc-header-row,
+.logs-table .mat-header-row {
+  background: #fffaf7;
+}
+
+.logs-table .mat-mdc-header-cell,
+.logs-table .mat-header-cell {
+  border-bottom: 1px solid rgba(230, 111, 67, 0.14);
+  color: #2f2926;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.logs-table .mat-mdc-cell,
+.logs-table .mat-cell {
+  border-bottom: 1px solid rgba(64, 45, 36, 0.08);
+  color: #5f5650;
+  font-size: 0.92rem;
+}
+
+.logs-table .mat-mdc-row,
+.logs-table .mat-row {
+  transition: background 0.18s ease;
+}
+
+.logs-table .mat-mdc-row:hover,
+.logs-table .mat-row:hover {
+  background: #fffaf7;
+}
+
+.log-badge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+  white-space: nowrap;
+
+  &.user {
+    background: var(--color-primary-light, #fff2ee);
+    color: var(--color-primary, #e66f43);
+  }
+
+  &.action {
+    background: #e8f7ed;
+    color: #2f8a4d;
+  }
+}
+
+.ip-code {
+  padding: 0.3rem 0.55rem;
+  border-radius: 8px;
+  background: #f5f2ef;
+  color: #5f5650;
+  font-size: 0.82rem;
+}
+
+.created-time {
+  color: #7a6f69;
+  white-space: nowrap;
+}
+
+.logs-paginator {
+  border-top: 1px solid rgba(230, 111, 67, 0.1);
+  background: #fff;
+}
+
+::ng-deep .logs-card .mat-mdc-form-field {
+  --mdc-outlined-text-field-outline-color: rgba(230, 111, 67, 0.18);
+  --mdc-outlined-text-field-hover-outline-color: rgba(230, 111, 67, 0.42);
+  --mdc-outlined-text-field-focus-outline-color: var(--color-primary, #e66f43);
+  --mdc-outlined-text-field-label-text-color: #8a817c;
+  --mdc-outlined-text-field-input-text-color: #2f2926;
+}
+
+::ng-deep .logs-card .mat-mdc-text-field-wrapper {
+  background: #fffaf7;
+  border-radius: 12px;
+}
+
+@media (max-width: 900px) {
+  .logs-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .date-filter {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    mat-form-field {
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .logs-page {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .logs-header,
+  .logs-toolbar,
+  .table-scroll {
+    padding-inline: 1rem;
+  }
+
+  .date-filter {
+    grid-template-columns: 1fr;
+  }
+}

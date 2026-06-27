@@ -6,17 +6,15 @@ export const loginGuard: CanActivateFn = () => {
   const auth = inject(Authservice);
   const router = inject(Router);
 
-  const token = auth.getToken();
-
   // 🔥 已登入 → 導走
   if (auth.isLoggedIn()) {
-    const role = auth.getUserRole();
+    const role = auth.getRole();
     console.log(role);
 
     if (role === 'admin') {
       router.navigate(['/admin']);
     } else {
-      router.navigate(['/member']);
+      router.navigate(['/user-center']);
     }
 
     return false;

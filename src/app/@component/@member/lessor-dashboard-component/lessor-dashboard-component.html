@@ -1,0 +1,113 @@
+<section class="user-dashboard-page">
+  <header class="dashboard-header">
+    <div>
+      <!-- <p class="eyebrow">會員中心</p> -->
+      <h2>
+        早安，{{ usersev.profile()?.realName || '會員' }}
+        <span>{{ role }}</span>
+      </h2>
+      <p>輕鬆管理您的房源空間、共享預約與智慧配對設定。</p>
+    </div>
+
+    <div class="header-actions">
+      <button mat-flat-button class="primary-action" routerLink="../rent">
+        <mat-icon>home_work</mat-icon>
+        發布新房源
+      </button>
+
+      <button mat-stroked-button class="outline-action" routerLink="../product">
+        <mat-icon>add_circle_outline</mat-icon>
+        發布新工具
+      </button>
+    </div>
+  </header>
+
+  <div class="stats-grid">
+    @for (stat of stats(); track stat.title) {
+    <article class="stat-card" [routerLink]="stat.link">
+      <div class="stat-card__top">
+        <div class="icon-wrapper">
+          <mat-icon>{{ stat.icon }}</mat-icon>
+        </div>
+
+        @if (stat.badge) {
+        <span class="badge-status">{{ stat.badge }}</span>
+        }
+
+        @if (stat.hasDot) {
+        <span class="red-dot"></span>
+        }
+      </div>
+
+      <div>
+        <div class="stat-title">{{ stat.title }}</div>
+        <div class="stat-count">{{ stat.count }}</div>
+      </div>
+    </article>
+    }
+  </div>
+
+  <div class="dashboard-layout">
+    <section class="content-card activity-panel">
+      <div class="card-header-row">
+        <h2>
+          <mat-icon>notifications</mat-icon>
+          近期動態與申請
+        </h2>
+
+        <a routerLink="../house-viewing-approval">查看全部</a>
+      </div>
+
+      <div class="activity-list">
+        @for (activity of recentActivities(); track activity.title) {
+        <article class="activity-item">
+          <div class="activity-icon-container" [style.backgroundColor]="activity.iconBg">
+            <mat-icon>{{ activity.icon }}</mat-icon>
+          </div>
+
+          <div class="activity-content">
+            <div class="activity-title-row">
+              <h4>{{ activity.title }}</h4>
+              <span>{{ activity.time }}</span>
+            </div>
+
+            <p>{{ activity.detail }}</p>
+          </div>
+        </article>
+        }
+      </div>
+    </section>
+
+    <aside class="side-column">
+      <section class="content-card">
+        <h3 class="system-title">系統提示</h3>
+
+        <div class="notice-list">
+          @for (notice of systemNotifications(); track notice.text) {
+          <article class="sys-notice-box" [class.notice-info]="notice.type === 'info'"
+            [class.notice-warning]="notice.type === 'warning'" [class.notice-success]="notice.type === 'success'"
+            [class.notice-danger]="notice.type === 'danger'">
+            <mat-icon>{{ notice.icon }}</mat-icon>
+            <span>{{ notice.text }}</span>
+          </article>
+          }
+        </div>
+      </section>
+
+      <section class="upgrade-card">
+        <div>
+          <h3>
+            <mat-icon>auto_awesome</mat-icon>
+            升級智慧管家
+          </h3>
+          <p>解鎖自動化收租提醒與合約電子簽署功能。</p>
+        </div>
+
+        <button mat-flat-button class="upgrade-btn">
+          了解更多
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </section>
+    </aside>
+  </div>
+</section>

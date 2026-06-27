@@ -1,0 +1,92 @@
+<nav class="admin-sidebar">
+  <div class="admin-sidebar__brand">
+    <div class="admin-sidebar__logo">厚</div>
+
+    <div>
+      <h2>{{ adminData()?.username || '未命名管理員' }}</h2>
+      <!-- <h2>厚厝味</h2> -->
+      <p>{{ adminData()?.isSuper === true ? '超級管理員' : '一般管理員' }}</p>
+      <!-- <p>後台管理</p> -->
+    </div>
+  </div>
+
+  <!-- <div class="admin-sidebar__profile">
+    <p>
+      <span>管理員</span>
+      <strong>{{ adminData()?.username || '未命名管理員' }}</strong>
+    </p>
+
+    <p>
+      <span>權限角色</span>
+      <strong>{{ adminData()?.isSuper === true ? '超級管理員' : '一般管理員' }}</strong>
+    </p>
+  </div> -->
+
+  <div class="admin-sidebar__body">
+    <ul class="admin-sidebar__menu">
+      <li>
+        <a routerLink="dashboard" routerLinkActive="is-active">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span>儀錶板</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="users" routerLinkActive="is-active">
+          <span class="material-symbols-outlined">group</span>
+          <span>使用者管理</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="admins" routerLinkActive="is-active">
+          <span class="material-symbols-outlined">shield_person</span>
+          <span>管理員管理</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="admin-review" routerLinkActive="is-active">
+          <span class="material-symbols-outlined">inventory_2</span>
+          <span>租賃物管理</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="news" routerLinkActive="is-active">
+          <span class="material-symbols-outlined">newspaper</span>
+          <span>最新消息管理</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="faqs" routerLinkActive="is-active">
+          <span class="material-symbols-outlined">help_center</span>
+          <span>FAQ常見問題管理</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="contact-messages" routerLinkActive="is-active">
+          <span class="material-symbols-outlined">mail</span>
+          <span>聯絡訊息管理</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="logs" routerLinkActive="is-active">
+          <span class="material-symbols-outlined">history</span>
+          <span>系統訊息</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="admin-sidebar__footer">
+      <button type="button" class="logout-btn" (click)="logout()">
+        <span class="material-symbols-outlined">logout</span>
+        <span>登出</span>
+      </button>
+    </div>
+  </div>
+
+</nav>

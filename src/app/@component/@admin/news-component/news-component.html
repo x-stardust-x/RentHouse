@@ -1,0 +1,111 @@
+<section class="admin-news-page">
+  <div class="page-header">
+    <div class="page-header__left">
+      <div>
+        <p class="eyebrow">內容管理</p>
+        <h2>最新消息管理</h2>
+        <p>管理所有最新消息內容、發布狀態與文章排序。</p>
+      </div>
+
+      <button class="sort-btn" type="button" (click)="toggleSort()">
+        <span>創建時間</span>
+        <span class="material-symbols-outlined">
+          @if (sortAsc()) {
+          north
+          } @else {
+          south
+          }
+        </span>
+      </button>
+    </div>
+
+    <button class="add-btn" type="button" routerLink="/admin/news/create">
+      <span class="material-symbols-outlined">add</span>
+      新增新聞
+    </button>
+  </div>
+
+  @if (pagedNews().length > 0) {
+  <div class="news-list">
+    @for (item of pagedNews(); track item.id) {
+    <article class="news-card">
+      <div class="news-image-wrapper">
+        @if (item.cover) {
+        <img [src]="item.cover" class="news-image" alt="新聞封面" />
+        } @else {
+        <div class="no-image">
+          <span class="material-symbols-outlined">image</span>
+        </div>
+        }
+      </div>
+
+      <div class="news-content">
+        <div class="news-meta">
+          <span class="category-badge">
+            {{ item.category }}
+          </span>
+
+          <span class="news-date">
+            創建 {{ item.createdAt | date:'yyyy-MM-dd' }}
+          </span>
+
+          <span class="news-date">
+            更新 {{ item.updatedAt | date:'yyyy-MM-dd' }}
+          </span>
+        </div>
+
+        <h4 class="news-title">
+          {{ item.title }}
+        </h4>
+
+        <p class="news-intro">
+          {{ item.intro }}
+        </p>
+
+        <div class="news-footer">
+          <span class="status-badge" [class.published]="item.status === 1" [class.draft]="item.status !== 1">
+            {{ item.status === 1 ? '已發布' : '草稿' }}
+          </span>
+
+          <div class="news-actions">
+            <button class="icon-btn edit-btn" type="button" [routerLink]="['/admin/news/edit', item.id]"
+              aria-label="編輯新聞">
+              <span class="material-symbols-outlined">edit</span>
+            </button>
+
+            <button class="icon-btn delete-btn" type="button" (click)="deleteNews(item.id)" aria-label="刪除新聞">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+    }
+
+    <div class="pagination">
+      <button type="button" (click)="changePage(currentPage() - 1)" [disabled]="currentPage() === 1">
+        上一頁
+      </button>
+
+      @for (p of pages(); track p) {
+      <button type="button" (click)="changePage(p)" [class.active]="p === currentPage()">
+        {{ p }}
+      </button>
+      }
+
+      <button type="button" (click)="changePage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">
+        下一頁
+      </button>
+    </div>
+  </div>
+  } @else {
+  <div class="empty-box">
+    <div class="empty-icon">
+      <span class="material-symbols-outlined">newspaper</span>
+    </div>
+
+    <h4>目前沒有新聞資料</h4>
+    <p>點擊右上角按鈕新增第一篇新聞。</p>
+  </div>
+  }
+</section>

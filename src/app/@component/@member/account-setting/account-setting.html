@@ -1,0 +1,118 @@
+<section class="account-security-page">
+  <div class="page-header">
+    <!-- <p class="eyebrow">會員中心</p> -->
+    <h2 class="page-title">帳號與安全設定</h2>
+    <p>管理您的個人資料與帳號安全層級。</p>
+  </div>
+
+  <section class="setting-card">
+    <div class="card-title">
+      <mat-icon>account_circle</mat-icon>
+      <span>帳號資訊</span>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <div class="label">登入信箱</div>
+        <div class="value">{{ data().email }}</div>
+      </div>
+
+      <button type="button" class="action-btn" data-bs-toggle="modal" data-bs-target="#emailModal"
+        (click)="openEmailModal()">
+        變更信箱
+      </button>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <div class="label">密碼</div>
+        <div class="value muted">上次修改：{{ changedat() }}</div>
+      </div>
+
+      <button type="button" class="action-btn primary" data-bs-toggle="modal" data-bs-target="#PwdModal">
+        修改密碼
+      </button>
+    </div>
+  </section>
+
+  <section class="setting-card danger-card">
+    <div class="card-title danger-title">
+      <mat-icon>warning</mat-icon>
+      <span>危險操作區</span>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <div class="label">註銷帳號</div>
+        <div class="value muted">此操作無法復原，請謹慎確認。</div>
+      </div>
+
+      <button type="button" class="action-btn danger" (click)="confirmDelete()">
+        註銷帳號
+      </button>
+    </div>
+  </section>
+</section>
+
+<div class="modal fade account-modal" id="emailModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h5 class="modal-title">更改信箱</h5>
+          <p class="modal-note">完成後會登出。</p>
+        </div>
+
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <label class="form-label">新信箱</label>
+        <input class="form-control" [(ngModel)]="tempEmail" />
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="modal-btn ghost" data-bs-dismiss="modal">
+          取消
+        </button>
+
+        <button type="button" class="modal-btn primary" (click)="saveEmail()">
+          確認
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade account-modal" id="PwdModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h5 class="modal-title">更改密碼</h5>
+          <p class="modal-note">完成後會登出。</p>
+        </div>
+
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <label class="form-label">新密碼</label>
+        <input type="password" class="form-control" [(ngModel)]="newPwd" />
+
+        <label class="form-label mt-3">確認密碼</label>
+        <input type="password" class="form-control" [(ngModel)]="newPwd2" />
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="modal-btn ghost" data-bs-dismiss="modal">
+          取消
+        </button>
+
+        <button type="button" class="modal-btn primary" (click)="savePwd()">
+          確認
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

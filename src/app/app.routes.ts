@@ -1,41 +1,427 @@
-import { Routes  } from '@angular/router';
+import { Routes } from '@angular/router';
 import { authGuard } from './@guard/auth-guard';
 import { loginGuard } from './@guard/login-guard';
+import { ContactComponent } from './@component/contact-component/contact';
+import { AdminReviewComponent } from './@component/admin-review-component/admin-review-component';
+import { PublicLayout } from './@layouts/public-layout/public-layout';
+import { AdminLayout } from './@layouts/admin-layout/admin-layout';
+import { FavoriteListComponent } from './@component/favorite-list/favorite-list';
 
 export const routes: Routes = [
   {
-    path: 'home',
-    // redirectTo: 'home',
-    loadComponent : () => import('./@component/home-component/home-component').then(c => c.HomeComponent),
-    pathMatch: 'full'
+    // ==========================================
+    // 🌐 前端公版 (Public Layout)
+    // ==========================================
+    path: '',
+    component: PublicLayout,
+    children: [
+      {
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full'
+      },
+      {
+        path: 'home',
+        loadComponent: () => import('./@component/home-component/home-component').then(c => c.HomeComponent),
+        pathMatch: 'full'
+      },
+      {
+        path: 'login',
+        loadComponent: () => import('./@component/login-component/login-component').then(c => c.LoginComponent),
+        canActivate: [loginGuard]
+      },
+      {
+        path: 'register',
+        loadComponent: () => import('./@component/register-component/register-component').then(c => c.RegisterComponent),
+      },
+      {
+        path: 'about-homiefun',
+        loadComponent: () => import('./@component/about-homiefun-component/about-homiefun-component').then(c => c.AboutHomiefunComponent),
+      },
+      {
+        path: 'contact',
+        component: ContactComponent
+      },
+      {
+        path: 'safety',
+        loadComponent : () => import('./@component/@front/safety-component/safety-component').then(c => c.SafetyComponent),
+      },
+      {
+        path: 'faq',
+        loadComponent: () => import('./@component/@front/faqcomponent/faqcomponent').then(c => c.FAQComponent),
+      },
+      {
+        path: 'news',
+        loadComponent: () => import('./@component/@front/front-news-component/front-news-component').then(c => c.FrontNewsComponent),
+      },
+      {
+        path: 'news/:id',
+        loadComponent: () => import('./@component/@front/news-detail-component/news-detail-component').then(c => c.NewsDetailComponent),
+      },
+      {
+      path: 'subscription',
+      // 🌟 精準導向你的獨立元件檔案，注意要沿用你目前的資料夾拼法「subsprictionTier」喔！
+      loadComponent: () => import('./@component/subsprictionTier/subscription.component').then(c => c.SubscriptionComponent)
+    },
+
+      // --- 租賃媒合相關 ---
+      {
+        path: 'rental-matching-component',
+        loadComponent: () => import('./@component/rental-matching-component/rental-matching-component').then(c => c.RentalMatchingComponent),
+      },
+      {
+        path: 'rental-matching-detail/:type/:id',
+        loadComponent: () => import('./@component/rental-matching-detail-component/rental-matching-detail-component').then(c => c.RentalMatchingDetailComponent),
+      },
+      {
+        path: 'lessor-profile/:id',
+        loadComponent: () => import('./@component/lessor-profile-component/lessor-profile-component').then(c => c.LessorProfileComponent),
+      },
+      {
+        path: 'rent',
+        loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
+      },
+      {
+        path: '404',
+        loadComponent: () => import('./@component/not-found-component/not-found-component').then(c => c.NotFoundComponent)
+      },
+
+      // --- 會員中心 ---
+      // {
+      //   path: 'member',
+      //   data: { roles: ['young', 'old'] },
+      //   children: [
+      //     {
+      //       path: 'dashboard',
+      //       loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
+      //     },
+      //     {
+      //       path: 'info',
+      //       loadComponent: () => import('./@component/@member/member-info-component/member-info-component').then(c => c.MemberInfoComponent),
+      //     },
+      //     {
+      //       path: 'edit',
+      //       loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
+      //     }
+      //   ],
+      // },
+
+      // ==========================================
+      // 🏠 個人專區 (User Center Layout)
+      // ==========================================
+      {
+        path: 'user-center',
+        loadComponent: () => import('./@layouts/user-center-layout/user-center-layout').then(c => c.UserCenterLayout),
+        canActivate: [authGuard],
+        data: { roles: ['user'] },
+        children: [
+          // { path: '', redirectTo: 'rent', pathMatch: 'full' },
+          // 發布新房源
+          {
+            path: 'lessor_dashboard',
+            loadComponent: () => import('./@component/@member/lessor-dashboard-component/lessor-dashboard-component').then(c => c.LessorDashboardComponent),
+          },
+          {
+            path: 'lessee_dashboard',
+            loadComponent: () => import('./@component/@member/lessee-dashboard-component/lessee-dashboard-component').then(c => c.LesseeDashboardComponent),
+          },
+          {
+            path: 'rent',
+            loadComponent: () => import('./@component/rent-house-component/house-form/house-form.component').then(c => c.HouseFormComponent),
+          },
+          // 看房預約審核
+          {
+            path: 'house-viewing-approval',
+            loadComponent: () => import('./@component/house-viewing-approval-component/house-viewing-approval-component').then(c => c.HouseViewingApprovalComponent),
+          },
+          // 工具借用 / 技能預約審核
+          {
+            path: 'product-booking-approval-component',
+            loadComponent: () => import('./@component/product-booking-approval-component/product-booking-approval-component').then(c => c.ProductBookingApprovalComponent),
+          },
+          // 個人資料設定
+          {
+            path: 'edit',
+            loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
+          },
+          {
+            path: 'product',
+            loadComponent: () => import('./@component/rent-house-component/product-form/product-form.component').then(c => c.ProductFormComponent),
+          },
+          {
+            path: 'houses',
+            loadComponent: () => import('./@component/house-management/house-management').then(c => c.HouseManagementComponent),
+          },
+          {
+            path: 'products-list',
+            loadComponent: () => import('./@component/product-management/product-management').then(c => c.ProductManagementComponent),
+          },
+          {
+            path: 'contact-permission',
+            loadComponent: () => import('./@component/@member/contact-permissin/contact-permissin').then(c => c.ContactPermissin),
+          },
+           {
+            path: 'smart-match',
+            loadComponent: () => import('./@component/smart-match/smart-match.component').then(c => c.SmartMatchComponent),
+          },
+          {
+            path: 'account-setting',
+            loadComponent: () => import('./@component/@member/account-setting/account-setting').then(c => c.AccountSetting),
+          },
+          {
+            path: 'favorite-list',
+            loadComponent: () => import('./@component/favorite-list/favorite-list').then(c => c.FavoriteListComponent),
+          },
+
+          // 看房申請追蹤
+          {
+            path: 'house-viewing-applications',
+            loadComponent: () =>
+              import('./@component/house-viewing-application-tracking-component/house-viewing-application-tracking-component')
+                .then(c => c.HouseViewingApplicationTrackingComponent),
+          },
+          // 工具借用 / 技能預約紀錄
+          {
+            path: 'product-booking-applications',
+            loadComponent: () =>
+              import('./@component/product-booking-application-tracking-component/product-booking-application-tracking-component')
+                .then(c => c.ProductBookingApplicationTrackingComponent),
+          },
+          {
+            path: 'lessor-current-matches',
+            loadComponent: () =>
+              import('./@component/lessor-current-matches-component/lessor-current-matches-component')
+                .then(c => c.LessorCurrentMatchesComponent),
+          },
+          {
+            path: 'lessee-current-matches',
+            loadComponent: () =>
+              import('./@component/lessee-current-matches-component/lessee-current-matches-component')
+                .then(c => c.LesseeCurrentMatchesComponent),
+          },
+          { path: '', redirectTo: 'lessor_dashboard', pathMatch: 'full' },
+        ],
+      },
+    ]
+  },
+
+  {
+    // ==========================================
+    // ⚙️ 後端管理公版 (Admin Layout)
+    // ==========================================
+    path: 'admin',
+    component: AdminLayout,
+    canActivate: [authGuard],
+    data: { roles: ['admin', 'super'] },
+    children: [
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
+        data: { roles: ['admin'] },
+      },
+      {
+        path: 'news',
+        loadComponent: () => import('./@component/@admin/news-component/news-component').then(c => c.NewsComponent),
+      },
+      {
+        path: 'news/create',
+        loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
+      },
+      {
+        path: 'news/edit/:id',
+        loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
+      },
+      {
+        path: 'logs',
+        loadComponent: () => import('./@component/@admin/logs-component/logs-component').then(c => c.LogsComponent),
+      },
+      {
+        path: 'faqs',
+        loadComponent: () => import('./@component/@admin/faqs-component/faqs-component').then(c => c.FAQsComponent),
+      },
+      {
+        path: 'users',
+        loadComponent: () => import('./@component/@admin/users-component/users-component').then(c => c.UsersComponent),
+      },
+      {
+        path: 'admins',
+        loadComponent: () => import('./@component/@admin/admins-component/admins-component').then(c => c.AdminsComponent),
+      },
+      {
+        path: 'admin-review',
+        loadComponent: () => import('./@component/admin-review-component/admin-review-component').then(c => c.AdminReviewComponent),
+        // component: AdminReviewComponent,
+      },
+      {
+        path: 'contact-messages',
+        loadComponent: () => import('./@component/admin-contact/admin-contact').then(c => c.AdminContactComponent)
+      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+    ]
   },
   {
-    path:'login',
-    loadComponent :() => import('./@component/login-component/login-component').then(c => c.LoginComponent),
-    canActivate : [loginGuard]
-  },
-  {
-    path:'member',
-    loadComponent :() => import('./@component/member-component/member-component').then(c => c.MemberComponent),
-    canActivate : [authGuard],
-    data:{roles : ['member']},
-    children:[],
-  },
-  {
-    path:'admin',
-    loadComponent :() => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
-    canActivate : [authGuard],
-    data:{roles : ['admin']},
-    children:[],
-  },
-  {
-    path:'register',
-    loadComponent :() => import('./@component/register-component/register-component').then(c => c.RegisterComponent),
-    canActivate : [loginGuard]
-  },
-  {
-    path:'**',
-    // loadComponent :() => import('./@component/login-component/login-component').then(c => c.LoginComponent),
-    redirectTo: 'home'
-  },
+    // 🪤 捕捉所有未知的網址，導至404
+    path: '**',
+    redirectTo: '404'
+  }
 ];
+
+
+
+
+
+// {
+//   path: 'home',
+//   // redirectTo: 'home',
+//   loadComponent: () => import('./@component/home-component/home-component').then(c => c.HomeComponent),
+//   pathMatch: 'full'
+// },
+// {
+//   path: 'login',
+//   loadComponent: () => import('./@component/login-component/login-component').then(c => c.LoginComponent),
+//   // canActivate : [loginGuard]
+// },
+// {
+//   path: 'member',
+//   // loadComponent: () => import('./@component/member-component/member-component').then(c => c.MemberComponent),
+//   // canActivate : [authGuard],
+//   data: { roles: ['young', 'old'] },
+//   children: [{
+//     path: 'dashboard',
+//     loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
+//   }, {
+//     path: 'info',
+//     loadComponent: () => import('./@component/@member/member-info-component/member-info-component').then(c => c.MemberInfoComponent),
+//   }, {
+//     path: 'edit',
+//     loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
+//   }],
+// },
+// {
+//   path: 'admin',
+//   loadComponent: () => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
+//   // canActivate : [authGuard],
+//   data: { roles: ['admin'] },
+//   children: [{
+//     path: 'news',
+//     loadComponent: () => import('./@component/@admin/news-component/news-component').then(c => c.NewsComponent),
+//   },
+//   {
+//     path: 'news/create',
+//     loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
+//   }, {
+//     path: 'news/edit/:id',
+//     loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
+//   }, {
+//     path: 'logs',
+//     loadComponent: () => import('./@component/@admin/logs-component/logs-component').then(c => c.LogsComponent),
+//   }],
+// },
+// {
+//   path: 'register',
+//   loadComponent: () => import('./@component/register-component/register-component').then(c => c.RegisterComponent),
+//   canActivate: [loginGuard]
+// },
+// {
+//   path: 'rental-matching-component',
+//   loadComponent: () => import('./@component/rental-matching-component/rental-matching-component').then(c => c.RentalMatchingComponent),
+// },
+// {
+//   path: 'rental-matching-detail/:type/:id',
+//   loadComponent: () => import('./@component/rental-matching-detail-component/rental-matching-detail-component').then(c => c.RentalMatchingDetailComponent),
+// },
+// {
+//   path: 'admin-review',
+//   component: AdminReviewComponent,
+// },
+// {
+//   path: 'rent',
+//   loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
+// },
+// {
+//   path: 'contact', component: ContactComponent
+// },
+
+
+
+
+
+
+
+
+
+
+// {
+//   path: 'home',
+//   // redirectTo: 'home',
+//   loadComponent: () => import('./@component/home-component/home-component').then(c => c.HomeComponent),
+//   pathMatch: 'full'
+// },
+// {
+//   path: 'login',
+//   loadComponent: () => import('./@component/login-component/login-component').then(c => c.LoginComponent),
+//   // canActivate : [loginGuard]
+// },
+// {
+//   path: 'member',
+//   // loadComponent: () => import('./@component/member-component/member-component').then(c => c.MemberComponent),
+//   // canActivate : [authGuard],
+//   data: { roles: ['young', 'old'] },
+//   children: [{
+//     path: 'dashboard',
+//     loadComponent: () => import('./@component/@member/member-dashborad-component/member-dashborad-component').then(c => c.MemberDashboradComponent),
+//   }, {
+//     path: 'info',
+//     loadComponent: () => import('./@component/@member/member-info-component/member-info-component').then(c => c.MemberInfoComponent),
+//   }, {
+//     path: 'edit',
+//     loadComponent: () => import('./@component/@member/member-edit-component/member-edit-component').then(c => c.MemberEditComponent),
+//   }],
+// },
+// {
+//   path: 'admin',
+//   loadComponent: () => import('./@component/admin-component/admin-component').then(c => c.AdminComponent),
+//   // canActivate : [authGuard],
+//   data: { roles: ['admin'] },
+//   children: [{
+//     path: 'news',
+//     loadComponent: () => import('./@component/@admin/news-component/news-component').then(c => c.NewsComponent),
+//   },
+//   {
+//     path: 'news/create',
+//     loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
+//   }, {
+//     path: 'news/edit/:id',
+//     loadComponent: () => import('./@component/@admin/news-form-component/news-form-component').then(c => c.NewsFormComponent),
+//   }, {
+//     path: 'logs',
+//     loadComponent: () => import('./@component/@admin/logs-component/logs-component').then(c => c.LogsComponent),
+//   }],
+// },
+// {
+//   path: 'register',
+//   loadComponent: () => import('./@component/register-component/register-component').then(c => c.RegisterComponent),
+//   canActivate: [loginGuard]
+// },
+// {
+//   path: 'rental-matching-component',
+//   loadComponent: () => import('./@component/rental-matching-component/rental-matching-component').then(c => c.RentalMatchingComponent),
+// },
+// {
+//   path: 'rental-matching-detail/:type/:id',
+//   loadComponent: () => import('./@component/rental-matching-detail-component/rental-matching-detail-component').then(c => c.RentalMatchingDetailComponent),
+// },
+// {
+//   path: 'admin-review',
+//   component: AdminReviewComponent,
+// },
+// {
+//   path: 'rent',
+//   loadComponent: () => import('./@component/rent-house-component/rent-house-component').then(c => c.RentHouseComponent)
+// },
+// {
+//   path: 'contact', component: ContactComponent
+// },
+
+
+

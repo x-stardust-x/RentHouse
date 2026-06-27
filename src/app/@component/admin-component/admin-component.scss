@@ -1,0 +1,239 @@
+// .admin-dashboard-page {
+//   width: min(100%, 1120px);
+//   margin: 0 auto;
+//   padding: 2rem 1.5rem 4rem;
+// }
+
+.dashboard__header {
+  margin-bottom: 1.5rem;
+
+  .eyebrow {
+    margin-bottom: 0.35rem;
+    color: var(--color-primary, #e66f43);
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  h2 {
+    margin-bottom: 0.35rem;
+    color: #2f2926;
+    font-size: 1.8rem;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+    color: #8a817c;
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  min-height: 150px;
+  padding: 1.25rem;
+  border: 1px solid rgba(230, 111, 67, 0.12);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(64, 45, 36, 0.06);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: var(--color-primary, #e66f43);
+  }
+
+  &__title {
+    color: #8a817c;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  &__value {
+    margin-top: 0.3rem;
+    color: #2f2926;
+    font-size: 2rem;
+    font-weight: 900;
+  }
+
+  &__trend {
+    margin-top: 0.45rem;
+    color: #2f8a4d;
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  &__sub {
+    margin-top: 0.45rem;
+    color: #c64545;
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  &__icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: var(--color-primary-light, #fff2ee);
+    color: var(--color-primary, #e66f43);
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+
+    mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  &.success::before {
+    background: #2f8a4d;
+  }
+
+  &.warning::before {
+    background: #d9871f;
+  }
+
+  &.success .stat-card__icon {
+    background: #e8f7ed;
+    color: #2f8a4d;
+  }
+
+  &.warning .stat-card__icon {
+    background: #fff4dc;
+    color: #d9871f;
+  }
+}
+
+.dashboard-content {
+  margin-top: 1.25rem;
+}
+
+.panel {
+  padding: 1.25rem;
+  border: 1px solid rgba(230, 111, 67, 0.12);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(64, 45, 36, 0.06);
+}
+
+.panel__header {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+
+  .eyebrow {
+    margin-bottom: 0.2rem;
+    color: var(--color-primary, #e66f43);
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+
+  h3 {
+    margin: 0;
+    color: #2f2926;
+    font-size: 1.15rem;
+    font-weight: 800;
+  }
+
+  a {
+    color: var(--color-primary, #e66f43);
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-decoration: none;
+  }
+}
+
+.activity-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.activity {
+  padding: 1rem;
+  border: 1px solid rgba(230, 111, 67, 0.1);
+  border-radius: 14px;
+  background: #fffaf7;
+  display: flex;
+  gap: 0.85rem;
+}
+
+.activity__icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--color-primary-light, #fff2ee);
+  color: var(--color-primary, #e66f43);
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+
+  mat-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
+
+  &.success {
+    background: #e8f7ed;
+    color: #2f8a4d;
+  }
+
+  &.warning {
+    background: #fff4dc;
+    color: #d9871f;
+  }
+
+  &.error {
+    background: #fff0f0;
+    color: #c64545;
+  }
+}
+
+.activity__title {
+  color: #2f2926;
+  font-weight: 800;
+}
+
+.activity__desc {
+  margin-top: 0.2rem;
+  color: #6f6660;
+  font-size: 0.9rem;
+}
+
+.activity__time {
+  margin-top: 0.35rem;
+  color: #9b928c;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+@media (max-width: 992px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-dashboard-page {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .panel__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

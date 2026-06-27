@@ -1,7 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginResponse } from '../@interface/login-response';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
+import { AlertService } from './alert-service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,19 +14,45 @@ import { LoginResponse } from '../@interface/login-response';
 export class Authservice {
   private http = inject(HttpClient);
   private router = inject(Router);
+  private alert = inject(AlertService);
   private api = 'https://localhost:7215/api/Auth';
 
-  login(data: { username: string; password: string } , isAdmin : boolean){
-    if(isAdmin){
+  login(data: { email: string; pwd: string }, isAdmin: boolean) {
+    if (isAdmin) {
       return this.http.post<LoginResponse>(this.api + "/login/admin", data);
     }
-    else{
-      return this.http.post<LoginResponse>(this.api  + "/login/member", data);
+    else {
+      return this.http.post<LoginResponse>(this.api + "/login/member", data);
     }
   }
 
-  logout() {
+  async logout() {
+
+    const result = await this.alert.confirm(
+      '確定要登出嗎？',
+      '',
+      '登出',
+      '取消'
+    );
+    if(!result.isConfirmed){
+      return;
+    }
     localStorage.removeItem('token');
+
+    localStorage.removeItem('userId');
+    localStorage.removeItem('accountId');
+    localStorage.removeItem('subscriptionTier');
+
+    this.alert.toastSuccess("登出成功");
+    this.router.navigate(['/login']);
+  }
+
+  logoutNoMessage(){
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('accountId');
+    localStorage.removeItem('subscriptionTier');
+    this.alert.toastWarning("已登出，請重新登入");
     this.router.navigate(['/login']);
   }
 
@@ -37,15 +65,15 @@ export class Authservice {
     const exp = decoded.exp;
     const now = Math.floor(Date.now() / 1000);
 
-    if(exp < now){
+    if (exp < now) {
       console.log("Token已過期");
-      this.logout();
+      this.logoutNoMessage();
     }
     return exp > now;
   }
 
-  register(payload : any){
-   return this.http.post(this.api + "/register", payload);
+  register(payload: any) {
+    return this.http.post(this.api + "/register", payload);
   }
 
   decodeToken(token: string): any {
@@ -58,19 +86,65 @@ export class Authservice {
     return localStorage.getItem('token');
   }
 
-  getUserRole(): string | null {
+  getRole(): string | null {
     const token = this.getToken();
+
     if (!token) return null;
 
     const decoded = this.decodeToken(token);
 
     // ⚠️ .NET 預設 role key 可能是這個
-    return decoded.role ||
-          decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+    return decoded.role || decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
   }
 
-  test(){
+  getAccountId(): number | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    const decoded = this.decodeToken(token);
+
+    return decoded.AccountId ? Number(decoded.AccountId) : null;
+  }
+
+
+
+  getUserId(): number | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    const decoded = this.decodeToken(token);
+
+
+    return decoded.UserId ? Number(decoded.UserId) : null;
+  }
+
+  getAdminId(): number | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    const decoded = this.decodeToken(token);
+
+    return decoded.AdminId ? Number(decoded.AdminId) : null;
+  }
+
+  test() {
     return this.http.get("https://localhost:7215/api/Auth/getalladmin");
   }
 
+  getClientIPAddress() {
+    return this.http
+      .get<{ ip: string }>('https://api.ipify.org/?format=json')
+      .pipe(
+        map(res => res.ip),
+        catchError((err: HttpErrorResponse) => {
+          console.error(err);
+          return of('');
+        })
+      );
+  }
+
+
+  upgradeToVip() {
+    return this.http.post('https://localhost:7215/api/Member/upgrade-vip', {});
+  }
 }

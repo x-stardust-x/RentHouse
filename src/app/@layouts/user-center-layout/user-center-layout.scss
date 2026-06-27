@@ -1,0 +1,57 @@
+// ===================================================
+// 🚀 個人專區外層大佈局：頂部局部固定（Sticky）完美版
+// ===================================================
+
+// 💡 變數設定：如果最上方還有一個全站大導覽列（厚厝味Navbar）是固定的，請填寫它的高度（例如 80px）
+// 如果該導覽列會隨網頁一起滾走、或是這就是最頂端，這裡請直接設為 0px
+$global-navbar-height: 70px;
+
+.user-center-layout {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;          // 保底撐滿螢幕
+  background-color: var(--color-bg-main);
+  overflow: visible;          // 徹底拔除外殼滾動條
+
+  // --- 左側側邊欄外殼 ---
+  &__sidebar {
+    width: 260px;             // 依你原本的側邊欄寬度調整
+    flex-shrink: 0;
+    background-color: var(--color-bg-card);
+    border-right: 1px solid var(--color-border);
+
+    // 🚀 關鍵：讓側邊欄高度自然延伸（跟右側內容一樣長），內部的 sticky 才能正常運作
+    height: auto;
+    overflow: visible;
+  }
+
+  // --- 右側主內容外殼 ---
+  &__main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    height: auto;
+    overflow: visible;
+  }
+
+  // --- 🎯 右側頂部控制列 (紅圈 2 固定處) ---
+  &__topbar {
+    // position: sticky;
+    top: $global-navbar-height; // 黏在螢幕最頂端
+    z-index: 99;                // 確保層級夠高，能壓住往上滾動的表單內容
+
+    width: 100%;
+    background-color: #ffffff;  // 🔴 必須是不透明實色背景！
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  // --- 下方房產/技能表單內容區 ---
+  &__content {
+    flex: 1;
+    padding: 2rem;
+    height: auto;
+    overflow: visible;          // 絕不產生第二條滾動條
+    background-color: transparent;
+  }
+}

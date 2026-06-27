@@ -1,0 +1,777 @@
+<div class="review-page-container application-tracking-page">
+
+  <div class="page-header">
+    <h2 class="page-title">看房預約審核</h2>
+    <p class="page-subtitle">
+      追蹤您送出的看房申請、確認預約結果與房東改期訊息。
+    </p>
+  </div>
+
+  <div class="schedule-actions">
+    <div class="schedule-actions__summary">
+      <span class="material-symbols-outlined">calendar_month</span>
+
+      <div>
+        <strong>可加入日曆行程 {{ calendarAvailableCount() }} 筆</strong>
+        <p>已確認或改期中的看房申請可加入 Google 日曆</p>
+      </div>
+    </div>
+
+    <button type="button" class="schedule-actions__button" (click)="toggleSchedulePanel()">
+      {{ isSchedulePanelOpen() ? '收合行程' : '查看行程' }}
+    </button>
+  </div>
+
+  @if (isSchedulePanelOpen()) {
+  <div class="schedule-panel">
+
+    @for (item of calendarAvailableItems(); track item.id) {
+    <div class="schedule-panel__item">
+      <div>
+        <strong>{{ item.roomName }}</strong>
+        <p>{{ item.viewingDateTime }}</p>
+        <small>預約單號：{{ item.orderNumber }}</small>
+      </div>
+
+      <button type="button" class="schedule-panel__button" (click)="openGoogleCalendar(item)">
+        加入 Google 日曆
+      </button>
+    </div>
+    }
+
+    @if (calendarAvailableItems().length === 0) {
+    <p class="schedule-panel__empty">目前沒有可加入日曆的看房行程。</p>
+    }
+
+  </div>
+  }
+
+  <div class="tabs-container">
+    @for (tab of tabs(); track tab.id) {
+    <button type="button" class="tab-button" [class.is-active]="activeTab() === tab.id" (click)="selectTab(tab.id)">
+      {{ tab.label }} ({{ tab.count }})
+    </button>
+    }
+  </div>
+
+  @if (isLoading()) {
+  <div class="reservation-list application-list application-skeleton-list" aria-busy="true">
+
+    @for (_ of loadingCards; track $index) {
+    <article class="reservation-card application-card application-card--skeleton">
+
+      <div class="card-header">
+        <div class="header-left">
+          <span class="skeleton-pill skeleton-pill--status"></span>
+          <span class="skeleton-line skeleton-line--room"></span>
+        </div>
+
+        <div class="header-right">
+          <span class="skeleton-pill skeleton-pill--order"></span>
+        </div>
+      </div>
+
+      <div class="card-body application-card-body">
+        <div class="applicant-section tracking-room-section">
+          <div class="skeleton-image-box"></div>
+        </div>
+
+        <div class="viewing-section">
+          <span class="skeleton-line skeleton-line--label"></span>
+
+          <div class="skeleton-time-box"></div>
+
+          <div class="skeleton-message"></div>
+
+          <div class="skeleton-info-box">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <span class="skeleton-pill skeleton-pill--score"></span>
+
+        <div class="action-buttons">
+          <span class="skeleton-button"></span>
+          <span class="skeleton-button skeleton-button--primary"></span>
+        </div>
+      </div>
+
+    </article>
+    }
+
+  </div>
+  } @else if (errorMessage()) {
+  <div class="empty-state">
+    <p>{{ errorMessage() }}</p>
+  </div>
+  } @else {
+  <div class="reservation-list application-list">
+
+    @for (item of filteredApplications(); track item.id) {
+    <article class="reservation-card application-card" [class.is-pending]="item.status === 'pending'"
+      [class.is-confirmed]="item.status === 'confirmed'" [class.is-rescheduled]="item.status === 'rescheduled'"
+      [class.is-rejected]="item.status === 'rejected'">
+
+      <div class="card-header">
+        <div class="header-left">
+          <span class="status-badge" [class.status-pending]="item.status === 'pending'"
+            [class.status-confirmed]="item.status === 'confirmed'" [class.status-rejected]="item.status === 'rejected'"
+            [class.status-rescheduled]="item.status === 'rescheduled'">
+            {{ getStatusLabel(item.status) }}
+          </span>
+
+          <span class="room-name">
+            {{ item.roomName }}
+
+            @if (item.roomAddress) {
+            <span class="room-address-divider">｜</span>
+            <span class="room-address">{{ item.roomAddress }}</span>
+            }
+          </span>
+        </div>
+
+        <div class="header-right">
+          <span class="order-number">預約單號: {{ item.orderNumber }}</span>
+        </div>
+      </div>
+
+      <div class="card-body application-card-body">
+
+        <!-- 左側：只放圖片 -->
+        <div class="applicant-section tracking-room-section">
+          <div class="tracking-room-image-wrap">
+            <img class="tracking-room-image" [src]="getImageUrl(item.coverUrl)" [alt]="item.roomName">
+          </div>
+        </div>
+
+        <!-- 右側：日期時段 / 留言 / 房租房東資訊 -->
+        <div class="viewing-section">
+          <p class="section-label">預約看房日期與時段</p>
+
+          <div class="viewing-time-box viewing-time-box--slots">
+            <div class="viewing-date-pill">
+              <span class="material-symbols-outlined time-icon">event_available</span>
+              <span class="time-text">{{ item.viewingDate }}</span>
+            </div>
+
+            <div class="viewing-slot-pills">
+              @for (slot of item.preferredTimeSlots; track slot) {
+              <span class="viewing-slot-pill">
+                {{ slot }}
+              </span>
+              }
+
+              @if (!item.preferredTimeSlots || item.preferredTimeSlots.length === 0) {
+              <span class="viewing-slot-pill">
+                {{ item.viewingDateTime }}
+              </span>
+              }
+            </div>
+          </div>
+
+          @if (item.message) {
+          <div class="message-quote-box">
+            <span class="material-symbols-outlined quote-icon-bg">format_quote</span>
+            <p class="message-text">{{ item.message }}</p>
+          </div>
+          }
+
+          <!-- 這塊就是原本紅框，移到藍框位置 -->
+          <div class="contact-info-box tracking-room-info tracking-room-info--moved">
+
+            <div class="tracking-lessor-card">
+              <img class="tracking-lessor-avatar" [src]="getLessorAvatarUrl(item)" [alt]="item.lessorName">
+
+              <div class="tracking-lessor-main">
+                <div class="tracking-lessor-name-row">
+                  <span class="tracking-lessor-name">
+                    {{ item.lessorName }}
+                  </span>
+
+                  <a class="tracking-lessor-profile-link" [routerLink]="getLessorProfileLink(item)" target="_blank">
+                    查看出租人公開頁
+                  </a>
+                </div>
+
+                <p class="tracking-lessor-role">出租人</p>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">payments</span>
+              <span>
+                租金：
+                <strong class="tracking-price">
+                  NT$ {{ item.rentPrice | number:'1.0-0' }}/月
+                </strong>
+              </span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">home_work</span>
+              <span>
+                預計入住：
+                <strong>{{ item.expectedMoveInText || '尚未填寫' }}</strong>
+              </span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">phone_iphone</span>
+              <span>
+                出租人電話：{{ displayLessorPhone(item) }}
+              </span>
+            </div>
+
+            <div class="info-row">
+              <span class="material-symbols-outlined info-icon">chat</span>
+              <span>
+                出租人 LINE ID：{{ displayLessorLineId(item) }}
+              </span>
+            </div>
+
+            @if (hasLesseeProfileTags(item)) {
+            <div class="tracking-profile-tags-block">
+              <p class="tracking-profile-tags-title">
+                <span class="material-symbols-outlined">person_search</span>
+                你送出時分享的承租人微檔案
+              </p>
+
+              <div class="profile-tags tracking-profile-tags">
+                @for (tag of item.lesseeProfileTags; track tag) {
+                <span class="profile-pill">
+                  {{ tag }}
+                </span>
+                }
+              </div>
+            </div>
+            }
+
+          </div>
+
+          @if (item.status === 'rescheduled' && item.rescheduleInfo) {
+          <div class="message-quote-box reschedule-box">
+            <span class="material-symbols-outlined quote-icon-bg">event_repeat</span>
+            <p class="message-text">
+              <strong>出租人提議改期：</strong>
+              {{ item.rescheduleInfo.proposedViewingDateTime }}
+              <br>
+              <strong>改期訊息：</strong>
+              {{ item.rescheduleInfo.message || '無留言' }}
+            </p>
+          </div>
+          }
+
+          @if (item.status === 'rejected') {
+          <div class="message-quote-box rejected-box">
+            <span class="material-symbols-outlined quote-icon-bg">cancel</span>
+            <p class="message-text">
+              <strong>婉拒原因：</strong>
+              {{ item.rejectReason || '房東未填寫原因' }}
+            </p>
+          </div>
+          }
+
+          @if (item.status === 'matched') {
+          <div class="message-quote-box reschedule-box">
+            <span class="material-symbols-outlined quote-icon-bg">verified</span>
+            <p class="message-text">
+              <strong>恭喜！此房源已與你媒合成功。</strong>
+              <br>
+              請依雙方約定完成後續入住或簽約流程。
+              @if (item.matchNote) {
+              <br>
+              <strong>媒合備註：</strong>{{ item.matchNote }}
+              }
+            </p>
+          </div>
+          }
+
+          @if (item.status === 'closed') {
+          <div class="message-quote-box rejected-box">
+            <span class="material-symbols-outlined quote-icon-bg">block</span>
+            <p class="message-text">
+              <strong>此申請已關閉：</strong>
+              {{ item.closedReason || '此房源已完成媒合，申請已關閉。' }}
+            </p>
+          </div>
+          }
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <div class="match-score-badge">
+          <span class="material-symbols-outlined sparkle-icon">auto_awesome</span>
+          <span>契合度 {{ item.matchScore }}%</span>
+        </div>
+
+        <div class="action-buttons">
+
+          @if (item.status === 'pending') {
+          <button type="button" class="action-btn btn-outline" (click)="viewMap(item)">
+            查看地點
+          </button>
+
+          <button type="button" class="action-btn btn-text danger-text" (click)="cancelApplication(item)">
+            取消申請
+          </button>
+          }
+
+          @else if (item.status === 'confirmed') {
+
+          <button type="button" class="action-btn btn-outline" (click)="viewMap(item)">
+            導航前往
+          </button>
+
+          <button type="button" class="action-btn btn-fill" (click)="contactLessorByLine(item)">
+            LINE 聯絡出租人
+          </button>
+
+          @if (canAddViewingToCalendar(item)) {
+          <button type="button" class="action-btn btn-outline" (click)="openGoogleCalendar(item)">
+            加入 Google 日曆
+          </button>
+          }
+          }
+
+          @else if (item.status === 'rescheduled') {
+          <button type="button" class="action-btn btn-fill" (click)="acceptReschedule(item)">
+            接受改期
+          </button>
+
+          <button type="button" class="action-btn btn-outline" (click)="chooseAnotherTime(item)">
+            重新選擇時段
+          </button>
+
+          <button type="button" class="action-btn btn-text" (click)="contactLessorByLine(item)">
+            LINE 聯絡出租人
+          </button>
+
+          @if (canAddViewingToCalendar(item)) {
+          <button type="button" class="action-btn btn-outline" (click)="openGoogleCalendar(item)">
+            加入 Google 日曆
+          </button>
+          }
+          }
+
+          @else if (item.status === 'rejected') {
+          <button type="button" class="action-btn btn-outline" (click)="reapply(item)" [disabled]="!canReapply(item)">
+            {{ getReapplyButtonText(item) }}
+          </button>
+
+          <button type="button" class="action-btn btn-text" (click)="viewOtherRooms()">
+            查看其他房源
+          </button>
+          }
+
+          <!-- @else if (item.status === 'matched') {
+          <button type="button" class="action-btn btn-outline" (click)="addToGoogleCalendar(item)">
+            加入 Google 行事曆
+          </button>
+
+          <button type="button" class="action-btn btn-fill" (click)="contactLessorByLine(item)">
+            LINE 聯絡房東
+          </button>
+
+          @if (canAddViewingToCalendar(item)) {
+          <button type="button" class="action-btn btn-outline" (click)="openViewingGoogleCalendar(item)">
+            加入 Google 日曆
+          </button>
+          }
+          } -->
+
+          @else if (item.status === 'closed') {
+          <button type="button" class="action-btn btn-text" (click)="viewOtherRooms()">
+            查看其他房源
+          </button>
+          }
+
+        </div>
+      </div>
+
+    </article>
+    }
+
+    @if (filteredApplications().length === 0) {
+    <div class="empty-state">
+      <p>{{ getEmptyStateText() }}</p>
+    </div>
+    }
+
+  </div>
+  }
+
+
+  @if (isReselectModalOpen()) {
+  <div class="contact-modal-overlay reselect-modal-overlay" (click)="closeReselectModal()">
+    <div class="contact-modal-container reselect-modal-container" (click)="$event.stopPropagation()">
+
+      <div class="contact-modal-header">
+        <h3 class="contact-modal-title">重新選擇看房時段</h3>
+
+        <button type="button" class="contact-modal-close-btn" (click)="closeReselectModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="contact-modal-body">
+
+        <div class="contact-provider-summary">
+          <img class="contact-provider-summary__avatar" [src]="getImageUrl(selectedReselectApplication()?.coverUrl)"
+            [alt]="selectedReselectApplication()?.roomName || '房源圖片'">
+
+          <div class="contact-provider-summary__info">
+            <p class="contact-provider-summary__name">
+              {{ selectedReselectApplication()?.roomName }}
+              <span class="provider-role-badge">重新送出看房申請</span>
+            </p>
+
+            <p class="contact-provider-summary__item-name">
+              預約單號：{{ selectedReselectApplication()?.orderNumber }}
+
+              <span class="badge-divider">|</span>
+
+              租金：
+              <strong class="highlight-text">
+                NT$ {{ (selectedReselectApplication()?.rentPrice ?? 0) | number:'1.0-0' }}/月
+              </strong>
+            </p>
+          </div>
+        </div>
+
+        @if (selectedReselectApplication()?.rescheduleInfo) {
+        <div class="message-quote-box reschedule-box">
+          <span class="material-symbols-outlined quote-icon-bg">event_repeat</span>
+          <p class="message-text">
+            <strong>出租人提議改期：</strong>
+            {{ selectedReselectApplication()?.rescheduleInfo?.proposedViewingDateTime }}
+            <br>
+            <strong>出租人訊息：</strong>
+            {{ selectedReselectApplication()?.rescheduleInfo?.message || '無留言' }}
+          </p>
+        </div>
+        }
+
+        <div class="modal-dynamic-section form-spacing-large">
+
+          <div class="contact-form-group">
+            <label class="section-title-label">
+              <span class="material-symbols-outlined icon-orange">calendar_today</span>
+              重新選擇看房日期與時段
+            </label>
+
+            <div class="form-col">
+              <span class="sub-label">選擇日期</span>
+
+              <div class="date-input-wrapper">
+                <span class="material-symbols-outlined date-icon">event</span>
+                <input type="date" class="contact-form-input date-no-bg" [ngModel]="reselectDate()"
+                  (ngModelChange)="reselectDate.set($event)">
+              </div>
+            </div>
+
+            @if (isReselectSlotsLoading()) {
+            <p class="textarea-hint">
+              正在載入出租人開放時段...
+            </p>
+            } @else if (reselectAvailableViewingSlots().length > 0) {
+            <span class="sub-label">選擇出租人開放時段（可複選）</span>
+
+            <div class="time-slot-group">
+              @for (slot of reselectAvailableViewingSlots(); track slot.id) {
+              <button type="button" class="time-slot-pill" [class.is-active]="isReselectViewingSlotSelected(slot.id)"
+                (click)="toggleReselectViewingSlot(slot.id)">
+                {{ slot.label }}
+              </button>
+              }
+            </div>
+
+            @if (reselectSlotsLoadError()) {
+            <p class="textarea-hint warning-text">
+              {{ reselectSlotsLoadError() }}
+            </p>
+            }
+
+            } @else {
+            <p class="textarea-hint">
+              {{ reselectSlotsLoadError() || '出租人尚未設定可預約看房時段，暫時無法送出。' }}
+            </p>
+            }
+          </div>
+
+          <hr class="modal-divider">
+
+          <div class="contact-form-group">
+            <label class="section-title-label">
+              <span class="material-symbols-outlined icon-orange">home_work</span>
+              預計搬入時間
+            </label>
+
+            <div class="move-in-group">
+              @for (time of moveInTimes(); track time) {
+              <label class="move-in-btn" [class.is-active]="reselectMoveInTime() === time">
+                <input type="radio" name="reselectMoveInTime" [value]="time" [ngModel]="reselectMoveInTime()"
+                  (ngModelChange)="reselectMoveInTime.set($event)" class="modal-hidden-input">
+                {{ time }}
+              </label>
+              }
+            </div>
+          </div>
+
+          <hr class="modal-divider">
+
+          <div class="contact-form-group">
+            <label class="section-title-label">
+              <span class="material-symbols-outlined icon-orange">person_search</span>
+              承租人微檔案
+              <span class="label-hint">(可重新選擇想分享給出租人的狀態)</span>
+            </label>
+
+            <div class="tenant-profile-tags">
+              @for (profile of reselectLesseeProfileTags(); track $index; let i = $index) {
+
+              @if (profile.isEditing) {
+              <input type="text" class="profile-tag profile-tag-input" placeholder="輸入更多偏好" [ngModel]="profile.label"
+                (ngModelChange)="profile.label = $event" (blur)="finishReselectCustomTag(i)"
+                (keydown.enter)="finishReselectCustomTag(i)">
+              } @else {
+              <label class="profile-tag" [class.is-active]="profile.checked" (click)="handleReselectProfileTagClick(i)">
+                <input type="checkbox" [ngModel]="profile.checked" class="modal-hidden-input"
+                  (click)="$event.preventDefault()">
+
+                <span class="material-symbols-outlined tag-icon">
+                  {{ profile.icon || 'sell' }}
+                </span>
+
+                {{ profile.label }}
+              </label>
+              }
+
+              }
+            </div>
+          </div>
+
+          <hr class="modal-divider">
+
+          <div class="contact-form-group">
+            <label class="section-title-label">
+              <span class="material-symbols-outlined icon-orange">chat</span>
+              想對出租人補充的話
+            </label>
+
+            <p class="textarea-hint">
+              可以說明你重新選擇時段的原因，讓出租人更容易判斷是否接受。
+            </p>
+
+            <textarea class="contact-form-textarea" rows="4" [ngModel]="reselectIntro()"
+              (ngModelChange)="reselectIntro.set($event)" placeholder="例：您好，出租人提議的時間我不太方便，想改約以下時段，謝謝您！"></textarea>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="contact-modal-footer reselect-modal-footer">
+        <button type="button" class="action-btn btn-text" (click)="closeReselectModal()"
+          [disabled]="isSubmittingReselect()">
+          取消
+        </button>
+
+        <button type="button" class="action-btn btn-fill" (click)="confirmReselectTime()"
+          [disabled]="isSubmittingReselect()">
+          {{ isSubmittingReselect() ? '送出中...' : '重新送出審核' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+  }
+
+
+  @if (isReapplyModalOpen()) {
+  <div class="contact-modal-overlay reselect-modal-overlay" (click)="closeReapplyModal()">
+    <div class="contact-modal-container reselect-modal-container" (click)="$event.stopPropagation()">
+
+      <div class="contact-modal-header">
+        <h3 class="contact-modal-title">重新申請看房</h3>
+
+        <button type="button" class="contact-modal-close-btn" (click)="closeReapplyModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="contact-modal-body">
+
+        <div class="contact-provider-summary">
+          <img class="contact-provider-summary__avatar" [src]="getImageUrl(selectedReapplyApplication()?.coverUrl)"
+            [alt]="selectedReapplyApplication()?.roomName || '房源圖片'">
+
+          <div class="contact-provider-summary__info">
+            <p class="contact-provider-summary__name">
+              {{ selectedReapplyApplication()?.roomName }}
+              <span class="provider-role-badge">重新送出申請</span>
+            </p>
+
+            <p class="contact-provider-summary__item-name">
+              預約單號：{{ selectedReapplyApplication()?.orderNumber }}
+
+              <span class="badge-divider">|</span>
+
+              租金：
+              <strong class="highlight-text">
+                NT$ {{ (selectedReapplyApplication()?.rentPrice ?? 0) | number:'1.0-0' }}/月
+              </strong>
+            </p>
+          </div>
+        </div>
+
+        <div class="message-quote-box rejected-box">
+          <span class="material-symbols-outlined quote-icon-bg">cancel</span>
+          <p class="message-text">
+            <strong>上次婉拒原因：</strong>
+            {{ selectedReapplyApplication()?.rejectReason || '房東未填寫原因' }}
+            <br>
+            <strong>申請次數：</strong>
+            第 {{ (selectedReapplyApplication()?.attemptNo ?? 1) + 1 }} 次 /
+            最多 {{ selectedReapplyApplication()?.maxAttemptCount ?? 3 }} 次
+          </p>
+        </div>
+
+        <div class="modal-dynamic-section form-spacing-large">
+
+          <div class="contact-form-group">
+            <label class="section-title-label">
+              <span class="material-symbols-outlined icon-orange">calendar_today</span>
+              重新選擇看房日期與時段
+            </label>
+
+            <div class="form-col">
+              <span class="sub-label">選擇日期</span>
+
+              <div class="date-input-wrapper">
+                <span class="material-symbols-outlined date-icon">event</span>
+                <input type="date" class="contact-form-input date-no-bg" [ngModel]="reapplyDate()"
+                  (ngModelChange)="reapplyDate.set($event)">
+              </div>
+            </div>
+
+            @if (isReapplySlotsLoading()) {
+            <p class="textarea-hint">
+              正在載入出租人開放時段...
+            </p>
+            } @else if (reapplyAvailableViewingSlots().length > 0) {
+            <span class="sub-label">選擇出租人開放時段（可複選）</span>
+
+            <div class="time-slot-group">
+              @for (slot of reapplyAvailableViewingSlots(); track slot.id) {
+              <button type="button" class="time-slot-pill" [class.is-active]="isReapplyViewingSlotSelected(slot.id)"
+                (click)="toggleReapplyViewingSlot(slot.id)">
+                {{ slot.label }}
+              </button>
+              }
+            </div>
+
+            @if (reapplySlotsLoadError()) {
+            <p class="textarea-hint warning-text">
+              {{ reapplySlotsLoadError() }}
+            </p>
+            }
+
+            } @else {
+            <p class="textarea-hint">
+              {{ reapplySlotsLoadError() || '出租人尚未設定可預約看房時段，暫時無法送出。' }}
+            </p>
+            }
+          </div>
+
+          <hr class="modal-divider">
+
+          <div class="contact-form-group">
+            <label class="section-title-label">
+              <span class="material-symbols-outlined icon-orange">home_work</span>
+              預計搬入時間
+            </label>
+
+            <div class="move-in-group">
+              @for (time of moveInTimes(); track time) {
+              <label class="move-in-btn" [class.is-active]="reapplyMoveInTime() === time">
+                <input type="radio" name="reapplyMoveInTime" [value]="time" [ngModel]="reapplyMoveInTime()"
+                  (ngModelChange)="reapplyMoveInTime.set($event)" class="modal-hidden-input">
+                {{ time }}
+              </label>
+              }
+            </div>
+          </div>
+
+          <hr class="modal-divider">
+
+          <div class="contact-form-group">
+            <label class="section-title-label">
+              <span class="material-symbols-outlined icon-orange">person_search</span>
+              承租人微檔案
+              <span class="label-hint">(可重新選擇想分享給出租人的狀態)</span>
+            </label>
+
+            <div class="tenant-profile-tags">
+              @for (profile of reapplyLesseeProfileTags(); track $index; let i = $index) {
+
+              @if (profile.isEditing) {
+              <input type="text" class="profile-tag profile-tag-input" placeholder="輸入更多偏好" [ngModel]="profile.label"
+                (ngModelChange)="profile.label = $event" (blur)="finishReapplyCustomTag(i)"
+                (keydown.enter)="finishReapplyCustomTag(i)">
+              } @else {
+              <label class="profile-tag" [class.is-active]="profile.checked" (click)="handleReapplyProfileTagClick(i)">
+                <input type="checkbox" [ngModel]="profile.checked" class="modal-hidden-input"
+                  (click)="$event.preventDefault()">
+
+                <span class="material-symbols-outlined tag-icon">
+                  {{ profile.icon || 'sell' }}
+                </span>
+
+                {{ profile.label }}
+              </label>
+              }
+
+              }
+            </div>
+          </div>
+
+          <hr class="modal-divider">
+
+          <div class="contact-form-group">
+            <label class="section-title-label">
+              <span class="material-symbols-outlined icon-orange">chat</span>
+              想再次對房東說的話
+            </label>
+
+            <p class="textarea-hint">
+              建議補充這次重新申請的原因，或說明你已調整能配合的看房時間。
+            </p>
+
+            <textarea class="contact-form-textarea" rows="4" [ngModel]="reapplyIntro()"
+              (ngModelChange)="reapplyIntro.set($event)"
+              placeholder="例：您好，我仍然對這間房很有興趣，這次已調整可配合的看房時段，希望能再次申請，謝謝您。"></textarea>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="contact-modal-footer reselect-modal-footer">
+        <button type="button" class="action-btn btn-text" (click)="closeReapplyModal()"
+          [disabled]="isSubmittingReapply()">
+          取消
+        </button>
+
+        <button type="button" class="action-btn btn-fill" (click)="confirmReapply()" [disabled]="isSubmittingReapply()">
+          {{ isSubmittingReapply() ? '送出中...' : '重新送出申請' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+  }
+</div>

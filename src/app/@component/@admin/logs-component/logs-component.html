@@ -1,0 +1,80 @@
+<section class="logs-page">
+  <div class="logs-card">
+    <div class="logs-header">
+      <div>
+        <p class="eyebrow">系統紀錄</p>
+        <h2>系統操作紀錄</h2>
+        <p>查看管理員操作、來源 IP 與建立時間。</p>
+      </div>
+    </div>
+
+    <div class="logs-toolbar">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>搜尋 ID / Action / IP</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="輸入關鍵字..." />
+      </mat-form-field>
+
+      <div class="date-filter">
+        <mat-form-field appearance="outline">
+          <mat-label>開始日期</mat-label>
+          <input matInput [matDatepicker]="startPicker" (dateChange)="applyDateFilter()" [(ngModel)]="startDate"
+            [max]="today" />
+          <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>結束日期</mat-label>
+          <input matInput [matDatepicker]="endPicker" (dateChange)="applyDateFilter()" [(ngModel)]="endDate"
+            [max]="today" />
+          <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="table-scroll">
+      <table mat-table [dataSource]="dataSource" class="logs-table">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>管理員姓名</th>
+          <td mat-cell *matCellDef="let element">
+            <span class="log-badge user">
+              {{ element.name || '未命名管理員' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef>行動</th>
+          <td mat-cell *matCellDef="let element">
+            <span class="log-badge action">
+              {{ element.action }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="ipAddress">
+          <th mat-header-cell *matHeaderCellDef>IP 位置</th>
+          <td mat-cell *matCellDef="let element">
+            <code class="ip-code">
+              {{ element.ipAddress }}
+            </code>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>創建時間</th>
+          <td mat-cell *matCellDef="let element" class="created-time">
+            {{ element.createdAt | date:'yyyy-MM-dd HH:mm:ss' }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+
+    <mat-paginator class="logs-paginator" [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons>
+    </mat-paginator>
+  </div>
+</section>

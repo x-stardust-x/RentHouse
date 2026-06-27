@@ -1,0 +1,70 @@
+<app-page-hero eyebrow="News" title="最新消息" [breadcrumbs]="[
+    { label: '首頁', link: '/home' },
+    { label: '最新消息' }
+  ]" />
+
+<section class="news-section">
+  <div class="news-section__container container">
+    <!-- <div class="news-section__header">
+      <h2 class="news-section__title">最新消息</h2>
+      <p class="news-section__description">發掘厚厝味的日常溫度與共居點滴</p>
+    </div> -->
+
+    <div class="news-section__tabs news-tabs">
+      @for(category of categories(); track category){
+      <button
+        class="news-tabs__tab"
+        [class.news-tabs__tab--active]="selectedCategory() === category"
+        (click)="changeCategory(category)"
+      >
+        {{ category }}
+      </button>
+      }
+    </div>
+
+    <div class="news-section__grid">
+      @for(news of pagedNews(); track news.id){
+      <article class="news-card">
+        <div class="news-card__image">
+          <img [src]="news.cover" [alt]="news.title" />
+        </div>
+
+        <div class="news-card__body">
+          <div class="news-card__meta">
+            <span class="news-card__date">{{ news.createdAt | date:'yyyy.MM.dd' }}</span>
+            <span class="news-card__badge">{{ news.category }}</span>
+          </div>
+
+          <h3 class="news-card__title">{{ news.title }}</h3>
+          <p class="news-card__excerpt">{{ news.intro }}</p>
+          <a class="news-card__link" [routerLink]="['/news', news.id]">閱讀更多 →</a>
+        </div>
+      </article>
+      }
+    </div>
+
+    <!-- 分頁 -->
+
+    @if(totalPages() > 1){
+    <nav class="news-section__pagination news-pagination mt-5">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [class.disabled]="currentPage() === 1">
+          <button class="page-link" (click)="goPage(currentPage()-1)">‹</button>
+        </li>
+
+        @for(page of pageList(); track page){
+        <li class="page-item" [class.active]="currentPage() === page">
+          <button class="page-link" (click)="goPage(page)">{{ page }}</button>
+        </li>
+        }
+
+        <li class="page-item" [class.disabled]="currentPage() === totalPages()">
+          <button class="page-link" (click)="goPage(currentPage()+1)">›</button>
+        </li>
+      </ul>
+    </nav>
+    }
+
+  </div>
+
+</section>

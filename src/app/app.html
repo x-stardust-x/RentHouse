@@ -1,29 +1,54 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<!-- <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand" routerLink="/">RentHouse</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+      aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
+          <a class="nav-link active" aria-current="page" routerLink="/">首頁</a>
+        </li> -->
+
+
+        <!-- @if(!isloggedin){
+          沒登入時 不會看見下面 link
+          member admin
+          之後會admin 需不需要獨立出一個分業?
+        }
+        @else{
+          登入能看見
+          member
+        } -->
+
+
+        <!-- <li>
+          <a class="nav-link" routerLink="login">登入</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Features</a>
+          <a class="nav-link" routerLink="member/dashboard">會員中心</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Pricing</a>
+          <a class="nav-link" routerLink="/admin">管理員</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/rental-matching-component">租賃物媒合</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/rent">租屋管理</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/admin-review">房屋上架審核</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="login">login</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/member">member</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/admin">admin</a>
-        </li>
+          <a class="nav-link" routerLink="/contact">聯絡我們</a>
+        </li> -->
+
+
         <!-- <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Dropdown link
@@ -34,9 +59,14 @@
             <li><a class="dropdown-item" href="#">Something else here</a></li>
           </ul>
         </li> -->
-      </ul>
+
+
+      <!-- </ul>
     </div>
   </div>
-</nav>
+</nav> -->
+
+
+
 
 <router-outlet></router-outlet>
